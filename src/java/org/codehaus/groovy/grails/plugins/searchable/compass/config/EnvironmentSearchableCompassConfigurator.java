@@ -21,11 +21,11 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUt
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassEnvironment;
 import org.springframework.beans.PropertyEditorRegistrySupport;
-import org.springframework.binding.support.Assert;
+import org.springframework.util.Assert;
 
+import java.beans.PropertyEditor;
 import java.util.Iterator;
 import java.util.Map;
-import java.beans.PropertyEditor;
 
 /**
  * Responsible for setting the Compass environment, most importantly the "connection" (ie, Lucene index dir),
