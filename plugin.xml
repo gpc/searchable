@@ -1,0 +1,9 @@
+<plugin name='searchable' version='0.4-SNAPSHOT'>
+  <author>Maurice Nicholson</author>
+  <authorEmail>maurice@freeshell.org</authorEmail>
+  <title>Grails Searchable Plugin</title>
+  <description>
+Adds rich search functionality to Grails domain models.
+</description>
+  <documentation>http://grails.org/Searchable+Plugin</documentation>
+</plugin>

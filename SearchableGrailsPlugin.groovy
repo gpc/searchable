@@ -43,7 +43,7 @@ class SearchableGrailsPlugin {
     def authorEmail = 'maurice@freeshell.org'
     def title = 'Grails Searchable Plugin'
     def description = '''
-Adds rich search functionality for Grails domain classes with minimum effort. Built on Compass and Lucene.
+Adds rich search functionality to Grails domain models.
 '''
     def documentation = 'http://grails.org/Searchable+Plugin'
 
