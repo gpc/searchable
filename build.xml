@@ -1,0 +1,115 @@
+<project name="searchable" default="all">
+
+  <condition property="grails" value="grails.bat">
+    <os family="windows"/>
+  </condition>
+  <property name="grails" value="grails" />
+
+  <property file="project.properties" />
+
+  <property name="java.src" value="src/java" />
+  <property name="groovy.src" value="src/groovy" />
+  <property name="target" value="target" />
+  <property name="classes" value="${target}/classes"/>
+  <property name="test.java.src" value="src/test/java" />
+  <property name="test.groovy.src" value="src/test/groovy" />
+  <property name="test.classes" value="${target}/test-classes"/>
+  <property name="test.reports" value="${target}/test-reports"/>
+  <property name="lib" value="lib"/>
+
+  <property environment="ENV" />
+
+  <property name="grails.home" value="${ENV.GRAILS_HOME}" />
+  <path id="groovy.classpath">
+    <fileset dir="${grails.home}/lib">
+      <include name="groovy-all-*.jar" />
+      <include name="commons-cli-*.jar" />
+      <include name="junit*.jar" />
+      <include name="ant*.jar" />
+    </fileset>
+  </path>
+
+  <path id="classpath">
+    <fileset dir="lib" includes="*.jar" />
+    <fileset dir="${grails.home}/lib" includes="*.jar">
+      <exclude name="ant.jar" />
+      <exclude name="ant-*.jar" />
+    </fileset>
+    <fileset dir="${grails.home}/dist" includes="*.jar" />
+    <path location="${classes}" />
+  </path>
+
+  <path id="junit.classpath">
+    <path refid="classpath" />
+<!--    <pathelement location="${env.ANT_HOME}/ant-junit.jar" /> -->
+    <fileset dir="${grails.home}" includes="junit*.jar" />
+  </path>
+
+  <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
+  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" />
+
+  <target name="clean">
+    <delete dir="${target}" />
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${classes}" />
+    <javac srcdir="${java.src}" destdir="${classes}" source="1.4" target="1.4" debug="true" classpathref="classpath" />
+    <groovyc srcdir="${groovy.src}" destdir="${classes}" classpathref="classpath" />
+  </target>
+
+  <target name="compile-test">
+    <mkdir dir="${test.classes}" />
+    <javac srcdir="${test.java.src}" destdir="${test.classes}" source="1.5" target="1.5" debug="true" classpathref="classpath" />
+  </target>
+
+  <target name="test" depends="compile,compile-test">
+    <mkdir dir="${test.reports}" />
+    <junit fork="yes" showoutput="true" failureproperty="tests.failed" printsummary="yes">
+      <formatter type="brief"/>
+      <classpath>
+        <path refid="classpath" />
+        <pathelement location="${test.groovy.src}"/>
+        <pathelement location="${test.classes}"/>
+      </classpath>
+      <jvmarg value="-Dgroovy.test.dir=${test.groovy.src}" />
+      <jvmarg value="-Dgroovy.test.pattern=**/*Tests.groovy" />
+      <test name="grails.plugins.searchable.util.AllTestSuite" todir="${test.reports}" />
+    </junit>
+    <loadfile srcfile="${test.reports}/TEST-grails.plugins.searchable.util.AllTestSuite.txt" failonerror="yes" property="test.output" />
+    <fail if="tests.failed">
+      Tests failed
+
+      ${test.output}
+    </fail>
+  </target>
+
+  <macrodef name="run-integration-test">
+    <attribute name="app.name" />
+    <attribute name="test.java.home" default="${java15.home}" />
+    <sequential>
+      <echo message="Running integration test @{app.name} with Java @{test.java.home}" />
+      <java classname="groovy.ui.GroovyMain" fork="true" classpathref="groovy.classpath" jvm="@{test.java.home}/bin/java" failonerror="true">
+        <env key="JAVA_HOME" value="@{test.java.home}" />
+        <arg value="integration-test/groovy/RunIntegrationTest.groovy" />
+        <arg value="${basedir}" />
+        <arg value="integration-test/grails-apps/@{app.name}" />
+        <arg value="${basedir}/../grails-searchable-tmp" />
+      </java>
+    </sequential>
+  </macrodef>
+
+  <target name="integration-test">
+    <run-integration-test app.name="simple-groovy" test.java.home="${java14.home}"/>
+    <run-integration-test app.name="simple-groovy" test.java.home="${java15.home}"/>
+  </target>
+
+  <target name="package">
+    <exec executable="${grails}" failonerror="yes">
+      <arg value="package-plugin" />
+    </exec>
+  </target>
+
+  <target name="all" depends="clean, compile, compile-test, test, package, integration-test" />
+
+</project>
