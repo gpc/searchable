@@ -20,7 +20,6 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.config.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.spring.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.search.*
-import org.codehaus.groovy.grails.plugins.searchable.util.TimeUtils
 
 import org.apache.commons.logging.LogFactory
 
@@ -41,9 +40,10 @@ class SearchableGrailsPlugin {
     def version = SearchableConstants.SEARCHABLE_PLUGIN_VERSION
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
-    def title = 'Grails Searchable Plugin'
+    def title = 'Adds rich search functionality to Grails domain models.'
     def description = '''
 Adds rich search functionality to Grails domain models.
+Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucene.apache.org/)
 '''
     def documentation = 'http://grails.org/Searchable+Plugin'
 
@@ -229,26 +229,11 @@ Adds rich search functionality to Grails domain models.
         // index the database?
         def bulkIndex = !config || (config.bulkIndexOnStartup instanceof Boolean && config.bulkIndexOnStartup == true)
         def forkBulkIndex = !config || (config.bulkIndexOnStartup instanceof String && config.bulkIndexOnStartup == "fork")
-        def doBulkIndex = { forked ->
-            try {
-                if (!mirrorChanges) {
-                    compassGps.start()
-                }
-                def start = System.currentTimeMillis()
-                LOG.info("Starting Searchable Plugin bulk index" + (forked ? " in a background thread" : ''))
-                compassGps.index()
-                LOG.info("Finished Searchable Plugin bulk index, " + TimeUtils.formatMillisAsShortHumanReadablePeriod(System.currentTimeMillis() - start));
-            } finally {
-                if (!mirrorChanges) {
-                    compassGps.stop()
-                }
-            }
-        }
         if (bulkIndex) {
-            doBulkIndex()
+            CompassGpsUtils.index(compassGps)
         } else if (forkBulkIndex) {
             Thread.start {
-                doBulkIndex()
+                CompassGpsUtils.index(compassGps)
             }
         } else {
             LOG.debug("Not performing bulk index")

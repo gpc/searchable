@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.CompassGpsUtils;
 import org.codehaus.groovy.grails.plugins.searchable.util.TimeUtils;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.Compass;
@@ -90,10 +91,7 @@ public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements Se
         validateArguments(args, clazz, ids, objects, options);
 
         if (isBulkAllowed() && args.length == 0 && clazz == null) {
-            long start = System.currentTimeMillis();
-            LOG.info("Starting Searchable Plugin bulk index");
-            compassGps.index();
-            LOG.info("Finished Searchable Plugin bulk index, " + TimeUtils.formatMillisAsShortHumanReadablePeriod(System.currentTimeMillis() - start));
+            CompassGpsUtils.index(compassGps);
             return null;
         }
 
