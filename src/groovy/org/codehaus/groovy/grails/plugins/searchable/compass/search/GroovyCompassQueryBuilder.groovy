@@ -126,13 +126,12 @@ class CompassQueryBuildingClosureDelegate {
         // Implicit boolean?
         if (name in BOOLEAN_ADDER_NAMES && !withinBool) {
             trace("Implicit boolean -- ${name} called when the stack is ${stack}, args ${invokeArgs}")
-            assert previous, "Expected previous result for implicit boolean!? May be due to closure + implicit boolean combo"
             def bool = queryBuilder.bool()
             push(bool)
         }
 
         // Method to call takes CompassQuery but we have Builder?
-        if (name in BOOLEAN_ADDER_NAMES && !isQuery(invokeArgs[0])) {
+        if (name in BOOLEAN_ADDER_NAMES) { // && !isQuery(invokeArgs[0])) {
             if (!invokeArgs) {
                 assert closure, "Attempt to call ${name} without a query or closure argument"
                 maybeAddPreviousShould()
@@ -144,7 +143,9 @@ class CompassQueryBuildingClosureDelegate {
                 previous = temp
                 trace("done nested boolean closure")
             }
-            invokeArgs = [toQuery(invokeArgs[0])]
+            if (hasToQuery(invokeArgs[0])) {
+                invokeArgs = [toQuery(invokeArgs[0])]
+            }
         }
 
         // Convert any BigDecimals to floats: simple but does the job for now
@@ -382,6 +383,7 @@ class CompassQueryBuildingClosureDelegate {
     }
 
     boolean isTraceEnabled() {
+//        true
         LOG.traceEnabled
     }
 
@@ -390,5 +392,6 @@ class CompassQueryBuildingClosureDelegate {
         depth.times { buf.append("  ") }
         buf.append(message)
         LOG.trace(buf)
+//        println(buf)
     }
 }

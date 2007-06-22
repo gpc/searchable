@@ -281,13 +281,25 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
             }
             assert query.toString() == '(shows:hawaii titles:hawaii) (shows:"five o" titles:"five o")'
 
-            // Implicit boolean (implicit because there's no "bool")
+            // Implicit boolean (implicit because there's no "bool") with method args
             query = builder.buildQuery {
                 addMust(term("name", "jack"))
                 addMustNot(term("familyName", "london"))
                 addShould(queryString("blah"))
             }
             assert query.toString() == "+name:jack -familyName:london all:blah"
+
+            // Implicit boolean with closure arg
+            query = builder.buildQuery {
+                must {
+                    term('category', 'shopping')
+                    term('style', 'retro')
+                }
+                mustNot { // a closure isn't necessary for a single expression, but that's what's tested here
+                    term('keywords', 'flares')
+                }
+            }
+            assert query.toString() == "+(category:shopping style:retro) -keywords:flares"
 
             // Implicit lazy boolean (lazy because it omits the "should" for gt() and queryString())
             query = builder.buildQuery {
