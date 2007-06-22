@@ -16,7 +16,7 @@
 
     <context-param>
         <param-name>webAppRootKey</param-name>
-        <param-value>grails-searchable</param-value>
+        <param-value>trunk</param-value>
     </context-param>
 
     <filter>

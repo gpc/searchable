@@ -1,9 +1,10 @@
 <plugin name='searchable' version='0.4-SNAPSHOT'>
   <author>Maurice Nicholson</author>
   <authorEmail>maurice@freeshell.org</authorEmail>
-  <title>Grails Searchable Plugin</title>
+  <title>Adds rich search functionality to Grails domain models.</title>
   <description>
 Adds rich search functionality to Grails domain models.
+Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucene.apache.org/)
 </description>
   <documentation>http://grails.org/Searchable+Plugin</documentation>
 </plugin>
