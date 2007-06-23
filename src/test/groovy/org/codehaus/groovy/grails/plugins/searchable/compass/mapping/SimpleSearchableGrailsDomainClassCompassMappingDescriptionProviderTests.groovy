@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper
+import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
 * @author Maurice Nicholson
@@ -81,19 +82,19 @@ class SimpleSearchableGrailsDomainClassCompassMappingDescriptionProviderTests ex
         def desc = getMapping(Post, [Comment, Post, User], true)
         assert desc.mappedClass == Post
         assert desc.root == true
-        assert desc.properties == [version: [property: true], title: [property: true], post: [property: true], createdAt: [property: true], comments: [reference: [refAlias: 'Comment']], author: [reference: [refAlias: 'User']]]
+        assert desc.properties == [version: [property: true], title: [property: true], post: [property: true], createdAt: [property: true], comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]], author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         desc = getMapping(Comment, [Comment, Post, User], true)
         assert desc.mappedClass == Comment
         assert desc.root == true
-        assert desc.properties == [version: [property: true], summary: [property: true], comment: [property: true], createdAt: [property: true], post: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: true], summary: [property: true], comment: [property: true], createdAt: [property: true], post: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
 
         // When "searchable = true" across only *some* domain classes
         // in this case a "one" relationship from the searchable class (author: User)
         desc = getMapping(Post, [Comment, Post], true)
         assert desc.mappedClass == Post
         assert desc.root == true
-        assert desc.properties == [version: [property: true], title: [property: true], post: [property: true], createdAt: [property: true], comments: [reference: [refAlias: 'Comment']]]
+        assert desc.properties == [version: [property: true], title: [property: true], post: [property: true], createdAt: [property: true], comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]]]
 
         // and here a "many" relationship from the searchable class (comments: Comment)
         desc = getMapping(Post, [Post], true)
@@ -105,19 +106,19 @@ class SimpleSearchableGrailsDomainClassCompassMappingDescriptionProviderTests ex
         desc = getMapping(User, [Comment, Post, User], true, ["password"])
         assert desc.mappedClass == User
         assert desc.root == true
-        assert desc.properties == [version: [property: true], username: [property: true], email: [property: true], createdAt: [property: true], posts: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: true], username: [property: true], email: [property: true], createdAt: [property: true], posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
 
         // Possible to override this behavoir with other property excludes
         desc = getMapping(User, [Comment, Post, User], true, ["createdAt", "version"])
         assert desc.mappedClass == User
         assert desc.root == true
-        assert desc.properties == [username: [property: true], password: [property: true], email: [property: true], posts: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [username: [property: true], password: [property: true], email: [property: true], posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
 
         // Components
         desc = getMapping(ComponentOwner, [ComponentOwner, SearchableComp], true)
         assert desc.mappedClass == ComponentOwner
         assert desc.root == true
-        assert desc.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: [refAlias: 'SearchableComp']], searchableCompTwo: [component: [refAlias: 'SearchableComp']]]
+        assert desc.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp)]], searchableCompTwo: [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp)]]]
 
         // ...other side of the relationship
         desc = getMapping(SearchableComp, [ComponentOwner, SearchableComp], true)
@@ -144,7 +145,7 @@ class SimpleSearchableGrailsDomainClassCompassMappingDescriptionProviderTests ex
         desc = getMapping(Post, [Post, Comment, User], [only: "comments"])
         assert desc.mappedClass == Post
         assert desc.root == true
-        assert desc.properties == [comments: [reference: [refAlias: 'Comment']]]
+        assert desc.properties == [comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]]]
 
         desc = getMapping(User, [Post, Comment, User], [only: ["username", "email"]])
         assert desc.mappedClass == User
@@ -171,7 +172,7 @@ class SimpleSearchableGrailsDomainClassCompassMappingDescriptionProviderTests ex
         // with default format
         provider.domainClassPropertyMappingStrategyFactory.defaultFormats = [(Date): 'yyyy-MMM-dd, HH:mm', (Long): '0000']
         desc = getMapping(Comment, [Comment, Post, User], true, [])
-        assert desc.properties == [version: [property: [format: '0000']], summary: [property: true], comment: [property: true], createdAt: [property: [format: 'yyyy-MMM-dd, HH:mm']], post: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: [format: '0000']], summary: [property: true], comment: [property: true], createdAt: [property: [format: 'yyyy-MMM-dd, HH:mm']], post: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
     }
 
     def getMapping(clazz, searchableClasses, searchableValue, excludedProperties = []) {

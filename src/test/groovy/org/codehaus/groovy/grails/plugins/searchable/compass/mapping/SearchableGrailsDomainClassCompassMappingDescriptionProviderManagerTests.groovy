@@ -18,12 +18,13 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 import org.compass.core.config.*
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
+import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
- * 
- *
- * @author Maurice Nicholson
- */
+*
+*
+* @author Maurice Nicholson
+*/
 class SearchableGrailsDomainClassCompassMappingDescriptionProviderManagerTests extends GroovyTestCase {
     def provider
     def postDc
@@ -60,25 +61,25 @@ class SearchableGrailsDomainClassCompassMappingDescriptionProviderManagerTests e
         assert descs.size() == 3
 
         desc = descs.find { it.mappedClass == Post }
-        assert desc.properties == [version: [property: true], title: [property: true], post: [property: true], comments: [reference: [refAlias: 'Comment']], createdAt: [property: true], author: [reference: [refAlias: 'User']]]
+        assert desc.properties == [version: [property: true], title: [property: true], post: [property: true], comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]], createdAt: [property: true], author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         // NOT mapping password!
         desc = descs.find { it.mappedClass == User }
-        assert desc.properties == [version: [property: true], username: [property: true], email: [property: true], createdAt: [property: true], posts: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: true], username: [property: true], email: [property: true], createdAt: [property: true], posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
 
         // Possible to override this behavoir with other default property excludes
         def currentDefaultExcludedProperties = provider.defaultExcludedProperties
         provider.defaultExcludedProperties = ["createdAt", "version"] as String[]
         descs = provider.getCompassMappingDescriptions(searchableMap)
         desc = descs.find { it.mappedClass == User }
-        assert desc.properties == [username: [property: true], password: [property: true], email: [property: true], posts: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [username: [property: true], password: [property: true], email: [property: true], posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
         provider.defaultExcludedProperties = currentDefaultExcludedProperties // reset
 
         // default format
         provider = getProvider([], [(Date): 'yyyy-MMM-dd, HH:mm', (Long): '0000'])
         descs = provider.getCompassMappingDescriptions(searchableMap)
         desc = descs.find { it.mappedClass == Comment }
-        assert desc.properties == [version: [property: [format: '0000']], summary: [property: true], comment: [property: true], createdAt: [property: [format: 'yyyy-MMM-dd, HH:mm']], post: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: [format: '0000']], summary: [property: true], comment: [property: true], createdAt: [property: [format: 'yyyy-MMM-dd, HH:mm']], post: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
         provider = getProvider() // restore defaults
         
         // When "searchable = true" for *some* but not all domain classes
@@ -124,13 +125,13 @@ class SearchableGrailsDomainClassCompassMappingDescriptionProviderManagerTests e
         assert descs.size() == 3
 
         desc = descs.find { it.mappedClass == Post }
-        assert desc.properties == [version: [property: [index: 'un_tokenized', excludeFromAll: true]], title: [property: [boost: 2.0f, analyzer: 'myAnalyzer']], post: [property: [termVector: 'yes']], comments: [reference: [refAlias: 'Comment'], component: [refAlias: 'Comment']], createdAt: [property: true], author: [reference: [refAlias: "User"]]]
+        assert desc.properties == [version: [property: [index: 'un_tokenized', excludeFromAll: true]], title: [property: [boost: 2.0f, analyzer: 'myAnalyzer']], post: [property: [termVector: 'yes']], comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)], component: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]], createdAt: [property: true], author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         desc = descs.find { it.mappedClass == Comment }
         assert desc.properties == [comment: [property: true], summary: [property: [boost: 1.5f]]]
 
         desc = descs.find { it.mappedClass == User }
-        assert desc.properties == [version: [property: true], createdAt: [property: true], username: [property: [index: 'un_tokenized']], posts: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: true], createdAt: [property: true], username: [property: [index: 'un_tokenized']], posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
 
         // Mix of "searchable" as Closure, boolean, Map
         searchableMap = [
@@ -148,12 +149,12 @@ class SearchableGrailsDomainClassCompassMappingDescriptionProviderManagerTests e
         assert descs.size() == 3
 
         desc = descs.find { it.mappedClass == Post }
-        assert desc.properties == [version: [property: [index: 'un_tokenized', excludeFromAll: true]], title: [property: [boost: 2.0f, analyzer: 'myAnalyzer']], post: [property: [termVector: 'yes']], comments: [reference: [refAlias: 'Comment'], component: [refAlias: 'Comment']], createdAt: [property: true], author: [reference: [refAlias: "User"]]]
+        assert desc.properties == [version: [property: [index: 'un_tokenized', excludeFromAll: true]], title: [property: [boost: 2.0f, analyzer: 'myAnalyzer']], post: [property: [termVector: 'yes']], comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)], component: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]], createdAt: [property: true], author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         desc = descs.find { it.mappedClass == Comment }
         assert desc.properties == [comment: [property: true], summary: [property: true]]
 
         desc = descs.find { it.mappedClass == User }
-        assert desc.properties == [version: [property: true], createdAt: [property: true], username: [property: true], email: [property: true],posts: [reference: [refAlias: 'Post']]]
+        assert desc.properties == [version: [property: true], createdAt: [property: true], username: [property: true], email: [property: true],posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
     }
 }

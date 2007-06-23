@@ -20,6 +20,8 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.compass.core.Compass;
+import org.compass.core.spi.InternalCompass;
 import org.springframework.util.Assert;
 
 import java.io.File;
@@ -45,7 +47,17 @@ public class SearchableCompassUtils {
         if (alias.indexOf(".") != -1) {
             alias = alias.substring(alias.lastIndexOf(".") + 1, alias.length());
         }
-        return alias;
+        return "ALIAS" + alias + "ALIAS";
+    }
+
+    /**
+     * Get the alias used to map the class in Compass
+     * @param compass Compass
+     * @param clazz the class whose alias to look up
+     * @return the alias
+     */
+    public static String getMappingAlias(Compass compass, Class clazz) {
+        return ((InternalCompass) compass).getMapping().findRootMappingByClass(clazz).getAlias();
     }
 
     /**

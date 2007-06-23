@@ -75,7 +75,7 @@ class SearchableCompassQueryBuilderSortOptionHelperTests extends GroovyTestCase 
 
     void testApplySortNoSort() {
         // should not fail: would get NullPointerException if attempted to add sort
-        helper.applyOptions(null, null, [:])
+        helper.applyOptions(null, null, null, [:])
     }
 
 
@@ -129,7 +129,7 @@ class SearchableCompassQueryBuilderSortOptionHelperTests extends GroovyTestCase 
         def proxy = mockQuery.proxy()
         mockQuery.expects(new InvokeOnceMatcher()).method('addSort').'with'(new IsEqual(propertyName), new IsEqual(sortDirection)).will(new ReturnStub(proxy))
 
-        helper.applyOptions(mockQueryBuilder.proxy(), proxy, options)
+        helper.applyOptions(null, mockQueryBuilder.proxy(), proxy, options)
 
         mockQuery.verify()
     }
@@ -153,7 +153,7 @@ class SearchableCompassQueryBuilderSortOptionHelperTests extends GroovyTestCase 
         def proxy = mockQuery.proxy()
         mockQuery.expects(new InvokeOnceMatcher()).method('addSort').'with'(new IsEqual(CompassQuery.SortImplicitType.SCORE), new IsEqual(sortDirection)).will(new ReturnStub(proxy))
 
-        helper.applyOptions(mockQueryBuilder.proxy(), proxy, options)
+        helper.applyOptions(null, mockQueryBuilder.proxy(), proxy, options)
 
         mockQuery.verify()
     }

@@ -21,6 +21,7 @@ import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
+import org.compass.core.Compass;
 import org.compass.core.lucene.engine.queryparser.CompassQueryParser;
 import org.springframework.util.Assert;
 
@@ -38,7 +39,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder implements Searchab
     private static final String[] PROPERTIES_NAMES = new String[] {"properties"};
     private static final String[] USE_AND_DEFAULT_OPERATOR_NAMES = new String[] {"andDefaultOperator", "useAndDefaultOperator"};
 
-    public CompassQuery buildQuery(CompassQueryBuilder compassQueryBuilder, String query, Map options) {
+    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, String query, Map options) {
         String analyzer = (String) getOption(ANALYZER_NAMES, options);
         String parser = (String) getOption(PARSER_NAMES, options);
         String defaultSearchProperty = (String) getOption(DEFAULT_PROPERTY_NAMES, options);
@@ -91,7 +92,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder implements Searchab
         return value;
     }
 
-    public CompassQuery buildQuery(CompassQueryBuilder compassQueryBuilder, Map options, Closure closure) {
+    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, Map options, Closure closure) {
         throw new UnsupportedOperationException();
     }
 }

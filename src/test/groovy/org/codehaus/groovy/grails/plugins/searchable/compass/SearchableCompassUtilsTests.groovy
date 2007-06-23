@@ -18,6 +18,9 @@ package org.codehaus.groovy.grails.plugins.searchable.compass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.compass.core.spi.InternalCompass
+import org.compass.core.mapping.CompassMapping
+import org.compass.core.mapping.osem.ClassMapping
 
 /**
 *
@@ -35,9 +38,24 @@ class SearchableCompassUtilsTests extends GroovyTestCase {
     }
 
     void testGetDefaultAlias() {
-        assert SearchableCompassUtils.getDefaultAlias(Post) == 'Post'
-        assert SearchableCompassUtils.getDefaultAlias(User) == 'User'
-        assert SearchableCompassUtils.getDefaultAlias(Comment) == 'Comment'
+        assert SearchableCompassUtils.getDefaultAlias(Post) == 'ALIASPostALIAS'
+        assert SearchableCompassUtils.getDefaultAlias(User) == 'ALIASUserALIAS'
+        assert SearchableCompassUtils.getDefaultAlias(Comment) == 'ALIASCommentALIAS'
+    }
+
+    void testGetMappingAlias() {
+        def classMapping = new ClassMapping()
+        classMapping.clazz = Post
+        classMapping.alias = "thingthatwaswritten"
+        classMapping.name = Post.name
+        def mapping = new CompassMapping()
+        mapping.addMapping(classMapping)
+        def compass = [
+            getMapping: {
+                mapping
+            }
+        ] as InternalCompass
+        assert SearchableCompassUtils.getMappingAlias(compass, Post) == "thingthatwaswritten"
     }
 
     void testIsRoot() {

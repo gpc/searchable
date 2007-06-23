@@ -39,7 +39,7 @@ class TestCompassUtils {
 
     static numberIndexed(compass, clazz) {
         withCompassSession(compass) { session ->
-            session.queryBuilder().alias(SearchableCompassUtils.getDefaultAlias(clazz)).hits().length()
+            session.queryBuilder().alias(SearchableCompassUtils.getMappingAlias(compass, clazz)).hits().length()
         }
     }
 

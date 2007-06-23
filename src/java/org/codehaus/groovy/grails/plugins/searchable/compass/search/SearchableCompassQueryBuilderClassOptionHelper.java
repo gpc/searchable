@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
+import org.compass.core.Compass;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
 
@@ -29,10 +30,10 @@ import java.util.Map;
  */
 public class SearchableCompassQueryBuilderClassOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
 
-    public CompassQuery applyOptions(CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
+    public CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
         Class clazz = (Class) SearchableUtils.getOption("class", options, null);
         if (clazz != null) {
-            compassQuery.setAliases(new String[] {SearchableCompassUtils.getDefaultAlias(clazz)});
+            compassQuery.setAliases(new String[] {SearchableCompassUtils.getMappingAlias(compass, clazz)});
         }
         return compassQuery;
     }

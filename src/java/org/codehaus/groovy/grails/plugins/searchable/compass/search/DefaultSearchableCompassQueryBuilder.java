@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
+import org.compass.core.Compass;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.runtime.InvokerHelper;
@@ -51,20 +52,20 @@ public class DefaultSearchableCompassQueryBuilder implements SearchableCompassQu
         }
     }
 
-    public CompassQuery buildQuery(CompassQueryBuilder compassQueryBuilder, String query, Map options) {
-        CompassQuery compassQuery = stringQueryBuilder.buildQuery(compassQueryBuilder, query, options);
-        return applyOptions(compassQueryBuilder, compassQuery, options);
+    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, String query, Map options) {
+        CompassQuery compassQuery = stringQueryBuilder.buildQuery(compass, compassQueryBuilder, query, options);
+        return applyOptions(compass, compassQueryBuilder, compassQuery, options);
     }
 
-    public CompassQuery buildQuery(CompassQueryBuilder compassQueryBuilder, Map options, Closure closure) {
+    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, Map options, Closure closure) {
         Object closureQueryBuilder = InvokerHelper.invokeConstructorOf(closureQueryBuilderClass, compassQueryBuilder);
         CompassQuery compassQuery = (CompassQuery) InvokerHelper.invokeMethod(closureQueryBuilder, "buildQuery", closure);
-        return applyOptions(compassQueryBuilder, compassQuery, options);
+        return applyOptions(compass, compassQueryBuilder, compassQuery, options);
     }
 
-    protected CompassQuery applyOptions(CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
+    protected CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
         for (int i = 0, max = optionHelpers.length; i < max; i++) {
-            compassQuery = optionHelpers[i].applyOptions(compassQueryBuilder, compassQuery, options);
+            compassQuery = optionHelpers[i].applyOptions(compass, compassQueryBuilder, compassQuery, options);
         }
         return compassQuery;
     }

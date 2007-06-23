@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.compass.core.config.CompassConfiguration
 import org.compass.core.config.ConfigurationException
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator
 
 /**
 *
@@ -48,12 +49,20 @@ class CompassMappingXmlSearchableGrailsDomainClassMappingStrategyTests extends G
         assert strategy.isSearchable(new DefaultGrailsDomainClass(User)) == false
     }
 
-    void testConfigureMapping() {
+    void testConfigureMappingWithoutCompassXml() {
         strategy.resourceLoader = getResourceLoader(User)
 
         def config = new MyCompassConfiguration2()
-        strategy.configureMapping(config, null, new DefaultGrailsDomainClass(User), null)
+        strategy.configureMapping(config, [:], new DefaultGrailsDomainClass(User), null)
         assert config.url == new URL("file:/path/to" + getMappingResourceName(User))
+    }
+
+    void testConfigureMappingWithCompassXml() {
+        strategy.resourceLoader = getResourceLoader(User)
+
+        def config = new MyCompassConfiguration2()
+        strategy.configureMapping(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], new DefaultGrailsDomainClass(User), null)
+        assert config.url == null
     }
 
     private getResourceLoader(clazz) {

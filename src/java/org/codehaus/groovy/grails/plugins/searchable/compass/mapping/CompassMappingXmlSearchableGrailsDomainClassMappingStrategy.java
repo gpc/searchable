@@ -16,6 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.io.IOException;
 
 /**
- * Handles Grails domain class mapping with a native Compass mapping XML classpath resource
+ * Maps searchable domain classes that have a corresponding native Compass mapping XML classpath resource
  *
  * @author Maurice Nicholson
  */
@@ -60,14 +61,16 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingStrategy impleme
      */
     public void configureMapping(CompassConfiguration compassConfiguration, Map configurationContext, GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
         Assert.notNull(resourceLoader, "resourceLoader cannot be null");
-        Resource resource = getMappingResource(grailsDomainClass);
-        Assert.isTrue(resource.exists(), "mapping resource must exist: did isSearchable() not return false?");
-        try {
-            compassConfiguration.addURL(resource.getURL());
-        } catch (IOException ex) {
-            String message = "Failed to configure Compass with mapping resource for class [" + grailsDomainClass.getClazz().getName() + "] and resource [" + getMappingResourceName(grailsDomainClass) + "]";
-            LOG.error(message, ex);
-            throw new IllegalStateException(message + ": " + ex);
+        if (!configurationContext.containsKey(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED)) {
+            Resource resource = getMappingResource(grailsDomainClass);
+            Assert.isTrue(resource.exists(), "mapping resource must exist: did isSearchable() not return false?");
+            try {
+                compassConfiguration.addURL(resource.getURL());
+            } catch (IOException ex) {
+                String message = "Failed to configure Compass with mapping resource for class [" + grailsDomainClass.getClazz().getName() + "] and resource [" + getMappingResourceName(grailsDomainClass) + "]";
+                LOG.error(message, ex);
+                throw new IllegalStateException(message + ": " + ex);
+            }
         }
     }
 

@@ -88,7 +88,7 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
                     query = queryBuilder.matchAll();
                 }
                 if (clazz != null && ids.isEmpty()) {
-                    query = queryBuilder.alias(SearchableCompassUtils.getDefaultAlias(clazz));
+                    query = queryBuilder.alias(SearchableCompassUtils.getMappingAlias(getCompass(), clazz));
                 }
                 if (query != null) {
                     session.delete(query);

@@ -24,12 +24,13 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.reference.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
 import org.compass.core.util.ClassUtils
+import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
- * TODO refactor the bulk of this test code to integration style test, independent from the actual confiuration strategy used
+* TODO refactor the bulk of this test code to integration style test, independent from the actual confiuration strategy used
 
- * @author Maurice Nicholson
- */
+* @author Maurice Nicholson
+*/
 class DomainClassXmlMappingBuilderSearchableCompassConfiguratorTests extends GroovyTestCase {
     def compass
 
@@ -230,28 +231,29 @@ class DomainClassXmlMappingBuilderSearchableCompassConfiguratorTests extends Gro
 
         // Search by derived property, since they only exist in the index or in the original object
         // as there is no corresponding setter for when they are unmarshalled
+        def alias = SearchableCompassUtils.getMappingAlias(compass, SearchablePropertyTypes)
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('derivedInt', 6)).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedInt', 6)).toQuery()
         }
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('derivedIntArray', 900)).addMust(builder.term('derivedIntArray', 300)).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedIntArray', 900)).addMust(builder.term('derivedIntArray', 300)).toQuery()
         }
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('derivedInteger', 60)).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedInteger', 60)).toQuery()
         }
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('derivedIntegerArray', 9000)).addMust(builder.term('derivedIntegerArray', 3000)).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedIntegerArray', 9000)).addMust(builder.term('derivedIntegerArray', 3000)).toQuery()
         }
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('derivedBigDecimal', 7230.12)).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedBigDecimal', 7230.12)).toQuery()
         }
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('derivedBigDecimalArray', 1.1)).addMust(builder.term('derivedBigDecimalArray', 99.8999999999)).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedBigDecimalArray', 1.1)).addMust(builder.term('derivedBigDecimalArray', 99.8999999999)).toQuery()
         }
 
         // Same for explicit transient property
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
-            builder.bool().addMust(builder.alias('SearchablePropertyTypes')).addMust(builder.term('transientProperty', 'minute')).toQuery()
+            builder.bool().addMust(builder.alias(alias)).addMust(builder.term('transientProperty', 'minute')).toQuery()
         }
     }
 

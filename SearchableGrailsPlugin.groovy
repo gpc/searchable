@@ -55,16 +55,16 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
                      hibernate: grailsVersion]
 //	def watchedResources = "file:./grails-app/doai/*Codec.groovy"
     def config
+    def hasSearchable
 
     def doWithDynamicMethods = { applicationContext ->
-        if (!SearchableUtils.hasSearchableGrailsDomainClasses(application)) {
+        if (!hasSearchable) {
             return
         }
 
-//        def compass = applicationContext.getBean("compass")
         def searchableMethodFactory = applicationContext.getBean("searchableMethodFactory")
         for (grailsDomainClass in application.domainClasses) {
-            if (!SearchableUtils.isSearchable(grailsDomainClass)) {
+            if (!SearchableUtils.isSearchable(grailsDomainClass, applicationContext)) {
                 continue
             }
             LOG.debug("Adding searchable methods to [${grailsDomainClass.clazz.name}]")
@@ -170,10 +170,12 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
 
     // Build Compass and Compass::GPS
     def doWithSpring = {
-        if (!SearchableUtils.hasSearchableGrailsDomainClasses(application)) {
+        if (!SearchableUtils.hasSearchableGrailsDomainClasses(application, parentCtx)) {
             LOG.debug("No searchable classes found")
+            hasSearchable = false
             return
         }
+        hasSearchable = true
 
         // Configuration
         config = getConfiguration(parentCtx)
@@ -213,8 +215,8 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
 
     // Post initialization spring config
     def doWithApplicationContext = {
-        if (!SearchableUtils.hasSearchableGrailsDomainClasses(application)) {
-            return
+        if (!hasSearchable) {
+            return false
         }
 
         // start the gps, mirroring any changes made through Hibernate API

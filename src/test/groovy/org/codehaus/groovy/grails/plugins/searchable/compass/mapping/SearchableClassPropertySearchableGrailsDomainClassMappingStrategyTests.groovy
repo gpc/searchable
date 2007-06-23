@@ -21,6 +21,8 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.compass.core.config.CompassConfiguration
 import org.compass.core.config.ConfigurationException
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.plugins.searchable.test.domain.nosearchableproperty.NoSearchableProperty
+import org.codehaus.groovy.grails.orm.hibernate.GrailsHibernateDomainClass
 
 /**
 *
@@ -29,23 +31,31 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass
 */
 class SearchableClassPropertySearchableGrailsDomainClassMappingStrategyTests extends GroovyTestCase {
     def strategy
+    def oldSearchable
 
     void setUp() {
         strategy = new SearchableClassPropertySearchableGrailsDomainClassMappingStrategy()
+        oldSearchable = Post.searchable
     }
 
     void tearDown() {
         strategy = null
+        Post.searchable = oldSearchable
     }
 
-    void testIsSearchableWhenHandles() {
-        strategy.mappingDescriptionProviderManager = new MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager(classToHandle: Post)
+    void testIsSearchable() {
+        Post.searchable = true
         assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
-    }
+        Post.searchable = [only: 'title']
+        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        Post.searchable = [except: 'version']
+        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        Post.searchable = { -> }
+        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        Post.searchable = false
+        assert !strategy.isSearchable(new DefaultGrailsDomainClass(Post))
 
-    void testIsSearchableWhenNotHandles() {
-        strategy.mappingDescriptionProviderManager = new MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager()
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(Comp)) == false
+        assert !strategy.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty))
     }
 
     void testConfigureMapping() {

@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.stringmap.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.referencemap.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
 *
@@ -86,7 +87,7 @@ class GrailsDomainClassPropertyMappingStrategyFactoryTests extends GroovyTestCas
         // One, where other side is searchable
         strategy = getStrategy(Post, "author", [Post, Comment, User])
         assert strategy
-        assert strategy.mapping == [reference: [refAlias: 'User']]
+        assert strategy.mapping == [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]
         assert isType(strategy, "reference")
 
         // One, where other side is NOT searchable
@@ -96,7 +97,7 @@ class GrailsDomainClassPropertyMappingStrategyFactoryTests extends GroovyTestCas
         // Many, where other side is searchable
         strategy = getStrategy(Post, "comments", [Post, Comment, User])
         assert strategy
-        assert strategy.mapping == [reference: [refAlias: 'Comment']]
+        assert strategy.mapping == [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]]
         assert isType(strategy, "reference")
 
         // Many, where other side is NOT searchable
@@ -110,7 +111,7 @@ class GrailsDomainClassPropertyMappingStrategyFactoryTests extends GroovyTestCas
         // where other side is searchable
         strategy = getStrategy(ReferenceMapOwner, "referenceMap", [ReferenceMapOwner, MapReferee])
         assert strategy
-        assert strategy.mapping == [reference: [refAlias: 'MapReferee']]
+        assert strategy.mapping == [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(MapReferee)]]
         assert isType(strategy, "reference")
 
         // where other side is searchable
@@ -124,7 +125,7 @@ class GrailsDomainClassPropertyMappingStrategyFactoryTests extends GroovyTestCas
         // Embedded component searchable
         strategy = getStrategy(ComponentOwner, "searchableCompOne", [ComponentOwner, SearchableComp])
         assert strategy
-        assert strategy.mapping == [component: [refAlias: 'SearchableComp']]
+        assert strategy.mapping == [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp)]]
         assert isType(strategy, "component")
 
         // Embedded component NOT searchable

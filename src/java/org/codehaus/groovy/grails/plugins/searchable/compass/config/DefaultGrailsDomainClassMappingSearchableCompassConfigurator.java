@@ -66,7 +66,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
             SearchableGrailsDomainClassMappingStrategy mappingStrategy = (SearchableGrailsDomainClassMappingStrategy) strategyBySearchableDomainClass.get(grailsDomainClass);
-            LOG.debug("Mapping class " + grailsDomainClass.getClazz().getName() + "] with strategy [" + mappingStrategy.getName() + "]");
+            LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + mappingStrategy.getName() + "]");
             mappingStrategy.configureMapping(compassConfiguration, configurationContext, grailsDomainClass, searchableGrailsDomainClasses);
         }
     }

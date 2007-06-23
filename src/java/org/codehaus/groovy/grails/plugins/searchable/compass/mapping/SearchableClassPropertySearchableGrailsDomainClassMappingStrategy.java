@@ -15,9 +15,11 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 
+import groovy.lang.MissingPropertyException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.util.Assert;
 
@@ -26,7 +28,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Handles Grails domain class mapping with a searchable domain class property value
+ * Maps searchable domain classes in Compass according to a "searchable" class property value
  *
  * @author Maurice Nicholson
  */
@@ -43,10 +45,13 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingStrategy i
      * @return true if the mapping of the class can be handled by this strategy
      */
     public boolean isSearchable(GrailsDomainClass grailsDomainClass) {
-        Assert.notNull(mappingDescriptionProviderManager, "mappingDescriptionProviderManager cannot be null");
         Assert.notNull(grailsDomainClass, "grailsDomainClass cannot be null");
-
-        return mappingDescriptionProviderManager.handles(grailsDomainClass);
+        try {
+            Object value = SearchableUtils.getSearchablePropertyValue(grailsDomainClass);
+            return value != null && !((value instanceof Boolean) && value.equals(Boolean.FALSE));
+        } catch (MissingPropertyException ex) {
+            return false;
+        }
     }
 
     /**

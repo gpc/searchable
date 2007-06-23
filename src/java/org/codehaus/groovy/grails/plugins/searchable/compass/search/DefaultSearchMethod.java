@@ -55,8 +55,8 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         return doInCompass(new CompassCallback() {
             public Object doInCompass(CompassSession session) throws CompassException {
                 CompassQuery compassQuery = null;
-                if (queryString != null) compassQuery = compassQueryBuilder.buildQuery(session.queryBuilder(), queryString, options);
-                else compassQuery = compassQueryBuilder.buildQuery(session.queryBuilder(), options, queryClosure);
+                if (queryString != null) compassQuery = compassQueryBuilder.buildQuery(getCompass(), session.queryBuilder(), queryString, options);
+                else compassQuery = compassQueryBuilder.buildQuery(getCompass(), session.queryBuilder(), options, queryClosure);
                 long start = System.currentTimeMillis();
                 CompassHits hits = compassQuery.hits();
                 if (LOG.isDebugEnabled()) {

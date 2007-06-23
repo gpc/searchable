@@ -26,12 +26,15 @@ import org.jmock.*
 import org.jmock.core.stub.*
 import org.jmock.core.matcher.*
 import org.jmock.core.constraint.*
+import org.compass.core.mapping.osem.ClassMapping
+import org.compass.core.mapping.CompassMapping
+import org.compass.core.spi.InternalCompass
 
 /**
- * 
- *
- * @author Maurice Nicholson
- */
+*
+*
+* @author Maurice Nicholson
+*/
 class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearchableCompassTests {
     def helper = new SearchableCompassQueryBuilderClassOptionHelper()
     def compass
@@ -52,15 +55,23 @@ class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearch
             assert query.toString() == "all:some all:typical all:search all:term"
 
             // Without class: no difference
-            def queryApplied = helper.applyOptions(queryBuilder, query, [:])
+            def queryApplied = helper.applyOptions(null, queryBuilder, query, [:])
             assert queryApplied.toString() == "all:some all:typical all:search all:term"
 
             // With class
             def mockQuery = new Mock(CompassQuery.class)
             def mockQueryProxy = mockQuery.proxy()
-            mockQuery.expects(new InvokeOnceMatcher()).method('setAliases').'with'(new IsEqual(["Post"] as String[])).will(new ReturnStub(mockQueryProxy))
+            mockQuery.expects(new InvokeOnceMatcher()).method('setAliases').'with'(new IsEqual(["apost"] as String[])).will(new ReturnStub(mockQueryProxy))
 
-            helper.applyOptions(null, mockQueryProxy, [class: Post])
+            def classMapping = new ClassMapping(clazz: Post, name: Post.name, alias: "apost")
+            def mapping = new CompassMapping()
+            mapping.addMapping(classMapping)
+            def compass = [
+                getMapping: {
+                    mapping
+                }
+            ] as InternalCompass
+            helper.applyOptions(compass, null, mockQueryProxy, [class: Post])
 
             mockQuery.verify()
         }
