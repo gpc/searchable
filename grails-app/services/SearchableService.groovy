@@ -20,7 +20,7 @@
  * @author Maurice Nicholson
  */
 class SearchableService {
-    boolean transactional = false
+    boolean transactional = true
     def compassGps
     def searchableMethodFactory
 
