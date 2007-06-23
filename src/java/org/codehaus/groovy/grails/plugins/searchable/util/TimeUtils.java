@@ -35,6 +35,16 @@ public class TimeUtils {
      * @return a formatted time period
      */
     public static String formatMillisAsShortHumanReadablePeriod(long millis) {
+        return formatMillisAsShortHumanReadablePeriod(millis, false);
+    }
+
+    /**
+     * Format the given milliseconds as a human readable time period
+     * @param millis milliseconds
+     * @param full if true include the smaller units in all output
+     * @return a formatted time period
+     */
+    public static String formatMillisAsShortHumanReadablePeriod(long millis, boolean full) {
         StringBuffer buf = new StringBuffer();
         // days
         long days = (millis / MILLIS_PER_DAY);
@@ -43,22 +53,26 @@ public class TimeUtils {
             millis -= days * MILLIS_PER_DAY;
         }
         long hours = (millis / MILLIS_PER_HOUR);
-        if (hours > 0) {
+        if ((full && days > 0) || hours > 0) {
             appendWithLeadingCommaIfNescessary(buf, hours).append(" hrs");
             millis -= hours * MILLIS_PER_HOUR;
         }
         long minutes = (millis / MILLIS_PER_MINUTE);
-        if (minutes > 0) {
+        if ((full && (days > 0 || hours > 0)) || minutes > 0) {
             appendWithLeadingCommaIfNescessary(buf, minutes).append(" mins");
             millis -= minutes * MILLIS_PER_MINUTE;
         }
         long seconds = (millis / MILLIS_PER_SECOND);
-        if (seconds > 0) {
-            appendWithLeadingCommaIfNescessary(buf, seconds).append(" secs");
-            millis -= seconds * MILLIS_PER_SECOND;
+        if (full || !(days > 0)) {
+            if ((full && (minutes > 0 || hours > 0 || days > 0)) || seconds > 0) {
+                appendWithLeadingCommaIfNescessary(buf, seconds).append(" secs");
+                millis -= seconds * MILLIS_PER_SECOND;
+            }
         }
-        if (millis > 0) {
-            appendWithLeadingCommaIfNescessary(buf, millis).append(" millis");
+        if (full || !(minutes > 0 || hours > 0 || days > 0)) {
+            if ((full && (seconds > 0 || minutes > 0 || hours > 0 || days > 0)) || millis > 0) {
+                appendWithLeadingCommaIfNescessary(buf, millis).append(" ms");
+            }
         }
         return buf.toString();
     }

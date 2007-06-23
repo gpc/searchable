@@ -22,10 +22,26 @@ package org.codehaus.groovy.grails.plugins.searchable.util
  */
 class TimeUtilsTests extends GroovyTestCase {
 
-    void testFormatMillisAsHumanReadableDHMSM() {
-        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(126) == "126 millis"
-        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(28881) == "28 secs, 881 millis"
-        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(45344021) == "12 hrs, 35 mins, 44 secs, 21 millis"
-        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022100309) == "34 days, 23 hrs, 28 mins, 20 secs, 309 millis"
+    void testFormatMillisAsHumanReadableDHMSMNotNull() {
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(126) == "126 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(126, false) == "126 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(28881) == "28 secs, 881 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(334556) == "5 mins, 34 secs" // 556 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(334556, false) == "5 mins, 34 secs" // 556 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(45344021) == "12 hrs, 35 mins, 44 secs" // 21 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(45344021, false) == "12 hrs, 35 mins, 44 secs" // 21 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022100309) == "34 days, 23 hrs, 28 mins" // 20 secs, 309 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022100309, false) == "34 days, 23 hrs, 28 mins" // 20 secs, 309 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022080309) == "34 days, 23 hrs, 28 mins" // 0 secs, 309 ms
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022080309, false) == "34 days, 23 hrs, 28 mins" // 0 secs, 309 ms
+    }
+
+    void testFormatMillisAsHumanReadableDHMSMFull() {
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(126, true) == "126 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(28881, true) == "28 secs, 881 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(334556, true) == "5 mins, 34 secs, 556 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(45344021, true) == "12 hrs, 35 mins, 44 secs, 21 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022100309, true) == "34 days, 23 hrs, 28 mins, 20 secs, 309 ms"
+        assert TimeUtils.formatMillisAsShortHumanReadablePeriod(3022080309, true) == "34 days, 23 hrs, 28 mins, 0 secs, 309 ms"
     }
 }
