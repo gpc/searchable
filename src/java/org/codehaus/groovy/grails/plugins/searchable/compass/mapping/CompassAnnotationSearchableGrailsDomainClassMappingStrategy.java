@@ -29,6 +29,8 @@ import java.util.Map;
 import java.lang.reflect.Method;
 
 /**
+ * Maps searchable domain classes that are annotated with Compass's native @Searchable annotations.
+ *
  * @author Maurice Nicholson
  */
 public class CompassAnnotationSearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingStrategy {
