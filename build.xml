@@ -86,6 +86,7 @@
 
   <macrodef name="run-integration-test">
     <attribute name="app.name" />
+    <attribute name="app.tests" />
     <attribute name="test.java.home" default="${java15.home}" />
     <sequential>
       <echo message="Running integration test @{app.name} with Java @{test.java.home}" />
@@ -93,15 +94,18 @@
         <env key="JAVA_HOME" value="@{test.java.home}" />
         <arg value="integration-test/groovy/RunIntegrationTest.groovy" />
         <arg value="${basedir}" />
+        <arg value="${basedir}/../tmp" />
         <arg value="integration-test/grails-apps/@{app.name}" />
-        <arg value="${basedir}/../grails-searchable-tmp" />
+        <arg value="integration-test/grails-apps/@{app.tests}" />
       </java>
     </sequential>
   </macrodef>
 
   <target name="integration-test">
-    <run-integration-test app.name="simple-groovy" test.java.home="${java14.home}"/>
-    <run-integration-test app.name="simple-groovy" test.java.home="${java15.home}"/>
+    <!--<run-integration-test app.name="simple-groovy" test.java.home="${java14.home}"/>-->
+    <run-integration-test app.name="simple-groovy" app.tests="artist-and-album-tests" test.java.home="${java15.home}"/>
+    <run-integration-test app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" test.java.home="${java15.home}"/>
+    <run-integration-test app.name="compass-annotated-groovy" app.tests="artist-and-album-tests" test.java.home="${java15.home}"/>
   </target>
 
   <target name="package">

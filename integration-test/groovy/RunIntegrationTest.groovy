@@ -4,30 +4,36 @@
  * @author Maurice Nicholson
  */
 USAGE = """
-groovy RunIntegrationTest plugin-dir app-source temp-dir
+groovy RunIntegrationTest plugin-dir working-dir app-dir [app-dir2 ... [app-dirN]]
 
 plugin-dir       -- the plugin project dir: should contain one 'grails-searchable-xxx.zip'
-app-template-dir -- the location of the test app template
-temp-dir         -- the working directory to use for generated test apps
+working-dir      -- the working directory to use for generated test apps
+app-dir          -- the location of the test app template
+app-dir2/N       -- more test app template dirs
 """
 if (args.size() < 3) {
     println USAGE
     System.exit(1)
 }
+
 def pluginDir = args[0]
 assert new File(pluginDir).isDirectory(), "Plugin dir does not exist: $pluginDir"
 def pluginZips = new File(pluginDir).listFiles().findAll { it.name ==~ /grails-searchable.*\.zip/ }
 assert pluginZips.size() == 1, "Too many plugin zips found: ${pluginZips}. There should only be one"
 def pluginZip = pluginZips[0].absolutePath
-def appTemplateDir = args[1]
-assert new File(appTemplateDir).isDirectory(), "App template dir does not exist or is not a directory: $appTemplateDir"
-def appName = new File(appTemplateDir).name
-def workingDir = args[2]
 
-println "Running integration test\n  App: $appName ($appTemplateDir)\n  Plugin dist: $pluginZip\n  Working dir: $workingDir"
-getTestScript(appName, workingDir, appTemplateDir, pluginZip).call()
+def workingDir = args[1]
 
-def getTestScript(appName, dir, appDir, pluginZip) {
+def appTemplateDirs = args[2..-1]
+appTemplateDirs.each { dir ->
+    assert new File(dir).isDirectory(), "App template dir does not exist or is not a directory: $dir"
+}
+def appName = new File(appTemplateDirs[0]).name
+
+println "Running integration test\n  App: $appName $appTemplateDirs\n  Plugin dist: $pluginZip\n  Working dir: $workingDir"
+getTestScript(appName, workingDir, appTemplateDirs, pluginZip).call()
+
+def getTestScript(appName, dir, appDirs, pluginZip) {
     def testScript = {
         condition(property: "grails", value: "grails.bat") {
             os(family: "windows")
@@ -46,8 +52,10 @@ def getTestScript(appName, dir, appDir, pluginZip) {
 
         // Copy app files
         def targetAppDir = "${dir}/${appName}"
-        copy(todir: targetAppDir) {
-            fileset(dir: appDir)
+        for (appDir in appDirs) {
+            copy(todir: targetAppDir) {
+                fileset(dir: appDir)
+            }
         }
         // Install Searchable Plugin
         exec(executable: '${grails}', failonerror: "yes", dir: targetAppDir, newenvironment: 'yes') {
