@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper
+import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
 *
@@ -126,7 +127,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         def mapping = getMapping(User, [Comment, User, Post], { }, ["password"])
         assert mapping.mappedClass == User
         assert mapping.root == true
-        assert mapping.properties == [version: [property: true], username: [property: true], email: [property: true], createdAt: [property: true], posts: [reference: [refAlias: 'Post']]]
+        assert mapping.properties == [version: [property: true], username: [property: true], email: [property: true], createdAt: [property: true], posts: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Post)]]]
 
         // with "only", otherwise defaults
         mapping = getMapping(Comment, [Comment, User, Post], {
@@ -142,7 +143,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.properties == [title: [property: true], post: [property: true], version: [property: true], comments: [reference: [refAlias: 'Comment']], author: [reference: [refAlias: 'User']]]
+        assert mapping.properties == [title: [property: true], post: [property: true], version: [property: true], comments: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(Comment)]], author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         // searchable property options
         mapping = getMapping(Comment, [Comment, User, Post], {
@@ -152,6 +153,15 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         assert mapping.mappedClass == Comment
         assert mapping.root == true
         assert mapping.properties == [comment: [property: [index: 'tokenized', termVector: 'yes', boost: 2.0f]]]
+
+        // same as above but with BigDecimal instead of float
+        mapping = getMapping(Comment, [Comment, User, Post], {
+            only = "comment"
+            comment(index: 'tokenized', termVector: 'yes', boost: 2.0) // <!-- BigDecimal
+        })
+        assert mapping.mappedClass == Comment
+        assert mapping.root == true
+        assert mapping.properties == [comment: [property: [index: 'tokenized', termVector: 'yes', boost: 2.0]]]
 
         // searchable reference options
         mapping = getMapping(Comment, [Comment, User, Post], {
@@ -169,7 +179,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.properties == [author: [reference: [refAlias: 'User']]]
+        assert mapping.properties == [author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         mapping = getMapping(Post, [Comment, User, Post], {
             only = "author"
@@ -177,7 +187,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.properties == [author: [reference: [refAlias: 'User'], component: [refAlias: 'User']]]
+        assert mapping.properties == [author: [reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)], component: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         // Defined specific properties for reference
         mapping = getMapping(Post, [Comment, User, Post], {
@@ -186,7 +196,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.properties == [author: [reference: [cascade: 'all', accessor: 'field', refAlias: 'User']]]
+        assert mapping.properties == [author: [reference: [cascade: 'all', accessor: 'field', refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         // Defined specific properties for reference with default component
         mapping = getMapping(Post, [Comment, User, Post], {
@@ -195,7 +205,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.properties == [author: [reference: [cascade: 'all', accessor: 'field', refAlias: 'User'], component: [refAlias: 'User']]]
+        assert mapping.properties == [author: [reference: [cascade: 'all', accessor: 'field', refAlias: SearchableCompassUtils.getDefaultAlias(User)], component: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         // Defined specific properties for component with default reference
         mapping = getMapping(Post, [Comment, User, Post], {
@@ -204,7 +214,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.properties == [author: [component: [cascade: 'all', accessor: 'field', refAlias: 'User'], reference: [refAlias: 'User']]]
+        assert mapping.properties == [author: [component: [cascade: 'all', accessor: 'field', refAlias: SearchableCompassUtils.getDefaultAlias(User)], reference: [refAlias: SearchableCompassUtils.getDefaultAlias(User)]]]
 
         // Components
         shouldFail(IllegalArgumentException) {
@@ -235,7 +245,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         mapping = getMapping(ComponentOwner, [ComponentOwner, SearchableComp], { })
         assert mapping.mappedClass == ComponentOwner
         assert mapping.root == true
-        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: [refAlias: 'SearchableComp']], searchableCompTwo: [component: [refAlias: 'SearchableComp']]]
+        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp)]], searchableCompTwo: [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp)]]]
 
         // ...other side of the relationship
         mapping = getMapping(SearchableComp, [ComponentOwner, SearchableComp], { })
@@ -249,7 +259,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProviderTests e
         })
         assert mapping.mappedClass == ComponentOwner
         assert mapping.root == true
-        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: [refAlias: 'SearchableComp', maxDepth: 1, cascade: 'create,delete']], searchableCompTwo: [component: [refAlias: 'SearchableComp']]]
+        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp), maxDepth: 1, cascade: 'create,delete']], searchableCompTwo: [component: [refAlias: SearchableCompassUtils.getDefaultAlias(SearchableComp)]]]
     }
 
     def getMapping(clazz, searchableClasses, searchableValue, excludedProperties = []) {
