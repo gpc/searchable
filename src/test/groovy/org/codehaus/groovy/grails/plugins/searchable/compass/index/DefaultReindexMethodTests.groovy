@@ -83,7 +83,8 @@ class DefaultReindexMethodTests extends AbstractSearchableCompassTests {
         def mockGps = new Mock(CompassGps.class)
         def reindexAll = new DefaultReindexMethod("reindexAll", compass, mockGps.proxy(), true)
 
-        mockGps.expects(new InvokeOnceMatcher()).method('index').withNoArguments().isVoid()
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').withNoArguments().after('isRunning').isVoid()
 
         reindexAll.invoke()
         mockGps.verify()

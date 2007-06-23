@@ -299,7 +299,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     term('keywords', 'flares')
                 }
             }
-            assert query.toString() == "+(category:shopping style:retro) -keywords:flares"
+            assert query.toString() == "+(category:shopping style:retro) -(keywords:flares)"
 
             // Implicit lazy boolean (lazy because it omits the "should" for gt() and queryString())
             query = builder.buildQuery {

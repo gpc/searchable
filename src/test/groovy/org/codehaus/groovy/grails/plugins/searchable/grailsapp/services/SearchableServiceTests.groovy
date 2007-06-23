@@ -31,6 +31,7 @@ import groovy.mock.interceptor.MockFor
 import org.jmock.*
 import org.jmock.core.stub.*
 import org.jmock.core.matcher.*
+
 /**
  * 
  *
@@ -46,7 +47,7 @@ class SearchableServiceTests extends AbstractSearchableCompassTests {
         for (i in 0..<100) {
             def post = new Post(id: i as Long, title: "I live to post" + (i % 2 == 0 ? " and it's even" : " it's odd"), post: "posty, posty", comments: new HashSet())
             for (j in 0..<5) {
-                def comment = new Comment(id: comments.size() as Long, summary: "I love to comment" + (comments.size() % 5 == 0 ? "ah ha ah" : ''), comment: "commenty, commenty", post: post)
+                def comment = new Comment(id: comments.size() as Long, summary: "I love to comment " + (comments.size() % 5 == 0 ? "ah ha ah" : ''), comment: "commenty, commenty", post: post)
                 post.comments << comment
                 comments << comment
             }
