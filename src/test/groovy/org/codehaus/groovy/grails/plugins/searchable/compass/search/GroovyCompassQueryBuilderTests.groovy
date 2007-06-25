@@ -436,7 +436,6 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
             query = builder.buildQuery {
                 queryString('"ham "and "eggs', [escape: true])
             }
-            println query.toString()
             assert query.toString() == 'all:ham all:eggs'
         }
     }
