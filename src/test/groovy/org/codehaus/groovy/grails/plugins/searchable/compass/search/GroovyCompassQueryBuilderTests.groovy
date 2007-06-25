@@ -425,6 +425,19 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 }
             }
             assert query.toString() == 'all:grails all:searchable all:plugin'
+
+            // Shorthand String query options; so it is more interchangeable with the String query API
+            query = builder.buildQuery {
+                queryString('ham and eggs', [defaultProperty: 'title', andDefaultOperator: true, parser: 'default'])
+            }
+            assert query.toString() == '+title:ham +title:eggs'
+
+            // Additional (non-Compass) String query options; so it is more interchangeable with the String query API
+            query = builder.buildQuery {
+                queryString('"ham "and "eggs', [escape: true])
+            }
+            println query.toString()
+            assert query.toString() == 'all:ham all:eggs'
         }
     }
 

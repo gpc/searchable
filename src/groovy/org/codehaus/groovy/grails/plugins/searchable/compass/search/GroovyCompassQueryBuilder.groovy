@@ -21,16 +21,17 @@ import org.compass.core.util.ClassUtils
 import org.codehaus.groovy.runtime.*
 
 import org.apache.commons.logging.LogFactory
+import org.apache.lucene.queryParser.QueryParser
 
 /**
- * A Groovy CompassQuery builder, taking nested closures and dynamic method
- * invocation in the Groovy-builder style
- *
- * Note: Instances of this class are NOT thread-safe: you should create one
- * for the duration of your CompassSession then discard it
- *
- * @author Maurice Nicholson
- */
+* A Groovy CompassQuery builder, taking nested closures and dynamic method
+* invocation in the Groovy-builder style
+*
+* Note: Instances of this class are NOT thread-safe: you should create one
+* for the duration of your CompassSession then discard it
+*
+* @author Maurice Nicholson
+*/
 class GroovyCompassQueryBuilder {
     CompassQueryBuilder queryBuilder
 
@@ -80,6 +81,7 @@ class CompassQueryBuildingClosureDelegate {
     private static final LOG = LogFactory.getLog(CompassQueryBuildingClosureDelegate.class)
     private static final SHORT_METHOD_NAMES = [should: 'addShould', must: 'addMust', mustNot: 'addMustNot', sort: 'addSort']
     private static final BOOLEAN_ADDER_NAMES = ['addShould', 'addMust', 'addMustNot']
+    private static final SHORT_OPTION_NAMES = [defaultProperty: 'defaultSearchProperty', andDefaultOperator: 'useAndDefaultOperator', parser: 'queryParser']
 
     def queryBuilder
     def stack = new Stack()
@@ -100,6 +102,13 @@ class CompassQueryBuildingClosureDelegate {
         def invokeArgs = args.toList()
         def closure = remove(invokeArgs, Closure)
         def options = remove(invokeArgs, Map)
+
+        // Escape String queries?
+        if (name == 'queryString' && options?.escape == true) {
+            assert invokeArgs[0] instanceof String
+            invokeArgs[0] = QueryParser.escape(invokeArgs[0])
+            options.remove('escape')
+        }
 
         // Transform method name?
         if (SHORT_METHOD_NAMES[name]) {
@@ -241,6 +250,17 @@ class CompassQueryBuildingClosureDelegate {
         if (!options) {
             return result
         }
+
+        // Convert shorthand to longhand names
+        def tmp = [:]
+        options.each { k, v ->
+            if (SHORT_OPTION_NAMES.containsKey(k)) {
+                tmp[SHORT_OPTION_NAMES[k]] = v
+            } else {
+                tmp[k] = v
+            }
+        }
+        options = tmp
 
         // Convert any BigDecimals to floats: simple but does the job for now
         options.each { k, v ->
