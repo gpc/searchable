@@ -15,15 +15,10 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable.compass.config
 
+import org.codehaus.groovy.grails.commons.*
 import org.compass.core.config.CompassConfiguration
 import org.compass.core.config.CompassEnvironment
-import org.codehaus.groovy.grails.commons.*
-
-import org.jmock.*
-import org.jmock.core.stub.*
-import org.jmock.core.matcher.*
 import org.compass.core.config.CompassSettings
-import org.jmock.core.constraint.IsEqual
 
 /**
 * @author Maurice Nicholson
@@ -35,10 +30,10 @@ class EnvironmentSearchableCompassConfiguratorTests extends GroovyTestCase {
     void setUp() {
         configurator = new EnvironmentSearchableCompassConfigurator()
         oldApp = ApplicationHolder.getApplication()
-        def mockApp = new Mock(GrailsApplication.class)
-        ApplicationHolder.setApplication(mockApp.proxy())
-        def appMetaData = ["app.name": "shinnynewgrailsapp", "grails.env": "dev"]
-        mockApp.expects(new InvokeAtLeastOnceMatcher()).method('getMetadata').withNoArguments().will(new ReturnStub(appMetaData))
+        def application = [
+            getMetadata: { ["app.name": "shinnynewgrailsapp", "grails.env": "dev"] }
+        ] as GrailsApplication
+        ApplicationHolder.setApplication(application)
     }
 
     void tearDown() {

@@ -17,16 +17,11 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
 import org.springframework.core.JdkVersion
 
-import org.compass.core.config.*
-
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.annotated.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator
 
-import org.jmock.*
-import org.jmock.core.stub.*
-import org.jmock.core.matcher.*
-import org.jmock.core.constraint.IsEqual
+import org.compass.core.config.*
 import org.compass.annotations.config.CompassAnnotationsConfiguration
 
 /**
