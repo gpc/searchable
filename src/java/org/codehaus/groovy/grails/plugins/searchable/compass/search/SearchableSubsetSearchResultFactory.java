@@ -15,6 +15,7 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
+import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.compass.core.CompassHits;
 
@@ -33,8 +34,8 @@ import java.util.Map;
 public class SearchableSubsetSearchResultFactory implements SearchableSearchResultFactory {
 
     public Object buildSearchResult(final CompassHits hits, final Object collectedHits, Map options) {
-        final int offset = SearchableUtils.getIntegerOption("offset", options);
-        final int max = SearchableUtils.getIntegerOption("max", options);
+        final int offset = MapUtils.getIntValue(options, "offset");
+        final int max = MapUtils.getIntValue(options, "max");
         final List scores = new ArrayList(max);
         for (int i = offset; i < Math.min(offset + max, hits.length()); i++) {
             scores.add(i - offset, Float.valueOf(hits.score(i)));

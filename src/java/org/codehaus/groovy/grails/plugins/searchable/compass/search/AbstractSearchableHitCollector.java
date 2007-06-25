@@ -15,8 +15,8 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
+import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.runtime.InvokerHelper;
-import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.compass.core.CompassHits;
 
 import java.util.Map;
@@ -33,7 +33,7 @@ public abstract class AbstractSearchableHitCollector implements SearchableHitCol
      * @return the result object
      */
     public Object collect(CompassHits hits, Map options) {
-        boolean reload = SearchableUtils.getBooleanOption("reload", options);
+        boolean reload = MapUtils.getBooleanValue(options, "reload");
         return collect(hits, reload, options);
     }
 

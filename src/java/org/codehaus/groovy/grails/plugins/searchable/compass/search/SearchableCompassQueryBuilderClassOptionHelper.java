@@ -31,7 +31,7 @@ import java.util.Map;
 public class SearchableCompassQueryBuilderClassOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
 
     public CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
-        Class clazz = (Class) SearchableUtils.getOption("class", options, null);
+        Class clazz = (Class) options.get("class");
         if (clazz != null) {
             compassQuery.setAliases(new String[] {SearchableCompassUtils.getMappingAlias(compass, clazz)});
         }

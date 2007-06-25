@@ -16,12 +16,12 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import groovy.lang.Closure;
-import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
+import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
+import org.compass.core.Compass;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
-import org.compass.core.Compass;
 import org.compass.core.lucene.engine.queryparser.CompassQueryParser;
 import org.springframework.util.Assert;
 
@@ -45,7 +45,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder implements Searchab
         String defaultSearchProperty = (String) getOption(DEFAULT_PROPERTY_NAMES, options);
         Collection properties = (Collection) getOption(PROPERTIES_NAMES, options);
         Boolean useAndDefaultOperator = (Boolean) getOption(USE_AND_DEFAULT_OPERATOR_NAMES, options);
-        Boolean escape = SearchableUtils.getBooleanOption("escape", options, Boolean.FALSE);
+        Boolean escape = MapUtils.getBoolean(options, "escape", Boolean.FALSE);
 
         Assert.isTrue(!(properties != null && defaultSearchProperty != null), "The " + DefaultGroovyMethods.join(DEFAULT_PROPERTY_NAMES, "/") + " and " + DefaultGroovyMethods.join(PROPERTIES_NAMES, "/") + " options cannot be combined");
 

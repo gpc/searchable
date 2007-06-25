@@ -15,13 +15,13 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
-import org.compass.core.CompassHits;
-import org.springframework.util.Assert;
+import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
+import org.compass.core.CompassHits;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,8 +43,8 @@ public class DefaultSearchableSubsetHitCollector extends AbstractSearchableHitCo
             return Collections.EMPTY_LIST;
         }
 
-        int offset = SearchableUtils.getIntegerOption("offset", options);
-        int max = SearchableUtils.getIntegerOption("max", options);
+        int offset = MapUtils.getIntValue(options, "offset");
+        int max = MapUtils.getIntValue(options, "max");
         List collectedHits = new ArrayList(max);
         int low = offset;
         int high = Math.min(low + max, hits.length());

@@ -15,13 +15,12 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable;
 
-import groovy.lang.MissingPropertyException;
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.grails.plugins.searchable.compass.CompassGrailsDomainClassSearchabilityEvaluatorFactory;
-import org.codehaus.groovy.runtime.InvokerHelper;
+import org.codehaus.groovy.grails.plugins.searchable.util.PatternUtils;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
 
@@ -208,197 +207,17 @@ public class SearchableUtils {
         }
         for (Iterator iter = values.iterator(); iter.hasNext(); ) {
             String v = (String) iter.next();
-            if (!hasWildcards(v)) {
+            if (!PatternUtils.hasWildcards(v)) {
                 if (v.equals(thing)) {
                     return true;
                 }
             } else {
-                Pattern pattern = makePattern(v);
+                Pattern pattern = PatternUtils.makePatternFromWilcardString(v);
                 if (pattern.matcher(thing).matches()) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    private static Pattern makePattern(String string) {
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < string.length(); i++) {
-            char c = string.charAt(i);
-            switch (c) {
-                case '?':
-                    buf.append(".");
-                    break;
-                case '*':
-                    buf.append(".*");
-                    break;
-                default:
-                    buf.append(c);
-            }
-        }
-        return Pattern.compile(buf.toString());
-    }
-
-    private static boolean hasWildcards(String string) {
-        return string.indexOf('*') > -1 || string.indexOf('?') > -1;
-    }
-
-    /**
-     * Get the named boolean option from the map
-     * @param name
-     * @param options
-     * @return
-     * @throws Exception if no option
-     */
-    public static boolean getBooleanOption(String name, Map options) {
-        Assert.notNull(name, "name cannot be null");
-        Assert.notNull(options, "options name cannot be null");
-        Assert.isTrue(options.containsKey(name), "options must contain an entry for key [" + name + "]");
-        return getBooleanOption(name, options, null).booleanValue();
-    }
-
-    /**
-     * Get a named boolean option or default
-     * @param name
-     * @param options
-     * @param defaultValue
-     * @return
-     */
-    public static Boolean getBooleanOption(String name, Map options, Boolean defaultValue) {
-        return toBoolean(getOption(name, options, defaultValue));
-    }
-
-    /**
-     * Get a mandatory integer option
-     * @param name
-     * @param options
-     * @return
-     */
-    public static int getIntegerOption(String name, Map options) {
-        Assert.notNull(name, "name cannot be null");
-        Assert.notNull(options, "options name cannot be null");
-        Assert.isTrue(options.containsKey(name), "options must contain an entry for key [" + name + "]");
-        return getIntegerOption(name, options, null).intValue();
-    }
-
-    /**
-     * Get a named integer option or default
-     * @param name
-     * @param options
-     * @param defaultValue
-     * @return
-     */
-    public static Integer getIntegerOption(String name, Map options, Integer defaultValue) {
-        return toInteger(getOption(name, options, defaultValue));
-    }
-
-    /**
-     * Get a named option or default
-     * @param name
-     * @param options
-     * @param defaultValue
-     * @return
-     */
-    public static Object getOption(String name, Map options, Object defaultValue) {
-        if (options != null) {
-            if (options.containsKey(name)) {
-                return options.get(name);
-            }
-        }
-        return defaultValue;
-    }
-
-    public static Boolean getBooleanOption(String name, Object[] args, Boolean defaultValue) {
-        return toBoolean(getOption(name, args, defaultValue));
-    }
-
-    public static Integer getIntegerOption(String name, Object[] args, Integer defaultValue) {
-        return toInteger(getOption(name, args, defaultValue));
-    }
-
-    public static Object getOption(String name, Object[] args, Object defaultValue) {
-        if (args == null) return defaultValue;
-        for (int i = 0, max = args.length; i < max; i++) {
-            if (args[i] instanceof Map) {
-                return getOption(name, (Map) args[i], defaultValue);
-            }
-        }
-        return defaultValue;
-
-    }
-
-    private static Integer toInteger(Object value) {
-        if (value instanceof String) {
-            return Integer.valueOf((String) value);
-        }
-        return (Integer) value;
-    }
-
-    private static Boolean toBoolean(Object value) {
-        if (value instanceof String) {
-            return Boolean.valueOf((String) value);
-        }
-        return (Boolean) value;
-    }
-
-    /**
-     * Take a map of options which may include a page number and page size and
-     * convert to start and size parameters
-     *
-     * @param options the options from the UI: page and size
-     * @param defaultMax a max if not provided
-     * @return an equivalent map of start and size options
-     */
-    public static Map convertPageAndSizeToOffsetAndMax(Map options, Integer defaultMax) {
-        Assert.notNull(options, "options cannot be null");
-        Assert.notNull(defaultMax, "defaultMax cannot be null");
-
-        // Get/default options
-        final Integer size = getIntegerOption("size", options, getIntegerOption("max", options, defaultMax));
-        final Integer page = getIntegerOption("page", options, new Integer(1));
-
-        // Set start and size
-        return new HashMap() {{
-            put("offset", new Integer(Math.max(0, (page.intValue() - 1) * size.intValue())));
-            put("max", size);
-        }};
-    }
-
-    /**
-     * Gets the current 1-based page number for the given search args
-     * @param args a Map like [total: 100, offset: 0, max: 10]
-     * @return the 1-based page number
-     */
-    public static int getCurrentPage(Map args) {
-        Assert.notNull(args, "args cannot be null");
-        Integer offset = getIntegerOption("offset", args, new Integer(0));
-        Integer max = getIntegerOption("max", args, new Integer(0));
-        return (offset.intValue() / max.intValue()) + 1;
-    }
-
-    /**
-     * Gets the total pages, rounded up, for the given search args
-     * @param args a Map like [total: 100, offset: 0, max: 10]
-     * @return the total pages
-     */
-    public static int getTotalPages(Map args) {
-        Assert.notNull(args, "args cannot be null");
-        Integer max = getIntegerOption("max", args, new Integer(0));
-        Integer total = getIntegerOption("total", args, new Integer(0));
-        return (int) Math.ceil(total.doubleValue() / max.doubleValue());
-    }
-
-    /**
-     * Get the required 0-based offset to fetch a given page number and search args
-     * @param page a page number
-     * @param args a Map like [total: 100, offset: 0, max: 10]
-     * @return the 0-based offset
-     */
-    public static int getOffsetForPage(final Integer page, Map args) {
-        Map options = new HashMap() {{
-            put("page", page);
-        }};
-        return ((Integer) convertPageAndSizeToOffsetAndMax(options, getIntegerOption("max", args, null)).get("offset")).intValue();
     }
 }
