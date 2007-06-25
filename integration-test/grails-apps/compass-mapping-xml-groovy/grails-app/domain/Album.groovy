@@ -4,4 +4,11 @@ class Album {
     Artist artist
     String name
     String genre
+
+    /**
+     * Provide a useful String
+     */
+    String toString() {
+        "$name (by ${artist.name})"
+    }
 }	

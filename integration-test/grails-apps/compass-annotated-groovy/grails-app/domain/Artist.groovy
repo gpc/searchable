@@ -18,4 +18,11 @@ class Artist {
 
     @SearchableProperty
     String name
+
+    /**
+     * Provide a useful String
+     */
+    String toString() {
+        "$name (${albums?.size()} albums)"
+    }
 }

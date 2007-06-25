@@ -14,6 +14,7 @@
     <property name='genre'>
       <meta-data index='un_tokenized'>genre</meta-data>
     </property>
-    <reference ref-alias='composer' name='artist' />
+    <!--<reference ref-alias='composer' name='artist' />-->
+    <component ref-alias='composer' name='artist' />
   </class>
 </compass-core-mapping>

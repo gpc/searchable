@@ -91,7 +91,7 @@
   <body onload="focusQueryInput();">
   <div id="header">
     <h1><a href="http://grails.org/Searchable+Plugin" target="_blank">Grails <span>Searchable</span> Plugin</a></h1>
-    <g:form url='[controller: "searchable", action: "index"]' id="searchableForm" method="get">
+    <g:form url='[controller: "searchable", action: "index"]' id="searchableForm" name="searchableForm" method="get">
         <g:textField name="q" value="${params.q}" size="50"/> <input type="submit" value="Search" />
     </g:form>
     <div style="clear: both; display: none;" class="hint">See <a href="http://lucene.apache.org/java/docs/queryparsersyntax.html">Lucene query syntax</a> for advanced queries</div>

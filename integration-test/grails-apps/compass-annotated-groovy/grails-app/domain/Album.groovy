@@ -5,6 +5,7 @@ import org.compass.annotations.*
 class Album {
     static belongsTo = Artist
 
+    @SearchableComponent(refAlias = 'composer')
     @SearchableReference(refAlias = 'composer')
     Artist artist
 
@@ -16,4 +17,11 @@ class Album {
 
     @SearchableProperty(index = Index.UN_TOKENIZED)
     String genre
-}	
+
+    /**
+     * Provide a useful String
+     */
+    String toString() {
+        "$name (by ${artist.name})"
+    }
+}

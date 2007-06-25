@@ -5,4 +5,11 @@ class Artist {
     }
     static hasMany = [albums: Album]
     String name
-}	
+
+    /**
+     * Provide a useful String
+     */
+    String toString() {
+        "$name (${albums?.size()} albums)"
+    }
+}

@@ -17,19 +17,19 @@ class SearchableServiceTests extends GroovyTestCase {
             assert album.save()
             artist.addToAlbums(album)
         }
-        artist.save()
+        artist.reindex()
     }
 
     void testSearch() {
-        def result = searchableService.search("name:beatles")
-        assert result.results.size() == 1
+        def result = searchableService.search("beatles")
+        assert result.results.size() == 10
         assert result.results[0] instanceof Artist
         assert result.results[0].name == 'The Beatles'
 
-        result = searchableService.search("beatles album")
-        assert result.results.size() == 4
-        assert result.results*.class as Set == [Artist, Album] as Set
-        assert result.results.findAll { it instanceof Album }.name.containsAll(['Red Album', 'Blue Album', 'White Album'])
+        result = searchableService.search("album")
+        assert result.results.size() == 3
+        assert result.results*.class.unique() == [Album]
+        assert result.results*.name.containsAll(['Red Album', 'Blue Album', 'White Album'])
     }
 
     void testSearchTop() {
@@ -41,30 +41,30 @@ class SearchableServiceTests extends GroovyTestCase {
     void testSearchEvery() {
         def results = searchableService.searchEvery("beatles album")
         assert results*.class as Set == [Album, Artist] as Set
-        assert results.size() == 4
+        assert results.size() == 10
     }
 
     void testIndexAll() {
         // should not fail
         searchableService.indexAll()
 
-        assert searchableService.countHits("name:beatles") == 1
-        assert searchableService.countHits("name:album") == 3
+        assert searchableService.countHits("beatles") == 10
+        assert searchableService.countHits("red") == 1
     }
 
     void testReindexAll() {
         // should not fail
         searchableService.reindexAll()
 
-        assert searchableService.countHits("name:beatles") == 1
-        assert searchableService.countHits("name:album") == 3
+        assert searchableService.countHits("beatles") == 10
+        assert searchableService.countHits("red") == 1
     }
 
     void testUnindexAll() {
         // should not fail
         searchableService.unindexAll()
 
-        assert searchableService.countHits("name:beatles") == 0
-        assert searchableService.countHits("name:album") == 0
+        assert searchableService.countHits("beatles") == 0
+        assert searchableService.countHits("red") == 0
     }
 }

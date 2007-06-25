@@ -2,9 +2,16 @@ class ArtistTests extends GroovyTestCase {
 
     void setUp() {
         for (name in ['Elvis Costello', 'Elvis Presley', 'Loudon Wainwright III', 'Martha Wainwright']) {
-            def a = new Artist(name: name)
-            assert a.validate(), a.errors
-            assert a.save()
+            def artist = new Artist(name: name)
+            assert artist.validate(), artist.errors
+            assert artist.save()
+            for (n in ['Greatest Hits I', 'Greatest Hits II']) {
+                def album = new Album(name: n, genre: 'rock/pop', artist: artist)
+                assert album.validate(), album.errors
+                assert album.save()
+                artist.addToAlbums(album)
+            }
+            artist.reindex()
         }
     }
 
@@ -13,17 +20,20 @@ class ArtistTests extends GroovyTestCase {
 		assert searchResult.results.size() == 1
         assert searchResult.results[0] instanceof Artist
         assert searchResult.results[0].name == 'Loudon Wainwright III'
+        assert searchResult.results[0].albums.size() == 2
 
         searchResult = Artist.search("wainwright")
         assert searchResult.results.size() == 2
         assert searchResult.results*.class.unique() == [Artist]
         assert searchResult.results*.name.containsAll(['Loudon Wainwright III', 'Martha Wainwright'])
+        assert searchResult.results.every { it.albums.size() == 2 }
 	}
 
 	void testSearchTop() {
         def top = Artist.searchTop("elvis presley")
         assert top instanceof Artist
         assert top.name == 'Elvis Presley'
+        assert top.albums.size() == 2
     }
 
 	void testSearchEvery() {
@@ -31,5 +41,6 @@ class ArtistTests extends GroovyTestCase {
         assert hits.size() == 2
         assert hits*.class.unique() == [Artist]
         assert hits*.name.containsAll(['Elvis Costello', 'Elvis Presley'])
+        assert hits.every { it.albums.size() == 2 }
     }
 }

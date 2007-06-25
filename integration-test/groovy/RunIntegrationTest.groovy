@@ -53,7 +53,7 @@ def getTestScript(appName, dir, appDirs, pluginZip) {
         // Copy app files
         def targetAppDir = "${dir}/${appName}"
         for (appDir in appDirs) {
-            copy(todir: targetAppDir) {
+            copy(todir: targetAppDir, overwrite: true) {
                 fileset(dir: appDir)
             }
         }
