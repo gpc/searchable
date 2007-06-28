@@ -35,40 +35,81 @@ getTestScript(appName, workingDir, appTemplateDirs, pluginZip).call()
 
 def getTestScript(appName, dir, appDirs, pluginZip) {
     def testScript = {
+        // A unique number for generated property names, since Ant will not overwrite
+        // a property once set
+        def uniquePropertyNum = 0
+
+        // Wraps Ant's exec to swallow output unless there are errors
+        def executeQuietly = { Map attrs ->
+            uniquePropertyNum++
+            assert attrs.executable, "attrs.executable is requied"
+            assert attrs.dir, "attrs.dir is required"
+//            println "running ${attrs.executable} ${attrs.args.join(' ')} in ${attrs.dir}"
+            def ouputPropertyName = "exec.output.$uniquePropertyNum"
+            def resultPropertyName = "exec.result.$uniquePropertyNum"
+            exec(executable: attrs.executable, dir: attrs.dir, failonerror: "yes", newenvironment: 'yes', outputproperty: ouputPropertyName, resultproperty: resultPropertyName) {
+                for (value in attrs.args) {
+                    arg(value: value)
+                }
+            }
+//            println "exit status " + project.properties['exec.result']
+            if (project.properties[resultPropertyName] != '0') {
+                println "\nFAILED!\n"
+                println "Command: \"${attrs.executable} ${attrs.args.join(' ')}\""
+                println "Exit code: ${project.properties[resultPropertyName]}"
+                println "Output:"
+                println "-" * 60
+                println project.properties[ouputPropertyName]
+                println "-" * 60
+            }
+        }
+
         condition(property: "grails", value: "grails.bat") {
             os(family: "windows")
         }
         property(name: "grails", value: "grails")
+        def grails = project.properties['grails']
 
         // Clean previous
         delete(dir: dir)
         mkdir(dir: dir)
 
         // Make the vanilla app
-        exec(executable: '${grails}', failonerror: "yes", dir: dir, newenvironment: 'yes') {
-            arg(value: "create-app")
-            arg(value: appName)
-        }
+        println "    Making app $appName"
+        executeQuietly.call(executable: grails, dir: dir, args: ['create-app', appName])
 
         // Copy app files
+        println "    Copying template files"
         def targetAppDir = "${dir}/${appName}"
         for (appDir in appDirs) {
             copy(todir: targetAppDir, overwrite: true) {
                 fileset(dir: appDir)
             }
         }
+
         // Install Searchable Plugin
-        exec(executable: '${grails}', failonerror: "yes", dir: targetAppDir, newenvironment: 'yes') {
-            arg(value: "install-plugin")
-            arg(value: new File(pluginZip).absolutePath)
-        }
+        println "    Installing plugin"
+        executeQuietly.call(executable: grails, dir: targetAppDir, args: ['install-plugin', new File(pluginZip).absolutePath])
+
         // Test app
-        exec(executable: '${grails}', failonerror: "yes", dir: targetAppDir, newenvironment: 'yes') {
-            arg(value: "test-app")
-        }
+        println "    Running unit/integration tests"
+        executeQuietly.call(executable: grails, dir: targetAppDir, args: ['test-app'])
+
         // Webtest
-        exec(executable: '${grails}', failonerror: "yes", dir: targetAppDir, newenvironment: 'yes') {
-            arg(value: "run-webtest")
+        println "    Running web tests"
+        executeQuietly.call(executable: grails, dir: targetAppDir, args: ['run-webtest'])
+
+        // Check for webtest success (currently Grails doesn't check for success)
+        def webestResult = new File(targetAppDir, "webtest/reports/WebTestResults.xml")
+        assert webestResult.exists(), "webtest result file not found: ${webestResult.absolutePath}"
+        def xml = new XmlSlurper().parse(webestResult)
+        if (xml.testresult.@successful != 'yes') {
+            fail(message: """
+
+FAILED
+
+See file://${new File(targetAppDir, 'webtest/reports/WebTestResults.html').absolutePath}
+""")
         }
     }
     def ant = new AntBuilder()

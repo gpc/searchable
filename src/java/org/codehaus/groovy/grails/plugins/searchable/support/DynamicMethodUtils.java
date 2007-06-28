@@ -61,7 +61,7 @@ public class DynamicMethodUtils {
         for (int i = 0; i < propertyDescriptors.length; i++) {
             String name = propertyDescriptors[i].getName();
             String capitalized = name.substring(0, 1).toUpperCase() + name.substring(1);
-            if (joinedNames.contains(capitalized)) {
+            if (joinedNames.indexOf(capitalized) > -1) { // uses indexOf instead of contains for Java 1.4 compatibility
                 propertyNames.add(name);
                 joinedNames = DefaultGroovyMethods.minus(joinedNames, capitalized);
             }

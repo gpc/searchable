@@ -38,7 +38,7 @@ public class SearchableSubsetSearchResultFactory implements SearchableSearchResu
         final int max = MapUtils.getIntValue(options, "max");
         final List scores = new ArrayList(max);
         for (int i = offset; i < Math.min(offset + max, hits.length()); i++) {
-            scores.add(i - offset, Float.valueOf(hits.score(i)));
+            scores.add(i - offset, new Float(hits.score(i))); // "new Float" instead of "Float.valueOf" for 1.4 compatibility
         }
         return new HashMap() {{
             put("offset", new Integer(offset));
