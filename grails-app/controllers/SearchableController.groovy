@@ -33,7 +33,7 @@ class SearchableController {
         }
         try {
             return [searchResult: searchableService.search(params.q, params)]
-        } catch (SearchEngineQueryParseException) {
+        } catch (SearchEngineQueryParseException ex) {
             return [parseException: true]
         }
     }
