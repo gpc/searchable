@@ -25,6 +25,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
 import org.compass.core.util.ClassUtils
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils
 
 /**
 * TODO refactor the bulk of this test code to integration style test, independent from the actual confiuration strategy used
@@ -231,7 +232,7 @@ class DomainClassXmlMappingBuilderSearchableCompassConfiguratorTests extends Gro
 
         // Search by derived property, since they only exist in the index or in the original object
         // as there is no corresponding setter for when they are unmarshalled
-        def alias = SearchableCompassUtils.getMappingAlias(compass, SearchablePropertyTypes)
+        def alias = CompassMappingUtils.getMappingAlias(compass, SearchablePropertyTypes)
         assert 1 == TestCompassUtils.countHits(compass) { builder ->
             builder.bool().addMust(builder.alias(alias)).addMust(builder.term('derivedInt', 6)).toQuery()
         }

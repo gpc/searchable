@@ -1,0 +1,73 @@
+/*
+ * Copyright 2007 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
+import org.springframework.util.ClassUtils;
+
+import java.util.*;
+
+/**
+ * @author Maurice Nicholson
+ */
+public abstract class AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
+    private static final Log LOG = LogFactory.getLog(AbstractSearchableGrailsDomainClassCompassClassMapper.class);
+    private static final String[] DEFAULT_EXCLUDED_PROPERTIES = {
+        "password"
+    };
+
+    private SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory;
+    private List defaultExcludedProperties;
+
+    /**
+     * Get the CompassClassMapping for the given GrailsDomainClass
+     *
+     * @param grailsDomainClass the Grails domain class
+     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
+     * @return the CompassClassMapping
+     */
+    public CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
+        return getCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, SearchableUtils.getSearchablePropertyValue(grailsDomainClass), getExcludedProperties());
+    }
+
+    protected CompassClassPropertyMapping getDefaultPropertyMapping(GrailsDomainClassProperty property, Collection searchableClasses) {
+        return domainClassPropertyMappingFactory.getGrailsDomainClassPropertyMapping(property, searchableClasses);
+    }
+
+    protected List getExcludedProperties() {
+        if (defaultExcludedProperties != null) {
+            return defaultExcludedProperties;
+        }
+        return Arrays.asList(DEFAULT_EXCLUDED_PROPERTIES);
+    }
+
+    public void setDefaultExcludedProperties(List defaultExcludedProperties) {
+        this.defaultExcludedProperties = defaultExcludedProperties;
+    }
+
+    public SearchableGrailsDomainClassPropertyMappingFactory getDomainClassPropertyMappingStrategyFactory() {
+        return domainClassPropertyMappingFactory;
+    }
+
+    public void setDomainClassPropertyMappingStrategyFactory(SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory) {
+        this.domainClassPropertyMappingFactory = domainClassPropertyMappingFactory;
+    }
+}

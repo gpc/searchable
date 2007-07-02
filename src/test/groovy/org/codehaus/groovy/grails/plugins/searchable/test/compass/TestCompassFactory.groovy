@@ -17,9 +17,12 @@ package org.codehaus.groovy.grails.plugins.searchable.test.compass
 
 import org.compass.core.*
 import org.compass.core.config.CompassConfiguration
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.*
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator
 
 /**
  *
@@ -28,9 +31,10 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
 class TestCompassFactory {
     static getCompass(classes, instances = null) {
         def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader())
+        ApplicationHolder.setApplication(grailsApplication)
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
             grailsApplication,
-            [SearchableGrailsDomainClassMappingStrategyFactory.getSearchableClassPropertyMappingStrategy([:], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingStrategy[]
+            [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([:], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]
         )
         def config = new CompassConfiguration()
         config.setConnection("ram://testindex")

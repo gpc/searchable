@@ -16,8 +16,8 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.CompassQuery;
-import org.compass.core.CompassQueryBuilder;
 import org.compass.core.Compass;
+import org.compass.core.CompassSession;
 import org.springframework.util.Assert;
 
 import java.util.Map;
@@ -34,7 +34,7 @@ public class SearchableCompassQueryBuilderSortOptionHelper implements Searchable
     public static final String ORDER = "order";
     public static final List VALID_SORT_DIRECTION_VALUES = Arrays.asList(new String[] { "asc", "desc", "auto", "reverse" });
 
-    public CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
+    public CompassQuery applyOptions(Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
         return addSort(compassQuery, options);
     }
 

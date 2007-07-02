@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 
 import org.springframework.core.JdkVersion
 
@@ -29,12 +29,12 @@ import org.compass.annotations.config.CompassAnnotationsConfiguration
 *
 * @author Maurice Nicholson
 */
-class CompassAnnotationSearchableGrailsDomainClassMappingStrategyTests extends GroovyTestCase {
+class CompassAnnotationSearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
     def strategy
 
     void setUp() {
         assert JdkVersion.isAtLeastJava15()
-        strategy = new CompassAnnotationSearchableGrailsDomainClassMappingStrategy()
+        strategy = new CompassAnnotationSearchableGrailsDomainClassMappingConfigurator()
     }
 
     void tearDown() {

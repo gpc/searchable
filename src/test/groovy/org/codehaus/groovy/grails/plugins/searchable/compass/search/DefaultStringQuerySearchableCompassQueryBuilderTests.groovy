@@ -52,7 +52,8 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "chocolate biscuits", [:])
+        builder.buildQuery([queryBuilder : {mockBuilder.proxy()}] as CompassSession, [:], "chocolate biscuits")
+
         mockBuilder.verify()
         mockStringBuilder.verify()
     }
@@ -73,7 +74,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "banana", [analyzer: 'myFunkyAnalyzer'])
+        def mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [analyzer: 'myFunkyAnalyzer'], "banana")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -91,7 +95,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "orange", [parser: 'myCustomParser'])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [parser: 'myCustomParser'], "orange")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -109,7 +116,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "lemon", [queryParser: 'myCustomParser'])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [queryParser: 'myCustomParser'], "lemon")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -127,7 +137,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "apple", [defaultProperty: 'keywords'])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [defaultProperty: 'keywords'], "apple")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -145,7 +158,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "apple", [defaultSearchProperty: 'description'])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [defaultSearchProperty: 'description'], "apple")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -163,7 +179,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "kiwi", [andDefaultOperator: true])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [andDefaultOperator: true], "kiwi")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -178,7 +197,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "lime", [andDefaultOperator: false])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [andDefaultOperator: false], "lime")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -196,7 +218,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "tomato", [useAndDefaultOperator: true])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [useAndDefaultOperator: true], "tomato")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -211,7 +236,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "pear", [useAndDefaultOperator: false])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [useAndDefaultOperator: false], "pear")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -238,7 +266,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "pear", [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', defaultProperty: 'title', andDefaultOperator: true])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', defaultProperty: 'title', andDefaultOperator: true], "pear")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -260,18 +291,21 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "blah blah", [properties: ['title', 'description']])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [properties: ['title', 'description']], "blah blah")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
 
         // Properties and defaultSearchProperty/defaultProperty - not compatible
-        shouldFail {
-            builder.buildQuery(null, null, "blah blah", [defaultSearchProperty: 'anything', properties: ['title', 'description']])
+        shouldFail(IllegalArgumentException) {
+            builder.buildQuery(null, [defaultSearchProperty: 'anything', properties: ['title', 'description']], "blah blah")
         }
 
-        shouldFail {
-            builder.buildQuery(null, null, "blah blah", [defaultProperty: 'anything', properties: ['title', 'description']])
+        shouldFail(IllegalArgumentException) {
+            builder.buildQuery(null, [defaultProperty: 'anything', properties: ['title', 'description']], "blah blah")
         }
 
         // All together for multi-property string query
@@ -299,7 +333,10 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery(null, mockBuilder.proxy(), "chicken and pig", [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', properties: ['title', 'description'], andDefaultOperator: true])
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(mockSession, [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', properties: ['title', 'description'], andDefaultOperator: true], "chicken and pig")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -308,21 +345,21 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
     void testWithEscape() {
         withCompassSession { compassSession ->
             // No class, no escape
-            def queryBuilder = compassSession.queryBuilder()
-            def query = builder.buildQuery(null, queryBuilder, "Hello World", [escape: false])
+            def query = builder.buildQuery(compassSession, [escape: false], "Hello World")
             assert query.toString() == "all:hello all:world"
 
             // escape does not affect normal queries
-            query = builder.buildQuery(null, queryBuilder, "Hello World", [escape: true])
+            query = builder.buildQuery(compassSession, [escape: true], "Hello World")
             assert query.toString() == "all:hello all:world"
 
             // no escape, bad query
             shouldFail {
-                builder.buildQuery(null, queryBuilder, "[this is a bad query}", [escape: false])
+                builder.buildQuery(compassSession, [escape: false], "[this is a bad query}")
             }
 
             // should not fail with escape
-            builder.buildQuery(null, queryBuilder, "[this is a bad query}", [escape: true])
+            query = builder.buildQuery(compassSession, [escape: true], "[this is a bad query}")
+            assert query.toString() == "all:bad all:query"
         }
     }
 }

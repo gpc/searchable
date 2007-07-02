@@ -25,6 +25,10 @@ import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
  */
 abstract class AbstractSearchableCompassTests extends GroovyTestCase {
 
+    def withCompassQueryBuilder(closure) {
+        TestCompassUtils.withCompassQueryBuilder(compass, closure)
+    }
+
     def withCompassSession(closure) {
         TestCompassUtils.withCompassSession(compass, closure)
     }

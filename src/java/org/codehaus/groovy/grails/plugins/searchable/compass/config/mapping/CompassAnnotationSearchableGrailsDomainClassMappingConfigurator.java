@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
+import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
@@ -29,14 +30,14 @@ import java.util.Map;
 import java.lang.reflect.Method;
 
 /**
- * Maps searchable domain classes that are annotated with Compass's native @Searchable annotations.
+ * Configures Compass with searchable domain classes that are annotated with Compass's native @Searchable annotations.
  *
  * @author Maurice Nicholson
  */
-public class CompassAnnotationSearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingStrategy {
+public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, GrailsDomainClassSearchabilityEvaluator {
     private static final String SEARCHABLE_ANNOTATION_CLASS_NAME = "org.compass.annotations.Searchable";
     private static final String ANNOTATIONS_CONFIGURATION_CLASS_NAME = "org.compass.annotations.config.CompassAnnotationsConfiguration";
-    private static final Log LOG = LogFactory.getLog(CompassAnnotationSearchableGrailsDomainClassMappingStrategy.class);
+    private static final Log LOG = LogFactory.getLog(CompassAnnotationSearchableGrailsDomainClassMappingConfigurator.class);
     private static boolean annotationsAvailable = getSearchableAnnotationClass() != null;
 
     /**

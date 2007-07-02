@@ -15,13 +15,13 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
-import groovy.lang.Closure;
 import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
-import org.compass.core.Compass;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
+import org.compass.core.CompassSession;
+import org.compass.core.Compass;
 import org.compass.core.lucene.engine.queryparser.CompassQueryParser;
 import org.springframework.util.Assert;
 
@@ -32,14 +32,21 @@ import java.util.Map;
 /**
  * @author Maurice Nicholson
  */
-public class DefaultStringQuerySearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
+public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
     private static final String[] ANALYZER_NAMES = new String[] {"analyzer"};
     private static final String[] PARSER_NAMES = new String[] {"parser", "queryParser"};
     private static final String[] DEFAULT_PROPERTY_NAMES = new String[] {"defaultProperty", "defaultSearchProperty"};
     private static final String[] PROPERTIES_NAMES = new String[] {"properties"};
     private static final String[] USE_AND_DEFAULT_OPERATOR_NAMES = new String[] {"andDefaultOperator", "useAndDefaultOperator"};
 
-    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, String query, Map options) {
+    public DefaultStringQuerySearchableCompassQueryBuilder(Compass compass) {
+        super(compass);
+    }
+
+    public CompassQuery buildQuery(CompassSession compassSession, Map options, Object query) {
+        Assert.notNull(query, "query cannot be null");
+        Assert.isInstanceOf(String.class, query, "query must be a String but is [" + query.getClass().getName() + "]");
+
         String analyzer = (String) getOption(ANALYZER_NAMES, options);
         String parser = (String) getOption(PARSER_NAMES, options);
         String defaultSearchProperty = (String) getOption(DEFAULT_PROPERTY_NAMES, options);
@@ -49,18 +56,20 @@ public class DefaultStringQuerySearchableCompassQueryBuilder implements Searchab
 
         Assert.isTrue(!(properties != null && defaultSearchProperty != null), "The " + DefaultGroovyMethods.join(DEFAULT_PROPERTY_NAMES, "/") + " and " + DefaultGroovyMethods.join(PROPERTIES_NAMES, "/") + " options cannot be combined");
 
+        String queryString = (String) query;
         if (escape.booleanValue()) {
-            query = CompassQueryParser.escape(query);
+            queryString = CompassQueryParser.escape(queryString);
         }
 
+        CompassQueryBuilder compassQueryBuilder = compassSession.queryBuilder();
         CompassQueryBuilder.ToCompassQuery stringBuilder;
         if (properties != null && !properties.isEmpty()) {
-            stringBuilder = compassQueryBuilder.multiPropertyQueryString(query);
+            stringBuilder = compassQueryBuilder.multiPropertyQueryString(queryString);
             for (Iterator iter = properties.iterator(); iter.hasNext(); ) {
                 ((CompassQueryBuilder.CompassMultiPropertyQueryStringBuilder) stringBuilder).add((String) iter.next());
             }
         } else {
-            stringBuilder = compassQueryBuilder.queryString(query);
+            stringBuilder = compassQueryBuilder.queryString(queryString);
         }
 
         if (analyzer != null) {
@@ -90,9 +99,5 @@ public class DefaultStringQuerySearchableCompassQueryBuilder implements Searchab
             }
         }
         return value;
-    }
-
-    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, Map options, Closure closure) {
-        throw new UnsupportedOperationException();
     }
 }

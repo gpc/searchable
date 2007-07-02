@@ -18,7 +18,9 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*;
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator;
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfiguratorFactory;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableCompassClassMappingXmlBuilder;
 import org.springframework.core.io.ResourceLoader;
 
 import java.util.List;
@@ -44,15 +46,15 @@ public abstract class SearchableCompassConfiguratorFactory {
     }
 
     public static DefaultGrailsDomainClassMappingSearchableCompassConfigurator getDomainClassMappingConfigurator(GrailsApplication grailsApplication, ResourceLoader resourceLoader, Map defaultFormats, List defaultExcludedProperties, SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder) {
-        SearchableGrailsDomainClassMappingStrategy[] classMappingStrategies = SearchableGrailsDomainClassMappingStrategyFactory.getSearchableGrailsDomainClassMappingStrategies(resourceLoader, defaultFormats, defaultExcludedProperties, compassClassMappingXmlBuilder);
+        SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators = SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableGrailsDomainClassMappingConfigurators(resourceLoader, defaultFormats, defaultExcludedProperties, compassClassMappingXmlBuilder);
 
-        return getDomainClassMappingConfigurator(grailsApplication, classMappingStrategies);
+        return getDomainClassMappingConfigurator(grailsApplication, classMappingConfigurators);
     }
 
-    private static DefaultGrailsDomainClassMappingSearchableCompassConfigurator getDomainClassMappingConfigurator(GrailsApplication grailsApplication, SearchableGrailsDomainClassMappingStrategy[] classMappingStrategies) {
+    private static DefaultGrailsDomainClassMappingSearchableCompassConfigurator getDomainClassMappingConfigurator(GrailsApplication grailsApplication, SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators) {
         DefaultGrailsDomainClassMappingSearchableCompassConfigurator mappings = new DefaultGrailsDomainClassMappingSearchableCompassConfigurator();
         mappings.setGrailsApplication(grailsApplication);
-        mappings.setClassMappingStrategies(classMappingStrategies);
+        mappings.setClassMappingStrategies(classMappingConfigurators);
         return mappings;
     }
 

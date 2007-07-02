@@ -43,46 +43,58 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
      * @param description describes the class mapping
      * @return an InputStream for the Compass class mapping XML
      */
-    InputStream buildClassMappingXml(CompassMappingDescription description) {
+    InputStream buildClassMappingXml(CompassClassMapping description) {
         def writer = new StringWriter()
         def mkp = new groovy.xml.MarkupBuilder(writer)
 
         def className = description.mappedClass.name
         LOG.debug("Building Compass mapping XML for [${className}] from description [${description}]")
         def r = mkp."compass-core-mapping" {
-            "class"(name: className, alias: SearchableCompassUtils.getDefaultAlias(description.mappedClass), root: description.root) {
+            def classAttrs = [name: className, alias: description.alias, root: description.root]
+            if (description.poly) {
+                classAttrs.poly = true
+            }
+            if (description.extend) {
+                classAttrs['extends'] = description.extend
+            }
+            "class"(classAttrs) {
                 id(name: "id") // TODO support other "id" properties?
-                for (entry in description.properties) {
-                    def propertyName = entry.key
-                    def mapping = entry.value
-                    LOG.debug("Mapping '${className}.${propertyName}' as '${mapping}'")
+
+                for (constantMetaData in description.constantMetaData) {
+                    def metaData = new HashMap(constantMetaData) // clone to avoid corruption
+                    def name = metaData.name
+                    def attributes = transformAttrNames(metaData.attributes)
+                    validateAttributes("meta-data", attributes, META_DATA_ATTR_NAMES)
+                    constant {
+                        'meta-data'(attributes, name)
+                        for (value in metaData.values) {
+                            'meta-data-value'(value)
+                        }
+                    }
+                }
+
+                for (propertyMapping in description.propertyMappings) {
+                    def propertyName = propertyMapping.propertyName
+                    def attributes = propertyMapping.attributes
+                    LOG.debug("Mapping '${className}.${propertyName}' with attributes ${attributes}")
 
                     def attrs = [name: propertyName]
-                    if (mapping.reference) {
+                    if (propertyMapping.reference) {
                         def refAttrs = new HashMap(attrs)
-                        refAttrs.putAll(transformAttrNames(mapping.reference))
-                        def invalidAttrs = refAttrs.keySet() - REFERENCE_ATTR_NAMES
-                        if (invalidAttrs) {
-                            throw new IllegalArgumentException("Invalid attribute(s) for reference element: ${invalidAttrs}. Valid attributes are ${REFERENCE_ATTR_NAMES}. Given attributes are ${refAttrs}")
-                        }
+                        refAttrs.putAll(transformAttrNames(attributes))
+                        validateAttributes("reference", refAttrs, REFERENCE_ATTR_NAMES)
                         reference(refAttrs)
                     }
-                    if (mapping.component) {
+                    if (propertyMapping.component) {
                         def compAttrs = new HashMap(attrs)
-                        compAttrs.putAll(transformAttrNames(mapping.component))
-                        def invalidAttrs = compAttrs.keySet() - COMPONENT_ATTR_NAMES
-                        if (invalidAttrs) {
-                            throw new IllegalArgumentException("Invalid attribute(s) for reference element: ${invalidAttrs}. Valid attributes are ${COMPONENT_ATTR_NAMES}. Given attributes are ${compAttrs}")
-                        }
+                        compAttrs.putAll(transformAttrNames(attributes))
+                        validateAttributes("component", compAttrs, COMPONENT_ATTR_NAMES)
                         component(compAttrs)
                     }
-                    if (mapping.property) {
+                    if (propertyMapping.property) {
                         def metaDataAttrs = [:]
-                        def tmp = transformAttrNames(mapping.property)
-                        def invalidAttrs = tmp.keySet() - (PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES)
-                        if (invalidAttrs) {
-                            throw new IllegalArgumentException("Invalid attribute(s) for property element: ${invalidAttrs}. Valid attributes are ${(PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES).unique().sort()}. Given attributes are ${tmp}")
-                        }
+                        def tmp = transformAttrNames(attributes)
+                        validateAttributes("property", tmp, PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES)
                         tmp.each { k, v ->
                             if (META_DATA_ATTR_NAMES.contains(k)) {
                                 metaDataAttrs[k] = v
@@ -108,6 +120,13 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
 //       System.out.println("${className} xml [${xml}]")
        LOG.debug("${className} xml [${xml}]")
        return new ByteArrayInputStream(xml.getBytes())
+    }
+
+    private validateAttributes(elementName, attributeMap, validAttrNames) {
+        def invalidAttrs = attributeMap.keySet() - validAttrNames
+        if (invalidAttrs) {
+            throw new IllegalArgumentException("Invalid attribute(s) for $elementName element: ${invalidAttrs}. Valid attributes are ${validAttrNames.unique().sort()}. Given attributes are ${attributeMap}")
+        }
     }
 
     private transformAttrNames(value) {

@@ -17,10 +17,13 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*;
-import org.codehaus.groovy.grails.plugins.searchable.compass.converter.StringMapConverter;
+import org.codehaus.groovy.grails.commons.GrailsClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper;
+import org.codehaus.groovy.grails.plugins.searchable.compass.converter.StringMapConverter;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassConfigurationFactory;
 import org.compass.core.impl.DefaultCompass;
@@ -28,8 +31,10 @@ import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import java.io.InputStream;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Configures Compass with mappings for Grails domain class by generating in-memory XML, currently the only way
@@ -38,6 +43,7 @@ import java.util.List;
  *
  * @author Maurice Nicholson
  */
+// TODO delete this obsolete class
 public class DomainClassXmlMappingBuilderSearchableCompassConfigurator implements SearchableCompassConfigurator {
     private static final Log LOG = LogFactory.getLog(DomainClassXmlMappingBuilderSearchableCompassConfigurator.class);
 
@@ -63,34 +69,39 @@ public class DomainClassXmlMappingBuilderSearchableCompassConfigurator implement
         DefaultCompassConverterLookupHelper converterLookupHelper = new DefaultCompassConverterLookupHelper();
         converterLookupHelper.setConverterLookup(((DefaultCompass) CompassConfigurationFactory.newConfiguration().setConnection("ram://dummy").buildCompass()).getConverterLookup());
 
-        GrailsDomainClassPropertyMappingStrategyFactory mappingStrategyFactory = new GrailsDomainClassPropertyMappingStrategyFactory();
-        mappingStrategyFactory.setDefaultFormats(defaultFormats);
-        mappingStrategyFactory.setConverterLookupHelper(converterLookupHelper);
+        SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory = new SearchableGrailsDomainClassPropertyMappingFactory();
+        domainClassPropertyMappingFactory.setDefaultFormats(defaultFormats);
+        domainClassPropertyMappingFactory.setConverterLookupHelper(converterLookupHelper);
 
-        SearchableGrailsDomainClassCompassMappingDescriptionProviderManager mappingDescriptionProvider = new SearchableGrailsDomainClassCompassMappingDescriptionProviderManager();
-        mappingDescriptionProvider.setDefaultExcludedProperties(defaultExcludedProperties);
-        SearchableGrailsDomainClassCompassMappingDescriptionProvider[] searchableGrailsDomainClassCompassMappingDescriptionProviders;
+        CompositeSearchableGrailsDomainClassCompassClassMapper classMapper = new CompositeSearchableGrailsDomainClassCompassClassMapper();
+        classMapper.setDefaultExcludedProperties(defaultExcludedProperties);
+        SearchableGrailsDomainClassCompassClassMapper[] classMappers;
         try {
-            SimpleSearchableGrailsDomainClassCompassMappingDescriptionProvider simpleMappingProvider = new SimpleSearchableGrailsDomainClassCompassMappingDescriptionProvider();
-            simpleMappingProvider.setDomainClassPropertyMappingStrategyFactory(mappingStrategyFactory);
-            AbstractSearchableGrailsDomainClassCompassMappingDescriptionProvider closureMappingProvider = (AbstractSearchableGrailsDomainClassCompassMappingDescriptionProvider) ClassUtils.forName("org.codehaus.groovy.grails.plugins.searchable.compass.mapping.ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider").newInstance();
-            closureMappingProvider.setDomainClassPropertyMappingStrategyFactory(mappingStrategyFactory);
-            searchableGrailsDomainClassCompassMappingDescriptionProviders = new SearchableGrailsDomainClassCompassMappingDescriptionProvider[] {
-                simpleMappingProvider, closureMappingProvider
+            SimpleSearchableGrailsDomainClassCompassClassMapper simpleClassMapper = new SimpleSearchableGrailsDomainClassCompassClassMapper();
+            simpleClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
+            AbstractSearchableGrailsDomainClassCompassClassMapper closureClassMapper = (AbstractSearchableGrailsDomainClassCompassClassMapper) ClassUtils.forName("org.codehaus.groovy.grails.plugins.searchable.compass.mapping.ClosureSearchableGrailsDomainClassCompassClassMapper").newInstance();
+            closureClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
+            classMappers = new SearchableGrailsDomainClassCompassClassMapper[] {
+                simpleClassMapper, closureClassMapper
             };
         } catch (Exception ex) {
             // Log and throw runtime exception
             LOG.error("Failed to find or create closure mapping provider class instance", ex);
             throw new IllegalStateException("Failed to find or create closure mapping provider class instance: " + ex);
         }
-        mappingDescriptionProvider.setSearchableGrailsDomainClassCompassMappingDescriptionProviders(searchableGrailsDomainClassCompassMappingDescriptionProviders);
+        classMapper.setSearchableGrailsDomainClassCompassMappingDescriptionProviders(classMappers);
 
-        CompassMappingDescription[] mappingDescriptions = mappingDescriptionProvider.getCompassMappingDescriptions(grailsApplication);
-        for (int i = 0, max = mappingDescriptions.length; i < max; i++) {
-            CompassMappingDescription description = mappingDescriptions[i];
-            InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(description);
-            LOG.debug("Adding [" + description.getMappedClass().getName() + "] mapping to CompassConfiguration");
-            compassConfiguration.addInputStream(inputStream, description.getMappedClass().getName() + ".cpm.xml");
+        List classMappings = new ArrayList();
+        List grailsDomainClasses = Arrays.asList(grailsApplication.getArtefacts(DomainClassArtefactHandler.TYPE));
+        for (int i = 0; i < grailsDomainClasses.size(); i++) {
+            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) grailsDomainClasses.get(i);
+            classMappings.add(classMapper.getCompassClassMapping(grailsDomainClass, grailsDomainClasses));
+        }
+        for (int i = 0, max = classMappings.size(); i < max; i++) {
+            CompassClassMapping classMapping = (CompassClassMapping) classMappings.get(i);
+            InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(classMapping);
+            LOG.debug("Adding [" + classMapping.getMappedClass().getName() + "] mapping to CompassConfiguration");
+            compassConfiguration.addInputStream(inputStream, classMapping.getMappedClass().getName() + ".cpm.xml");
         }
     }
 

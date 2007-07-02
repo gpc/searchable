@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
+import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
@@ -30,12 +31,12 @@ import java.util.Map;
 import java.io.IOException;
 
 /**
- * Maps searchable domain classes that have a corresponding native Compass mapping XML classpath resource
+ * Configures Compass with searchable domain classes that have a corresponding Compass mapping XML classpath resource.
  *
  * @author Maurice Nicholson
  */
-public class CompassMappingXmlSearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingStrategy, ResourceLoaderAware {
-    private static final Log LOG = LogFactory.getLog(CompassMappingXmlSearchableGrailsDomainClassMappingStrategy.class);
+public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, GrailsDomainClassSearchabilityEvaluator, ResourceLoaderAware {
+    private static final Log LOG = LogFactory.getLog(CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator.class);
 
     private ResourceLoader resourceLoader;
 

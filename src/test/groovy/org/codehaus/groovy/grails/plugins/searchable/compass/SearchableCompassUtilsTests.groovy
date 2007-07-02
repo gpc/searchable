@@ -28,46 +28,8 @@ import org.compass.core.mapping.osem.ClassMapping
 * @author Maurice Nicholson
 */
 class SearchableCompassUtilsTests extends GroovyTestCase {
-    def domainClassMap
 
-    void setUp() {
-        domainClassMap = [:]
-        for (type in [Post, User, Comment, ComponentOwner, SearchableComp]) {
-            domainClassMap[type] = new DefaultGrailsDomainClass(type)
-        }
-    }
-
-    void testGetDefaultAlias() {
-        assert SearchableCompassUtils.getDefaultAlias(Post) == 'ALIASPostALIAS'
-        assert SearchableCompassUtils.getDefaultAlias(User) == 'ALIASUserALIAS'
-        assert SearchableCompassUtils.getDefaultAlias(Comment) == 'ALIASCommentALIAS'
-    }
-
-    void testGetMappingAlias() {
-        def classMapping = new ClassMapping()
-        classMapping.clazz = Post
-        classMapping.alias = "thingthatwaswritten"
-        classMapping.name = Post.name
-        def mapping = new CompassMapping()
-        mapping.addMapping(classMapping)
-        def compass = [
-            getMapping: {
-                mapping
-            }
-        ] as InternalCompass
-        assert SearchableCompassUtils.getMappingAlias(compass, Post) == "thingthatwaswritten"
-    }
-
-    void testIsRoot() {
-        assert isRoot(Post, [Post, User, Comment])
-        assert isRoot(User, [Post, User, Comment])
-        assert isRoot(Comment, [Post, User, Comment])
-
-        assert isRoot(ComponentOwner, [ComponentOwner, SearchableComp])
-        assert isRoot(SearchableComp, [ComponentOwner, SearchableComp]) == false
-    }
-
-    private isRoot(type, searchableClasses) {
-        SearchableCompassUtils.isRoot(domainClassMap[type], searchableClasses.collect { domainClassMap[it] })
+    void testGetDefaultConnection() {
+        // TODO
     }
 }

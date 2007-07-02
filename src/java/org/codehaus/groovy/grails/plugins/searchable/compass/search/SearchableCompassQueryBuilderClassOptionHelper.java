@@ -15,13 +15,15 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
-import org.compass.core.CompassQuery;
-import org.compass.core.CompassQueryBuilder;
-import org.compass.core.Compass;
-import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
+import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils;
+import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
+import org.compass.core.*;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * Helper dealing with a "class" query builder query option
@@ -30,11 +32,75 @@ import java.util.Map;
  */
 public class SearchableCompassQueryBuilderClassOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
 
-    public CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
+    public CompassQuery applyOptions(Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
         Class clazz = (Class) options.get("class");
-        if (clazz != null) {
-            compassQuery.setAliases(new String[] {SearchableCompassUtils.getMappingAlias(compass, clazz)});
+        if (clazz == null) {
+            return compassQuery;
         }
+
+        // TODO add poly=false option?
+
+        GrailsApplication application = ApplicationHolder.getApplication();
+        List grailsDomainClasses = Arrays.asList(application.getArtefacts(DomainClassArtefactHandler.TYPE));
+        GrailsDomainClass grailsDomainClass = GrailsDomainClassUtils.getGrailsDomainClass(clazz, grailsDomainClasses);
+        Set subClasses = grailsDomainClass.getSubClasses();
+
+        setAliases(compass, clazz, compassQuery, subClasses);
+        setPolyClassFilter(compassSession, compassQuery, clazz, subClasses);
+
         return compassQuery;
+    }
+
+
+    /**
+     * Set aliases on the query for the given clazz, respecting inheritance in mapping
+     */
+    public CompassQuery setAliases(Compass compass, Class clazz, CompassQuery compassQuery, Collection subClasses) {
+        Set aliases = new HashSet();
+        aliases.add(CompassMappingUtils.getMappingAlias(compass, clazz));
+        if (!subClasses.isEmpty()) {
+            for (Iterator iter = subClasses.iterator(); iter.hasNext(); ) {
+                GrailsDomainClass subClass = (GrailsDomainClass) iter.next();
+                Class subClazz = subClass.getClazz();
+                aliases.add(CompassMappingUtils.getMappingAlias(compass, subClazz));
+            }
+        }
+        compassQuery.setAliases((String[]) aliases.toArray(new String[aliases.size()]));
+        return compassQuery;
+    }
+
+    /**
+     * Set the query filter for poly classes if there are subclasses
+     * @param compassSession
+     * @param compassQuery
+     * @param clazz
+     * @param subClasses
+     */
+    public void setPolyClassFilter(CompassSession compassSession, CompassQuery compassQuery, Class clazz, Set subClasses) {
+        if (subClasses.size() > 1) {
+            Set clazzes = new HashSet(GrailsDomainClassUtils.getClazzes(subClasses));
+            clazzes.add(clazz);
+            CompassQuery polyClassQuery = buildPolyClassQuery(compassSession, clazzes);
+            CompassQueryFilter instanceFilter = compassSession.queryFilterBuilder().query(polyClassQuery);
+            compassQuery.setFilter(instanceFilter);
+        }
+    }
+
+    /**
+     * Builds the polymorphic class-instance query part
+     * @param compassSession
+     * @param clazzes
+     * @return
+     */
+    public CompassQuery buildPolyClassQuery(CompassSession compassSession, Collection clazzes) {
+        CompassQueryBuilder queryBuilder = compassSession.queryBuilder();
+        CompassQueryBuilder.CompassBooleanQueryBuilder instanceBoolBuilder = queryBuilder.bool();
+        for (Iterator iter = clazzes.iterator(); iter.hasNext(); ) {
+            Class clz = (Class) iter.next();
+            instanceBoolBuilder.addShould(
+                queryBuilder.term("$/poly/class", clz.getName())
+            );
+        }
+        return instanceBoolBuilder.toQuery();
     }
 }

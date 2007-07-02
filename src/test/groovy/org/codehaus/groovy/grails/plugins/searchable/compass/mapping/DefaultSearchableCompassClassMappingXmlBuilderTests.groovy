@@ -38,18 +38,120 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert mappingXmlBuilder.convertCamelCaseToLowerCaseDashed("refComponentAlias") == "ref-component-alias"
     }
 
+    void testBuildClassMappingXmlWithConstantMetatData() {
+        CompassClassMapping description
+        InputStream is
+        def mapping
+        def constants
+        def properties
+
+        // single meta data, single value, no attributes
+        description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post")) // not essentially important here
+        description.addConstantMetaData('myextradata', [:], ['thevalue'])
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        /*
+<?xml version="1.0"?>
+<!DOCTYPE compass-core-mapping PUBLIC
+   "-//Compass/Compass Core Mapping DTD 1.0//EN"
+   "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
+<compass-core-mapping>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='postalias' root='true'>
+    <id name='id' />
+    <constant>
+      <meta-data>myextradata</meta-data>
+      <meta-data-value>thevalue</meta-data-value>
+    </constant>
+    <property name='post'>
+      <meta-data>post</meta-data>
+    </property>
+  </class>
+</compass-core-mapping> */
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "postalias"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0]."meta-data" == "post"
+        constants = mapping.class.constant
+        assert constants.size() == 1
+        assert constants[0].'meta-data' == 'myextradata'
+        assert constants[0].'meta-data-value' == 'thevalue'
+        // TODO Assert no attributes
+
+        // multiple meta datas, single/many values, with attributes
+        description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post")) // not essentially important here
+        description.addConstantMetaData('singleval', [:], ['value'])
+        description.addConstantMetaData('multivalue', [:], ['valueone', 'valuetwo'])
+        description.addConstantMetaData('withattrs', [index: 'un_tokenized', termVector: true], ['value'])
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        /*
+<?xml version="1.0"?>
+<!DOCTYPE compass-core-mapping PUBLIC
+   "-//Compass/Compass Core Mapping DTD 1.0//EN"
+   "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
+<compass-core-mapping>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='postalias' root='true'>
+    <id name='id' />
+    <constant>
+      <meta-data>singleval</meta-data>
+      <meta-data-value>value</meta-data-value>
+    </constant>
+    <constant>
+      <meta-data>multivalue</meta-data>
+      <meta-data-value>valueone</meta-data-value>
+      <meta-data-value>valuetwo</meta-data-value>
+    </constant>
+    <constant>
+      <meta-data index='un_tokenized' term-vector='true'>withattrs</meta-data>
+      <meta-data-value>value</meta-data-value>
+    </constant>
+    <property name='post'>
+      <meta-data>post</meta-data>
+    </property>
+  </class>
+</compass-core-mapping> */
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "postalias"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0]."meta-data" == "post"
+        constants = mapping.class.constant
+        assert constants.size() == 3
+        assert constants[0].'meta-data' == 'singleval'
+        assert constants[0].'meta-data-value' == 'value'
+        // TODO Assert no attributes
+        assert constants[1].'meta-data' == 'multivalue'
+        assert constants[1].'meta-data-value'[0] == 'valueone'
+        assert constants[1].'meta-data-value'[1] == 'valuetwo'
+        assert constants[2].'meta-data'.@index == 'un_tokenized'
+        assert constants[2].'meta-data'.@'term-vector' == 'true'
+        assert constants[2].'meta-data' == 'withattrs'
+        assert constants[2].'meta-data-value' == 'value'
+
+        // bad attributes
+        shouldFail(IllegalArgumentException) {
+            description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+            description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post")) // not essentially important here
+            description.addConstantMetaData('badattributes', [noSuchAttribute: 'whatever'], ['thevalue'])
+            is = mappingXmlBuilder.buildClassMappingXml(description)
+        }
+    }
+
     void testBuildClassMappingXml() {
-        CompassMappingDescription description
+        CompassClassMapping description
         def is
         def mapping
         def properties
         def references
 
         // BigDecimal option value mapping
-        description = new CompassMappingDescription(
-            mappedClass: Post,
-            properties: [post: [property: [boost: 2.0]]]
-        )
+        description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [boost: 2.0]))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -57,7 +159,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
    "-//Compass/Compass Core Mapping DTD 1.0//EN"
    "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
 <compass-core-mapping>
-  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='Post'>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias="postalias">
     <id name='id' />
     <property name='post'>
       <meta-data boost='2.0'>post</meta-data>
@@ -66,19 +168,16 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 </compass-core-mapping> */
         mapping = getXmlSlurper(is)
         assert mapping.class.@name == Post.class.name
-        assert mapping.class.@alias == SearchableCompassUtils.getDefaultAlias(Post)
+        assert mapping.class.@alias == "postalias"
         properties = mapping.class.property
         assert properties.size() == 1
         assert properties[0].@name == "post"
         assert properties[0]."meta-data" == "post"
         assert properties[0]."meta-data".@boost == "2.0"
 
-
         // float option value mapping
-        description = new CompassMappingDescription(
-            mappedClass: Post,
-            properties: [post: [property: [boost: 2.0f]]]
-        )
+        description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [boost: 2.0f]))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -86,7 +185,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
    "-//Compass/Compass Core Mapping DTD 1.0//EN"
    "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
 <compass-core-mapping>
-  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='Post'>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias="postalias">
     <id name='id' />
     <property name='post'>
       <meta-data boost='2.0'>post</meta-data>
@@ -95,7 +194,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 </compass-core-mapping> */
         mapping = getXmlSlurper(is)
         assert mapping.class.@name == Post.class.name
-        assert mapping.class.@alias == SearchableCompassUtils.getDefaultAlias(Post)
+        assert mapping.class.@alias == "postalias"
         properties = mapping.class.property
         assert properties.size() == 1
         assert properties[0].@name == "post"
@@ -103,10 +202,11 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert properties[0]."meta-data".@boost == "2.0"
 
         // default mapping
-        description = new CompassMappingDescription(
-            mappedClass: Post,
-            properties: [post: [property: true], title: [property: true], comments: [reference: [refAlias: 'commentalias']], createdAt: [property: true]]
-        )
+        description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("title"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance("comments", [refAlias: 'commentalias']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -114,7 +214,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
    "-//Compass/Compass Core Mapping DTD 1.0//EN"
    "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
 <compass-core-mapping>
-  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='Post'>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias="postalias">
     <id name='id' />
     <reference name='comments' ref-alias='Comment' />
     <property name='createdAt'>
@@ -130,7 +230,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 </compass-core-mapping> */
         mapping = getXmlSlurper(is)
         assert mapping.class.@name == Post.class.name
-        assert mapping.class.@alias == SearchableCompassUtils.getDefaultAlias(Post)
+        assert mapping.class.@alias == "postalias"
         properties = mapping.class.property
         assert properties.size() == 3
         properties.each {
@@ -143,17 +243,18 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert references[0].@"ref-alias" == 'commentalias'
 
         // Date format
-        description = new CompassMappingDescription(
-            mappedClass: Comment,
-            properties: [summary: [property: true], comment: [property: true], post: [reference: [refAlias: 'postalias']], createdAt: [property: [format: "yyyy-MM-dd'T'HH:mm:ss"]]]
-        )
+        description = new CompassClassMapping(mappedClass: Comment, alias: 'commentalias')
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("summary"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("comment"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt", [format: "yyyy-MM-dd'T'HH:mm:ss"]))
+        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance("post", [refAlias: 'postalias']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
 /*<?xml version="1.0"?>
 <!DOCTYPE compass-core-mapping PUBLIC
    "-//Compass/Compass Core Mapping DTD 1.0//EN"
    "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
 <compass-core-mapping>
-  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Comment' alias='Comment'>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Comment' alias='commentalias'>
     <id name='id' />
     <property name='summary'>
       <meta-data>summary</meta-data>
@@ -169,7 +270,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 </compass-core-mapping>*/
         mapping = getXmlSlurper(is)
         assert mapping.class.@name == Comment.class.name
-        assert mapping.class.@alias == SearchableCompassUtils.getDefaultAlias(Comment)
+        assert mapping.class.@alias == 'commentalias'
         properties = mapping.class.property
         assert properties.size() == 3
         properties.each {
@@ -185,10 +286,12 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert references[0].@name == "post"
         assert references[0].@"ref-alias" == 'postalias'
 
-        description = new CompassMappingDescription(
-            mappedClass: Post,
-            properties: [createdAt: [property: [format: 'yyyyMMdd', excludeFromAll: true]], title: [property: [boost: 2.0f, store: 'compress']], post: [property: [termVector: 'yes']], comments: [reference: [refAlias: 'commentalias', propertyConverter: 'commentConverter'], component: [refAlias: 'commentalias', cascade: 'create,delete']]]
-        )
+        description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt", [format: 'yyyyMMdd', excludeFromAll: true]))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('title', [boost: 2.0f, store: 'compress']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('post', [termVector: 'yes']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance('comments', [refAlias: 'commentalias', propertyConverter: 'commentConverter']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance('comments', [refAlias: 'commentalias', cascade: 'create,delete']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -196,7 +299,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
    "-//Compass/Compass Core Mapping DTD 1.0//EN"
    "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
 <compass-core-mapping>
-  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='Post'>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.Post' alias='postalias'>
     <id name='id' />
     <property name='createdAt'>
       <meta-data format='yyyyMMdd' exclude-from-all='true'>createdAt</meta-data>
@@ -210,7 +313,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 </compass-core-mapping> */
         mapping = getXmlSlurper(is)
         assert mapping.class.@name == Post.class.name
-        assert mapping.class.@alias == SearchableCompassUtils.getDefaultAlias(Post)
+        assert mapping.class.@alias == 'postalias'
         properties = mapping.class.property
         assert properties.size() == 3
         properties.each {
@@ -242,26 +345,20 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert components[0].@"ref-alias" == 'commentalias'
 
         shouldFail(IllegalArgumentException) {
-            description = new CompassMappingDescription(
-                mappedClass: Post,
-                properties: [createdAt: [property: [noSuchPropertyOption: 'abc123']]]
-            )
+            description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
+            description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('createdAt', [noSuchPropertyOption: 'abc123']))
             is = mappingXmlBuilder.buildClassMappingXml(description)
         }
 
         shouldFail(IllegalArgumentException) {
-            description = new CompassMappingDescription(
-                mappedClass: Post,
-                properties: [author: [reference: [noSuchReferenceOption: 'abc123']]]
-            )
+            description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
+            description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance('author', [noSuchReferenceOption: 'abc123']))
             is = mappingXmlBuilder.buildClassMappingXml(description)
         }
 
         shouldFail(IllegalArgumentException) {
-            description = new CompassMappingDescription(
-                mappedClass: Post,
-                properties: [author: [component: [noSuchComponentOption: 'abc123']]]
-            )
+            description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
+            description.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance('author', [noSuchComponentOption: 'abc123']))
             is = mappingXmlBuilder.buildClassMappingXml(description)
         }
     }

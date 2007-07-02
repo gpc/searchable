@@ -18,7 +18,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config;
 import org.compass.core.config.CompassConfiguration;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableGrailsDomainClassMappingStrategy;
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.springframework.util.Assert;
 import org.apache.commons.logging.Log;
@@ -30,7 +30,7 @@ import java.util.*;
  * A Compass configurator that configures Compass with the Grails domain class mappings.
  *
  * An appropriate mapping strategy is identified for each searchable domain class from the
- * {@link #classMappingStrategies}
+ * {@link #classMappingConfigurators}
  *
  * @author Maurice Nicholson
  */
@@ -38,7 +38,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
     private static final Log LOG = LogFactory.getLog(DefaultGrailsDomainClassMappingSearchableCompassConfigurator.class);
 
     private GrailsApplication grailsApplication;
-    private SearchableGrailsDomainClassMappingStrategy[] classMappingStrategies;
+    private SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators;
 
     /**
      * Configure Compass ready for it to be built
@@ -51,9 +51,9 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         Map strategyBySearchableDomainClass = new HashMap();
         for (Iterator iter = SearchableUtils.getGrailsDomainClasses(grailsApplication).iterator(); iter.hasNext(); ) {
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-            for (int i = 0; i < classMappingStrategies.length; i++) {
-                if (classMappingStrategies[i].isSearchable(grailsDomainClass)) {
-                    strategyBySearchableDomainClass.put(grailsDomainClass, classMappingStrategies[i]);
+            for (int i = 0; i < classMappingConfigurators.length; i++) {
+                if (classMappingConfigurators[i].isSearchable(grailsDomainClass)) {
+                    strategyBySearchableDomainClass.put(grailsDomainClass, classMappingConfigurators[i]);
                     break;
                 }
             }
@@ -65,9 +65,9 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         Collection searchableGrailsDomainClasses = strategyBySearchableDomainClass.keySet();
         for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-            SearchableGrailsDomainClassMappingStrategy mappingStrategy = (SearchableGrailsDomainClassMappingStrategy) strategyBySearchableDomainClass.get(grailsDomainClass);
-            LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + mappingStrategy.getName() + "]");
-            mappingStrategy.configureMapping(compassConfiguration, configurationContext, grailsDomainClass, searchableGrailsDomainClasses);
+            SearchableGrailsDomainClassMappingConfigurator mappingConfigurator = (SearchableGrailsDomainClassMappingConfigurator) strategyBySearchableDomainClass.get(grailsDomainClass);
+            LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + mappingConfigurator.getName() + "]");
+            mappingConfigurator.configureMapping(compassConfiguration, configurationContext, grailsDomainClass, searchableGrailsDomainClasses);
         }
     }
 
@@ -79,7 +79,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         this.grailsApplication = grailsApplication;
     }
 
-    public void setClassMappingStrategies(SearchableGrailsDomainClassMappingStrategy[] classMappingStrategies) {
-        this.classMappingStrategies = classMappingStrategies;
+    public void setClassMappingStrategies(SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators) {
+        this.classMappingConfigurators = classMappingConfigurators;
     }
 }

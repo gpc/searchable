@@ -16,11 +16,13 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.index;
 
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
-import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils;
 import org.compass.core.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /*
     unindexAll()
@@ -88,7 +90,7 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
                     query = queryBuilder.matchAll();
                 }
                 if (clazz != null && ids.isEmpty()) {
-                    query = queryBuilder.alias(SearchableCompassUtils.getMappingAlias(getCompass(), clazz));
+                    query = queryBuilder.alias(CompassMappingUtils.getMappingAlias(getCompass(), clazz));
                 }
                 if (query != null) {
                     session.delete(query);

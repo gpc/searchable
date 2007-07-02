@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
@@ -23,11 +23,12 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * A Grails domain class mapping strategy
+ * Configures Compass with a searchable domain class mapping 
  *
  * @author Maurice Nicholson
  */
-public interface SearchableGrailsDomainClassMappingStrategy extends GrailsDomainClassSearchabilityEvaluator {
+// TODO do not extend GrailsDomainClassSearchabilityEvaluator: let implementors implement both
+public interface SearchableGrailsDomainClassMappingConfigurator extends GrailsDomainClassSearchabilityEvaluator {
 
     /**
      * Configure the Mapping in the CompassConfiguration for the given domain class

@@ -16,13 +16,28 @@
 package org.codehaus.groovy.grails.plugins.searchable.test.compass
 
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils
 
 /**
- * 
- *
- * @author Maurice Nicholson
- */
+*
+*
+* @author Maurice Nicholson
+*/
 class TestCompassUtils {
+
+    static withCompassQueryBuilder(compass, closure) {
+        def session = compass.openSession()
+        def tx = session.beginTransaction()
+        def result
+        try {
+            def queryBuilder = session.queryBuilder()
+            result = closure(queryBuilder)
+        } finally {
+            tx.commit()
+            session.close()
+        }
+        return result
+    }
 
     static withCompassSession(compass, closure) {
         def session = compass.openSession()
@@ -39,7 +54,7 @@ class TestCompassUtils {
 
     static numberIndexed(compass, clazz) {
         withCompassSession(compass) { session ->
-            session.queryBuilder().alias(SearchableCompassUtils.getMappingAlias(compass, clazz)).hits().length()
+            session.queryBuilder().alias(CompassMappingUtils.getMappingAlias(compass, clazz)).hits().length()
         }
     }
 

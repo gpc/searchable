@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
@@ -23,54 +23,64 @@ import org.compass.core.config.ConfigurationException
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.nosearchableproperty.NoSearchableProperty
 import org.codehaus.groovy.grails.orm.hibernate.GrailsHibernateDomainClass
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableCompassClassMappingXmlBuilder
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableGrailsDomainClassCompassClassMapper
 
 /**
 *
 *
 * @author Maurice Nicholson
 */
-class SearchableClassPropertySearchableGrailsDomainClassMappingStrategyTests extends GroovyTestCase {
-    def strategy
+class SearchableClassPropertySearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
+    def classMappingConfigurator
     def oldSearchable
 
     void setUp() {
-        strategy = new SearchableClassPropertySearchableGrailsDomainClassMappingStrategy()
+        classMappingConfigurator = new SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator()
         oldSearchable = Post.searchable
     }
 
     void tearDown() {
-        strategy = null
+        classMappingConfigurator = null
         Post.searchable = oldSearchable
     }
 
     void testIsSearchable() {
         Post.searchable = true
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
         Post.searchable = [only: 'title']
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
         Post.searchable = [except: 'version']
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
         Post.searchable = { -> }
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
         Post.searchable = false
-        assert !strategy.isSearchable(new DefaultGrailsDomainClass(Post))
+        assert !classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
 
-        assert !strategy.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty))
+        assert !classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty))
     }
 
     void testConfigureMapping() {
-        strategy.mappingDescriptionProviderManager = new MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager(classToHandle: Post)
-        strategy.compassClassMappingXmlBuilder = [
-            buildClassMappingXml: { CompassMappingDescription description ->
+        classMappingConfigurator.classMapper = [
+            getCompassClassMapping: {GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses ->
+                new CompassClassMapping(mappedClass: grailsDomainClass.clazz)
+            }
+        ] as SearchableGrailsDomainClassCompassClassMapper
+
+        classMappingConfigurator.compassClassMappingXmlBuilder = [
+            buildClassMappingXml: { CompassClassMapping description ->
                 new ByteArrayInputStream("this is the mapping".getBytes())
             }
         ] as SearchableCompassClassMappingXmlBuilder
+
         def conf = new MyCompassConfiguration()
         def domainClassMap = [:]
         for (type in [Post, User, Comment]) {
             domainClassMap[type] = new DefaultGrailsDomainClass(type)
         }
-        strategy.configureMapping(conf, null, domainClassMap[Post], domainClassMap.keySet())
+        classMappingConfigurator.configureMapping(conf, null, domainClassMap[Post], domainClassMap.keySet())
         assert conf.inputStream.text == "this is the mapping"
         assert conf.resourceName == Post.class.name.replaceAll("\\.", "/") + ".cpm.xml"
     }
@@ -88,12 +98,12 @@ class MyCompassConfiguration extends CompassConfiguration {
     }
 }
 
-class MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager extends SearchableGrailsDomainClassCompassMappingDescriptionProviderManager {
+class MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager extends CompositeSearchableGrailsDomainClassCompassClassMapper {
     def classToHandle
     boolean handles(GrailsDomainClass grailsDomainClass) {
         grailsDomainClass.clazz == classToHandle
     }
-    CompassMappingDescription getCompassMappingDescription(GrailsDomainClass grailsDomainClass, Collection searchableClasses) {
-        new CompassMappingDescription(mappedClass: grailsDomainClass.clazz)
+    CompassClassMapping getCompassMappingDescription(GrailsDomainClass grailsDomainClass, Collection searchableClasses) {
+        new CompassClassMapping(mappedClass: grailsDomainClass.clazz)
     }
 }

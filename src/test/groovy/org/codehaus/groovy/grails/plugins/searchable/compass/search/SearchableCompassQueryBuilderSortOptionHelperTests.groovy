@@ -129,7 +129,7 @@ class SearchableCompassQueryBuilderSortOptionHelperTests extends GroovyTestCase 
         def proxy = mockQuery.proxy()
         mockQuery.expects(new InvokeOnceMatcher()).method('addSort').'with'(new IsEqual(propertyName), new IsEqual(sortDirection)).will(new ReturnStub(proxy))
 
-        helper.applyOptions(null, mockQueryBuilder.proxy(), proxy, options)
+        helper.applyOptions(null, [queryBuilder: {mockQueryBuilder.proxy()}] as CompassSession, proxy, options)
 
         mockQuery.verify()
     }
@@ -153,7 +153,7 @@ class SearchableCompassQueryBuilderSortOptionHelperTests extends GroovyTestCase 
         def proxy = mockQuery.proxy()
         mockQuery.expects(new InvokeOnceMatcher()).method('addSort').'with'(new IsEqual(CompassQuery.SortImplicitType.SCORE), new IsEqual(sortDirection)).will(new ReturnStub(proxy))
 
-        helper.applyOptions(null, mockQueryBuilder.proxy(), proxy, options)
+        helper.applyOptions(null, [queryBuilder: {mockQueryBuilder.proxy()}] as CompassSession, proxy, options)
 
         mockQuery.verify()
     }

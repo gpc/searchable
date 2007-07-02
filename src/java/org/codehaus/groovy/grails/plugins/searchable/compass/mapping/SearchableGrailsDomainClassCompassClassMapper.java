@@ -21,19 +21,30 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Maps a searchable GrailsDomainClass to Compass
+ * 
  * @author Maurice Nicholson
  */
-public interface SearchableGrailsDomainClassCompassMappingDescriptionProvider {
+public interface SearchableGrailsDomainClassCompassClassMapper {
 
     /**
-     * Get the CompassMappingDescription  for the given GrailsDomainClass and "searchable" value
+     * Get the CompassClassMapping for the given GrailsDomainClass
+     * 
+     * @param grailsDomainClass the Grails domain class
+     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
+     * @return the CompassClassMapping
+     */
+    CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses);
+
+    /**
+     * Get the CompassClassMapping  for the given GrailsDomainClass and "searchable" value
      * @param grailsDomainClass the Grails domain class
      * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
      * @param searchableValue the searchable value: true|false|Map|Closure
      * @param excludedProperties a List of properties NOT to map; may be ignored by impl
-     * @return the CompassMappingDescription
+     * @return the CompassClassMapping
      */
-    CompassMappingDescription getCompassMappingDescription(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties);
+    CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties);
 
     /**
      * Does the implementation handle a "searchable" value of the given type?

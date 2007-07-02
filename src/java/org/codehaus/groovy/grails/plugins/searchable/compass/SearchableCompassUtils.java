@@ -36,54 +36,6 @@ import java.util.Iterator;
 public class SearchableCompassUtils {
 
     /**
-     * Get the Compass alias for the given Class
-     *
-     * @param clazz the class
-     * @return the Compass alias
-     */
-    public static String getDefaultAlias(Class clazz) {
-        Assert.notNull(clazz, "clazz cannot be null");
-        String alias = clazz.getName();
-        if (alias.indexOf(".") != -1) {
-            alias = alias.substring(alias.lastIndexOf(".") + 1, alias.length());
-        }
-        return "ALIAS" + alias + "ALIAS";
-    }
-
-    /**
-     * Get the alias used to map the class in Compass
-     * @param compass Compass
-     * @param clazz the class whose alias to look up
-     * @return the alias
-     */
-    public static String getMappingAlias(Compass compass, Class clazz) {
-        return ((InternalCompass) compass).getMapping().findRootMappingByClass(clazz).getAlias();
-    }
-
-    /**
-     * Is the given GrailsDomainClass a root class in the Compass mapping?
-     * @param grailsDomainClass the domain class to check for
-     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
-     * @return true if it's an embedded class in another domain class
-     */
-    public static boolean isRoot(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
-        // TODO log warning when used as both component and non-component
-        for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
-            GrailsDomainClass otherDomainClass = (GrailsDomainClass) iter.next();
-            if (grailsDomainClass.equals(otherDomainClass)) {
-                continue;
-            }
-            for (int i = 0; i < otherDomainClass.getProperties().length; i++) {
-                GrailsDomainClassProperty property = otherDomainClass.getProperties()[i];
-                if (property.getType() != null && property.getType().equals(grailsDomainClass.getClazz()) && property.isEmbedded()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    /**
      * Get the default Compass connection (ie, Lucene index dir)
      *
      * @return {user.home}/{project-name}/.searchable/{grails.env}

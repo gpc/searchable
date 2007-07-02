@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.Resource
@@ -28,11 +28,11 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlCo
 *
 * @author Maurice Nicholson
 */
-class CompassMappingXmlSearchableGrailsDomainClassMappingStrategyTests extends GroovyTestCase {
+class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
     def strategy
 
     void setUp() {
-        strategy = new CompassMappingXmlSearchableGrailsDomainClassMappingStrategy()
+        strategy = new CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator()
     }
 
     void tearDown() {

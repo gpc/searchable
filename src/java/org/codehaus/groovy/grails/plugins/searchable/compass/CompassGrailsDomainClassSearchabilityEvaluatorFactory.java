@@ -16,7 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass;
 
 import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableGrailsDomainClassMappingStrategyFactory;
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfiguratorFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
@@ -29,6 +29,6 @@ public class CompassGrailsDomainClassSearchabilityEvaluatorFactory {
         if (resourceLoader == null) {
             resourceLoader = new DefaultResourceLoader();
         }
-        return SearchableGrailsDomainClassMappingStrategyFactory.getSearchableGrailsDomainClassMappingStrategies(resourceLoader, null, null, null);
+        return SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableGrailsDomainClassMappingConfigurators(resourceLoader, null, null, null);
     }
 }

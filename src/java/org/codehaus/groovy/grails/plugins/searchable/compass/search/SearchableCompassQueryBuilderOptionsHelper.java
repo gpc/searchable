@@ -16,8 +16,8 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.CompassQuery;
-import org.compass.core.CompassQueryBuilder;
 import org.compass.core.Compass;
+import org.compass.core.CompassSession;
 
 import java.util.Map;
 
@@ -32,9 +32,9 @@ public interface SearchableCompassQueryBuilderOptionsHelper {
      * Apply the options and return the (possibly new) query
      *
      * @param compass Compass instance
-     * @param compassQueryBuilder a CompassQueryBuilder
+     * @param compassSession the current Compass session
      * @param compassQuery the query to apply options to
      * @param options the options to apply, if any @return a (maybe new) query with options applied @return query with options applied
      */
-    CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options);
+    CompassQuery applyOptions(Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options);
 }

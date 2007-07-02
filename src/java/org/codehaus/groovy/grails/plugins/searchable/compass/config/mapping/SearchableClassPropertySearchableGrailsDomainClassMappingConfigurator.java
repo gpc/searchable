@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
 import groovy.lang.MissingPropertyException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableCompassClassMappingXmlBuilder;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableGrailsDomainClassCompassClassMapper;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.util.Assert;
 
@@ -28,14 +33,14 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Maps searchable domain classes in Compass according to a "searchable" class property value
+ * Configures Compass with searchable domain classes according to a "searchable" class property value
  *
  * @author Maurice Nicholson
  */
-public class SearchableClassPropertySearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingStrategy {
-    private static final Log LOG = LogFactory.getLog(SearchableClassPropertySearchableGrailsDomainClassMappingStrategy.class);
+public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, GrailsDomainClassSearchabilityEvaluator {
+    private static final Log LOG = LogFactory.getLog(SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator.class);
 
-    private SearchableGrailsDomainClassCompassMappingDescriptionProviderManager mappingDescriptionProviderManager;
+    private SearchableGrailsDomainClassCompassClassMapper classMapper;
     private SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder;
 
     /**
@@ -63,14 +68,14 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingStrategy i
      * @param searchableGrailsDomainClasses all searchable domain classes
      */
     public void configureMapping(CompassConfiguration compassConfiguration, Map configurationContext, GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
-        Assert.notNull(mappingDescriptionProviderManager, "mappingDescriptionProviderManager cannot be null");
+        Assert.notNull(classMapper, "classMapper cannot be null");
         Assert.notNull(compassClassMappingXmlBuilder, "compassClassMappingXmlBuilder cannot be null");
         Assert.notNull(grailsDomainClass, "grailsDomainClass cannot be null");
 
-        CompassMappingDescription description = mappingDescriptionProviderManager.getCompassMappingDescription(grailsDomainClass, searchableGrailsDomainClasses);
-        InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(description);
-        LOG.debug("Adding [" + description.getMappedClass().getName() + "] mapping to CompassConfiguration");
-        compassConfiguration.addInputStream(inputStream, description.getMappedClass().getName().replaceAll("\\.", "/") + ".cpm.xml");
+        CompassClassMapping classMapping = classMapper.getCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses);
+        InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(classMapping);
+        LOG.debug("Adding [" + classMapping.getMappedClass().getName() + "] mapping to CompassConfiguration");
+        compassConfiguration.addInputStream(inputStream, classMapping.getMappedClass().getName().replaceAll("\\.", "/") + ".cpm.xml");
     }
 
     /**
@@ -82,8 +87,8 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingStrategy i
         return "searchable class property";
     }
 
-    public void setMappingDescriptionProviderManager(SearchableGrailsDomainClassCompassMappingDescriptionProviderManager mappingDescriptionProviderManager) {
-        this.mappingDescriptionProviderManager = mappingDescriptionProviderManager;
+    public void setMappingDescriptionProviderManager(CompositeSearchableGrailsDomainClassCompassClassMapper classMapper) {
+        this.classMapper = classMapper;
     }
 
     public void setCompassClassMappingXmlBuilder(SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder) {

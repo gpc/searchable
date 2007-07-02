@@ -15,34 +15,36 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
-import org.compass.core.CompassQuery;
-import org.compass.core.CompassQueryBuilder;
-import org.compass.core.Compass;
+import groovy.lang.Closure;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.runtime.InvokerHelper;
+import org.compass.core.Compass;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassSession;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import java.util.Map;
-
-import groovy.lang.Closure;
 
 /**
  * The default query builder strategy
  *
  * @author Maurice Nicholson
  */
-public class DefaultSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
+public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
     private static final Log LOG = LogFactory.getLog(DefaultSearchableCompassQueryBuilder.class);
 
-    private SearchableCompassQueryBuilder stringQueryBuilder = new DefaultStringQuerySearchableCompassQueryBuilder();
+    private SearchableCompassQueryBuilder stringQueryBuilder;
     private Class closureQueryBuilderClass;
     private SearchableCompassQueryBuilderOptionsHelper[] optionHelpers = new SearchableCompassQueryBuilderOptionsHelper[] {
         new SearchableCompassQueryBuilderClassOptionHelper(),
         new SearchableCompassQueryBuilderSortOptionHelper()
     };
 
-    public DefaultSearchableCompassQueryBuilder() {
+    public DefaultSearchableCompassQueryBuilder(Compass compass) {
+        super(compass);
+        stringQueryBuilder = new DefaultStringQuerySearchableCompassQueryBuilder(getCompass());
         String name = "org.codehaus.groovy.grails.plugins.searchable.compass.search.GroovyCompassQueryBuilder";
         try {
             closureQueryBuilderClass = ClassUtils.forName(name);
@@ -52,20 +54,22 @@ public class DefaultSearchableCompassQueryBuilder implements SearchableCompassQu
         }
     }
 
-    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, String query, Map options) {
-        CompassQuery compassQuery = stringQueryBuilder.buildQuery(compass, compassQueryBuilder, query, options);
-        return applyOptions(compass, compassQueryBuilder, compassQuery, options);
+    public CompassQuery buildQuery(CompassSession compassSession, Map options, Object query) {
+        Assert.notNull(query, "query cannot be null");
+        CompassQuery compassQuery;
+        if (query instanceof String) {
+            compassQuery = stringQueryBuilder.buildQuery(compassSession, options, query);
+        } else {
+            Assert.isInstanceOf(Closure.class, query, "query is neither String nor Closure: must be one of these but is [" + query.getClass().getName() + "]");
+            Object closureQueryBuilder = InvokerHelper.invokeConstructorOf(closureQueryBuilderClass, compassSession.queryBuilder());
+            compassQuery = (CompassQuery) InvokerHelper.invokeMethod(closureQueryBuilder, "buildQuery", query);
+        }
+        return applyOptions(getCompass(), compassSession, compassQuery, options);
     }
 
-    public CompassQuery buildQuery(Compass compass, CompassQueryBuilder compassQueryBuilder, Map options, Closure closure) {
-        Object closureQueryBuilder = InvokerHelper.invokeConstructorOf(closureQueryBuilderClass, compassQueryBuilder);
-        CompassQuery compassQuery = (CompassQuery) InvokerHelper.invokeMethod(closureQueryBuilder, "buildQuery", closure);
-        return applyOptions(compass, compassQueryBuilder, compassQuery, options);
-    }
-
-    protected CompassQuery applyOptions(Compass compass, CompassQueryBuilder compassQueryBuilder, CompassQuery compassQuery, Map options) {
+    protected CompassQuery applyOptions(Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
         for (int i = 0, max = optionHelpers.length; i < max; i++) {
-            compassQuery = optionHelpers[i].applyOptions(compass, compassQueryBuilder, compassQuery, options);
+            compassQuery = optionHelpers[i].applyOptions(compass, compassSession, compassQuery, options);
         }
         return compassQuery;
     }

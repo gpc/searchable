@@ -15,16 +15,16 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
-import org.springframework.util.Assert;
-import org.compass.core.*;
+import groovy.lang.Closure;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.AbstractSearchableMethod;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.compass.core.*;
+import org.springframework.util.Assert;
 
 import java.util.Map;
-
-import groovy.lang.Closure;
 
 /**
  * The default search method implementation
@@ -46,17 +46,13 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         Assert.notNull(args, "args cannot be null");
         Assert.notEmpty(args, "args cannot be empty");
 
-        final String queryString = getQueryString(args);
-        final Closure queryClosure = getQueryClosure(args);
-        Assert.isTrue(queryString != null || queryClosure != null, "No query string or closure argument given to " + getMethodName() + "(): you must supply one");
-        Assert.isTrue((queryString != null && queryClosure == null) || (queryString == null && queryClosure != null), "Both query string and closure arguments given to " + getMethodName() + "(): you must supply one, not both");
+        final Object query = getQuery(args);
+        Assert.notNull(query, "No query String or Closure argument given to " + getMethodName() + "(): you must supply one");
         final Map options = getOptions(args);
 
         return doInCompass(new CompassCallback() {
             public Object doInCompass(CompassSession session) throws CompassException {
-                CompassQuery compassQuery = null;
-                if (queryString != null) compassQuery = compassQueryBuilder.buildQuery(getCompass(), session.queryBuilder(), queryString, options);
-                else compassQuery = compassQueryBuilder.buildQuery(getCompass(), session.queryBuilder(), options, queryClosure);
+                CompassQuery compassQuery = compassQueryBuilder.buildQuery(session, options, query);
                 long start = System.currentTimeMillis();
                 CompassHits hits = compassQuery.hits();
                 if (LOG.isDebugEnabled()) {
@@ -71,18 +67,11 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         });
     }
 
-    private Closure getQueryClosure(Object[] args) {
+    private Object getQuery(Object[] args) {
         for (int i = 0, max = args.length; i < max; i++) {
-            if (args[i] instanceof Closure) {
-                return (Closure) args[i];
+            if (args[i] instanceof Closure || args[i] instanceof String) {
+                return args[i];
             }
-        }
-        return null;
-    }
-
-    private String getQueryString(Object[] args) {
-        if (args[0] instanceof String) {
-            return (String) args[0];
         }
         return null;
     }

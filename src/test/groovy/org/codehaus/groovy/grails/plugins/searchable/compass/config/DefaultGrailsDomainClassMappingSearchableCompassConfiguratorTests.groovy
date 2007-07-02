@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.compass.core.config.CompassConfiguration
+import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator
 
 /**
 *
@@ -46,7 +47,7 @@ class DefaultGrailsDomainClassMappingSearchableCompassConfiguratorTests extends 
         def userMapper = new TestSearchableGrailsDomainClassMappingStrategy(classShouldMap: User)
 
         // Set the strategies and let the configurator invoke them all
-        configurator.classMappingStrategies = [postMapper, commentMapper, userMapper] as SearchableGrailsDomainClassMappingStrategy[]
+        configurator.classMappingStrategies = [postMapper, commentMapper, userMapper] as SearchableGrailsDomainClassMappingConfigurator[]
         configurator.configure(new CompassConfiguration(), [:])
 
         // Verify they were all mapped by their respective strategy
@@ -60,7 +61,7 @@ class DefaultGrailsDomainClassMappingSearchableCompassConfiguratorTests extends 
     }
 }
 
-class TestSearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingStrategy {
+class TestSearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingConfigurator {
     def classShouldMap
     def classDidMap
     boolean isSearchable(GrailsDomainClass grailsDomainClass) {

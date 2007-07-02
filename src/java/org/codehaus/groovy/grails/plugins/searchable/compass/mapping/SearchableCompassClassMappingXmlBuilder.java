@@ -15,7 +15,7 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingDescription;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping;
 
 import java.io.InputStream;
 
@@ -25,10 +25,10 @@ import java.io.InputStream;
 public interface SearchableCompassClassMappingXmlBuilder {
 
     /**
-     * Returns an InputStream for the given mapping description
+     * Returns an InputStream for the given mapping classMapping
      *
-     * @param description describes the class mapping
+     * @param classMapping describes the class mapping
      * @return an InputStream for the Compass class mapping XML
      */
-    InputStream buildClassMappingXml(CompassMappingDescription description);
+    InputStream buildClassMappingXml(CompassClassMapping classMapping);
 }

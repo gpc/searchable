@@ -24,7 +24,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUt
  *
  * @author Maurice Nicholson
  */
-class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extends AbstractSearchableGrailsDomainClassCompassMappingDescriptionProvider implements SearchableGrailsDomainClassCompassMappingDescriptionProvider {
+class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'propertyConverter', 'reverse', 'store', 'termVector']
     static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'refAlias', 'refComponentAlias']
     static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'refAlias']
@@ -46,15 +46,15 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
      * @param excludedProperties a List of excluded properties NOT to map; ignored in this impl
      * @return the CompassMappingDescription
      */
-    CompassMappingDescription getCompassMappingDescription(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object closure, List excludedProperties) {
+    CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object closure, List excludedProperties) {
         // Reset state
         this.grailsDomainClass = grailsDomainClass
         this.mappedClass = grailsDomainClass.clazz
-        this.mappableProperties = super.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties)
+        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
         this.searchableGrailsDomainClasses = searchableGrailsDomainClasses
         this.only = null
         this.except = null
-        this.mappedProperties = [:]
+        this.mappedProperties = []
 
         // Build user-defined specific mappings
         closure.delegate = this
@@ -63,16 +63,16 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
         // Default any remaining mappable properties
         if (only && except) throw new IllegalArgumentException("Both 'only' and 'except' were used in '${mappedClass.getName()}.searchable': provide one or neither but not both")
         def searchableValue = only ? [only: only] : except ? [except: except] : true
-        this.mappableProperties = super.getMappableProperties(grailsDomainClass, searchableValue, searchableGrailsDomainClasses, excludedProperties)
+        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, searchableValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
 
         for (property in mappableProperties) {
-            if (!mappedProperties[property.name]) {
-                mappedProperties.put(property.name, super.getDefaultPropertyMapping(property, grailsDomainClass, searchableGrailsDomainClasses))
+            if (!mappedProperties.any { it.propertyName == property.name }) {
+                mappedProperties << super.getDefaultPropertyMapping(property, searchableGrailsDomainClasses)
 
             }
         }
 
-        return new CompassMappingDescription(mappedClass: mappedClass, root: SearchableCompassUtils.isRoot(grailsDomainClass, searchableGrailsDomainClasses), properties: mappedProperties)
+        return SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, mappedProperties)
     }
 
     Object invokeMethod(String name, Object args) {
@@ -85,21 +85,21 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
 
         args = args[0]
         Class propertyType = property.getType()
-        if (domainClassPropertyMappingStrategyFactory.getGrailsDomainClassPropertyMappingStrategy(property, searchableGrailsDomainClasses).property) {
+        if (getDefaultPropertyMapping(property, searchableGrailsDomainClasses).property) {
             def invalidOptions = args.keySet() - SEARCHABLE_PROPERTY_OPTIONS 
             if (invalidOptions) {
                 throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}.searchable' for property '${name}'. " +
                     "'${mappedClass.getName()}.${name}' is assumed to be a 'searchable property', meaning you can only define the options allowed " +
                     "for searchable properties. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_PROPERTY_OPTIONS.join(', ')}]")
             }
-            mappedProperties[name] = [property: args]
+            mappedProperties << CompassClassPropertyMapping.getPropertyInstance(name, args)
             return
         }
 
         // Get default mapping
-        def defaultMapping = super.getDefaultPropertyMapping(property, grailsDomainClass, searchableGrailsDomainClasses)
+        def defaultMapping = super.getDefaultPropertyMapping(property, searchableGrailsDomainClasses)
         assert defaultMapping, "Expected property ${property} to be mappable using default rules"
-        def defaultTypeReference = defaultMapping.reference != null
+        def defaultTypeReference = defaultMapping.reference
 
         // Arg check
         def validOptions = defaultTypeReference ? SEARCHABLE_REFERENCE_MAPPING_OPTIONS : SEARCHABLE_COMPONENT_OPTIONS
@@ -122,13 +122,13 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
             assert defaultMapping.reference
             if (!args.reference && !args.component) {
                 // eg "comments(cascade: true)" - assumed to be reference
-                referenceOptions = new HashMap(defaultMapping.reference)
+                referenceOptions = new HashMap(defaultMapping.attributes)
                 referenceOptions.putAll(args)
             }
             if (args.reference) {
                 // eg "comments(reference: true)" - explicit reference type or
                 // eg "comments(reference: [cascase: 'all'])" - explicit reference options
-                referenceOptions = new HashMap(defaultMapping.reference)
+                referenceOptions = new HashMap(defaultMapping.attributes)
                 if (args.reference != true) {
                     referenceOptions.putAll(args.reference)
                 }
@@ -137,7 +137,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
             if (args.component) {
                 // eg "comments(component: true)" - explicit component type or
                 // eg "comments(component: [cascase: 'all'])" - explicit component options
-                componentOptions = new HashMap(defaultMapping.reference)
+                componentOptions = new HashMap(defaultMapping.attributes)
                 if (args.component != true) {
                     componentOptions.putAll(args.component)
                 }
@@ -145,14 +145,13 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
         } else {
             implicitComponent = true
             assert defaultMapping.component
-            componentOptions = new HashMap(defaultMapping.component)
+            componentOptions = new HashMap(defaultMapping.attributes)
             componentOptions.putAll(args)
         }
 
         if (!referenceOptions && !componentOptions) {
             return
         }
-        mappedProperties[name] = [:]
 
         // Check for invalid options
         if (componentOptions) {
@@ -162,7 +161,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
                     "'${mappedClass.getName()}.${name}' is ${implicitComponent ? 'implicitly' : 'defined to be'} a 'searchable component', meaning you can only define the options allowed " +
                     "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_COMPONENT_OPTIONS.join(', ')}]")
             }
-            mappedProperties[name].component = componentOptions
+            mappedProperties << CompassClassPropertyMapping.getComponentInstance(name, componentOptions)
         }
         if (referenceOptions) {
             invalidOptions = referenceOptions.keySet() - SEARCHABLE_REFERENCE_OPTIONS
@@ -171,7 +170,7 @@ class ClosureSearchableGrailsDomainClassCompassMappingDescriptionProvider extend
                     "'${mappedClass.getName()}.${name}' is ${implicitReference ? 'implicitly' : 'declared to be'} a 'searchable reference', meaning you can only define the options allowed " +
                     "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_REFERENCE_OPTIONS.join(', ')}]")
             }
-            mappedProperties[name].reference = referenceOptions
+            mappedProperties << CompassClassPropertyMapping.getReferenceInstance(name, referenceOptions)
         }
     }
 
