@@ -33,6 +33,20 @@ public class CompositeSearchableGrailsDomainClassCompassClassMapper extends Abst
     private SearchableGrailsDomainClassCompassClassMapper[] classMappers;
 
     /**
+     * Get the property mappings for the given GrailsDomainClass
+     * @param grailsDomainClass the Grails domain class
+     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
+     * @param searchableValue the searchable value: true|false|Map|Closure
+     * @param excludedProperties a List of properties NOT to map; may be ignored by impl
+     * @return a List of CompassClassPropertyMapping
+     */
+    public List getCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties) {
+        SearchableGrailsDomainClassCompassClassMapper classMapper = getCompassClassMapperForSearchableValue(searchableValue);
+        Assert.notNull(classMapper, "No class mapper found for class [" + grailsDomainClass.getClazz().getName() + "]. Does the class declare a searchable property?");
+        return classMapper.getCompassClassPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, searchableValue, excludedProperties);
+    }
+
+    /**
      * Get the CompassClassMapping  for the given GrailsDomainClass and "searchable" value
      * @param grailsDomainClass the Grails domain class
      * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances

@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
 import java.util.*;
@@ -126,5 +127,30 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         }
         classMapping.setPoly(!grailsDomainClass.getSubClasses().isEmpty() || classMapping.getExtend() != null);
         return classMapping;
+    }
+
+    /**
+     * Merges the given property mappings, overriding parent mappings with child mappings
+     * @param mappedProperties
+     * @param parentClassPropertyMappings
+     */
+    public static void mergePropertyMappings(List mappedProperties, List parentClassPropertyMappings) {
+        if (parentClassPropertyMappings == null) {
+            return;
+        }
+        Assert.notNull(mappedProperties, "mappedProperties cannot be null");
+        List temp = new ArrayList(parentClassPropertyMappings);
+        temp.addAll(mappedProperties);
+        for (Iterator citer = mappedProperties.iterator(); citer.hasNext(); ) {
+            CompassClassPropertyMapping cmapping = (CompassClassPropertyMapping) citer.next();
+            for (Iterator piter = parentClassPropertyMappings.iterator(); piter.hasNext(); ) {
+                CompassClassPropertyMapping pmapping = (CompassClassPropertyMapping) piter.next();
+                if (cmapping.getPropertyName().equals(pmapping.getPropertyName())) {
+                    temp.remove(pmapping);
+                }
+            }
+        }
+        mappedProperties.clear();
+        mappedProperties.addAll(temp);
     }
 }

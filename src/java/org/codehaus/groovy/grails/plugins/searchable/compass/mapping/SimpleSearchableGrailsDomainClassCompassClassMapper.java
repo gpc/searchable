@@ -27,6 +27,33 @@ import java.util.*;
 public class SimpleSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
 
     /**
+     * Get the property mappings for the given GrailsDomainClass
+     * @param grailsDomainClass the Grails domain class
+     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
+     * @param searchableValue the searchable value: true|false|Map|Closure
+     * @param excludedProperties a List of properties NOT to map; may be ignored by impl
+     * @return a List of CompassClassPropertyMapping
+     */
+    public List getCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties) {
+        Assert.notNull(searchableValue, "searchableValue cannot be null");
+        Assert.isTrue(searchableValue instanceof Boolean || searchableValue instanceof Map, "[" + grailsDomainClass.getClazz().getName() + ".searchable] must be either a boolean, Map or closure (not [" + searchableValue.getClass().getName() + "]");
+
+        GrailsDomainClassProperty[] mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, searchableValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory());
+        if (mappableProperties == null) {
+            return null;
+        }
+        return getProperyMappings(mappableProperties, searchableGrailsDomainClasses);
+    }
+
+    private List getProperyMappings(GrailsDomainClassProperty[] mappableProperties, Collection searchableClasses) {
+        List propertyMappings = new ArrayList();
+        for (int i = 0, max = mappableProperties.length; i < max; i++) {
+            propertyMappings.add(getDefaultPropertyMapping(mappableProperties[i], searchableClasses));
+        }
+        return propertyMappings;
+    }
+
+    /**
      * Get the CompassClassMapping  for the given GrailsDomainClass and "searchable" value
      * @param grailsDomainClass the Grails domain class
      * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
@@ -35,26 +62,11 @@ public class SimpleSearchableGrailsDomainClassCompassClassMapper extends Abstrac
      * @return the CompassClassMapping
      */
     public CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties) {
-        Assert.notNull(searchableValue, "searchableValue cannot be null");
-        Assert.isTrue(searchableValue instanceof Boolean || searchableValue instanceof Map, "[" + grailsDomainClass.getClazz().getName() + ".searchable] must be either a boolean, Map or closure (not [" + searchableValue.getClass().getName() + "]");
-
-        GrailsDomainClassProperty[] mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, searchableValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory());
-        if (mappableProperties == null) {
-            return null;
-        }
-        List propertyMappings = getProperyMappings(mappableProperties, searchableGrailsDomainClasses);
+        List propertyMappings = getCompassClassPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, searchableValue, excludedProperties);
         if (propertyMappings == null) {
             return null;
         }
         return SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, propertyMappings);
-    }
-
-    protected List getProperyMappings(GrailsDomainClassProperty[] mappableProperties, Collection searchableClasses) {
-        List propertyMappings = new ArrayList();
-        for (int i = 0, max = mappableProperties.length; i < max; i++) {
-            propertyMappings.add(getDefaultPropertyMapping(mappableProperties[i], searchableClasses));
-        }
-        return propertyMappings;
     }
 
     /**

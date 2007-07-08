@@ -18,25 +18,67 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
+import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 
 /**
- * 
- *
- * @author Maurice Nicholson
- */
+*
+*
+* @author Maurice Nicholson
+*/
 class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'propertyConverter', 'reverse', 'store', 'termVector']
     static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'refAlias', 'refComponentAlias']
     static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'refAlias']
     static final SEARCHABLE_REFERENCE_MAPPING_OPTIONS = SEARCHABLE_REFERENCE_OPTIONS + ["reference", "component"]
 
-    def grailsDomainClass
-    def mappedClass
-    def mappableProperties
-    def searchableGrailsDomainClasses
-    def only
-    def except
-    def mappedProperties
+    GrailsDomainClass grailsDomainClass;
+    Class mappedClass;
+    GrailsDomainClassProperty[] mappableProperties;
+    Collection searchableGrailsDomainClasses
+    Object only;
+    Object except;
+    List mappedProperties;
+
+    /**
+     * Get the property mappings for the given GrailsDomainClass
+     * @param grailsDomainClass the Grails domain class
+     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
+     * @param searchableValue the searchable value: true|false|Map|Closure
+     * @param excludedProperties a List of properties NOT to map; may be ignored by impl
+     * @return a List of CompassClassPropertyMapping
+     */
+    List getCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties) {
+        assert searchableValue instanceof Closure
+        internalGetCompassClassPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, (Closure) searchableValue, excludedProperties, null)
+        return mappedProperties
+    }
+
+    private List internalGetCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Closure closure, List excludedProperties, List inheritedPropertyMappings) {
+        init(grailsDomainClass, searchableGrailsDomainClasses)
+
+        // Build user-defined specific mappings
+        closure = (Closure) closure.clone()
+        closure.setDelegate(this)
+        closure.call()
+
+        // Merge inherited parent mappings?
+        if (inheritedPropertyMappings) {
+            SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(mappedProperties, inheritedPropertyMappings)
+        }
+
+        // Default any remaining mappable properties
+        if (only && except) throw new IllegalArgumentException("Both 'only' and 'except' were used in '${mappedClass.getName()}.searchable': provide one or neither but not both")
+        def mapValue = only ? [only: only] : except ? [except: except] : true
+        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, mapValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
+
+        for (property in mappableProperties) {
+            if (!mappedProperties.any { it.propertyName == property.name }) {
+                mappedProperties << super.getDefaultPropertyMapping(property, searchableGrailsDomainClasses)
+            }
+        }
+        return mappedProperties
+    }
 
     /**
      * Get the CompassMappingDescription  for the given GrailsDomainClass and "searchable" value
@@ -47,31 +89,10 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
      * @return the CompassMappingDescription
      */
     CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object closure, List excludedProperties) {
-        // Reset state
-        this.grailsDomainClass = grailsDomainClass
-        this.mappedClass = grailsDomainClass.clazz
-        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
-        this.searchableGrailsDomainClasses = searchableGrailsDomainClasses
-        this.only = null
-        this.except = null
-        this.mappedProperties = []
-
-        // Build user-defined specific mappings
-        closure.delegate = this
-        closure()
-
-        // Default any remaining mappable properties
-        if (only && except) throw new IllegalArgumentException("Both 'only' and 'except' were used in '${mappedClass.getName()}.searchable': provide one or neither but not both")
-        def searchableValue = only ? [only: only] : except ? [except: except] : true
-        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, searchableValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
-
-        for (property in mappableProperties) {
-            if (!mappedProperties.any { it.propertyName == property.name }) {
-                mappedProperties << super.getDefaultPropertyMapping(property, searchableGrailsDomainClasses)
-
-            }
-        }
-
+        // Get inherited parent mappings
+        List parentMappedProperties = getInheritedPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, excludedProperties);
+        // Get property mapping for this class
+        mappedProperties = internalGetCompassClassPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, (Closure) closure, excludedProperties, parentMappedProperties)
         return SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, mappedProperties)
     }
 
@@ -83,7 +104,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             throw new IllegalArgumentException("Unable to map '${mappedClass.getName()}.${property.name}'. It does not appear to a suitable 'searchable property' (normally simple types like Strings, Dates, Numbers, etc), 'searchable reference' (normally another domain class) or 'searchable component' (normally another domain class defined as a component, using the 'embedded' declaration). Is it a derived property (a getter method with no equivalent field) defined with 'def'? Try defining it with a more specific return type")
         }
 
-        args = args[0]
+        args = args ? args[0] : [:]
         Class propertyType = property.getType()
         if (getDefaultPropertyMapping(property, searchableGrailsDomainClasses).property) {
             def invalidOptions = args.keySet() - SEARCHABLE_PROPERTY_OPTIONS 
@@ -181,5 +202,18 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
      */
     public boolean handlesSearchableValue(Object searchableValue) {
         searchableValue instanceof Closure
+    }
+
+    /**
+     * Init
+     */
+    private init(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
+        this.grailsDomainClass = grailsDomainClass
+        this.mappedClass = grailsDomainClass.clazz
+        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
+        this.searchableGrailsDomainClasses = searchableGrailsDomainClasses
+        this.only = null
+        this.except = null
+        this.mappedProperties = []
     }
 }

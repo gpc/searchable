@@ -28,6 +28,16 @@ import java.util.List;
 public interface SearchableGrailsDomainClassCompassClassMapper {
 
     /**
+     * Get the property mappings for the given GrailsDomainClass
+     * @param grailsDomainClass the Grails domain class
+     * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
+     * @param searchableValue the searchable value: true|false|Map|Closure
+     * @param excludedProperties a List of properties NOT to map; may be ignored by impl
+     * @return a List of CompassClassPropertyMapping
+     */
+    List getCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties);
+
+    /**
      * Get the CompassClassMapping for the given GrailsDomainClass
      * 
      * @param grailsDomainClass the Grails domain class

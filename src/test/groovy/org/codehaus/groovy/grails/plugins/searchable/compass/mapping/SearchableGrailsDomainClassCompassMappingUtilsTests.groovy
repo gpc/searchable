@@ -48,4 +48,56 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
     private isRoot(type, searchableClasses) {
         SearchableGrailsDomainClassCompassMappingUtils.isRoot(domainClassMap[type], searchableClasses.collect { domainClassMap[it] })
     }
+
+    void testMergePropertyMappings() {
+        def childMappings = []
+        def parentMappings = []
+        SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(childMappings, parentMappings)
+        assert childMappings == []
+        assert parentMappings == []
+
+        parentMappings = [
+            CompassClassPropertyMapping.getPropertyInstance("someProperty", [boost: 1.3])
+        ]
+        SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(childMappings, parentMappings)
+        assert childMappings.size() == 1
+        assert parentMappings.size() == 1
+        assert childMappings == parentMappings
+
+        childMappings = [
+            CompassClassPropertyMapping.getPropertyInstance("someProperty"),
+            CompassClassPropertyMapping.getComponentInstance("anotherProperty"),
+            CompassClassPropertyMapping.getPropertyInstance("childOnlyProperty")
+        ]
+        parentMappings = [
+            CompassClassPropertyMapping.getPropertyInstance("commonProperty"),
+            CompassClassPropertyMapping.getPropertyInstance("someProperty", [boost: 1.3]),
+            CompassClassPropertyMapping.getReferenceInstance("anotherProperty")
+        ]
+        SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(childMappings, parentMappings)
+        assert parentMappings.size() == 3
+        assert parentMappings.find { it.propertyName == "commonProperty" }.every { it.property && it.attributes.size() == 0 }
+        assert parentMappings.find { it.propertyName == "someProperty" }.every { it.property && it.attributes == [boost: 1.3] }
+        assert parentMappings.find { it.propertyName == "anotherProperty" }.every { it.reference && it.attributes.size() == 0 }
+        assert childMappings.size() == 4
+        assert childMappings.find { it.propertyName == "commonProperty" }.every { it.property && it.attributes.size() == 0 }
+        assert childMappings.find { it.propertyName == "someProperty" }.every { it.property && it.attributes.size() == 0 }
+        assert childMappings.find { it.propertyName == "anotherProperty" }.every { it.component && it.attributes.size() == 0 }
+        assert childMappings.find { it.propertyName == "childOnlyProperty" }.every { it.property && it.attributes.size() == 0 }
+
+        // mutiple mappings for a single property
+        childMappings = [
+            CompassClassPropertyMapping.getComponentInstance("anotherProperty"),
+            CompassClassPropertyMapping.getReferenceInstance("anotherProperty")
+        ]
+        parentMappings = [
+            CompassClassPropertyMapping.getReferenceInstance("anotherProperty")
+        ]
+        SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(childMappings, parentMappings)
+        assert parentMappings.size() == 1
+        assert parentMappings.find { it.propertyName == "anotherProperty" }.every { it.reference && it.attributes.size() == 0 }
+        assert childMappings.size() == 2
+        assert childMappings.find { it.propertyName == "anotherProperty" && it.component }.every { it.attributes.size() == 0 }
+        assert childMappings.find { it.propertyName == "anotherProperty" && it.reference }.every { it.attributes.size() == 0 }
+    }
 }

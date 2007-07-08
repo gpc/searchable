@@ -20,10 +20,12 @@ import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
-import org.springframework.util.ClassUtils;
+import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Maurice Nicholson
@@ -36,6 +38,7 @@ public abstract class AbstractSearchableGrailsDomainClassCompassClassMapper impl
 
     private SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory;
     private List defaultExcludedProperties;
+    private SearchableGrailsDomainClassCompassClassMapper parent;
 
     /**
      * Get the CompassClassMapping for the given GrailsDomainClass
@@ -50,6 +53,17 @@ public abstract class AbstractSearchableGrailsDomainClassCompassClassMapper impl
 
     protected CompassClassPropertyMapping getDefaultPropertyMapping(GrailsDomainClassProperty property, Collection searchableClasses) {
         return domainClassPropertyMappingFactory.getGrailsDomainClassPropertyMapping(property, searchableClasses);
+    }
+
+    protected List getInheritedPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, List excludedProperties) {
+        List parentMappedProperties = new ArrayList();
+        GrailsDomainClass superClass = GrailsDomainClassUtils.getSuperClass(grailsDomainClass, searchableGrailsDomainClasses);
+        while (superClass != null) {
+            List parentClassPropertyMappings = parent.getCompassClassPropertyMappings(superClass, searchableGrailsDomainClasses, SearchableUtils.getSearchablePropertyValue(superClass), excludedProperties);
+            SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(parentMappedProperties, parentClassPropertyMappings);
+            superClass = GrailsDomainClassUtils.getSuperClass(superClass, searchableGrailsDomainClasses);
+        }
+        return parentMappedProperties;
     }
 
     protected List getExcludedProperties() {
@@ -69,5 +83,13 @@ public abstract class AbstractSearchableGrailsDomainClassCompassClassMapper impl
 
     public void setDomainClassPropertyMappingStrategyFactory(SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory) {
         this.domainClassPropertyMappingFactory = domainClassPropertyMappingFactory;
+    }
+
+    public SearchableGrailsDomainClassCompassClassMapper getParent() {
+        return parent;
+    }
+
+    public void setParent(SearchableGrailsDomainClassCompassClassMapper parent) {
+        this.parent = parent;
     }
 }

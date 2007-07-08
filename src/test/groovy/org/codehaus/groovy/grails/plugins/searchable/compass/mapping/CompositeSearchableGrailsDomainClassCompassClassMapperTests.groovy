@@ -17,12 +17,13 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 /**
- * @author Maurice Nicholson
- */
+* @author Maurice Nicholson
+*/
 class CompositeSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTestCase {
-    def classMapper
+    SearchableGrailsDomainClassCompassClassMapper classMapper
 
     void setUp() {
         classMapper = new CompositeSearchableGrailsDomainClassCompassClassMapper()
@@ -46,6 +47,18 @@ class CompositeSearchableGrailsDomainClassCompassClassMapperTests extends Groovy
             [handlesSearchableValue: {true}] as SearchableGrailsDomainClassCompassClassMapper
         ]
         assert classMapper.handlesSearchableValue(true) // value is unimportant
+    }
+
+    void testGetCompassClassPropertyMappings() {
+        // This method is used "internally" so we assume that there is a handler available
+        def udc = new DefaultGrailsDomainClass(User.class)
+        classMapper.classMappers = [
+            [handlesSearchableValue: {false}] as SearchableGrailsDomainClassCompassClassMapper,
+            [   handlesSearchableValue: {true},
+                getCompassClassPropertyMappings: { Object[] args -> return ["it", "was", "called"] }
+            ] as SearchableGrailsDomainClassCompassClassMapper
+        ]
+        assert classMapper.getCompassClassPropertyMappings(udc, [udc], true, []) == ["it", "was", "called"]
     }
 
     void testGetCompassClassMapping() {

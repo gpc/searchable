@@ -41,12 +41,22 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
 
         CompositeSearchableGrailsDomainClassCompassClassMapper classMapper = new CompositeSearchableGrailsDomainClassCompassClassMapper();
         classMapper.setDefaultExcludedProperties(defaultExcludedProperties);
+        SearchableGrailsDomainClassCompassClassMapper[] classMappers = getActualSearchableGrailsDomainClassCompassClassMappers(domainClassPropertyMappingFactory, classMapper);
+        classMapper.setSearchableGrailsDomainClassCompassMappingDescriptionProviders(classMappers);
+        return classMapper;
+    }
+
+    private static SearchableGrailsDomainClassCompassClassMapper[] getActualSearchableGrailsDomainClassCompassClassMappers(SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory, CompositeSearchableGrailsDomainClassCompassClassMapper parent) {
         SearchableGrailsDomainClassCompassClassMapper[] classMappers;
         try {
             SimpleSearchableGrailsDomainClassCompassClassMapper simpleClassMapper = new SimpleSearchableGrailsDomainClassCompassClassMapper();
             simpleClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
+            simpleClassMapper.setParent(parent);
+
             AbstractSearchableGrailsDomainClassCompassClassMapper closureClassMapper = (AbstractSearchableGrailsDomainClassCompassClassMapper) ClassUtils.forName("org.codehaus.groovy.grails.plugins.searchable.compass.mapping.ClosureSearchableGrailsDomainClassCompassClassMapper").newInstance();
             closureClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
+            closureClassMapper.setParent(parent);
+
             classMappers = new SearchableGrailsDomainClassCompassClassMapper[] {
                 simpleClassMapper, closureClassMapper
             };
@@ -55,7 +65,6 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
             LOG.error("Failed to find or create closure mapping provider class instance", ex);
             throw new IllegalStateException("Failed to find or create closure mapping provider class instance: " + ex);
         }
-        classMapper.setSearchableGrailsDomainClassCompassMappingDescriptionProviders(classMappers);
-        return classMapper;
+        return classMappers;
     }
 }

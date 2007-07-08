@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
+import org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance.*
 
 /**
 *
@@ -29,26 +30,17 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUt
 */
 class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTestCase {
     def classMapper
-    def domainClassMap
-//    def currentSearchableValues
 
     void setUp() {
-//        currentSearchableValues = [(Post): Post.searchable, (Comment): Comment.searchable, (User): User.searchable]
-        domainClassMap = [:]
-        for (clazz in [Post, Comment, User, Comp, SearchableComp, ComponentOwner]) {
-            domainClassMap[clazz] = new DefaultGrailsDomainClass(clazz)
-        }
-        classMapper = new ClosureSearchableGrailsDomainClassCompassClassMapper(
-            domainClassPropertyMappingStrategyFactory: new SearchableGrailsDomainClassPropertyMappingFactory(
-                converterLookupHelper: new DefaultCompassConverterLookupHelper(converterLookup: new CompassConfiguration().setConnection("ram://dummy").buildCompass().converterLookup)
-            )
-        )
+        def parent = SearchableGrailsDomainClassCompassClassMapperFactory.getDefaultSearchableGrailsDomainClassCompassClassMapper([], [:])
+        classMapper = parent.classMappers.find { it instanceof ClosureSearchableGrailsDomainClassCompassClassMapper }
+//            domainClassPropertyMappingStrategyFactory: new SearchableGrailsDomainClassPropertyMappingFactory(
+//                converterLookupHelper: new DefaultCompassConverterLookupHelper(converterLookup: new CompassConfiguration().setConnection("ram://dummy").buildCompass().converterLookup)
+//            )
+//        )
     }
 
     void tearDown() {
-//        currentSearchableValues.each { c, v -> c.searchable = v }
-//        currentSearchableValues = null
-        domainClassMap = null
         classMapper = null
     }
 
@@ -286,7 +278,83 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
 //        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: ], searchableCompTwo: [component: [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)]]]
     }
 
-    def getClassMapping(clazz, searchableClasses, searchableValue, excludedProperties = []) {
-        classMapper.getCompassClassMapping(domainClassMap[clazz], searchableClasses.collect { domainClassMap[it] }, searchableValue, excludedProperties)
+    void testGetClassMappingWithInheritedMappings() {
+        def sv = [:]
+        [Parent, SearchableChildOne, SearchableChildTwo].each { c ->
+            sv[c] = c.searchable
+        }
+
+        try {
+            CompassClassMapping mapping
+
+            Parent.searchable = {
+                commonProperty(boost: 1.5) // common definition unless overriden by sub-class
+            }
+            mapping = getClassMapping(Parent, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
+            assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes == [boost: 1.5] }
+
+            mapping = getClassMapping(SearchableChildOne, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
+            assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes == [boost: 1.5] }
+            assert mapping.getPropertyMappings().find { it.propertyName == 'childOneProperty' }.every { it.property && it.attributes.size() == 0 }
+
+            // SearchableChildTwo inherits Parent's "commonProperty(boost: 1.5)"
+            SearchableChildTwo.searchable = {
+                childTwoProperty(index: 'un_tokenized')
+            }
+            mapping = getClassMapping(SearchableChildTwo, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
+            assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes == [boost: 1.5] }
+            assert mapping.getPropertyMappings().find { it.propertyName == 'childTwoProperty' }.every { it.property && it.attributes == [index: 'un_tokenized'] }
+
+            // SearchbaleChildTwo overrides parent def, other properties are mapped with defaults
+            SearchableChildTwo.searchable = {
+                commonProperty() // overrides super-class definition; uses default searchable property mapping
+            }
+            mapping = getClassMapping(SearchableChildTwo, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
+            assert mapping.getPropertyMappings().find { it.propertyName == 'childTwoProperty' }.every { it.property && it.attributes.size() == 0 }
+            assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes.size() == 0 }
+        } finally {
+            sv.each { c, v ->
+                c.searchable = v
+            }
+        }
+    }
+
+    def getClassMapping(clazz, searchableClasses, searchableValue) {
+        getClassMapping(clazz, searchableClasses, searchableValue, [])
+    }
+
+    CompassClassMapping getClassMapping(clazz, searchableClazzes, searchableValue, excludedProperties = []) {
+        def domainClasses = getDomainClasses(searchableClazzes)
+        def gdc = domainClasses.find { it.clazz == clazz}
+        classMapper.getCompassClassMapping(gdc, domainClasses, searchableValue, excludedProperties)
+    }
+
+    CompassClassMapping getClassMapping(clazz, searchableClazzes) {
+        def domainClasses = getDomainClasses(searchableClazzes)
+        def gdc = domainClasses.find { it.clazz == clazz}
+        classMapper.getCompassClassMapping(gdc, domainClasses)
+    }
+
+    def getDomainClasses(clazzes) {
+        def domainClasses = []
+        for (clazz in clazzes) {
+            def DefaultGrailsDomainClass domainClass = new DefaultGrailsDomainClass(clazz)
+            domainClasses << domainClass
+        }
+        configureDomainClassRelationships(domainClasses)
+        domainClasses
+    }
+
+    def configureDomainClassRelationships(domainClasses) {
+        def domainClassMap = getDomainClassMap(domainClasses)
+        GrailsDomainConfigurationUtil.configureDomainClassRelationships(domainClasses as GrailsClass[], domainClassMap)
+    }
+
+    def getDomainClassMap(domainClasses) {
+        def domainClassMap = [:]
+        for (dc in domainClasses) {
+            domainClassMap[dc.clazz.name] = dc
+        }
+        domainClassMap
     }
 }
