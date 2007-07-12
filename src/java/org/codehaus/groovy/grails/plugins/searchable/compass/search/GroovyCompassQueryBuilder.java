@@ -24,8 +24,8 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
+import org.compass.core.util.Assert;
 import org.compass.core.util.ClassUtils;
-import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -45,6 +45,7 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
 
     /**
      * Constructor
+     * @param queryBuilder a CompassQueryBuilder used internally to build the query
      */
     public GroovyCompassQueryBuilder(CompassQueryBuilder queryBuilder) {
         this.queryBuilder = queryBuilder;
@@ -52,6 +53,8 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
 
     /**
      * Build a CompassQuery for the given closure and return it
+     * @param closure a Closure which builds the query when executed
+     * @return a CompassQuery built by the given Closure
      */
     public CompassQuery buildQuery(Closure closure) {
         CompassQueryBuildingClosureDelegate invoker = new CompassQueryBuildingClosureDelegate(queryBuilder);
