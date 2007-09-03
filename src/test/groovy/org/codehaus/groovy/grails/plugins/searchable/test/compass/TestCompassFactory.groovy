@@ -17,21 +17,31 @@ package org.codehaus.groovy.grails.plugins.searchable.test.compass
 
 import org.compass.core.*
 import org.compass.core.config.CompassConfiguration
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 /**
  *
  * @author Maurice Nicholson
  */
 class TestCompassFactory {
-    static getCompass(classes, instances = null) {
-        def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader())
-        ApplicationHolder.setApplication(grailsApplication)
+
+    static getGrailsApplication(Collection classes) {
+        def grailsApplication = new DefaultGrailsApplication(classes as Class[], Thread.currentThread().getContextClassLoader()) //new GroovyClassLoader())
+        grailsApplication.initialise()
+        return grailsApplication
+    }
+
+    static getCompass(Collection classes, Collection instances = null) {
+        def grailsApplication = getGrailsApplication(classes)
+        return getCompass(grailsApplication, instances)
+    }
+
+    static getCompass(GrailsApplication grailsApplication, Collection instances = null) {
         def configurator = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(
             grailsApplication,
             [SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableClassPropertyMappingConfigurator([:], [], new DefaultSearchableCompassClassMappingXmlBuilder())] as SearchableGrailsDomainClassMappingConfigurator[]
@@ -46,7 +56,7 @@ class TestCompassFactory {
             template.execute(new SaveInstancesCompassCallback(instances))
         }
 
-        compass
+        return compass
     }
 }
 

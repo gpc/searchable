@@ -2,7 +2,6 @@ package org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance
 
 import org.codehaus.groovy.grails.plugins.searchable.compass.spring.DefaultSearchableCompassFactoryBean
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.util.ClassUtils
 import org.springframework.core.io.DefaultResourceLoader
 import org.codehaus.groovy.grails.plugins.searchable.compass.test.AbstractSearchableCompassTests
@@ -15,17 +14,19 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.DefaultSearchableMe
 */
 class InheritanceTests extends AbstractSearchableCompassTests {
     def compass
+    def grailsApplication
     def methodFactory
 
     void setUp() {
         def cl = new GroovyClassLoader() //Thread.currentThread().getContextClassLoader())
         Thread.currentThread().setContextClassLoader(cl)
         compass = buildCompass([Parent, SearchableChildOne, SearchableChildTwo, NonSearchableChild, Associate, SearchableGrandChild], cl)
-        methodFactory = new DefaultSearchableMethodFactory(compass: compass)
+        methodFactory = new DefaultSearchableMethodFactory(compass: compass, grailsApplication: grailsApplication)
     }
 
     void tearDown() {
         compass = null
+        grailsApplication = null
     }
 
     void testMappingWithSaveAndLoad() {
@@ -130,8 +131,10 @@ class InheritanceTests extends AbstractSearchableCompassTests {
     }
 
     private buildCompass(classes, cl) {
-        def grailsApplication = new DefaultGrailsApplication(classes as Class[], cl)
-        ApplicationHolder.setApplication(grailsApplication)
+        // TODO this is nasty - remove dependency on GrailsApplication!
+        grailsApplication = new DefaultGrailsApplication(classes as Class[], cl)
+        grailsApplication.initialise()
+
         def fb = new DefaultSearchableCompassFactoryBean()
         fb.resourceLoader = new DefaultResourceLoader()
         fb.grailsApplication = grailsApplication

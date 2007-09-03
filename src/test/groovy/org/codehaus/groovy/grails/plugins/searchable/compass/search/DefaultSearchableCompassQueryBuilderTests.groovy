@@ -39,38 +39,41 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMapp
 class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompassTests {
     def builder = new DefaultSearchableCompassQueryBuilder()
     def compass
+    def grailsApplication
 
     void setUp() {
 //        Thread.currentThread().setContextClassLoader(new GroovyClassLoader())
-        compass = TestCompassFactory.getCompass([Post, Comment])
+        grailsApplication = TestCompassFactory.getGrailsApplication([Post, Comment])
+        compass = TestCompassFactory.getCompass(grailsApplication)
     }
 
     void tearDown() {
         compass.close()
         compass = null
+        grailsApplication = null
     }
 
     void testBuildQueryWithString() {
         withCompassSession { compassSession ->
             // No class, no escape
-            def query = builder.buildQuery(compassSession, [escape: false], "Hello World")
+            def query = builder.buildQuery(grailsApplication, compassSession, [escape: false], "Hello World")
             assert query.toString() == "all:hello all:world"
 
             // escape does not affect normal queries
-            query = builder.buildQuery(compassSession, [escape: true], "Hello World")
+            query = builder.buildQuery(grailsApplication, compassSession, [escape: true], "Hello World")
             assert query.toString() == "all:hello all:world"
 
             // no escape, bad query
             shouldFail {
-                builder.buildQuery(compassSession, [escape: false], "[this is a bad query}")
+                builder.buildQuery(grailsApplication, compassSession, [escape: false], "[this is a bad query}")
             }
 
             // should not fail with escape
-            builder.buildQuery(compassSession, [escape: true], "[this is a bad query}")
+            builder.buildQuery(grailsApplication, compassSession, [escape: true], "[this is a bad query}")
 
             // bad query, no escape, with class
             shouldFail(ParseException) {
-                query = builder.buildQuery(compassSession, [class: Post, escape: false], "[special characters sometimes need to be escaped to avoid a runtime parse exception]")
+                query = builder.buildQuery(grailsApplication, compassSession, [class: Post, escape: false], "[special characters sometimes need to be escaped to avoid a runtime parse exception]")
             }
 
             // Without escape, with class
@@ -86,7 +89,7 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
                 queryBuilder: { mockCqb.proxy() }
             ] as CompassSession
             builder.compass = compass
-            builder.buildQuery(mockSession, [escape: false, class: Post], "some typical search term")
+            builder.buildQuery(grailsApplication, mockSession, [escape: false, class: Post], "some typical search term")
 
             mockCqb.verify()
             mockStringBuilder.verify()
@@ -104,7 +107,7 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
             mockSession = [
                 queryBuilder: { mockCqb.proxy() }
             ] as CompassSession
-            builder.buildQuery(mockSession, [class: Comment, escape: true], "[special characters sometimes need to be escaped to avoid a runtime parse exception]")
+            builder.buildQuery(grailsApplication, mockSession, [class: Comment, escape: true], "[special characters sometimes need to be escaped to avoid a runtime parse exception]")
 
             mockCqb.verify()
             mockStringBuilder.verify()
@@ -117,7 +120,7 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
         // more thorough tests in GroovyCompassQueryBuilderTests
         withCompassSession { compassSession ->
             // Normal string queries are as expected
-            def query = builder.buildQuery(compassSession, [:]) {
+            def query = builder.buildQuery(grailsApplication, compassSession, [:]) {
                 queryString("Hello WORLD")
             }
             assert query.toString() == "all:hello all:world"
@@ -125,13 +128,13 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
             // escape *does not affect string queries* when using a builder closure
             // this is more of an assertion of "not yet implemented" rather than a purposeful feature
             shouldFail {
-                query = builder.buildQuery(compassSession, [escape: true]) {
+                query = builder.buildQuery(grailsApplication, compassSession, [escape: true]) {
                     queryString("[this is a bad query]")
                 }
             }
 
             // we can create complex queries quickly
-            query = builder.buildQuery(compassSession, [:]) {
+            query = builder.buildQuery(grailsApplication, compassSession, [:]) {
                 multiPropertyQueryString("Hello Searchable Plugin") {
                     add("title")
                     add("summary")
@@ -154,7 +157,7 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
                 }
             ] as CompassSession
             builder.compass = compass
-            query = builder.buildQuery(mockSession, [class: Post]) {
+            query = builder.buildQuery(grailsApplication, mockSession, [class: Post]) {
                 term("keywords", "groovy")
             }
 

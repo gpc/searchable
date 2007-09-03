@@ -15,8 +15,6 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
-
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 
@@ -49,6 +47,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
 
         def className = description.mappedClass.name
         LOG.debug("Building Compass mapping XML for [${className}] from description [${description}]")
+        def self = this
         def r = mkp."compass-core-mapping" {
             def classAttrs = [name: className, alias: description.alias, root: description.root]
             if (description.poly) {
@@ -63,7 +62,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                 for (constantMetaData in description.constantMetaData) {
                     def metaData = new HashMap(constantMetaData) // clone to avoid corruption
                     def name = metaData.name
-                    def attributes = transformAttrNames(metaData.attributes)
+                    def attributes = self.transformAttrNames(metaData.attributes)
                     validateAttributes("meta-data", attributes, META_DATA_ATTR_NAMES)
                     constant {
                         'meta-data'(attributes, name)
@@ -81,19 +80,19 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     def attrs = [name: propertyName]
                     if (propertyMapping.reference) {
                         def refAttrs = new HashMap(attrs)
-                        refAttrs.putAll(transformAttrNames(attributes))
+                        refAttrs.putAll(self.transformAttrNames(attributes))
                         validateAttributes("reference", refAttrs, REFERENCE_ATTR_NAMES)
                         reference(refAttrs)
                     }
                     if (propertyMapping.component) {
                         def compAttrs = new HashMap(attrs)
-                        compAttrs.putAll(transformAttrNames(attributes))
+                        compAttrs.putAll(self.transformAttrNames(attributes))
                         validateAttributes("component", compAttrs, COMPONENT_ATTR_NAMES)
                         component(compAttrs)
                     }
                     if (propertyMapping.property) {
                         def metaDataAttrs = [:]
-                        def tmp = transformAttrNames(attributes)
+                        def tmp = self.transformAttrNames(attributes)
                         validateAttributes("property", tmp, PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES)
                         tmp.each { k, v ->
                             if (META_DATA_ATTR_NAMES.contains(k)) {

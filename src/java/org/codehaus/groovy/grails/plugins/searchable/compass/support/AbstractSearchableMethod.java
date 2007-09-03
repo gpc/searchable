@@ -44,25 +44,6 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
         return invoke(args);
     }
 
-    protected Map getOptions(Object[] args) {
-        Assert.notNull(args, "args cannot be null");
-        Map options = null;
-        for (int i = 0, max = args.length; i < max; i++) {
-            if (args[i] instanceof Map) {
-                options = (Map) args[i];
-                break;
-            }
-        }
-        Map merged = new HashMap();
-        if (defaultOptions != null) {
-            merged.putAll(defaultOptions);
-        }
-        if (options != null) {
-            merged.putAll(options);
-        }
-        return merged;
-    }
-
     protected Object doInCompass(CompassCallback compassCallback) {
         CompassTemplate template = new CompassTemplate(compass);
         return template.execute(compassCallback);

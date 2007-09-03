@@ -57,7 +57,9 @@ class DefaultGrailsDomainClassMappingSearchableCompassConfiguratorTests extends 
     }
 
     private getApplication(classes) {
-        new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader())
+        def app = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader())
+        app.initialise()
+        return app
     }
 }
 

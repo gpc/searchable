@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.index;
 
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.compass.core.*;
 
 import java.util.HashMap;
@@ -69,7 +70,7 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
     }
 
     public Object invoke(final Object[] args) {
-        Map options = getOptions(args);
+        Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
         final Class clazz = (Class) options.get("class");
         final List ids = getIds(args);
         final List objects = getObjects(args);

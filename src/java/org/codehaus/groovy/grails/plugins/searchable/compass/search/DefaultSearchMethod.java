@@ -18,9 +18,10 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 import groovy.lang.Closure;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.AbstractSearchableMethod;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.compass.core.*;
 import org.springframework.util.Assert;
 
@@ -34,12 +35,14 @@ import java.util.Map;
 public class DefaultSearchMethod extends AbstractSearchableMethod implements SearchableMethod {
     private static Log LOG = LogFactory.getLog(DefaultSearchMethod.class);
 
+    private GrailsApplication grailsApplication;
     private SearchableCompassQueryBuilder compassQueryBuilder;
     private SearchableHitCollector hitCollector;
     private SearchableSearchResultFactory searchResultFactory;
     
-    public DefaultSearchMethod(String methodName, Compass compass, Map defaultOptions) {
+    public DefaultSearchMethod(String methodName, Compass compass, GrailsApplication grailsApplication, Map defaultOptions) {
         super(methodName, compass, defaultOptions);
+        this.grailsApplication = grailsApplication;
     }
 
     public Object invoke(Object[] args) {
@@ -48,11 +51,11 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
 
         final Object query = getQuery(args);
         Assert.notNull(query, "No query String or Closure argument given to " + getMethodName() + "(): you must supply one");
-        final Map options = getOptions(args);
+        final Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
 
         return doInCompass(new CompassCallback() {
             public Object doInCompass(CompassSession session) throws CompassException {
-                CompassQuery compassQuery = compassQueryBuilder.buildQuery(session, options, query);
+                CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, options, query);
                 long start = System.currentTimeMillis();
                 CompassHits hits = compassQuery.hits();
                 if (LOG.isDebugEnabled()) {
@@ -86,5 +89,9 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
 
     public void setSearchResultFactory(SearchableSearchResultFactory searchResultFactory) {
         this.searchResultFactory = searchResultFactory;
+    }
+
+    public void setGrailsApplication(GrailsApplication grailsApplication) {
+        this.grailsApplication = grailsApplication;
     }
 }

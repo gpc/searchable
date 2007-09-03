@@ -19,6 +19,7 @@ import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
 import org.compass.core.Compass;
 import org.compass.core.CompassSession;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 import java.util.Map;
 
@@ -34,9 +35,10 @@ public interface SearchableCompassQueryBuilder {
     /**
      * Build and return a CompassQuery
      *
+     * @param grailsApplication
      * @param compassSession the current Compass session
      * @param options query options
      * @param query the query object: either a String or Closure @return the compass query
      */
-    CompassQuery buildQuery(CompassSession compassSession, Map options, Object query);
+    CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query);
 }

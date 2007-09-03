@@ -16,17 +16,9 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass;
 
 import grails.util.GrailsUtil;
-import org.codehaus.groovy.grails.commons.ApplicationHolder;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
-import org.compass.core.Compass;
-import org.compass.core.spi.InternalCompass;
-import org.springframework.util.Assert;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * Utilities for Compass and Grails Searchable Plugin
@@ -39,16 +31,12 @@ public class SearchableCompassUtils {
      * Get the default Compass connection (ie, Lucene index dir)
      *
      * @return {user.home}/{project-name}/.searchable/{grails.env}
+     * @param grailsApplication
      */
-    public static String getDefaultConnection() {
+    public static String getDefaultConnection(GrailsApplication grailsApplication) {
         return System.getProperty("user.home") +
-                File.separator + getApplicationName() +
+                File.separator + grailsApplication.getMetadata().get("app.name") +
                 File.separator + ".searchable" +
                 File.separator + GrailsUtil.getEnvironment();
-    }
-
-    public static String getApplicationName() {
-        GrailsApplication app = ApplicationHolder.getApplication();
-        return (String) app.getMetadata().get("app.name");
     }
 }

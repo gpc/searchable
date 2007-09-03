@@ -40,6 +40,7 @@ class GrailsDomainClassUtilsTests extends GroovyTestCase {
 
     void testGetSubClasses() {
         def ga = new DefaultGrailsApplication([a, aa, aaa, b] as Class[], gcl)
+        ga.initialise();
         def adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
         def aadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aa")
         def aaadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aaa")
@@ -55,18 +56,21 @@ class GrailsDomainClassUtilsTests extends GroovyTestCase {
         GrailsApplication ga
 
         ga = new DefaultGrailsApplication([a] as Class[], gcl)
+        ga.initialise();
         def adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
 
         assert GrailsDomainClassUtils.getSuperClass(adc, []) == null
         assert GrailsDomainClassUtils.getSuperClass(adc, [adc]) == null
 
         ga = new DefaultGrailsApplication([a, b] as Class[], gcl)
+        ga.initialise();
         adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
         def bdc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "B")
         assert GrailsDomainClassUtils.getSuperClass(bdc, [adc, bdc]) == null
 
         // 1 level of extension
         ga = new DefaultGrailsApplication([a, aa, b] as Class[], gcl)
+        ga.initialise();
         adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
         bdc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "B")
         def aadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aa")
@@ -76,6 +80,7 @@ class GrailsDomainClassUtilsTests extends GroovyTestCase {
 
         // 2 levels of extension
         ga = new DefaultGrailsApplication([a, aa, aaa, b] as Class[], gcl)
+        ga.initialise();
         adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
         bdc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "B")
         aadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aa")
@@ -93,6 +98,7 @@ class GrailsDomainClassUtilsTests extends GroovyTestCase {
     void testGetSuperClasses() {
         // 2 levels of extension
         def ga = new DefaultGrailsApplication([a, aa, aaa, b] as Class[], gcl)
+        ga.initialise();
         def adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
         def aadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aa")
         def aaadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aaa")
@@ -124,6 +130,7 @@ class GrailsDomainClassUtilsTests extends GroovyTestCase {
 
     void testIsWithinInhertitanceHierarchy() {
         def ga = new DefaultGrailsApplication([a, aa, aaa, b] as Class[], gcl)
+        ga.initialise();
         def adc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
         def aadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aa")
         def aaadc = ga.getArtefact(DomainClassArtefactHandler.TYPE, "Aaa")

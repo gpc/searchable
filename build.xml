@@ -28,7 +28,6 @@
       <include name="ant*.jar" />
     </fileset>
   </path>
-
   <path id="classpath">
     <fileset dir="lib" includes="*.jar" />
     <fileset dir="${grails.home}/lib" includes="*.jar">
@@ -38,13 +37,13 @@
     <fileset dir="${grails.home}/dist" includes="*.jar" />
     <path location="${classes}" />
   </path>
-
+<!--
   <path id="junit.classpath">
     <path refid="classpath" />
-<!--    <pathelement location="${env.ANT_HOME}/ant-junit.jar" /> -->
-    <fileset dir="${grails.home}" includes="junit*.jar" />
+    <pathelement location="${grails.home}/lib/ant-junit.jar" />
+    <fileset dir="${grails.home}/lib" includes="junit*.jar" />
   </path>
-
+-->
   <path id="test.classpath">
     <path refid="classpath" />
     <pathelement location="${test.groovy.src}"/>
@@ -52,7 +51,7 @@
   </path>
 
   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
-  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" />
+<!--  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" /> -->
 
   <target name="clean">
     <delete dir="${target}" />
@@ -100,6 +99,7 @@
       <echo message="Running integration test @{app.name} with Java @{test.java.home}" />
       <java classname="groovy.ui.GroovyMain" fork="true" classpathref="groovy.classpath" jvm="@{test.java.home}/bin/java" failonerror="true">
         <env key="JAVA_HOME" value="@{test.java.home}" />
+        <arg value="-verbose" />
         <arg value="integration-test/groovy/RunIntegrationTest.groovy" />
         <arg value="${basedir}" />
         <arg value="${basedir}/../tmp" />
@@ -109,7 +109,7 @@
     </sequential>
   </macrodef>
 
-  <target name="integration-test">
+  <target name="integration-test" depends="package">
     <run-integration-test test.java.home="${java14.home}" app.name="simple-groovy" app.tests="artist-and-album-tests"/>
     <run-integration-test test.java.home="${java15.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" />
 

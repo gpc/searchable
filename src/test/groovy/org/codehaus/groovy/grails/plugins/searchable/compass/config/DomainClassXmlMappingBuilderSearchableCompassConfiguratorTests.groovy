@@ -287,7 +287,9 @@ class DomainClassXmlMappingBuilderSearchableCompassConfiguratorTests extends Gro
 
     private buildCompass(classes) {
         def configurator = new DomainClassXmlMappingBuilderSearchableCompassConfigurator()
-        configurator.grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader(Thread.currentThread().getContextClassLoader()))
+        DefaultGrailsApplication application = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader(Thread.currentThread().getContextClassLoader()))
+        application.initialise()
+        configurator.grailsApplication = application
         // TODO using "new org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DefaultSearchableCompassClassMappingXmlBuilder()" causes a StackOverflowError - why!? 
         configurator.compassClassMappingXmlBuilder = ClassUtils.forName("org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DefaultSearchableCompassClassMappingXmlBuilder").newInstance()
 

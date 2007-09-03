@@ -18,9 +18,8 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.index;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
-import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.compass.CompassGpsUtils;
-import org.codehaus.groovy.grails.plugins.searchable.util.TimeUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
@@ -83,7 +82,7 @@ public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements Se
     }
 
     public Object invoke(Object[] args) {
-        Map options = getOptions(args);
+        Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
         final Class clazz = (Class) options.get("class");
         final List ids = getIds(args);
         final List objects = getObjects(args);

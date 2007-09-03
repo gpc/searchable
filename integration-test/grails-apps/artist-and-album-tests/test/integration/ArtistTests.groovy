@@ -1,3 +1,5 @@
+import org.compass.core.CompassTermFreq
+
 class ArtistTests extends GroovyTestCase {
 
     void setUp() {
@@ -42,5 +44,16 @@ class ArtistTests extends GroovyTestCase {
         assert hits*.class.unique() == [Artist]
         assert hits*.name.containsAll(['Elvis Costello', 'Elvis Presley'])
         assert hits.every { it.albums.size() == 2 }
+    }
+
+    void testTermFreqs() {
+        // sanity test: try out some argument combos: more tests elsewhere
+        def result = Artist.termFreqs('name')
+        assert result instanceof CompassTermFreq[]
+        assert result.length > 0
+
+        result = Artist.termFreqs() // defaults to "all" field
+        assert result instanceof CompassTermFreq[]
+        assert result.length > 0
     }
 }

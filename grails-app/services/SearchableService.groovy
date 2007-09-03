@@ -70,6 +70,13 @@ class SearchableService {
     }
 
     /**
+     * Get term frequencies for the given args
+     */
+    def termFreqs(Object[] args) {
+        searchableMethodFactory.getMethod("termFreqs").invoke(*args)
+    }
+
+    /**
      * Index
      */
     def indexAll(Object[] args) {

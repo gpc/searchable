@@ -56,7 +56,7 @@ public class DefaultSearchableCompassFactoryBean extends SearchableCompassFactor
 
         LOG.debug("Building SearchableCompassFactoryBean with grailsApplication [" + grailsApplication + "] and compassClassMappingXmlBuilder [" + compassClassMappingXmlBuilder + "]");
 
-        EnvironmentSearchableCompassConfigurator environment = SearchableCompassConfiguratorFactory.getEnvironmentConfigurator(compassConnection, compassSettings);
+        EnvironmentSearchableCompassConfigurator environment = SearchableCompassConfiguratorFactory.getEnvironmentConfigurator(compassConnection, compassSettings, grailsApplication);
         CompassXmlConfigurationSearchableCompassConfigurator compassXml = SearchableCompassConfiguratorFactory.getCompassXmlConfigurator(resourceLoader);
         DefaultGrailsDomainClassMappingSearchableCompassConfigurator mappings = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(grailsApplication, resourceLoader, defaultFormats, defaultExcludedProperties, compassClassMappingXmlBuilder);
 

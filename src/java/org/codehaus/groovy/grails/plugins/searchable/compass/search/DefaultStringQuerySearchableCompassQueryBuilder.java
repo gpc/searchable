@@ -18,6 +18,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.codehaus.groovy.runtime.InvokerHelper;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
 import org.compass.core.CompassSession;
@@ -43,7 +44,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSea
         super(compass);
     }
 
-    public CompassQuery buildQuery(CompassSession compassSession, Map options, Object query) {
+    public CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query) {
         Assert.notNull(query, "query cannot be null");
         Assert.isInstanceOf(String.class, query, "query must be a String but is [" + query.getClass().getName() + "]");
 

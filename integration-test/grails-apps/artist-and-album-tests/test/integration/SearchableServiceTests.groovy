@@ -1,8 +1,10 @@
+import org.compass.core.CompassTermFreq
+
 /**
- *
- *
- * @author Maurice Nicholson
- */
+*
+*
+* @author Maurice Nicholson
+*/
 class SearchableServiceTests extends GroovyTestCase {
     def searchableService
 
@@ -42,6 +44,19 @@ class SearchableServiceTests extends GroovyTestCase {
         def results = searchableService.searchEvery("beatles album")
         assert results*.class as Set == [Album, Artist] as Set
         assert results.size() == 10
+    }
+
+    void testTermFreqs() {
+        // sanity test: try out some argument combos: more tests elsewhere
+        def result = searchableService.termFreqs('name')
+        assert result instanceof CompassTermFreq[]
+        assert result.size() > 0
+        result = searchableService.termFreqs('name', 'genre')
+        assert result.size() > 0
+        result = searchableService.termFreqs('name', 'genre')
+        assert result.size() > 0
+        result = searchableService.termFreqs('name', 'genre', size: 100)
+        assert result.size() > 0
     }
 
     void testIndexAll() {

@@ -19,15 +19,17 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.test.*
 import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.commons.metaclass.*
+import org.codehaus.groovy.grails.plugins.searchable.SearchableMethodFactory
+import org.compass.core.Compass
 
 /**
- * 
- *
- * @author Maurice Nicholson
- */
+*
+*
+* @author Maurice Nicholson
+*/
 class DefaultSearchableMethodFactoryTests extends AbstractSearchableCompassTests {
-    def compass
-    def factory
+    Compass compass
+    SearchableMethodFactory factory
 
     void setUp() {
         def posts = []
@@ -52,6 +54,14 @@ class DefaultSearchableMethodFactoryTests extends AbstractSearchableCompassTests
         compass.close()
         compass = null
         factory = null
+    }
+
+    void testTermFreqs() {
+        // Just a saninty check
+        def termFreqs = factory.getMethod("termFreqs")
+        assert termFreqs
+        def result = termFreqs()
+        assert result
     }
 
     void testIndexAll() {

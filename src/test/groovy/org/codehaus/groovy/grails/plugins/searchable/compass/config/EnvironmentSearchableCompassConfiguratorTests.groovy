@@ -25,20 +25,16 @@ import org.compass.core.config.CompassSettings
 */
 class EnvironmentSearchableCompassConfiguratorTests extends GroovyTestCase {
     def configurator
-    def oldApp
 
     void setUp() {
-        configurator = new EnvironmentSearchableCompassConfigurator()
-        oldApp = ApplicationHolder.getApplication()
         def application = [
             getMetadata: { ["app.name": "shinnynewgrailsapp", "grails.env": "dev"] }
         ] as GrailsApplication
-        ApplicationHolder.setApplication(application)
+        configurator = new EnvironmentSearchableCompassConfigurator(grailsApplication: application)
     }
 
     void tearDown() {
-        ApplicationHolder.setApplication(oldApp)
-        oldApp = null
+        configurator = null
     }
 
     void testConfigureDefaultConnection() {

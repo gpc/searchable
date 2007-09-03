@@ -32,17 +32,36 @@ class CompassMappingUtilsTests extends GroovyTestCase {
     }
 
     void testGetMappingAlias() {
-        def classMapping = new ClassMapping()
-        classMapping.clazz = Post
-        classMapping.alias = "thingthatwaswritten"
-        classMapping.name = Post.name
         def mapping = new CompassMapping()
-        mapping.addMapping(classMapping)
+        mapping.addMapping(getClassMapping(Post.class))
         def compass = [
             getMapping: {
                 mapping
             }
         ] as InternalCompass
-        assert CompassMappingUtils.getMappingAlias(compass, Post) == "thingthatwaswritten"
+        assert CompassMappingUtils.getMappingAlias(compass, Post) == "Postalias"
+    }
+
+    //    public static String[] getMappingAliases(Compass compass, Collection clazzes) {
+    void testGetMappingAliases() {
+        def mapping = new CompassMapping()
+        mapping.addMapping(getClassMapping(Post.class))
+        mapping.addMapping(getClassMapping(User.class))
+        mapping.addMapping(getClassMapping(Comment.class))
+        def compass = [
+            getMapping: {
+                mapping
+            }
+        ] as InternalCompass
+        assert CompassMappingUtils.getMappingAliases(compass, [Post]) == ["Postalias"]
+        assert (CompassMappingUtils.getMappingAliases(compass, [Post, User, Comment]) as List).sort() == ["Commentalias", "Postalias", "Useralias"]
+    }
+
+    private getClassMapping(Class clazz) {
+        def classMapping = new ClassMapping()
+        classMapping.clazz = clazz
+        classMapping.alias = clazz.simpleName + "alias"
+        classMapping.name = clazz.name
+        classMapping
     }
 }

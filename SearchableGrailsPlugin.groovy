@@ -101,6 +101,13 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
             }
 
             /**
+             * Get term frequencies for the given args
+             */
+            grailsDomainClass.metaClass.'static'.termFreqs << { Object[] args ->
+                searchableMethodFactory.getMethod(delegate, "termFreqs").invoke(*args)
+            }
+
+            /**
              * index: Adds class instances to the search index
              */
             grailsDomainClass.metaClass.'static'.index << { Object[] args ->
@@ -208,6 +215,7 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
                 compass = compass
                 compassGps = compassGps
                 searchDefaults = config?.defaultSearchOptions
+                grailsApplication = application
             }
         }
         LOG.debug("Done defining Compass and Compass::GPS beans")
@@ -261,7 +269,7 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
     }*/
 
     // Get a configuration instance
-    private getConfiguration(resourceLoader) {
+    private getConfiguration = { resourceLoader ->
         def locations = ["file:.", "/WEB-INF"]
         for (location in locations) {
             def name = location + "/grails-app/conf/SearchableConfiguration.groovy"

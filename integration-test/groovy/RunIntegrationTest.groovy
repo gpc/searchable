@@ -4,13 +4,24 @@
  * @author Maurice Nicholson
  */
 USAGE = """
-groovy RunIntegrationTest plugin-dir working-dir app-dir [app-dir2 ... [app-dirN]]
+groovy RunIntegrationTest [-v[erbose]] plugin-dir working-dir app-dir [app-dir2 ... [app-dirN]]
 
 plugin-dir       -- the plugin project dir: should contain one 'grails-searchable-xxx.zip'
 working-dir      -- the working directory to use for generated test apps
 app-dir          -- the location of the test app template
 app-dir2/N       -- more test app template dirs
+
+-v or -verbose   -- echo command output
 """
+
+args = args as List
+def verbose = false
+for (v in ["-verbose", "-v"]) {
+    if (args.indexOf(v) > -1) {
+        verbose = true
+        args.remove(v)
+    }
+}
 if (args.size() < 3) {
     println USAGE
     System.exit(1)
@@ -31,9 +42,9 @@ appTemplateDirs.each { dir ->
 def appName = new File(appTemplateDirs[0]).name
 
 println "Running integration test\n  App: $appName $appTemplateDirs\n  Plugin dist: $pluginZip\n  Working dir: $workingDir"
-getTestScript(appName, workingDir, appTemplateDirs, pluginZip).call()
+getTestScript(verbose, appName, workingDir, appTemplateDirs, pluginZip).call()
 
-def getTestScript(appName, dir, appDirs, pluginZip) {
+def getTestScript(verbose, appName, dir, appDirs, pluginZip) {
     def testScript = {
         // A unique number for generated property names, since Ant will not overwrite
         // a property once set
@@ -47,6 +58,9 @@ def getTestScript(appName, dir, appDirs, pluginZip) {
 //            println "running ${attrs.executable} ${attrs.args.join(' ')} in ${attrs.dir}"
             def ouputPropertyName = "exec.output.$uniquePropertyNum"
             def resultPropertyName = "exec.result.$uniquePropertyNum"
+            if (verbose) {
+                println "Executing: [${attrs.executable}], dir: [${attrs.dir}], args: ${attrs.args}"
+            }
             exec(executable: attrs.executable, dir: attrs.dir, failonerror: "yes", newenvironment: 'yes', outputproperty: ouputPropertyName, resultproperty: resultPropertyName) {
                 for (value in attrs.args) {
                     arg(value: value)
@@ -61,7 +75,11 @@ def getTestScript(appName, dir, appDirs, pluginZip) {
                 println "-" * 60
                 println project.properties[ouputPropertyName]
                 println "-" * 60
+            } else if (verbose) {
+                println "Exit code: [${project.properties[resultPropertyName]}]"
+                println "Output: [\n${project.properties[ouputPropertyName]}\n]"
             }
+
         }
 
         condition(property: "grails", value: "grails.bat") {

@@ -7,4 +7,9 @@ Adds rich search functionality to Grails domain models.
 Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucene.apache.org/)
 </description>
   <documentation>http://grails.org/Searchable+Plugin</documentation>
+  <resources>
+    <resource>SearchableService</resource>
+    <resource>SearchableUrlMappings</resource>
+    <resource>SearchableController</resource>
+  </resources>
 </plugin>

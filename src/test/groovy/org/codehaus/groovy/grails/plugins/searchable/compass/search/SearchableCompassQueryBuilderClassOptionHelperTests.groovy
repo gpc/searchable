@@ -41,9 +41,11 @@ import org.compass.core.CompassQueryBuilder.*
 class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearchableCompassTests {
     def helper
     def compass
+    def grailsApplication
 
     void setUp() {
-        compass = TestCompassFactory.getCompass([Post, Comment, Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild, NonSearchableChild])
+        grailsApplication = TestCompassFactory.getGrailsApplication([Post, Comment, Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild, NonSearchableChild])
+        compass = TestCompassFactory.getCompass(grailsApplication)
         helper = new SearchableCompassQueryBuilderClassOptionHelper()
     }
 
@@ -51,6 +53,7 @@ class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearch
         compass.close()
         compass = null
         helper = null
+        grailsApplication = null
     }
 
     void testQueryWithAndWithoutClass() {
@@ -60,7 +63,7 @@ class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearch
             assert query.toString() == "all:some all:typical all:search all:term"
 
             // Without class: no difference
-            def queryApplied = helper.applyOptions(null, compassSession, query, [:])
+            def queryApplied = helper.applyOptions(null, null, compassSession, query, [:])
             assert queryApplied.toString() == "all:some all:typical all:search all:term"
 
             // With class
@@ -76,7 +79,7 @@ class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearch
                     mapping
                 }
             ] as InternalCompass
-            helper.applyOptions(compass, null, mockQueryProxy, [class: Post])
+            helper.applyOptions(grailsApplication, compass, null, mockQueryProxy, [class: Post])
 
             mockQuery.verify()
         }

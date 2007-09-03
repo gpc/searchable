@@ -17,10 +17,13 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
+import org.compass.core.Compass;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
@@ -152,5 +155,20 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         }
         mappedProperties.clear();
         mappedProperties.addAll(temp);
+    }
+
+    /**
+     * Get the mapping aliases for the given user-defined domain class and its subclasses if any
+     * @param compass Compass instance
+     * @param clazz the user-defined domain class
+     * @param application the GrailsApplication
+     * @return the Compass aliases for the hierarchy
+     */
+    public static String[] getPolyMappingAliases(Compass compass, Class clazz, GrailsApplication application) {
+        List grailsDomainClasses = Arrays.asList(application.getArtefacts(DomainClassArtefactHandler.TYPE));
+        GrailsDomainClass grailsDomainClass = GrailsDomainClassUtils.getGrailsDomainClass(clazz, grailsDomainClasses);
+        Collection clazzes = new HashSet(GrailsDomainClassUtils.getClazzes(grailsDomainClass.getSubClasses()));
+        clazzes.add(clazz);
+        return CompassMappingUtils.getMappingAliases(compass, clazzes);
     }
 }

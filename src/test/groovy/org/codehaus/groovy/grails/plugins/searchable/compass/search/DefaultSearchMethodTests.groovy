@@ -46,9 +46,10 @@ class DefaultSearchMethodTests extends AbstractSearchableCompassTests {
         }
         assert posts.size() == 100
         assert comments.size() == 500
-        compass = TestCompassFactory.getCompass([Post, Comment], posts + comments)
 
-        factory = new DefaultSearchableMethodFactory(compass: compass)
+        def application = TestCompassFactory.getGrailsApplication([Post, Comment])
+        compass = TestCompassFactory.getCompass(application, posts + comments)
+        factory = new DefaultSearchableMethodFactory(compass: compass, grailsApplication: application)
     }
 
     void tearDown() {

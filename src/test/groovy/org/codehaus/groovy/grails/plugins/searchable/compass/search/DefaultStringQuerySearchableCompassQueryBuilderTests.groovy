@@ -52,7 +52,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
 
-        builder.buildQuery([queryBuilder : {mockBuilder.proxy()}] as CompassSession, [:], "chocolate biscuits")
+        builder.buildQuery(null, [queryBuilder : {mockBuilder.proxy()}] as CompassSession, [:], "chocolate biscuits")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -77,7 +77,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         def mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [analyzer: 'myFunkyAnalyzer'], "banana")
+        builder.buildQuery(null, mockSession, [analyzer: 'myFunkyAnalyzer'], "banana")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -98,7 +98,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [parser: 'myCustomParser'], "orange")
+        builder.buildQuery(null, mockSession, [parser: 'myCustomParser'], "orange")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -119,7 +119,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [queryParser: 'myCustomParser'], "lemon")
+        builder.buildQuery(null, mockSession, [queryParser: 'myCustomParser'], "lemon")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -140,7 +140,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [defaultProperty: 'keywords'], "apple")
+        builder.buildQuery(null, mockSession, [defaultProperty: 'keywords'], "apple")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -161,7 +161,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [defaultSearchProperty: 'description'], "apple")
+        builder.buildQuery(null, mockSession, [defaultSearchProperty: 'description'], "apple")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -182,7 +182,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [andDefaultOperator: true], "kiwi")
+        builder.buildQuery(null, mockSession, [andDefaultOperator: true], "kiwi")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -200,7 +200,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [andDefaultOperator: false], "lime")
+        builder.buildQuery(null, mockSession, [andDefaultOperator: false], "lime")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -221,7 +221,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [useAndDefaultOperator: true], "tomato")
+        builder.buildQuery(null, mockSession, [useAndDefaultOperator: true], "tomato")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -239,7 +239,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [useAndDefaultOperator: false], "pear")
+        builder.buildQuery(null, mockSession, [useAndDefaultOperator: false], "pear")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -269,7 +269,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', defaultProperty: 'title', andDefaultOperator: true], "pear")
+        builder.buildQuery(null, mockSession, [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', defaultProperty: 'title', andDefaultOperator: true], "pear")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -294,18 +294,18 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [properties: ['title', 'description']], "blah blah")
+        builder.buildQuery(null, mockSession, [properties: ['title', 'description']], "blah blah")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
 
         // Properties and defaultSearchProperty/defaultProperty - not compatible
         shouldFail(IllegalArgumentException) {
-            builder.buildQuery(null, [defaultSearchProperty: 'anything', properties: ['title', 'description']], "blah blah")
+            builder.buildQuery(null, null, [defaultSearchProperty: 'anything', properties: ['title', 'description']], "blah blah")
         }
 
         shouldFail(IllegalArgumentException) {
-            builder.buildQuery(null, [defaultProperty: 'anything', properties: ['title', 'description']], "blah blah")
+            builder.buildQuery(null, null, [defaultProperty: 'anything', properties: ['title', 'description']], "blah blah")
         }
 
         // All together for multi-property string query
@@ -336,7 +336,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockSession = [
             queryBuilder: { mockBuilder.proxy() }
         ] as CompassSession
-        builder.buildQuery(mockSession, [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', properties: ['title', 'description'], andDefaultOperator: true], "chicken and pig")
+        builder.buildQuery(null, mockSession, [analyzer: 'myFunkyAnalyzer', parser: 'myCustomParser', properties: ['title', 'description'], andDefaultOperator: true], "chicken and pig")
 
         mockBuilder.verify()
         mockStringBuilder.verify()
@@ -345,20 +345,20 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
     void testWithEscape() {
         withCompassSession { compassSession ->
             // No class, no escape
-            def query = builder.buildQuery(compassSession, [escape: false], "Hello World")
+            def query = builder.buildQuery(null, compassSession, [escape: false], "Hello World")
             assert query.toString() == "all:hello all:world"
 
             // escape does not affect normal queries
-            query = builder.buildQuery(compassSession, [escape: true], "Hello World")
+            query = builder.buildQuery(null, compassSession, [escape: true], "Hello World")
             assert query.toString() == "all:hello all:world"
 
             // no escape, bad query
             shouldFail {
-                builder.buildQuery(compassSession, [escape: false], "[this is a bad query}")
+                builder.buildQuery(null, compassSession, [escape: false], "[this is a bad query}")
             }
 
             // should not fail with escape
-            query = builder.buildQuery(compassSession, [escape: true], "[this is a bad query}")
+            query = builder.buildQuery(null, compassSession, [escape: true], "[this is a bad query}")
             assert query.toString() == "all:bad all:query"
         }
     }

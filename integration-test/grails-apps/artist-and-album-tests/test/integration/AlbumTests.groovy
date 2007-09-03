@@ -1,3 +1,5 @@
+import org.compass.core.CompassTermFreq
+
 class AlbumTests extends GroovyTestCase {
 
     void setUp() {
@@ -43,5 +45,14 @@ class AlbumTests extends GroovyTestCase {
         assert album instanceof Album
         assert album.name == 'Stakes is High'
         assert album.artist
+    }
+
+    void testTermFreqs() {
+        // sanity test: try out some argument combos: more tests elsewhere
+        def result = Album.termFreqs('name')
+        assert result instanceof CompassTermFreq[]
+        assert result.length > 0
+        result = Album.termFreqs() // defaults to "all" property
+        assert result.length > 0
     }
 }

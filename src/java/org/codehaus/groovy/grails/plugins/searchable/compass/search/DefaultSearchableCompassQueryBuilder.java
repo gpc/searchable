@@ -19,6 +19,7 @@ import groovy.lang.Closure;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.runtime.InvokerHelper;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.compass.core.Compass;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassSession;
@@ -54,22 +55,22 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
         }
     }
 
-    public CompassQuery buildQuery(CompassSession compassSession, Map options, Object query) {
+    public CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query) {
         Assert.notNull(query, "query cannot be null");
         CompassQuery compassQuery;
         if (query instanceof String) {
-            compassQuery = stringQueryBuilder.buildQuery(compassSession, options, query);
+            compassQuery = stringQueryBuilder.buildQuery(grailsApplication, compassSession, options, query);
         } else {
             Assert.isInstanceOf(Closure.class, query, "query is neither String nor Closure: must be one of these but is [" + query.getClass().getName() + "]");
             Object closureQueryBuilder = InvokerHelper.invokeConstructorOf(closureQueryBuilderClass, compassSession.queryBuilder());
             compassQuery = (CompassQuery) InvokerHelper.invokeMethod(closureQueryBuilder, "buildQuery", query);
         }
-        return applyOptions(getCompass(), compassSession, compassQuery, options);
+        return applyOptions(grailsApplication, getCompass(), compassSession, compassQuery, options);
     }
 
-    protected CompassQuery applyOptions(Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
+    protected CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
         for (int i = 0, max = optionHelpers.length; i < max; i++) {
-            compassQuery = optionHelpers[i].applyOptions(compass, compassSession, compassQuery, options);
+            compassQuery = optionHelpers[i].applyOptions(grailsApplication, compass, compassSession, compassQuery, options);
         }
         return compassQuery;
     }

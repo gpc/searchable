@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassEnvironment;
@@ -38,6 +39,7 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
 
     private String connection;
     private Map compassSettings;
+    private GrailsApplication grailsApplication;
 
     /**
      * Configure the Compass environment
@@ -51,7 +53,7 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
             String conn = connection;
             if (conn == null) {
                 LOG.debug("No connection specified, using default");
-                conn = SearchableCompassUtils.getDefaultConnection();
+                conn = SearchableCompassUtils.getDefaultConnection(grailsApplication);
             }
             LOG.info("Setting Compass connection to [" + conn + "]");
             compassConfiguration.setConnection(conn);
@@ -82,6 +84,10 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
 
     public void setCompassSettings(Map compassSettings) {
         this.compassSettings = compassSettings;
+    }
+
+    public void setGrailsApplication(GrailsApplication grailsApplication) {
+        this.grailsApplication = grailsApplication;
     }
 
     /**

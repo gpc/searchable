@@ -19,6 +19,11 @@ import org.springframework.util.Assert;
 import org.compass.core.Compass;
 import org.compass.core.spi.InternalCompass;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
+
 /**
  * @author Maurice Nicholson
  */
@@ -47,5 +52,20 @@ public class CompassMappingUtils {
      */
     public static String getMappingAlias(Compass compass, Class clazz) {
         return ((InternalCompass) compass).getMapping().findRootMappingByClass(clazz).getAlias();
+    }
+
+    /**
+     * Get the mapping aliases for the given user-defined domain classes any
+     * @param compass Compass instance
+     * @param clazzes the user-defined domain classes
+     * @return the Compass aliases for the hierarchy
+     */
+    public static String[] getMappingAliases(Compass compass, Collection clazzes) {
+        Set aliases = new HashSet();
+        for (Iterator iter = clazzes.iterator(); iter.hasNext(); ) {
+            Class clazz = (Class) iter.next();
+            aliases.add(getMappingAlias(compass, clazz));
+        }
+        return (String[]) aliases.toArray(new String[aliases.size()]);
     }
 }

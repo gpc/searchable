@@ -27,21 +27,30 @@ import org.springframework.core.io.ResourceLoader
 * @author Maurice Nicholson
 */
 class SearchableUtilsTests extends GroovyTestCase {
-    def currentSearchableValues
+//    def currentSearchableValues
     def postDc
     def commentDc
     def userDc
 
     void setUp() {
-        currentSearchableValues = [(Post): Post.searchable, (Comment): Comment.searchable, (User): User.searchable]
+        Post.searchable = true
+        assert Post.searchable == true
+        for (c in [Post, Comment, User]) {
+            println "before ${c.getName()}#searchable = ${c.searchable}"
+            c.searchable = true
+            println "after ${c.getName()}#searchable = ${c.searchable}"
+            assert c.searchable == true
+        }
+//        currentSearchableValues = [(Post): Post.searchable, (Comment): Comment.searchable, (User): User.searchable]
+//        assert [currentSearchableValues.values()].unique() == [true]
         postDc = new DefaultGrailsDomainClass(Post)
         commentDc = new DefaultGrailsDomainClass(Comment)
         userDc = new DefaultGrailsDomainClass(User)
     }
 
     void tearDown() {
-        currentSearchableValues.each { c, v -> c.searchable = v }
-        currentSearchableValues = null
+//        currentSearchableValues.each { c, v -> c.searchable = v }
+//        currentSearchableValues = null
         postDc = null
         commentDc = null
         userDc = null

@@ -18,6 +18,16 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
+import org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance.*
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
+import org.compass.core.Compass
+import org.codehaus.groovy.grails.commons.GrailsDomainConfigurationUtil
+import org.codehaus.groovy.grails.commons.GrailsClass
+import org.compass.core.spi.InternalCompass
+import org.compass.core.mapping.CompassMapping
+import org.compass.core.mapping.osem.ClassMapping
+import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 
 /**
 * @author Maurice Nicholson
@@ -99,5 +109,52 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
         assert childMappings.size() == 2
         assert childMappings.find { it.propertyName == "anotherProperty" && it.component }.every { it.attributes.size() == 0 }
         assert childMappings.find { it.propertyName == "anotherProperty" && it.reference }.every { it.attributes.size() == 0 }
+    }
+
+    void testGetPolyMappingAliases() {
+        def gcl = new GroovyClassLoader()
+        def getClassMapping = { Class clazz ->
+            ClassMapping classMapping = new ClassMapping()
+            classMapping.clazz = clazz
+            classMapping.alias = clazz.simpleName + "alias"
+            classMapping.name = clazz.name
+            classMapping
+        }
+
+        // with inheritance
+        CompassMapping mapping = new CompassMapping()
+        mapping.addMapping(getClassMapping(Parent.class))
+        mapping.addMapping(getClassMapping(SearchableChildOne.class))
+        mapping.addMapping(getClassMapping(SearchableChildTwo.class))
+        mapping.addMapping(getClassMapping(SearchableGrandChild.class))
+        def compass = [
+            getMapping: {
+                mapping
+            }
+        ] as InternalCompass
+
+        DefaultGrailsApplication application = new DefaultGrailsApplication([Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild] as Class[], gcl)
+        application.initialise()
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, Parent.class, application) as List == ["SearchableChildOnealias", "SearchableChildTwoalias", "Parentalias", "SearchableGrandChildalias"]
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, SearchableChildOne.class, application) as List == ["SearchableChildOnealias", "SearchableGrandChildalias"]
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, SearchableChildTwo.class, application) as List == ["SearchableChildTwoalias"]
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, SearchableGrandChild.class, application) as List == ["SearchableGrandChildalias"]
+
+        // without inheritance
+        mapping = new CompassMapping()
+        mapping.addMapping(getClassMapping(Post.class))
+        mapping.addMapping(getClassMapping(Comment.class))
+        mapping.addMapping(getClassMapping(User.class))
+        compass = [
+            getMapping: {
+                mapping
+            }
+        ] as InternalCompass
+
+        application = new DefaultGrailsApplication([Post, Comment, User] as Class[], gcl)
+        application.initialise()
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, Post.class, application) as List == ["Postalias"]
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, User.class, application) as List == ["Useralias"]
+        SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, Comment.class, application) as List == ["Commentalias"]
     }
 }

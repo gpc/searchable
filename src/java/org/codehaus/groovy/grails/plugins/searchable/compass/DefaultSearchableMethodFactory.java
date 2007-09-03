@@ -26,6 +26,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.search.*;
 import org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultUnindexMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultIndexMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultReindexMethod;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -43,10 +44,14 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
         put("max", new Integer(10));
         put("reload", Boolean.FALSE);
     }};
+    private static final Map DEFAULT_TERM_FREQ_DEFAULTS = new HashMap() {{
+        put("properties", new String[] {"all"});
+    }};
 
     private Map searchDefaults;
     private Compass compass;
     private CompassGps compassGps;
+    private GrailsApplication grailsApplication;
 
     public SearchableMethod getMethod(final Class clazz, String methodName) {
         AbstractSearchableMethod method = (AbstractSearchableMethod) getMethod(methodName);
@@ -57,6 +62,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
     }
 
     public SearchableMethod getMethod(String methodName) {
+        // TODO refactor to (injected) lookup map
         if (methodName.equals("indexAll")) {
             return new DefaultIndexMethod(methodName, compass, compassGps, true);
         }
@@ -76,7 +82,11 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
             return new DefaultReindexMethod(methodName, compass, compassGps, false);
         }
 
-        DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, buildSearchDefaults());
+        if (methodName.equals("termFreqs")) {
+            return new DefaultTermFreqsMethod(methodName, compass, grailsApplication, DEFAULT_TERM_FREQ_DEFAULTS);
+        }
+
+        DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, buildSearchDefaults());
         if (methodName.equals("search")) {
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
             searchMethod.setHitCollector(new DefaultSearchableSubsetHitCollector());
@@ -131,5 +141,9 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
 
     public void setCompassGps(CompassGps compassGps) {
         this.compassGps = compassGps;
+    }
+
+    public void setGrailsApplication(GrailsApplication grailsApplication) {
+        this.grailsApplication = grailsApplication;
     }
 }
