@@ -15,10 +15,7 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable;
 
-import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.codehaus.groovy.grails.commons.*;
 import org.codehaus.groovy.grails.plugins.searchable.compass.CompassGrailsDomainClassSearchabilityEvaluatorFactory;
 import org.codehaus.groovy.grails.plugins.searchable.util.PatternUtils;
 import org.springframework.core.io.ResourceLoader;
@@ -110,7 +107,7 @@ public class SearchableUtils {
      * @return the searchable property value, or null
      */
     public static Object getSearchablePropertyValue(GrailsDomainClass grailsDomainClass) {
-        return grailsDomainClass.getPropertyValue(SEARCHABLE_PROPERTY_NAME);
+        return GrailsClassUtils.getStaticPropertyValue(grailsDomainClass.getClazz(), SEARCHABLE_PROPERTY_NAME);
     }
 
     /**
