@@ -61,7 +61,7 @@ def getTestScript(verbose, appName, dir, appDirs, pluginZip) {
             if (verbose) {
                 println "Executing: [${attrs.executable}], dir: [${attrs.dir}], args: ${attrs.args}"
             }
-            exec(executable: attrs.executable, dir: attrs.dir, failonerror: "yes", newenvironment: 'yes', outputproperty: ouputPropertyName, resultproperty: resultPropertyName) {
+            exec(executable: attrs.executable, dir: attrs.dir, failonerror: "no", newenvironment: 'yes', outputproperty: ouputPropertyName, resultproperty: resultPropertyName) {
                 for (value in attrs.args) {
                     arg(value: value)
                 }
@@ -75,6 +75,7 @@ def getTestScript(verbose, appName, dir, appDirs, pluginZip) {
                 println "-" * 60
                 println project.properties[ouputPropertyName]
                 println "-" * 60
+                System.exit(1)
             } else if (verbose) {
                 println "Exit code: [${project.properties[resultPropertyName]}]"
                 println "Output: [\n${project.properties[ouputPropertyName]}\n]"
@@ -108,6 +109,9 @@ def getTestScript(verbose, appName, dir, appDirs, pluginZip) {
         // Install Searchable Plugin
         println "    Installing plugin"
         executeQuietly.call(executable: grails, dir: targetAppDir, args: ['install-plugin', new File(pluginZip).absolutePath])
+
+        // Clean
+        executeQuietly.call(executable: grails, dir: targetAppDir, args: ['clean'])
 
         // Test app
         println "    Running unit/integration tests"

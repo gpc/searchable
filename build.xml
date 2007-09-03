@@ -99,8 +99,8 @@
       <echo message="Running integration test @{app.name} with Java @{test.java.home}" />
       <java classname="groovy.ui.GroovyMain" fork="true" classpathref="groovy.classpath" jvm="@{test.java.home}/bin/java" failonerror="true">
         <env key="JAVA_HOME" value="@{test.java.home}" />
-        <arg value="-verbose" />
         <arg value="integration-test/groovy/RunIntegrationTest.groovy" />
+        <arg value="-verbose" />
         <arg value="${basedir}" />
         <arg value="${basedir}/../tmp" />
         <arg value="integration-test/grails-apps/@{app.name}" />

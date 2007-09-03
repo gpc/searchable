@@ -11,5 +11,12 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
     <resource>SearchableService</resource>
     <resource>SearchableUrlMappings</resource>
     <resource>SearchableController</resource>
+    <resource>Album</resource>
+    <resource>Artist</resource>
+    <resource>Album</resource>
+    <resource>Artist</resource>
+    <resource>ApplicationBootStrap</resource>
+    <resource>Album</resource>
+    <resource>Artist</resource>
   </resources>
 </plugin>
