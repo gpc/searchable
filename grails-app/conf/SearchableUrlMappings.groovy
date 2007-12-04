@@ -25,7 +25,7 @@ class SearchableUrlMappings {
             controller = "searchable"
             action = "index"
         }
-        "/searchable/$action" {
+        "/searchable/$action?" {
             controller = "searchable"
         }
 	}	
