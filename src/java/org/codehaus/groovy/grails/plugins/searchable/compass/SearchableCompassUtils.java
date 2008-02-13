@@ -34,9 +34,15 @@ public class SearchableCompassUtils {
      * @param grailsApplication
      */
     public static String getDefaultConnection(GrailsApplication grailsApplication) {
-        return System.getProperty("user.home") +
-                File.separator + grailsApplication.getMetadata().get("app.name") +
-                File.separator + ".searchable" +
-                File.separator + GrailsUtil.getEnvironment();
+	String FS = File.separator;
+	String userHome = System.getProperty("user.home");
+	String grailsDir = ".grails";
+	Object applicationName = grailsApplication.getMetadata().get("app.name");
+	String grailsEnv = GrailsUtil.getEnvironment();
+	String searchableDir = ".searchable";
+
+	String compassStorePath = userHome + FS + grailsDir + FS + applicationName + FS + searchableDir + FS + grailsEnv;
+
+	return compassStorePath;
     }
 }
