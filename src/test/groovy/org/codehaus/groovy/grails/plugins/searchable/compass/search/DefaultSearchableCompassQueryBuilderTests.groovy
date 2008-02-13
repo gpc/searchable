@@ -30,6 +30,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUt
 import org.compass.core.mapping.osem.ClassMapping
 import org.compass.core.mapping.CompassMapping
 import org.compass.core.spi.InternalCompass
+import org.compass.core.engine.SearchEngineQueryParseException
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils
 
 /**
@@ -72,7 +73,7 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
             builder.buildQuery(grailsApplication, compassSession, [escape: true], "[this is a bad query}")
 
             // bad query, no escape, with class
-            shouldFail(ParseException) {
+            shouldFail(SearchEngineQueryParseException) {
                 query = builder.buildQuery(grailsApplication, compassSession, [class: Post, escape: false], "[special characters sometimes need to be escaped to avoid a runtime parse exception]")
             }
 

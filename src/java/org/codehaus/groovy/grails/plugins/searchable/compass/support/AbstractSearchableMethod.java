@@ -44,6 +44,11 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
         return invoke(args);
     }
 
+    // allows groovy code to call instances of this object as a method, ie, method = AbstractSearchableMethod(); method()
+    public Object call(Object[] args) {
+        return invoke(args);
+    }
+
     protected Object doInCompass(CompassCallback compassCallback) {
         CompassTemplate template = new CompassTemplate(compass);
         return template.execute(compassCallback);

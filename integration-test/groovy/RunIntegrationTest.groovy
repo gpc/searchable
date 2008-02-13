@@ -121,6 +121,7 @@ def getTestScript(verbose, appName, dir, appDirs, pluginZip) {
         println "    Running web tests"
         executeQuietly.call(executable: grails, dir: targetAppDir, args: ['run-webtest'])
 
+        // TODO this might not be necessary any more - see http://jira.codehaus.org/browse/GRAILSPLUGINS-154
         // Check for webtest success (currently Grails doesn't check for success)
         def webestResult = new File(targetAppDir, "webtest/reports/WebTestResults.xml")
         assert webestResult.exists(), "webtest result file not found: ${webestResult.absolutePath}"

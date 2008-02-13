@@ -36,9 +36,7 @@ class SearchableUtilsTests extends GroovyTestCase {
         Post.searchable = true
         assert Post.searchable == true
         for (c in [Post, Comment, User]) {
-            println "before ${c.getName()}#searchable = ${c.searchable}"
             c.searchable = true
-            println "after ${c.getName()}#searchable = ${c.searchable}"
             assert c.searchable == true
         }
 //        currentSearchableValues = [(Post): Post.searchable, (Comment): Comment.searchable, (User): User.searchable]

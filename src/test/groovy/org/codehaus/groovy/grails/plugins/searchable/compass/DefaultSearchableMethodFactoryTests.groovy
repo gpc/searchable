@@ -60,7 +60,7 @@ class DefaultSearchableMethodFactoryTests extends AbstractSearchableCompassTests
         // Just a saninty check
         def termFreqs = factory.getMethod("termFreqs")
         assert termFreqs
-        def result = termFreqs()
+        def result = termFreqs.invoke()
         assert result
     }
 
@@ -69,7 +69,7 @@ class DefaultSearchableMethodFactoryTests extends AbstractSearchableCompassTests
         assert numberIndexed(Post) == 100
 
         def indexAll = factory.getMethod("indexAll")
-        indexAll(
+        indexAll.invoke(
             new Post(id: 5000l, title: "New post", post: "Something to say"),
             new Post(id: 5001l, title: "Another new post", post: "Something to say")
         )
@@ -83,9 +83,9 @@ class DefaultSearchableMethodFactoryTests extends AbstractSearchableCompassTests
 
         def index = factory.getMethod("index")
         shouldFail {
-            index()
+            index.invoke()
         }
-        index(
+        index.invoke(
             new Post(id: 5000l, title: "New post", post: "Something to say")
         )
 

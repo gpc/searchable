@@ -29,7 +29,8 @@ import org.easymock.IMocksControl
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.compass.core.mapping.CompassMapping;
-import org.compass.core.mapping.osem.ClassMapping;
+import org.compass.core.mapping.osem.ClassMapping
+import org.compass.core.spi.InternalCompass;
 
 /**
 *
@@ -152,25 +153,29 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
         }
 
         // with all options
-        mockTestBuilder.verify { Compass compass, CompassSession session, CompassTransaction tx, CompassTermFreqsBuilder tfb->
+        mockTestBuilder.verify { InternalCompass compass, CompassSession session, CompassTransaction tx, CompassTermFreqsBuilder tfb->
             def method = new DefaultTermFreqsMethod("termFreqs", compass, application, defaultOptions)
             String[] properties = ['all'] as String[]
             CompassMapping compassMapping = new CompassMapping();
-            compassMapping.addMapping(new ClassMapping(class: Post.class, name: Post.class.name, alias: "P"))
+            compassMapping.addMapping(new ClassMapping(clazz: Post.class, name: Post.class.name, alias: "P"))
             expects {
-//                inOrder = true
+//                ordered {
+                expect(compass.getMapping()).andReturn(compassMapping)
                 expect(compass.openSession()).andReturn(session)
                 expect(session.beginTransaction(null)).andReturn(tx)
-//                inOrder = false
+//                }
+                // unordered {
                 expect(tfb.setSize(50)).andReturn(tfb)
                 expect(tfb.normalize(0, 1)).andReturn(tfb)
                 expect(tfb.setAliases(aryEq(['P'] as String[]))).andReturn(tfb)
                 expect(tfb.setSort(CompassTermFreqsBuilder.Sort.TERM)).andReturn(tfb)
-//                inOrder = true
+                // }
+//                ordered {
                 expect(session.termFreqsBuilder(aryEq(properties))).andReturn(tfb)
                 expect(tfb.toTermFreqs()).andReturn(null)
                 tx.commit()
                 session.close()
+                // }
             }
 
             result = method.invoke(normalize: 0..1, size: 50, sort: 'term', class: Post.class)
