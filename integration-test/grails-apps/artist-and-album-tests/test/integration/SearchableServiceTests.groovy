@@ -22,6 +22,10 @@ class SearchableServiceTests extends GroovyTestCase {
         artist.reindex()
     }
 
+    void tearDown() {
+        [Artist, Album].each { clazz -> clazz.findAll().each { it.delete() } }
+    }
+
     void testSearch() {
         def result = searchableService.search("beatles")
         assert result.results.size() == 10
@@ -42,6 +46,7 @@ class SearchableServiceTests extends GroovyTestCase {
 
     void testSearchEvery() {
         def results = searchableService.searchEvery("beatles album")
+        println results
         assert results*.class as Set == [Album, Artist] as Set
         assert results.size() == 10
     }

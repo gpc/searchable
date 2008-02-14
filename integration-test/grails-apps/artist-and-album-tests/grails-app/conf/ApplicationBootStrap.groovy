@@ -129,6 +129,9 @@ class ApplicationBootStrap {
             ]
         ]
 
+         println "Just before boostrap begining to save shit"
+         println "Albums: " + Album.count()
+         println "Artists: " + Artist.count()
         for (entry in data) {
             def artist = new Artist(name: entry.name)
             assert artist.validate(), artist.errors

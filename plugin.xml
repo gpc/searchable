@@ -8,9 +8,6 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
 </description>
   <documentation>http://grails.org/Searchable+Plugin</documentation>
   <resources>
-    <resource>SearchableService</resource>
-    <resource>SearchableUrlMappings</resource>
-    <resource>SearchableController</resource>
     <resource>Album</resource>
     <resource>Artist</resource>
     <resource>Album</resource>
@@ -18,5 +15,8 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
     <resource>ApplicationBootStrap</resource>
     <resource>Album</resource>
     <resource>Artist</resource>
+    <resource>SearchableUrlMappings</resource>
+    <resource>SearchableController</resource>
+    <resource>SearchableService</resource>
   </resources>
 </plugin>

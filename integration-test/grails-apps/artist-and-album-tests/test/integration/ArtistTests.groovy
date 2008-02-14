@@ -17,7 +17,11 @@ class ArtistTests extends GroovyTestCase {
         }
     }
 
-	void testSearch() {
+    void tearDown() {
+        [Artist, Album].each { clazz -> clazz.findAll().each { it.delete() } }
+    }
+
+pl    void testSearch() {
 		def searchResult = Artist.search("loudon")
 		assert searchResult.results.size() == 1
         assert searchResult.results[0] instanceof Artist
@@ -40,6 +44,7 @@ class ArtistTests extends GroovyTestCase {
 
 	void testSearchEvery() {
         def hits = Artist.searchEvery("elvis")
+        println hits
         assert hits.size() == 2
         assert hits*.class.unique() == [Artist]
         assert hits*.name.containsAll(['Elvis Costello', 'Elvis Presley'])

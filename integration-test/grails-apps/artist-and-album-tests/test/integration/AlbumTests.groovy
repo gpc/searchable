@@ -15,6 +15,10 @@ class AlbumTests extends GroovyTestCase {
         deLa.save()
     }
 
+    void tearDown() {
+        [Artist, Album].each { clazz -> clazz.findAll().each { it.delete() } }
+    }
+
     void testSearch() {
         def deLa = Artist.findByName('De la Soul')
         assert deLa.albums.size() == 6
@@ -35,6 +39,7 @@ class AlbumTests extends GroovyTestCase {
 
     void testSearchEvery() {
         def albums = Album.searchEvery("stakes OR grind OR aoi")
+        println albums
         assert albums.size() == 4
         assert albums*.name.containsAll(['Stakes is High', 'The Grind Date', 'AOI: Mosaic Thump', 'AOI: Bionix'])
         assert albums.every { it.artist }
