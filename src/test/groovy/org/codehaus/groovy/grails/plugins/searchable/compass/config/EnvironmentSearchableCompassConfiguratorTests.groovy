@@ -41,7 +41,7 @@ class EnvironmentSearchableCompassConfiguratorTests extends GroovyTestCase {
         def config = new CompassConfiguration()
         configurator.configure(config, [:])
 
-        assert getConnection(config) == [System.properties['user.home'], '.grails', 'shinnynewgrailsapp', '.searchable', 'development'].join(File.separator)
+        assert getConnection(config) == [System.properties['user.home'], '.grails', 'projects', 'shinnynewgrailsapp', 'searchable-index', 'development'].join(File.separator)
     }
 
     void testConfigureSpecificConnection() {

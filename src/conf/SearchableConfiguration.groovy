@@ -78,7 +78,7 @@ class SearchableConfiguration {
      * The value may be a boolean true|false or a string "fork", which means true,
      * and fork a thread for it
      *
-     * If you use ApplicationBootStrap to insert your data then you should use "true",
+     * If you use BootStrap.groovy to insert your data then you should use "true",
      * which means do a non-forking, otherwise "fork" is recommended
      */
     def bulkIndexOnStartup = true

@@ -12,7 +12,7 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
     <resource>Artist</resource>
     <resource>Album</resource>
     <resource>Artist</resource>
-    <resource>ApplicationBootStrap</resource>
+    <resource>BootStrap</resource>
     <resource>Album</resource>
     <resource>Artist</resource>
     <resource>SearchableUrlMappings</resource>

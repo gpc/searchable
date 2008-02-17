@@ -21,7 +21,7 @@ class ArtistTests extends GroovyTestCase {
         [Artist, Album].each { clazz -> clazz.findAll().each { it.delete() } }
     }
 
-pl    void testSearch() {
+    void testSearch() {
 		def searchResult = Artist.search("loudon")
 		assert searchResult.results.size() == 1
         assert searchResult.results[0] instanceof Artist

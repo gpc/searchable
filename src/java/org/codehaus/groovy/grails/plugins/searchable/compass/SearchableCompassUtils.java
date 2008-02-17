@@ -30,19 +30,21 @@ public class SearchableCompassUtils {
     /**
      * Get the default Compass connection (ie, Lucene index dir)
      *
-     * @return {user.home}/{project-name}/.searchable/{grails.env}
+     * @return {user.home}/.grails/projects/{project-name}/searchable-index/{grails.env}
      * @param grailsApplication
      */
     public static String getDefaultConnection(GrailsApplication grailsApplication) {
-	String FS = File.separator;
-	String userHome = System.getProperty("user.home");
-	String grailsDir = ".grails";
-	Object applicationName = grailsApplication.getMetadata().get("app.name");
-	String grailsEnv = GrailsUtil.getEnvironment();
-	String searchableDir = ".searchable";
-
-	String compassStorePath = userHome + FS + grailsDir + FS + applicationName + FS + searchableDir + FS + grailsEnv;
-
-	return compassStorePath;
+        return new StringBuffer(System.getProperty("user.home")).
+            append(File.separator).
+            append(".grails").
+            append(File.separator).
+            append("projects").
+            append(File.separator).
+            append((String) grailsApplication.getMetadata().get("app.name")).
+            append(File.separator).
+            append("searchable-index").
+            append(File.separator).
+            append(GrailsUtil.getEnvironment()).
+            toString();
     }
 }

@@ -92,38 +92,122 @@
     </java>
   </target>
 
-  <macrodef name="run-integration-test">
-    <attribute name="app.name" />
-    <attribute name="app.tests" />
-    <attribute name="test.java.home" default="${java15.home}" />
+  <macrodef name="grails">
+    <attribute name="using.java.home" default="${java14.home}"/>
+    <attribute name="dir" default="${basedir}"/>
+    <attribute name="arg1"/>
+    <attribute name="arg2" default=""/>
+    <attribute name="arg3" default=""/>
     <sequential>
-      <echo message="Running integration test @{app.name} with Java @{test.java.home}" />
-      <java classname="groovy.ui.GroovyMain" fork="true" classpathref="groovy.classpath" jvm="@{test.java.home}/bin/java" failonerror="true">
-        <env key="JAVA_HOME" value="@{test.java.home}" />
-        <arg value="integration-test/groovy/RunIntegrationTest.groovy" />
-        <arg value="-verbose" />
-        <arg value="${basedir}" />
-        <arg value="${basedir}/../tmp" />
-        <arg value="integration-test/grails-apps/@{app.name}" />
-        <arg value="integration-test/grails-apps/@{app.tests}" />
-      </java>
+      <available file="@{using.java.home}" property="using.java.home.available"/>
+      <fail unless="using.java.home.available">
+
+      Not a valid JAVA_HOME: @{using.java.home}
+      </fail>
+      <echo>*** Running grails @{arg1} @{arg2} @{arg3} ***</echo>
+      <property name="path" value="@{using.java.home}/bin${path.separator}${ENV.PATH}" />
+      <exec executable="${grails}" dir="@{dir}" failonerror="yes">
+        <env key="JAVA_HOME" value="@{using.java.home}" />
+        <env key="PATH" value="${path}" />
+
+        <arg value="@{arg1}"/>
+        <arg value="@{arg2}"/>
+        <arg value="@{arg3}"/>
+      </exec>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="run-integration-test">
+    <attribute name="version" default="${version}"/>
+    <attribute name="app.name" />
+    <attribute name="app.dir"/>
+    <attribute name="app.tests" />
+    <attribute name="using.java.home" />
+    <sequential>
+      <property name="plugin.dist" value="${basedir}/grails-searchable-@{version}.zip" />
+      <property name="app.source" value="${basedir}/integration-test/grails-apps" />
+      <available file="${plugin.dist}" property="plugin.dist.available" />
+      <fail unless="plugin.dist.available">
+        
+      No such file: ${plugin.dist}
+      </fail>
+      <echo>
+        ========================================================
+
+        Running integration test for @{app.name}
+
+        dir: @{app.dir}
+        Java: @{using.java.home}
+
+        ========================================================
+      </echo>
+
+      <!-- clean previous -->
+      <delete dir="@{app.dir}"/>
+      <mkdir dir="@{app.dir}"/>
+
+      <!-- create vanilla app -->
+      <grails dir="${tmpdir}" arg1="create-app" arg2="@{app.name}" using.java.home="@{using.java.home}"/>
+
+      <!--
+        delete any previous compilation output in grails' cache
+        this is avoids class version problems when switching between Java 1.5 and 1.4
+
+        the app.grails.version version comes from the generated app's application.properties file
+      -->
+      <property file="@{app.dir}/application.properties" />
+      <delete dir="${user.home}/.grails/${app.grails.version}/scriptCache"/>
+      <delete dir="${user.home}/.grails/${app.grails.version}/projects/@{app.name}"/>
+
+      <!--Copy app files-->
+      <copy todir="@{app.dir}" overwrite="true">
+        <fileset dir="${app.source}/@{app.name}"/>
+      </copy>
+      <copy todir="@{app.dir}" overwrite="true">
+        <fileset dir="${app.source}/@{app.tests}"/>
+      </copy>
+
+      <!--Install Searchable Plugin -->
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="${plugin.dist}" using.java.home="@{using.java.home}"/>
+
+      <!-- Install web test plugin -->
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using.java.home="@{using.java.home}"/>
+
+      <!-- Clean -->
+      <grails dir="@{app.dir}" arg1="clean" using.java.home="@{using.java.home}"/>
+
+      <!-- Test app -->
+      <grails dir="@{app.dir}" arg1="test-app" using.java.home="@{using.java.home}"/>
+
+      <!-- Web test -->
+      <grails dir="@{app.dir}" arg1="run-webtest" using.java.home="@{using.java.home}"/>
     </sequential>
   </macrodef>
 
   <target name="integration-test" depends="package">
-    <run-integration-test test.java.home="${java14.home}" app.name="simple-groovy" app.tests="artist-and-album-tests"/>
-    <run-integration-test test.java.home="${java15.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" />
+    <fail unless="version">
 
-    <run-integration-test test.java.home="${java14.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" />
-    <run-integration-test test.java.home="${java15.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" />
+    Please specify a version, eg
+        
+        ant integration-test -Dversion=0.4-SNAPSHOT
+    </fail>
 
-    <run-integration-test test.java.home="${java15.home}" app.name="compass-annotated-groovy" app.tests="artist-and-album-tests" />
+    <property name="tmpdir" value="${basedir}/../tmp"/>
+    <delete dir="${tmpdir}"/>
+    <mkdir dir="${tmpdir}"/>
+
+    <run-integration-test using.java.home="${java14.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/simple-groovy"/>
+    <run-integration-test using.java.home="${java15.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/simple-groovy"/>
+
+    <run-integration-test using.java.home="${java14.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-mapping-xml-groovy"/>
+    <run-integration-test using.java.home="${java15.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-mapping-xml-groovy"/>
+
+    <!-- this app uses annotations so is only Java 1.5 compatible -->
+    <run-integration-test using.java.home="${java15.home}" app.name="compass-annotated-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-annotated-groovy"/>
   </target>
 
-  <target name="package">
-    <exec executable="${grails}" failonerror="yes">
-      <arg value="package-plugin" />
-    </exec>
+  <target name="package" unless="nopackage">
+    <grails arg1="package-plugin" />
   </target>
 
   <target name="all" depends="clean, compile, compile-test, test, package, integration-test" />

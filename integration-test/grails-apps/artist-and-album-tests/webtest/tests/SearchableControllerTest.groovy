@@ -84,6 +84,8 @@ class SearchableControllerTest extends grails.util.WebTest {
             }
 
             // TODO options: max/offset/escape/...
+
+            // TODO pagination
         }
     }
 }

@@ -15,12 +15,7 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass
 
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
-import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.compass.core.spi.InternalCompass
-import org.compass.core.mapping.CompassMapping
-import org.compass.core.mapping.osem.ClassMapping
+import org.codehaus.groovy.grails.commons.GrailsApplication
 
 /**
 *
@@ -30,6 +25,9 @@ import org.compass.core.mapping.osem.ClassMapping
 class SearchableCompassUtilsTests extends GroovyTestCase {
 
     void testGetDefaultConnection() {
-        // TODO
+        def grailsApplication = [getMetadata: {-> ['app.name': "blah"] }] as GrailsApplication
+        String expected = [System.properties['user.home'], '.grails', 'projects', 'blah', 'searchable-index', 'development'].join(File.separator)
+        String actual = SearchableCompassUtils.getDefaultConnection(grailsApplication)
+        assert actual == expected
     }
 }
