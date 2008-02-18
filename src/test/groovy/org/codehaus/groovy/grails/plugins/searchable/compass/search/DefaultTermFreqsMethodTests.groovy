@@ -30,7 +30,8 @@ import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.compass.core.mapping.CompassMapping;
 import org.compass.core.mapping.osem.ClassMapping
-import org.compass.core.spi.InternalCompass;
+import org.compass.core.spi.InternalCompass
+import org.compass.core.config.CompassSettings;
 
 /**
 *
@@ -134,12 +135,13 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
         application.initialise()
 
         // no options (defaults)
-        mockTestBuilder.verify { Compass compass, CompassSession session, CompassTransaction tx, CompassTermFreqsBuilder tfb->
+        mockTestBuilder.verify { Compass compass, CompassSession session, CompassTransaction tx, CompassTermFreqsBuilder tfb ->
             def method = new DefaultTermFreqsMethod("termFreqs", compass, application, defaultOptions)
             String[] properties = ['all'] as String[]
             expects {
                 inOrder = true
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
 //                inOrder = false
                 expect(session.termFreqsBuilder(aryEq(properties))).andReturn(tfb)
@@ -162,6 +164,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
 //                ordered {
                 expect(compass.getMapping()).andReturn(compassMapping)
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
 //                }
                 // unordered {
@@ -214,6 +217,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
             expects {
 //                inOrder = true
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
                 expect(session.termFreqsBuilder(aryEq(properties))).andReturn(tfb)
                 expect(tfb.toTermFreqs()).andReturn(null)
@@ -231,6 +235,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
             expects {
 //                inOrder = true
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
                 expect(session.termFreqsBuilder(aryEq(properties))).andReturn(tfb)
                 expect(tfb.toTermFreqs()).andReturn(null)
@@ -248,6 +253,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
             expects {
 //                inOrder = true
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
                 expect(session.termFreqsBuilder(aryEq(properties))).andReturn(tfb)
                 expect(tfb.toTermFreqs()).andReturn(null)
@@ -265,6 +271,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
             expects {
 //                inOrder = true
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
 //                inOrder = false
                 expect(tfb.normalize(0, 10)).andReturn(tfb)
@@ -286,6 +293,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
             expects {
 //                inOrder = true
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
 //                inOrder = false
                 expect(tfb.setSort(CompassTermFreqsBuilder.Sort.FREQ)).andReturn(tfb)
@@ -306,6 +314,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
 //            String[] properties = ['all'] as String[]
             expects {
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
                 expect(session.termFreqsBuilder(aryEq(['name'] as String[]))).andReturn(tfb)
                 expect(tfb.toTermFreqs()).andReturn(null)
@@ -322,6 +331,7 @@ class DefaultTermFreqsMethodTests extends GroovyTestCase {
 //            String[] properties = ['all'] as String[]
             expects {
                 expect(compass.openSession()).andReturn(session)
+                expect(session.getSettings()).andReturn(new CompassSettings())
                 expect(session.beginTransaction(null)).andReturn(tx)
                 expect(session.termFreqsBuilder(aryEq(['title', 'desc'] as String[]))).andReturn(tfb)
                 expect(tfb.setSort(CompassTermFreqsBuilder.Sort.TERM)).andReturn(tfb)

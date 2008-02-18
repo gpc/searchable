@@ -24,7 +24,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.search.*
 import org.apache.commons.logging.LogFactory
 
 import org.compass.gps.impl.SingleCompassGps
-import org.compass.spring.device.hibernate.SpringHibernate3GpsDevice
+import org.compass.spring.device.hibernate.dep.SpringHibernate3GpsDevice
 
 import org.springframework.beans.factory.config.*
 import org.springframework.util.ClassUtils
