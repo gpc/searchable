@@ -131,10 +131,6 @@
       <p>Nothing matched your query - <strong>${params.q}</strong></p>
     </g:elseif>
     <g:elseif test="${haveResults}">
-      <!-- TODO implement highlighting -->
-      <!-- TODO implement sort by domain class type, relevance, ... -->
-      <!-- TODO show generated compass config settings: index dir, mapped classes and associations -->
-      <!-- TODO tick boxes or similar for choosing specific mapped class(es)  -->
       <div class="results">
         <g:each var="result" in="${searchResult.results}" status="index">
           <div class="result">
