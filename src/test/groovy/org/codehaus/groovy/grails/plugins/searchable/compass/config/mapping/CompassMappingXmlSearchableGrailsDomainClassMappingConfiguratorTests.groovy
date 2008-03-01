@@ -29,7 +29,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlCo
 * @author Maurice Nicholson
 */
 class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
-    def strategy
+    SearchableGrailsDomainClassMappingConfigurator strategy
 
     void setUp() {
         strategy = new CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator()
@@ -53,7 +53,7 @@ class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests exten
         strategy.resourceLoader = getResourceLoader(User)
 
         def config = new MyCompassConfiguration2()
-        strategy.configureMapping(config, [:], new DefaultGrailsDomainClass(User), null)
+        strategy.configureMappings(config, [:], [new DefaultGrailsDomainClass(User)])
         assert config.url == new URL("file:/path/to" + getMappingResourceName(User))
     }
 
@@ -61,7 +61,7 @@ class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests exten
         strategy.resourceLoader = getResourceLoader(User)
 
         def config = new MyCompassConfiguration2()
-        strategy.configureMapping(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], new DefaultGrailsDomainClass(User), null)
+        strategy.configureMappings(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [new DefaultGrailsDomainClass(User)])
         assert config.url == null
     }
 

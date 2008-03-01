@@ -83,8 +83,8 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.root == true
         assert classMapping.propertyMappings.size() == 6
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'title', 'post', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
-        assert classMapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Comment)] }
-        assert classMapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        assert classMapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.propertyType == Comment }
+        assert classMapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
 
         classMapping = getClassMapping(Comment, [Comment, Post, User], true)
         assert classMapping.mappedClass == Comment
@@ -93,7 +93,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'summary', 'comment', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'post' }
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Post)]
+        assert propertyMapping.propertyType == Post
 
         // When "searchable = true" across only *some* domain classes
         // in this case a "one" relationship from the searchable class (author: User)
@@ -104,7 +104,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'title', 'post', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'comments' }
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Comment)]
+        assert propertyMapping.propertyType == Comment
 
         // and here a "many" relationship from the searchable class (comments: Comment)
         classMapping = getClassMapping(Post, [Post], true)
@@ -121,7 +121,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'username', 'email', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'posts' }
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Post)]
+        assert propertyMapping.propertyType == Post
 
         // Possible to override this behavoir with other property excludes
         classMapping = getClassMapping(User, [Comment, Post, User], true, ["createdAt", "version"])
@@ -131,7 +131,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.propertyMappings.findAll { it.propertyName in ['username', 'password', 'email'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'posts' }
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Post)]
+        assert propertyMapping.propertyType == Post
 
         // Components
         classMapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], true)
@@ -141,10 +141,10 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }
         assert propertyMapping.component
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)]
+        assert propertyMapping.propertyType == SearchableComp
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }
         assert propertyMapping.component
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)]
+        assert propertyMapping.propertyType == SearchableComp
 
         // ...other side of the relationship
         classMapping = getClassMapping(SearchableComp, [ComponentOwner, SearchableComp], true)
@@ -175,7 +175,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapping.root == true
         assert classMapping.propertyMappings.size() == 1
         assert classMapping.propertyMappings[0].propertyName == 'comments'
-        assert classMapping.propertyMappings[0].attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Comment)]
+        assert classMapping.propertyMappings[0].propertyType == Comment
 
         classMapping = getClassMapping(User, [Post, Comment, User], [only: ["username", "email"]])
         assert classMapping.mappedClass == User

@@ -121,7 +121,31 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 5
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'username', 'email', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
-        assert mapping.propertyMappings.find { it.propertyName == 'posts' }.every { it.reference && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Post)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'posts' }.every { it.reference && it.propertyType == Post }
+
+        // alias
+        mapping = getClassMapping(User, [Comment, User, Post], {
+            alias "my_user_alias"
+        })
+        assert mapping.mappedClass == User
+        assert mapping.alias == "my_user_alias"
+        assert mapping.root == true
+
+        // todo convert only/except to method-setting style
+        // todo move special properties into "mapping closure?
+
+        /*
+        searchable = {
+            mapping {
+                alias "myclass"
+                except ["password", "secretQuestion"]
+            }
+            username(...)
+            otherProperty(...)
+        }
+
+        need to look at GORM ORM DSL and also Compass stuff
+        */
 
         // with "only", otherwise defaults
         mapping = getClassMapping(Comment, [Comment, User, Post], {
@@ -140,8 +164,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 5
         assert mapping.propertyMappings.findAll { it.propertyName in ['title', 'post', 'version'] }.every { it.property && it.attributes.size() == 0 }
-        assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Comment)] }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.propertyType == Comment }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
 
         // searchable property options
         mapping = getClassMapping(Comment, [Comment, User, Post], {
@@ -181,7 +205,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.mappedClass == Post
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 1
-        assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
 
         mapping = getClassMapping(Post, [Comment, User, Post], {
             only = "author"
@@ -190,8 +214,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.mappedClass == Post
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 2
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.propertyType == User }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.propertyType == User }
 
         // Defined specific properties for reference
         mapping = getClassMapping(Post, [Comment, User, Post], {
@@ -201,7 +225,11 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.mappedClass == Post
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 1
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.attributes == [cascade: 'all', accessor: 'field', refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        def pm = mapping.propertyMappings[0]
+        assert pm.propertyName == 'author'
+        assert pm.reference
+        assert pm.propertyType == User
+        assert pm.attributes == [cascade: 'all', accessor: 'field']
 
         // Defined specific properties for reference with default component
         mapping = getClassMapping(Post, [Comment, User, Post], {
@@ -211,8 +239,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.mappedClass == Post
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 2
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.attributes == [cascade: 'all', accessor: 'field', refAlias: CompassMappingUtils.getDefaultAlias(User)] }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.propertyType == User && it.attributes == [cascade: 'all', accessor: 'field'] }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.propertyType == User }
 
         // Defined specific properties for component with default reference
         mapping = getClassMapping(Post, [Comment, User, Post], {
@@ -222,8 +250,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.mappedClass == Post
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 2
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.attributes == [cascade: 'all', accessor: 'field', refAlias: CompassMappingUtils.getDefaultAlias(User)] }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.propertyType == User && it.attributes == [cascade: 'all', accessor: 'field'] }
+        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.propertyType == User }
 
         // Components
         shouldFail(IllegalArgumentException) {
@@ -256,7 +284,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 4
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
-        assert mapping.propertyMappings.findAll { it.propertyName in ['searchableCompOne', 'searchableCompTwo'] }.every { it.component && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)] }
+        assert mapping.propertyMappings.findAll { it.propertyName in ['searchableCompOne', 'searchableCompTwo'] }.every { it.component && it.propertyType == SearchableComp }
 
         // ...other side of the relationship
         mapping = getClassMapping(SearchableComp, [ComponentOwner, SearchableComp], { })
@@ -273,8 +301,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 4
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
-        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.component && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp), maxDepth: 1, cascade: 'create,delete'] }
-        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)] }
+        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.component && it.propertyType == SearchableComp && it.attributes == [maxDepth: 1, cascade: 'create,delete'] }
+        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
 //        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: ], searchableCompTwo: [component: [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)]]]
     }
 

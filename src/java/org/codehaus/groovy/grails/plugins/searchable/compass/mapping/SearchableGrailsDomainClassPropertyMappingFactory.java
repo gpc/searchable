@@ -62,17 +62,7 @@ public class SearchableGrailsDomainClassPropertyMappingFactory {
             return referenceMapCompassClassPropertyMapping(propertyName, propertyType);
         }
 
-        // TODO refactor this into main referenceCompassClassPropertyMapping() method
-        // If it has sub-classes it may be polymorphic, so supply all ref-aliases
-        Set hierarchyTypes = new HashSet();
-        hierarchyTypes.add(propertyType);
-        hierarchyTypes.addAll(GrailsDomainClassUtils.getClazzes(domainClassProperty.getDomainClass().getSubClasses()));
-        List refAliases = new ArrayList();
-        for (Iterator iter = hierarchyTypes.iterator(); iter.hasNext(); ) {
-            Class type = (Class) iter.next();
-            refAliases.add(CompassMappingUtils.getDefaultAlias(type));
-        }
-        return referenceCompassClassPropertyMapping(propertyName, DefaultGroovyMethods.join(refAliases, ", "));
+        return referenceCompassClassPropertyMapping(propertyName, propertyType);
     }
 
     public CompassClassPropertyMapping propertyCompassClassPropertyMapping(String propertyName, String format) {
@@ -84,18 +74,12 @@ public class SearchableGrailsDomainClassPropertyMappingFactory {
         return propertyMapping;
     }
 
-    public CompassClassPropertyMapping componentCompassClassPropertyMapping(String propertyName, final Class propertyType) {
-        CompassClassPropertyMapping propertyMapping = CompassClassPropertyMapping.getComponentInstance(propertyName);
-        Map attributes = propertyMapping.getAttributes();
-        attributes.put("refAlias", CompassMappingUtils.getDefaultAlias(propertyType));
-        return propertyMapping;
+    public CompassClassPropertyMapping componentCompassClassPropertyMapping(String propertyName, Class propertyType) {
+        return CompassClassPropertyMapping.getComponentInstance(propertyName, propertyType);
     }
 
-    public CompassClassPropertyMapping referenceCompassClassPropertyMapping(String propertyName, final String refAlias) {
-        CompassClassPropertyMapping propertyMapping = CompassClassPropertyMapping.getReferenceInstance(propertyName);
-        Map attributes = propertyMapping.getAttributes();
-        attributes.put("refAlias", refAlias);
-        return propertyMapping;
+    public CompassClassPropertyMapping referenceCompassClassPropertyMapping(String propertyName, Class propertyType) {
+        return CompassClassPropertyMapping.getReferenceInstance(propertyName, propertyType);
     }
 
     public CompassClassPropertyMapping stringMapCompassClassPropertyMapping(String propertyName) {

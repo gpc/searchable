@@ -111,10 +111,14 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
      * @param propertyMappings
      * @return
      */
-    public static CompassClassMapping buildCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, List propertyMappings) {
+    public static CompassClassMapping buildCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, List propertyMappings, String alias) {
         CompassClassMapping classMapping = new CompassClassMapping();
         classMapping.setMappedClass(grailsDomainClass.getClazz());
-        classMapping.setAlias(CompassMappingUtils.getDefaultAlias(grailsDomainClass.getClazz()));
+        if (alias != null) {
+            classMapping.setAlias(alias);
+        } else {
+            classMapping.setAlias(CompassMappingUtils.getDefaultAlias(grailsDomainClass.getClazz()));
+        }
         classMapping.setPropertyMappings(propertyMappings);
         classMapping.setRoot(SearchableGrailsDomainClassCompassMappingUtils.isRoot(grailsDomainClass, searchableGrailsDomainClasses));
         Collection superClasses = GrailsDomainClassUtils.getSuperClasses(grailsDomainClass, searchableGrailsDomainClasses);

@@ -88,7 +88,7 @@ class SearchableGrailsDomainClassPropertyMappingFactoryTests extends GroovyTestC
         propertyMapping = getPropertyMapping(Post, "author", [Post, Comment, User])
         assert propertyMapping
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(User)]
+        assert propertyMapping.propertyType == User
 
         // One, where other side is NOT searchable
         propertyMapping = getPropertyMapping(Post, "author", [Post, Comment])
@@ -98,7 +98,7 @@ class SearchableGrailsDomainClassPropertyMappingFactoryTests extends GroovyTestC
         propertyMapping = getPropertyMapping(Post, "comments", [Post, Comment, User])
         assert propertyMapping
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(Comment)]
+        assert propertyMapping.propertyType == Comment
 
         // Many, where other side is NOT searchable
         propertyMapping = getPropertyMapping(Post, "comments", [Post, User])
@@ -112,7 +112,7 @@ class SearchableGrailsDomainClassPropertyMappingFactoryTests extends GroovyTestC
         propertyMapping = getPropertyMapping(ReferenceMapOwner, "referenceMap", [ReferenceMapOwner, MapReferee])
         assert propertyMapping
         assert propertyMapping.reference
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(MapReferee)]
+        assert propertyMapping.propertyType == MapReferee
 
         // where other side is searchable
         propertyMapping = getPropertyMapping(ReferenceMapOwner, "referenceMap", [ReferenceMapOwner])
@@ -126,7 +126,7 @@ class SearchableGrailsDomainClassPropertyMappingFactoryTests extends GroovyTestC
         propertyMapping = getPropertyMapping(ComponentOwner, "searchableCompOne", [ComponentOwner, SearchableComp])
         assert propertyMapping
         assert propertyMapping.component
-        assert propertyMapping.attributes == [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)]
+        assert propertyMapping.propertyType == SearchableComp
 
         // Embedded component NOT searchable
         propertyMapping = getPropertyMapping(ComponentOwner, "comp", [ComponentOwner, SearchableComp])

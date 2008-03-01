@@ -76,13 +76,13 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
 
         childMappings = [
             CompassClassPropertyMapping.getPropertyInstance("someProperty"),
-            CompassClassPropertyMapping.getComponentInstance("anotherProperty"),
+            CompassClassPropertyMapping.getComponentInstance("anotherProperty", Object),
             CompassClassPropertyMapping.getPropertyInstance("childOnlyProperty")
         ]
         parentMappings = [
             CompassClassPropertyMapping.getPropertyInstance("commonProperty"),
             CompassClassPropertyMapping.getPropertyInstance("someProperty", [boost: 1.3]),
-            CompassClassPropertyMapping.getReferenceInstance("anotherProperty")
+            CompassClassPropertyMapping.getReferenceInstance("anotherProperty", Object)
         ]
         SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(childMappings, parentMappings)
         assert parentMappings.size() == 3
@@ -97,11 +97,11 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
 
         // mutiple mappings for a single property
         childMappings = [
-            CompassClassPropertyMapping.getComponentInstance("anotherProperty"),
-            CompassClassPropertyMapping.getReferenceInstance("anotherProperty")
+            CompassClassPropertyMapping.getComponentInstance("anotherProperty", Object),
+            CompassClassPropertyMapping.getReferenceInstance("anotherProperty", Object)
         ]
         parentMappings = [
-            CompassClassPropertyMapping.getReferenceInstance("anotherProperty")
+            CompassClassPropertyMapping.getReferenceInstance("anotherProperty", Object)
         ]
         SearchableGrailsDomainClassCompassMappingUtils.mergePropertyMappings(childMappings, parentMappings)
         assert parentMappings.size() == 1

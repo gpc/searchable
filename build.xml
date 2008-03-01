@@ -88,6 +88,7 @@
 
   <target name="single-test" depends="compile,compile-test">
     <java classname="groovy.ui.GroovyMain" fork="true" classpathref="test.classpath" failonerror="true">
+      <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"/>
       <arg value="${test}" />
     </java>
   </target>

@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Iterator;
 import java.io.IOException;
 
 /**
@@ -57,12 +58,16 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator imp
      *
      * @param compassConfiguration          the CompassConfiguration instance
      * @param configurationContext          a configuration context, for flexible parameter passing
-     * @param grailsDomainClass             the Grails domain class to map
-     * @param searchableGrailsDomainClasses all searchable domain classes
+     * @param searchableGrailsDomainClasses searchable domain classes to map
      */
-    public void configureMapping(CompassConfiguration compassConfiguration, Map configurationContext, GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
+    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
         Assert.notNull(resourceLoader, "resourceLoader cannot be null");
-        if (!configurationContext.containsKey(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED)) {
+        if (configurationContext.containsKey(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED)) {
+            return;
+        }
+
+        for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
+            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
             Resource resource = getMappingResource(grailsDomainClass);
             Assert.isTrue(resource.exists(), "mapping resource must exist: did isSearchable() not return false?");
             try {
@@ -84,6 +89,14 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator imp
         return "Compass Mapping XML";
     }
 
+    /**
+     * Determines the order of this mapping configurator in relation to others
+     * @return the order
+     */
+    public int getOrder() {
+        return 0;
+    }
+
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
@@ -97,5 +110,4 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator imp
         Assert.notNull(grailsDomainClass, "grailsDomainClass cannot be null");
         return "classpath:/" + className.replaceAll("\\.", "/") + ".cpm.xml";
     }
-
 }

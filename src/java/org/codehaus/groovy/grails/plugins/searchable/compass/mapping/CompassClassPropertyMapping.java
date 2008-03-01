@@ -46,6 +46,11 @@ public class CompassClassPropertyMapping {
     private String propertyName;
 
     /**
+     * The user defined class type of the property
+     */
+    private Class propertyType;
+
+    /**
      * No arg constructor
      */
     public CompassClassPropertyMapping() {
@@ -62,6 +67,18 @@ public class CompassClassPropertyMapping {
         Assert.notNull(propertyName, "propertyName cannot be null");
         this.type = type;
         this.propertyName = propertyName;
+    }
+
+    protected CompassClassPropertyMapping(String type, String propertyName, Class propertyType, Map attributes) {
+        this(type, propertyName, propertyType);
+        Assert.notNull(attributes, "attributes cannot be null");
+        this.attributes = attributes;
+    }
+
+    protected CompassClassPropertyMapping(String type, String propertyName, Class propertyType) {
+        this(type, propertyName);
+        Assert.notNull(propertyType, "propertyType cannot be null");
+        this.propertyType = propertyType;
     }
 
     protected CompassClassPropertyMapping(String type, String propertyName, Map attributes) {
@@ -94,37 +111,47 @@ public class CompassClassPropertyMapping {
      * @param propertyName the name of the mapped property
      * @return a new CompassClassPropertyMapping instance
      */
-    public static CompassClassPropertyMapping getReferenceInstance(String propertyName) {
-        return new CompassClassPropertyMapping(REFERENCE, propertyName);
+    public static CompassClassPropertyMapping getReferenceInstance(String propertyName, Class propertyType) {
+        return new CompassClassPropertyMapping(REFERENCE, propertyName, propertyType);
     }
 
     /**
      * Factory-style constructor for type-safe reference type
      * @param propertyName the name of the mapped property
-     * @param attributes mapping attributes
-     * @return a new CompassClassPropertyMapping instance
+     * @param propertyType the user class type
+     * @param attributes mapping attributes @return a new CompassClassPropertyMapping instance
      */
-    public static CompassClassPropertyMapping getReferenceInstance(String propertyName, Map attributes) {
-        return new CompassClassPropertyMapping(REFERENCE, propertyName, attributes);
+    public static CompassClassPropertyMapping getReferenceInstance(String propertyName, Class propertyType, Map attributes) {
+        return new CompassClassPropertyMapping(REFERENCE, propertyName, propertyType, attributes);
     }
 
     /**
      * Factory-style constructor for type-safe compoonent type
      * @param propertyName the name of the mapped property
+     * @param propertyType the user class type
      * @return a new CompassClassPropertyMapping instance
      */
-    public static CompassClassPropertyMapping getComponentInstance(String propertyName) {
-        return new CompassClassPropertyMapping(COMPONENT, propertyName);
+    public static CompassClassPropertyMapping getComponentInstance(String propertyName, Class propertyType) {
+        return new CompassClassPropertyMapping(COMPONENT, propertyName, propertyType);
     }
 
     /**
      * Factory-style constructor for type-safe compoonent type
      * @param propertyName the name of the mapped property
      * @param attributes mapping attributes
+     * @param propertyType the user class type
      * @return a new CompassClassPropertyMapping instance
      */
-    public static CompassClassPropertyMapping getComponentInstance(String propertyName, Map attributes) {
-        return new CompassClassPropertyMapping(COMPONENT, propertyName, attributes);
+    public static CompassClassPropertyMapping getComponentInstance(String propertyName, Class propertyType, Map attributes) {
+        return new CompassClassPropertyMapping(COMPONENT, propertyName, propertyType, attributes);
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
@@ -159,6 +186,17 @@ public class CompassClassPropertyMapping {
         this.attributes = attributes;
     }
 
+    public boolean hasAttribute(String name) {
+        return attributes != null && attributes.containsKey(name);
+    }
+
+    public void setAttrbute(String name, String value) {
+        if (attributes == null) {
+            attributes = new HashMap();
+        }
+        attributes.put(name, value);
+    }
+
     public String getPropertyName() {
         return propertyName;
     }
@@ -167,12 +205,12 @@ public class CompassClassPropertyMapping {
         this.propertyName = propertyName;
     }
 
-    public String getType() {
-        return type;
+    public Class getPropertyType() {
+        return propertyType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPropertyType(Class propertyType) {
+        this.propertyType = propertyType;
     }
 
     /**

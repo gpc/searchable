@@ -30,7 +30,7 @@ import org.compass.annotations.config.CompassAnnotationsConfiguration
 * @author Maurice Nicholson
 */
 class CompassAnnotationSearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
-    def strategy
+    SearchableGrailsDomainClassMappingConfigurator strategy
 
     void setUp() {
         assert JdkVersion.isAtLeastJava15()
@@ -61,13 +61,13 @@ class CompassAnnotationSearchableGrailsDomainClassMappingConfiguratorTests exten
 
     void testConfigureWithoutCompassXml() {
         def config = new MyAnnotationCompassConfiguration()
-        strategy.configureMapping(config, [:], [getClazz: { AnnotatedSearchable.class }] as GrailsDomainClass, [])
+        strategy.configureMappings(config, [:], [[getClazz: { AnnotatedSearchable.class }] as GrailsDomainClass])
         assert config.addedClass == AnnotatedSearchable.class
     }
 
     void testConfigureWithCompassXml() {
         def config = new MyAnnotationCompassConfiguration()
-        strategy.configureMapping(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [getClazz: { AnnotatedSearchable.class }] as GrailsDomainClass, [])
+        strategy.configureMappings(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [[getClazz: { AnnotatedSearchable.class }] as GrailsDomainClass])
         assert config.addedClass == null
     }
 }

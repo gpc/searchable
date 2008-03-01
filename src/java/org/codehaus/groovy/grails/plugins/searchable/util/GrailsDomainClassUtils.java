@@ -16,6 +16,8 @@
 package org.codehaus.groovy.grails.plugins.searchable.util;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.springframework.util.Assert;
 
 import java.util.*;
 
@@ -127,6 +129,19 @@ public class GrailsDomainClassUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the named property for the given domain class's clazz
+     * @param grailsDomainClasses a collection GrailsDomainClass
+     * @param clazz the user domain Class
+     * @param propertyName the property name
+     * @return the property
+     */
+    public static GrailsDomainClassProperty getGrailsDomainClassProperty(Collection grailsDomainClasses, Class clazz, String propertyName) {
+        GrailsDomainClass grailsDomainClass = getGrailsDomainClass(clazz, grailsDomainClasses);
+        Assert.notNull(grailsDomainClass, "GrailsDomainClass not found for clazz [" + clazz + "]");
+        return grailsDomainClass.getPropertyByName(propertyName);
     }
 
     /**

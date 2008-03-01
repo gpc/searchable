@@ -206,7 +206,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("title"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt"))
-        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance("comments", [refAlias: 'commentalias']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance("comments", Comment, [refAlias: 'commentalias']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -247,7 +247,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("summary"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("comment"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt", [format: "yyyy-MM-dd'T'HH:mm:ss"]))
-        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance("post", [refAlias: 'postalias']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance("post", Post, [refAlias: 'postalias']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
 /*<?xml version="1.0"?>
 <!DOCTYPE compass-core-mapping PUBLIC
@@ -290,8 +290,8 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt", [format: 'yyyyMMdd', excludeFromAll: true]))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('title', [boost: 2.0f, store: 'compress']))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('post', [termVector: 'yes']))
-        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance('comments', [refAlias: 'commentalias', propertyConverter: 'commentConverter']))
-        description.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance('comments', [refAlias: 'commentalias', cascade: 'create,delete']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance('comments', Post, [refAlias: 'commentalias', propertyConverter: 'commentConverter']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance('comments', Post, [refAlias: 'commentalias', cascade: 'create,delete']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -352,13 +352,13 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         shouldFail(IllegalArgumentException) {
             description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
-            description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance('author', [noSuchReferenceOption: 'abc123']))
+            description.addPropertyMapping(CompassClassPropertyMapping.getReferenceInstance('author', User, [noSuchReferenceOption: 'abc123']))
             is = mappingXmlBuilder.buildClassMappingXml(description)
         }
 
         shouldFail(IllegalArgumentException) {
             description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
-            description.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance('author', [noSuchComponentOption: 'abc123']))
+            description.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance('author', User, [noSuchComponentOption: 'abc123']))
             is = mappingXmlBuilder.buildClassMappingXml(description)
         }
     }

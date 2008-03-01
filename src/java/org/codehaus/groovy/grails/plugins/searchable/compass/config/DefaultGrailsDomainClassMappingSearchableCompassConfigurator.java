@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.springframework.util.Assert;
+import org.springframework.core.OrderComparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,26 +49,39 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
      */
     public void configure(CompassConfiguration compassConfiguration, Map configurationContext) {
         Assert.notNull(grailsApplication, "grailsApplication cannot be null");
-        Map strategyBySearchableDomainClass = new HashMap();
+        Assert.notNull(classMappingConfigurators, "classMappingConfigurators cannot be null");
+
+        // determine which classes are mapped by which strategy
+        Map classesByStrategy = new HashMap();
         for (Iterator iter = SearchableUtils.getGrailsDomainClasses(grailsApplication).iterator(); iter.hasNext(); ) {
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
+            SearchableGrailsDomainClassMappingConfigurator classMappingConfigurator = null;
             for (int i = 0; i < classMappingConfigurators.length; i++) {
                 if (classMappingConfigurators[i].isSearchable(grailsDomainClass)) {
-                    strategyBySearchableDomainClass.put(grailsDomainClass, classMappingConfigurators[i]);
+                    classMappingConfigurator = classMappingConfigurators[i];
                     break;
                 }
             }
-            if (LOG.isDebugEnabled() && strategyBySearchableDomainClass.get(grailsDomainClass) == null) {
+            if (classMappingConfigurator != null) {
+                List classes = (List) classesByStrategy.get(classMappingConfigurator);
+                if (classes == null) {
+                    classes = new ArrayList();
+                    classesByStrategy.put(classMappingConfigurator, classes);
+                }
+                LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + classMappingConfigurator.getName() + "]");
+                classes.add(grailsDomainClass);
+            } else if (LOG.isDebugEnabled()) {
                 LOG.debug("No mapping strategy found for class [" + grailsDomainClass.getClazz() + "]: assuming this class is not searchable");
             }
         }
 
-        Collection searchableGrailsDomainClasses = strategyBySearchableDomainClass.keySet();
-        for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
-            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-            SearchableGrailsDomainClassMappingConfigurator mappingConfigurator = (SearchableGrailsDomainClassMappingConfigurator) strategyBySearchableDomainClass.get(grailsDomainClass);
-            LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + mappingConfigurator.getName() + "]");
-            mappingConfigurator.configureMapping(compassConfiguration, configurationContext, grailsDomainClass, searchableGrailsDomainClasses);
+        // map classes in the order defined by the classMappingConfigurators
+        for (int i = 0; i < classMappingConfigurators.length; i++) {
+            SearchableGrailsDomainClassMappingConfigurator classMappingConfigurator = classMappingConfigurators[i];
+            List classes = (List) classesByStrategy.get(classMappingConfigurator);
+            if (classes != null) {
+                classMappingConfigurator.configureMappings(compassConfiguration, configurationContext, classes);
+            }
         }
     }
 
@@ -80,6 +94,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
     }
 
     public void setClassMappingStrategies(SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators) {
+        Arrays.sort(classMappingConfigurators, new OrderComparator());
         this.classMappingConfigurators = classMappingConfigurators;
     }
 }

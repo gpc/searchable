@@ -18,11 +18,11 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 import org.springframework.util.Assert;
 import org.compass.core.Compass;
 import org.compass.core.spi.InternalCompass;
+import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * @author Maurice Nicholson
@@ -67,5 +67,44 @@ public class CompassMappingUtils {
             aliases.add(getMappingAlias(compass, clazz));
         }
         return (String[]) aliases.toArray(new String[aliases.size()]);
+    }
+
+    /**
+     * Resolve aliases between mappings
+     * Note this method is destructive in the sense that it modifies the passed in mappings
+     */
+    public static void resolveAliases(List classMappings, Collection grailsDomainClasses) {
+        // set defaults for those classes without explicit aliases and collect aliases
+        Map mappingByClass = new HashMap();
+        for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
+            CompassClassMapping classMapping = (CompassClassMapping) iter.next();
+            if (classMapping.getAlias() == null) {
+                classMapping.setAlias(getDefaultAlias(classMapping.getMappedClass()));
+            }
+            mappingByClass.put(classMapping.getMappedClass(), classMapping);
+        }
+
+        // resolve property ref aliases
+        for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
+            CompassClassMapping classMapping = (CompassClassMapping) iter.next();
+            Class mappedClass = classMapping.getMappedClass();
+            for (Iterator piter = classMapping.getPropertyMappings().iterator(); piter.hasNext(); ) {
+                CompassClassPropertyMapping propertyMapping = (CompassClassPropertyMapping) piter.next();
+                if ((propertyMapping.isComponent() || propertyMapping.isReference()) && !propertyMapping.hasAttribute("refAlias")) {
+                    Set aliases = new HashSet();
+                    Class clazz = propertyMapping.getPropertyType();
+                    aliases.add(((CompassClassMapping) mappingByClass.get(clazz)).getAlias());
+                    GrailsDomainClassProperty domainClassProperty = GrailsDomainClassUtils.getGrailsDomainClassProperty(grailsDomainClasses, mappedClass, propertyMapping.getPropertyName());
+                    Collection clazzes = GrailsDomainClassUtils.getClazzes(domainClassProperty.getReferencedDomainClass().getSubClasses());
+                    for (Iterator citer = clazzes.iterator(); citer.hasNext(); ) {
+                        CompassClassMapping mapping = (CompassClassMapping) mappingByClass.get(citer.next());
+                        if (mapping != null) {
+                            aliases.add(mapping.getAlias());
+                        }
+                    }
+                    propertyMapping.setAttrbute("refAlias", DefaultGroovyMethods.join(aliases, ", "));
+                }
+            }
+        }
     }
 }

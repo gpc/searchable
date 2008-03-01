@@ -69,10 +69,13 @@ class TestSearchableGrailsDomainClassMappingStrategy implements SearchableGrails
     boolean isSearchable(GrailsDomainClass grailsDomainClass) {
         classShouldMap == grailsDomainClass.clazz
     }
-    void configureMapping(CompassConfiguration compassConfiguration, Map configurationContext, GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
-        classDidMap = grailsDomainClass.clazz
+    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
+        classDidMap = searchableGrailsDomainClasses[0].clazz
     }
     String getName() {
         "dummy"
+    }
+    int getOrder() {
+        return 0;
     }
 }

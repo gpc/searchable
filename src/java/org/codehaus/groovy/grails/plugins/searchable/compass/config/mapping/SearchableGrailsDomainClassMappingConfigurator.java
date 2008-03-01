@@ -18,27 +18,27 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.compass.core.config.CompassConfiguration;
+import org.springframework.core.Ordered;
 
 import java.util.Collection;
 import java.util.Map;
 
 /**
- * Configures Compass with a searchable domain class mapping 
+ * Configures Compass with a searchable domain class mapping
  *
  * @author Maurice Nicholson
  */
-// TODO do not extend GrailsDomainClassSearchabilityEvaluator: let implementors implement both
-public interface SearchableGrailsDomainClassMappingConfigurator extends GrailsDomainClassSearchabilityEvaluator {
+// todo is there any benefit in having GrailsDomainClassSearchabilityEvaluator? maybe just use configurator to configure all relevant classes and ignore others
+public interface SearchableGrailsDomainClassMappingConfigurator extends GrailsDomainClassSearchabilityEvaluator, Ordered {
 
     /**
      * Configure the Mapping in the CompassConfiguration for the given domain class
      *
      * @param compassConfiguration the CompassConfiguration instance
      * @param configurationContext a configuration context, for flexible parameter passing
-     * @param grailsDomainClass the Grails domain class to map
-     * @param searchableGrailsDomainClasses all searchable domain classes
+     * @param searchableGrailsDomainClasses searchable domain classes to map
      */
-    void configureMapping(CompassConfiguration compassConfiguration, Map configurationContext, GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses);
+    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses);
 
     /**
      * Get this strategy's name

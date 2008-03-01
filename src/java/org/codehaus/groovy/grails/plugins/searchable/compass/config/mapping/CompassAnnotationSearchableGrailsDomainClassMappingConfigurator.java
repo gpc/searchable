@@ -27,6 +27,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Iterator;
 import java.lang.reflect.Method;
 
 /**
@@ -63,18 +64,21 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator imp
      *
      * @param compassConfiguration          the CompassConfiguration instance
      * @param configurationContext          a configuration context, for flexible parameter passing
-     * @param grailsDomainClass             the Grails domain class to map
-     * @param searchableGrailsDomainClasses all searchable domain classes
+     * @param searchableGrailsDomainClasses searchable domain classes to map
      */
-    public void configureMapping(CompassConfiguration compassConfiguration, Map configurationContext, GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
+    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
         Assert.isTrue(annotationsAvailable, "Annotations must be available");
         Assert.notNull(compassConfiguration, "compassConfiguration cannot be null");
         Assert.notNull(configurationContext, "configurationContext cannot be null");
 
-        if (!configurationContext.containsKey(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED)) {
-            Class compassAnnotationsConfigurationClass = getCompassAnnotationConfigurationClass();
-            Assert.isTrue(compassAnnotationsConfigurationClass.isAssignableFrom(compassConfiguration.getClass()), "compassConfiguration must be an instance of CompassAnnotationsConfiguration");
-            compassConfiguration.addClass(grailsDomainClass.getClazz());
+        if (configurationContext.containsKey(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED)) {
+            return;
+        }
+
+        Class compassAnnotationsConfigurationClass = getCompassAnnotationConfigurationClass();
+        Assert.isTrue(compassAnnotationsConfigurationClass.isAssignableFrom(compassConfiguration.getClass()), "compassConfiguration must be an instance of CompassAnnotationsConfiguration");
+        for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
+            compassConfiguration.addClass(((GrailsDomainClass) iter.next()).getClazz());
         }
     }
 
@@ -85,6 +89,14 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator imp
      */
     public String getName() {
         return "Compass annotations";
+    }
+
+    /**
+     * Determines the order of this mapping configurator in relation to others
+     * @return the order
+     */
+    public int getOrder() {
+        return 0;
     }
 
     private Method findGetAnnotationMethod() {

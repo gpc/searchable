@@ -76,11 +76,7 @@ class SearchableClassPropertySearchableGrailsDomainClassMappingConfiguratorTests
         ] as SearchableCompassClassMappingXmlBuilder
 
         def conf = new MyCompassConfiguration()
-        def domainClassMap = [:]
-        for (type in [Post, User, Comment]) {
-            domainClassMap[type] = new DefaultGrailsDomainClass(type)
-        }
-        classMappingConfigurator.configureMapping(conf, null, domainClassMap[Post], domainClassMap.keySet())
+        classMappingConfigurator.configureMappings(conf, null, [new DefaultGrailsDomainClass(Post)])
         assert conf.inputStream.text == "this is the mapping"
         assert conf.resourceName == Post.class.name.replaceAll("\\.", "/") + ".cpm.xml"
     }
