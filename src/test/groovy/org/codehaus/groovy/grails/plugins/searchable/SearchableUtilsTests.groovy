@@ -138,4 +138,28 @@ class SearchableUtilsTests extends GroovyTestCase {
         assert !SearchableUtils.isIncludedProperty("addressLine1", [except: ['name', 'addressLine?']])
         assert SearchableUtils.isIncludedProperty("addressLine1", [except: 'house*'])
     }
+
+    // public static String getAppName(GrailsApplication grailsApplication) {
+    void testGetAppName() {
+        // with grails app
+        def grailsApplication = [getMetadata: {-> ['app.name': "foobar"]}] as GrailsApplication
+        assert SearchableUtils.getAppName(grailsApplication) == "foobar"
+
+        // no grails app, finds application.properties on classpath
+        def cl = Thread.currentThread().getContextClassLoader()
+        Thread.currentThread().setContextClassLoader([getResource: {String name -> new URL("dummy://resource")}, getResourceAsStream: {String name -> new ByteArrayInputStream("app.name=barbaz".bytes)}] as ClassLoader)
+        assert SearchableUtils.getAppName() == "barbaz"
+        Thread.currentThread().setContextClassLoader(cl)
+
+        // no grails app uses base.dir property
+        String dir = System.getProperty("java.io.tmpdir")
+        def file = new File(dir, "application.properties")
+        file.write("app.name=bazfoo");
+        System.setProperty("base.dir", dir)
+        assert SearchableUtils.getAppName() == "bazfoo"
+        file.delete()
+
+        // unnkown
+        assert SearchableUtils.getAppName() == "app.name"
+    }
 }

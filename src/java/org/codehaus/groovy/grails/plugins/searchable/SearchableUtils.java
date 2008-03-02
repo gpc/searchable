@@ -19,10 +19,19 @@ import org.codehaus.groovy.grails.commons.*;
 import org.codehaus.groovy.grails.plugins.searchable.compass.CompassGrailsDomainClassSearchabilityEvaluatorFactory;
 import org.codehaus.groovy.grails.plugins.searchable.util.PatternUtils;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.Assert;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.io.File;
+import java.io.IOException;
+
+import grails.util.GrailsUtil;
 
 /**
  * General purpose utilities for the Grails Searchable Plugin
@@ -30,6 +39,8 @@ import java.util.regex.Pattern;
  * @author Maurice Nicholson
  */
 public class SearchableUtils {
+    private static Log log = LogFactory.getLog(SearchableUtils.class);
+    private static final String PROJECT_META_FILE = "application.properties";
     public static final String SEARCHABLE_PROPERTY_NAME = "searchable";
     public static final String ONLY = "only";
     public static final String EXCEPT = "except";
@@ -217,4 +228,52 @@ public class SearchableUtils {
         }
         return false;
     }
+
+    /**
+     * Tries to resolve the Grails application name
+     * @param grailsApplication the GrailsApplication instance which may be null
+     * @return the app name or "app.name" if not found
+     */
+    public static String getAppName(GrailsApplication grailsApplication) {
+        Map metadata = null;
+        if (grailsApplication != null) {
+            metadata = grailsApplication.getMetadata();
+        }
+        if (metadata == null) {
+            metadata = loadMetadata();
+        }
+        if (metadata == null) {
+            return "app.name";
+        }
+        return (String) metadata.get("app.name");
+    }
+
+    // adapted from DefaultGrailsApplication
+    private static Map loadMetadata() {
+        Resource r = new ClassPathResource(PROJECT_META_FILE);
+        if (r.exists()) {
+            return loadMetadata(r);
+        }
+        String basedir = System.getProperty("base.dir");
+        if (basedir != null) {
+            r = new FileSystemResource(new File(basedir, PROJECT_META_FILE));
+            if (r.exists()) {
+                return loadMetadata(r);
+            }
+        }
+        return null;
+    }
+
+    private static Map loadMetadata(Resource resource) {
+        try {
+            Properties meta = new Properties();
+            meta.load(resource.getInputStream());
+            return meta;
+        } catch (IOException e) {
+//            GrailsUtil.deepSanitize(e);
+            log.warn("No application metadata file found at " + resource);
+        }
+        return null;
+    }
+
 }

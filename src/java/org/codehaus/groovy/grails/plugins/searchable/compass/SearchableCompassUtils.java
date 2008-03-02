@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass;
 
 import grails.util.GrailsUtil;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 
 import java.io.File;
 
@@ -30,17 +31,18 @@ public class SearchableCompassUtils {
     /**
      * Get the default Compass connection (ie, Lucene index dir)
      *
+     * @param grailsApplication the GrailsApplication - may be null
      * @return {user.home}/.grails/projects/{project-name}/searchable-index/{grails.env}
-     * @param grailsApplication
      */
     public static String getDefaultConnection(GrailsApplication grailsApplication) {
+        String appName = SearchableUtils.getAppName(grailsApplication);
         return new StringBuffer(System.getProperty("user.home")).
             append(File.separator).
             append(".grails").
             append(File.separator).
             append("projects").
             append(File.separator).
-            append((String) grailsApplication.getMetadata().get("app.name")).
+            append(appName).
             append(File.separator).
             append("searchable-index").
             append(File.separator).

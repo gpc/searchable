@@ -25,9 +25,14 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 class SearchableCompassUtilsTests extends GroovyTestCase {
 
     void testGetDefaultConnection() {
+        // with grails application
         def grailsApplication = [getMetadata: {-> ['app.name': "blah"] }] as GrailsApplication
         String expected = [System.properties['user.home'], '.grails', 'projects', 'blah', 'searchable-index', 'development'].join(File.separator)
         String actual = SearchableCompassUtils.getDefaultConnection(grailsApplication)
         assert actual == expected
+
+        // without grails application; just make sure there is no error
+        actual = SearchableCompassUtils.getDefaultConnection()
+        assert actual
     }
 }
