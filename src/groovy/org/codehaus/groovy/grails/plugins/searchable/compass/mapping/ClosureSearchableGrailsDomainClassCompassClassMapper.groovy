@@ -40,6 +40,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     Object except;
     List mappedProperties;
     String alias;
+    List constantMetadatas;
 
     /**
      * Get the property mappings for the given GrailsDomainClass
@@ -94,7 +95,11 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         List parentMappedProperties = getInheritedPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, excludedProperties);
         // Get property mapping for this class
         mappedProperties = internalGetCompassClassPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, (Closure) closure, excludedProperties, parentMappedProperties)
-        return SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, mappedProperties, alias)
+        def classMapping = SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, mappedProperties, alias)
+        for (constant in constantMetadatas) {
+            classMapping.addConstantMetaData(constant.name, constant.attributes, constant.value)
+        }
+        return classMapping
     }
 
     Object invokeMethod(String name, Object args) {
@@ -104,6 +109,19 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                 throw new IllegalArgumentException("'${mappedClass.getName()}.${property.name}' declares an 'alias': there should be just one argument following 'alias' (the alias), but the arguments were ${args}")
             }
             alias = args[0]
+            return
+        }
+        if ("constant".equals(name) || "constants".equals(name)) {
+            if (args.size() != 1) {
+                throw new IllegalArgumentException("'${mappedClass.getName()}.${property.name}' declares an '${name}': there should be just one argument following '${name}' (the map of constants), but the arguments were ${args}")
+            }
+            args = args[0]
+            args.each { key, value ->
+                if (!(value instanceof List)) {
+                    value = [value]
+                }
+                constantMetadatas << [name: key, attributes: [:], value: value]
+            }
             return
         }
 
@@ -233,5 +251,6 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         this.except = null
         this.mappedProperties = []
         this.alias = null;
+        this.constantMetadatas = []
     }
 }

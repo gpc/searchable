@@ -131,6 +131,31 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.alias == "my_user_alias"
         assert mapping.root == true
 
+        // constant
+        mapping = getClassMapping(User, [Comment, User, Post], {
+            constant drink: "beer"
+            constant eat: ["pie", "chips"]
+        })
+        assert mapping.mappedClass == User
+        assert mapping.root == true
+        assert mapping.constantMetaData.size() == 2
+        def constant = mapping.constantMetaData.find {it.name == "drink"}
+        assert constant.values == ["beer"] && constant.attributes == [:]
+        constant = mapping.constantMetaData.find { it.name == "eat" }
+        assert constant.values == ["pie", "chips"] && constant.attributes == [:]
+
+        // constant expressed another way
+        mapping = getClassMapping(User, [Comment, User, Post], {
+            constants drink: "wine", eat: ["cheese", "biscuits"]
+        })
+        assert mapping.mappedClass == User
+        assert mapping.root == true
+        assert mapping.constantMetaData.size() == 2
+        constant = mapping.constantMetaData.find { it.name == "drink" }
+        assert constant.values == ["wine"] && constant.attributes == [:]
+        constant = mapping.constantMetaData.find { it.name == "eat" }
+        assert constant.values == ["cheese", "biscuits"] && constant.attributes == [:]
+
         // todo convert only/except to method-setting style
         // todo move special properties into "mapping closure?
 
