@@ -82,7 +82,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         for (int i = 0; i < classMappingConfigurators.length; i++) {
             SearchableGrailsDomainClassMappingConfigurator classMappingConfigurator = classMappingConfigurators[i];
             Collection classes = (Collection) classesByStrategy.get(classMappingConfigurator);
-            if (classes != null) {
+            if (classes != null && !classes.isEmpty()) {
                 classMappingConfigurator.configureMappings(compassConfiguration, configurationContext, classes);
             }
         }
