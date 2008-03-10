@@ -19,15 +19,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
-import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.Assert;
+import org.springframework.core.Ordered;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Iterator;
+import java.util.*;
 import java.lang.reflect.Method;
 
 /**
@@ -35,7 +33,7 @@ import java.lang.reflect.Method;
  *
  * @author Maurice Nicholson
  */
-public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, GrailsDomainClassSearchabilityEvaluator {
+public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, Ordered {
     private static final String SEARCHABLE_ANNOTATION_CLASS_NAME = "org.compass.annotations.Searchable";
     private static final String ANNOTATIONS_CONFIGURATION_CLASS_NAME = "org.compass.annotations.config.CompassAnnotationsConfiguration";
     private static final Log LOG = LogFactory.getLog(CompassAnnotationSearchableGrailsDomainClassMappingConfigurator.class);
@@ -47,7 +45,7 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator imp
      * @param grailsDomainClass the Grails domain class
      * @return true if the mapping of the class can be handled by this strategy
      */
-    public boolean isSearchable(GrailsDomainClass grailsDomainClass) {
+    public boolean isMappedBy(GrailsDomainClass grailsDomainClass) {
         if (!annotationsAvailable) {
             return false;
         }

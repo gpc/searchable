@@ -92,9 +92,9 @@ class CompassMappingUtilsTests extends GroovyTestCase {
         classMappings << cm
 
         classMappings << new CompassClassMapping(mappedClass: Parent, alias: "parent")
-        classMappings << new CompassClassMapping(mappedClass: SearchableChildOne, alias: "sco")
-        classMappings << new CompassClassMapping(mappedClass: SearchableChildTwo, alias: "sct")
-        classMappings << new CompassClassMapping(mappedClass: SearchableGrandChild, alias: "sgc")
+        classMappings << new CompassClassMapping(mappedClass: SearchableChildOne, alias: "sco", mappedClassSuperClass: Parent)
+        classMappings << new CompassClassMapping(mappedClass: SearchableChildTwo, alias: "sct", mappedClassSuperClass: Parent)
+        classMappings << new CompassClassMapping(mappedClass: SearchableGrandChild, alias: "sgc", mappedClassSuperClass: SearchableChildOne)
 
         // note the collection of domain classes contains one that is not mapped (because it is not searchable)
         CompassMappingUtils.resolveAliases(classMappings, getDomainClasses(Associate, Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild, NonSearchableChild))
@@ -105,6 +105,27 @@ class CompassMappingUtilsTests extends GroovyTestCase {
         aliases = cm.getPropertyMappings().find {it.propertyName == "specificInstance"}.attributes.refAlias.split(", ") as List
         assert aliases.size() == 2
         assert aliases.containsAll(["sco", "sgc"])
+        assert classMappings.find { it.mappedClass == Parent }.extend == null
+        assert classMappings.find { it.mappedClass == SearchableChildOne }.extend == "parent"
+        assert classMappings.find { it.mappedClass == SearchableChildTwo }.extend == "parent" 
+        assert classMappings.find { it.mappedClass == SearchableGrandChild }.extend == "sco"
+
+        // user-defined aliases are not inherited; new ones are provided if required
+        // note that this test simulates the case where a user has defined a custom alias in a parent
+        // clas but not done anything specifically in a child class
+        classMappings = []
+        classMappings << new CompassClassMapping(mappedClass: Parent, alias: "parent")
+        classMappings << new CompassClassMapping(mappedClass: SearchableChildOne, mappedClassSuperClass: Parent, alias: "parent")
+        classMappings << new CompassClassMapping(mappedClass: SearchableChildTwo, mappedClassSuperClass: Parent, alias: "sct")
+        classMappings << new CompassClassMapping(mappedClass: SearchableGrandChild, mappedClassSuperClass: SearchableChildOne, alias: "parent")
+
+        // note the collection of domain classes contains one that is not mapped (because it is not searchable)
+        CompassMappingUtils.resolveAliases(classMappings, getDomainClasses(Associate, Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild, NonSearchableChild))
+
+        assert classMappings.find { it.mappedClass == Parent }.every { it.alias == "parent" && it.extend == null }
+        assert classMappings.find { it.mappedClass == SearchableChildOne }.every { it.alias == CompassMappingUtils.getDefaultAlias(SearchableChildOne) && it.extend == "parent" }
+        assert classMappings.find { it.mappedClass == SearchableChildTwo }.every { it.alias == "sct" && it.extend == "parent" }
+        assert classMappings.find { it.mappedClass == SearchableGrandChild }.every { it.alias == CompassMappingUtils.getDefaultAlias(SearchableGrandChild) && it.extend == CompassMappingUtils.getDefaultAlias(SearchableChildOne) }
     }
 
     private getClassMapping(Class clazz) {

@@ -314,7 +314,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         // ...other side of the relationship
         mapping = getClassMapping(SearchableComp, [ComponentOwner, SearchableComp], { })
         assert mapping.mappedClass == SearchableComp
-        assert mapping.root == false
+        assert mapping.root == true
         assert mapping.propertyMappings.size() == 2
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'searchableCompName'] }.every { it.property && it.attributes.size() == 0 }
 

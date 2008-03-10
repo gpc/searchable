@@ -21,7 +21,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test.domain.component
  * @author Maurice Nicholson
  */
 class ComponentOwner {
-    static embedded = ['searchableCompOne', 'searchableCompTwo', 'comp']
+    static embedded = ['searchableCompOne', 'searchableCompTwo', 'comp', 'nonSearchableComp']
     static searchable = true
     Long id
     Long version
@@ -29,4 +29,5 @@ class ComponentOwner {
     SearchableComp searchableCompOne
     SearchableComp searchableCompTwo
     Comp comp
+    NonSearchableComp nonSearchableComp
 }

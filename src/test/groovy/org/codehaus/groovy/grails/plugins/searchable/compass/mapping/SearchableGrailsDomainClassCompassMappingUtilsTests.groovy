@@ -16,6 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.plugins.searchable.TestUtils
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance.*
@@ -34,16 +35,19 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 */
 class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase {
     def domainClassMap
+    def domainClasses
 
     void setUp() {
+        domainClasses = TestUtils.getDomainClasses(Post, User, Comment, ComponentOwner, SearchableComp, Comp, NonSearchableComp)
         domainClassMap = [:]
-        for (type in [Post, User, Comment, ComponentOwner, SearchableComp]) {
-            domainClassMap[type] = new DefaultGrailsDomainClass(type)
+        for (type in [Post, User, Comment, ComponentOwner, SearchableComp, Comp, NonSearchableComp]) {
+            domainClassMap[type] = domainClasses.find { it.clazz == type }
         }
     }
 
     void tearDown() {
         domainClassMap = null
+        domainClasses = null
     }
 
     void testIsRoot() {
@@ -51,8 +55,9 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
         assert isRoot(User, [Post, User, Comment])
         assert isRoot(Comment, [Post, User, Comment])
 
-        assert isRoot(ComponentOwner, [ComponentOwner, SearchableComp])
-        assert isRoot(SearchableComp, [ComponentOwner, SearchableComp]) == false
+        assert isRoot(ComponentOwner, [ComponentOwner, SearchableComp, Comp])
+        assert isRoot(SearchableComp, [ComponentOwner, SearchableComp, Comp])
+        assert isRoot(Comp, [ComponentOwner, SearchableComp, Comp]) == false
     }
 
     private isRoot(type, searchableClasses) {

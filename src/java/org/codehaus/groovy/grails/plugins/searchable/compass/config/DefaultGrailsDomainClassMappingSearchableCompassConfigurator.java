@@ -53,32 +53,35 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
 
         // determine which classes are mapped by which strategy
         Map classesByStrategy = new HashMap();
-        for (Iterator iter = SearchableUtils.getGrailsDomainClasses(grailsApplication).iterator(); iter.hasNext(); ) {
-            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-            SearchableGrailsDomainClassMappingConfigurator classMappingConfigurator = null;
-            for (int i = 0; i < classMappingConfigurators.length; i++) {
-                if (classMappingConfigurators[i].isSearchable(grailsDomainClass)) {
-                    classMappingConfigurator = classMappingConfigurators[i];
-                    break;
+        Collection grailsDomainClasses = SearchableUtils.getGrailsDomainClasses(grailsApplication);
+        Set notMapped = new HashSet(grailsDomainClasses);
+        for (int i = 0; i < classMappingConfigurators.length; i++) {
+            SearchableGrailsDomainClassMappingConfigurator configurator = classMappingConfigurators[i];
+            Collection classes = configurator.getMappedBy(notMapped);
+            if (classes != null) {
+                notMapped.removeAll(classes);
+                if (LOG.isDebugEnabled()) {
+                    for (Iterator iter = classes.iterator(); iter.hasNext(); ) {
+                        GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
+                        LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + configurator.getName() + "]");
+                    }
                 }
+                classesByStrategy.put(classMappingConfigurators[i], classes);
             }
-            if (classMappingConfigurator != null) {
-                List classes = (List) classesByStrategy.get(classMappingConfigurator);
-                if (classes == null) {
-                    classes = new ArrayList();
-                    classesByStrategy.put(classMappingConfigurator, classes);
-                }
-                LOG.debug("Mapping class [" + grailsDomainClass.getClazz().getName() + "] with strategy [" + classMappingConfigurator.getName() + "]");
-                classes.add(grailsDomainClass);
-            } else if (LOG.isDebugEnabled()) {
+        }
+
+        if (LOG.isDebugEnabled() && !notMapped.isEmpty()) {
+            for (Iterator iter = notMapped.iterator(); iter.hasNext(); ) {
+                GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
                 LOG.debug("No mapping strategy found for class [" + grailsDomainClass.getClazz() + "]: assuming this class is not searchable");
+
             }
         }
 
         // map classes in the order defined by the classMappingConfigurators
         for (int i = 0; i < classMappingConfigurators.length; i++) {
             SearchableGrailsDomainClassMappingConfigurator classMappingConfigurator = classMappingConfigurators[i];
-            List classes = (List) classesByStrategy.get(classMappingConfigurator);
+            Collection classes = (Collection) classesByStrategy.get(classMappingConfigurator);
             if (classes != null) {
                 classMappingConfigurator.configureMappings(compassConfiguration, configurationContext, classes);
             }

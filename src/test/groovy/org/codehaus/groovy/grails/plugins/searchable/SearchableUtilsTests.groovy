@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.nosearchableproperty.NoSearchableProperty
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.annotated.AnnotatedSearchable
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.annotated.Other
+import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
@@ -54,38 +55,12 @@ class SearchableUtilsTests extends GroovyTestCase {
         userDc = null
     }
 
-    void testIsSearchableForSearchableProperty() {
-        // when true
-        assert SearchableUtils.isSearchable(postDc, null)
-        // when false
-        Post.searchable = false
-        assert SearchableUtils.isSearchable(postDc, null) == false
-        // when closure (any closure)
-        Post.searchable = { -> }
-        assert SearchableUtils.isSearchable(postDc, null)
-
-        assert SearchableUtils.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty), null) == false
-    }
-
-    void testIsSearchableForCompassXml() {
-        def resourceLoader = [
-            getResource: { name->
-                assert name == "classpath:/" + NoSearchableProperty.name.replaceAll(/\./, "/") + ".cpm.xml"
-                [exists: { true }] as Resource
-            }] as ResourceLoader
-        assert SearchableUtils.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty), resourceLoader)
-
-        resourceLoader = [
-            getResource: { name->
-                assert name == "classpath:/" + NoSearchableProperty.name.replaceAll(/\./, "/") + ".cpm.xml"
-                [exists: { false }] as Resource
-            }] as ResourceLoader
-        assert !SearchableUtils.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty), resourceLoader)
-    }
-
-    void testIsSearchableForCompassAnnotated() {
-        assert SearchableUtils.isSearchable([getPropertyValue: {name -> null}, getClazz: {AnnotatedSearchable}] as GrailsDomainClass, null)
-        assert !SearchableUtils.isSearchable([getPropertyValue: {name -> null}, getClazz: {Other}] as GrailsDomainClass, null)
+    void testIsEmbeddedPropertyOfOtherDomainClass() {
+        def domainClasses = TestUtils.getDomainClasses(ComponentOwner, NonSearchableComp, Comp, SearchableComp)
+        assert SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(domainClasses.find { it.clazz == SearchableComp }, domainClasses)
+        assert SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(domainClasses.find { it.clazz == Comp }, domainClasses)
+        assert SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(domainClasses.find { it.clazz == NonSearchableComp }, domainClasses)
+        assert !SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(domainClasses.find { it.clazz == ComponentOwner }, domainClasses) 
     }
 
     void testGetSearchablePropertyAssociatedClassPropertyArg() {

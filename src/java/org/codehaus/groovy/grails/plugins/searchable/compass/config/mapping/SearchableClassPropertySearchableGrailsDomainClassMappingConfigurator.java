@@ -15,15 +15,14 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
-import groovy.lang.MissingPropertyException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.util.Assert;
+import org.springframework.core.Ordered;
 
 import java.io.InputStream;
 import java.util.*;
@@ -33,26 +32,33 @@ import java.util.*;
  *
  * @author Maurice Nicholson
  */
-public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, GrailsDomainClassSearchabilityEvaluator {
+public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, Ordered {
     private static final Log LOG = LogFactory.getLog(SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator.class);
 
     private SearchableGrailsDomainClassCompassClassMapper classMapper;
     private SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder;
 
     /**
-     * Does this strategy handle the given domain class (and it's respective mapping type)
-     *
-     * @param grailsDomainClass the Grails domain class
-     * @return true if the mapping of the class can be handled by this strategy
+     * Returns the collection of GrailsDomainClasses that are mapped by this instance
+     * @param grailsDomainClasses ALL domain classes
+     * @return the collection of domain classes mapped by this instance
      */
-    public boolean isSearchable(GrailsDomainClass grailsDomainClass) {
-        Assert.notNull(grailsDomainClass, "grailsDomainClass cannot be null");
-        try {
+    public Collection getMappedBy(Collection grailsDomainClasses) {
+        Set mappedBy = new HashSet();
+        for (Iterator iter = grailsDomainClasses.iterator(); iter.hasNext(); ) {
+            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
             Object value = SearchableUtils.getSearchablePropertyValue(grailsDomainClass);
-            return value != null && !((value instanceof Boolean) && value.equals(Boolean.FALSE));
-        } catch (MissingPropertyException ex) {
-            return false;
+            if (value != null) {
+                if (!((value instanceof Boolean) && value.equals(Boolean.FALSE))) {
+                    mappedBy.add(grailsDomainClass);
+                }
+                continue;
+            }
+            if (SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(grailsDomainClass, grailsDomainClasses)) {
+                mappedBy.add(grailsDomainClass);
+            }
         }
+        return mappedBy;
     }
 
     /**

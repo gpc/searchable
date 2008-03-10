@@ -35,9 +35,6 @@ public class SimpleSearchableGrailsDomainClassCompassClassMapper extends Abstrac
      * @return a List of CompassClassPropertyMapping
      */
     public List getCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object searchableValue, List excludedProperties) {
-        Assert.notNull(searchableValue, "searchableValue cannot be null");
-        Assert.isTrue(searchableValue instanceof Boolean || searchableValue instanceof Map, "[" + grailsDomainClass.getClazz().getName() + ".searchable] must be either a boolean, Map or closure (not [" + searchableValue.getClass().getName() + "]");
-
         GrailsDomainClassProperty[] mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, searchableValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory());
         if (mappableProperties == null) {
             return null;
@@ -75,6 +72,6 @@ public class SimpleSearchableGrailsDomainClassCompassClassMapper extends Abstrac
      * @return true for Map and Boolean for this class
      */
     public boolean handlesSearchableValue(Object searchableValue) {
-        return searchableValue instanceof Map || searchableValue instanceof Boolean;
+        return searchableValue instanceof Map || searchableValue instanceof Boolean || searchableValue == null;
     }
 }

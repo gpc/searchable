@@ -41,20 +41,20 @@ class CompassAnnotationSearchableGrailsDomainClassMappingConfiguratorTests exten
         strategy = null
     }
 
-    void testIsSearchableWhenNotAnnotated() {
+    void testIsMappedByWhenNotAnnotated() {
         // Should not fail, just return
-        assert strategy.isSearchable([
+        assert strategy.isMappedBy([
             getClazz: { Object.class } // not important
         ] as GrailsDomainClass) == false
 
-        assert strategy.isSearchable([
+        assert strategy.isMappedBy([
             getClazz: { Other.class } // not important
         ] as GrailsDomainClass) == false
     }
 
-    void testIsSearchableWhenAnnotated() {
+    void testIsMappedByWhenAnnotated() {
         // Should not fail, just return
-        assert strategy.isSearchable([
+        assert strategy.isMappedBy([
             getClazz: { AnnotatedSearchable.class }
         ] as GrailsDomainClass) == true
     }

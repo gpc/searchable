@@ -15,37 +15,38 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
-import org.compass.core.config.CompassConfiguration;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Iterator;
 
 /**
- * Configures Compass with a searchable domain class mapping
- *
  * @author Maurice Nicholson
  */
-public interface SearchableGrailsDomainClassMappingConfigurator {
+public abstract class AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator {
 
     /**
      * Returns the collection of GrailsDomainClasses that are mapped by this instance
      * @param grailsDomainClasses ALL domain classes
      * @return the collection of domain classes mapped by this instance
      */
-    Collection getMappedBy(Collection grailsDomainClasses);
+    public Collection getMappedBy(Collection grailsDomainClasses) {
+        Set mappedBy = new HashSet();
+        for (Iterator iter = grailsDomainClasses.iterator(); iter.hasNext(); ) {
+            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
+            if (isMappedBy(grailsDomainClass)) {
+                mappedBy.add(grailsDomainClass);
+            }
+        }
+        return mappedBy;
+    }
 
     /**
-     * Configure the Mapping in the CompassConfiguration for the given domain class
-     *
-     * @param compassConfiguration the CompassConfiguration instance
-     * @param configurationContext a configuration context, for flexible parameter passing
-     * @param searchableGrailsDomainClasses searchable domain classes to map
+     * Is the given domain class mapped by this instance?
+     * @param grailsDomainClass domain class
+     * @return true if this mapper handles the given domain class
      */
-    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses);
-
-    /**
-     * Get this strategy's name
-     * @return name
-     */
-    String getName();
+    public abstract boolean isMappedBy(GrailsDomainClass grailsDomainClass);
 }

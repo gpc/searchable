@@ -17,7 +17,10 @@ package org.codehaus.groovy.grails.plugins.searchable.compass;
 
 import grails.util.GrailsUtil;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
+import org.compass.core.Compass;
+import org.compass.core.spi.InternalCompass;
 
 import java.io.File;
 
@@ -48,5 +51,24 @@ public class SearchableCompassUtils {
             append(File.separator).
             append(GrailsUtil.getEnvironment()).
             toString();
+    }
+
+    /**
+     * Does the Compass instance have mappings?
+     * @param compass Compass
+     * @return true if Compass has mappings
+     */
+    public static boolean hasMappings(Compass compass) {
+        return ((InternalCompass) compass).getMapping().getRootMappings().length > 0;
+    }
+
+    /**
+     * Is the given GrailsDomainClass a root mapped class in Compass
+     * @param domainClass the GrailsDomainClass
+     * @param compass Compass
+     * @return true if there is a root mapping for the class in Compass
+     */
+    public static boolean isRootMappedClass(GrailsDomainClass domainClass, Compass compass) {
+        return ((InternalCompass) compass).getMapping().getRootMappingByClass(domainClass.getClazz()) != null;
     }
 }

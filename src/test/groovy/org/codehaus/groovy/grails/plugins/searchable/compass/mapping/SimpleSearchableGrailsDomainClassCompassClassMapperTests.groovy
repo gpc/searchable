@@ -50,7 +50,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         assert classMapper.handlesSearchableValue([:])
         assert classMapper.handlesSearchableValue(true)
         assert classMapper.handlesSearchableValue(false)
-        assert classMapper.handlesSearchableValue(null) == false
+        assert classMapper.handlesSearchableValue(null)
         assert classMapper.handlesSearchableValue({ -> }) == false
     }
 
@@ -148,10 +148,29 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
 
         // ...other side of the relationship
         classMapping = getClassMapping(SearchableComp, [ComponentOwner, SearchableComp], true)
-        assert classMapping.root == false
+        assert classMapping.root == true
         assert classMapping.mappedClass == SearchableComp
         assert classMapping.propertyMappings.size() == 2
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
+
+        // implied searchability of components
+        classMapping = getClassMapping(ComponentOwner, [ComponentOwner, Comp, SearchableComp], true)
+        assert classMapping.mappedClass == ComponentOwner
+        assert classMapping.root == true
+        assert classMapping.propertyMappings.find { it.propertyName == "comp" && it.propertyType == Comp && it.component }
+        assert classMapping.propertyMappings.find { it.propertyName == "searchableCompOne" && it.propertyType == SearchableComp && it.component }
+        assert classMapping.propertyMappings.find { it.propertyName == "searchableCompTwo" && it.propertyType == SearchableComp && it.component }
+
+        // ...other side
+        classMapping = getClassMapping(Comp, [ComponentOwner, Comp, SearchableComp], null)
+        assert classMapping.mappedClass == Comp
+        assert classMapping.root == false
+        assert classMapping.propertyMappings.find { it.propertyName == "compName" && it.property }
+
+        classMapping = getClassMapping(SearchableComp, [ComponentOwner, Comp, SearchableComp], null)
+        assert classMapping.mappedClass == SearchableComp
+        assert classMapping.root == true
+        assert classMapping.propertyMappings.find { it.propertyName == "searchableCompName" && it.property }
 
         // When searchable = false
         classMapping = getClassMapping(Post, [Comment, Post], false)
@@ -210,20 +229,31 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
     }
 
     void testGetCompassClassMappingWithInheritedMappings() {
-        CompassClassMapping mapping
-
-        Parent.searchable = true
-        mapping = getClassMapping(Parent, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
-        assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes.size() == 0 }
-
-        // SearchableChildTwo overrides Parent's "commonProperty(boost: 1.5)" with default mapping
-        SearchableChildTwo.searchable = true
-        Parent.searchable = {
-            commonProperty(boost: 1.5)
+        def sv = [:]
+        [Parent, SearchableChildOne, SearchableChildTwo].each { c ->
+            sv[c] = c.searchable
         }
-        mapping = getClassMapping(SearchableChildTwo, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
-        assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes.size() == 0 }
-        assert mapping.getPropertyMappings().find { it.propertyName == 'childTwoProperty' }.every { it.property && it.attributes.size() == 0 }
+
+        try {
+            CompassClassMapping mapping
+
+            Parent.searchable = true
+            mapping = getClassMapping(Parent, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
+            assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes.size() == 0 }
+
+            // SearchableChildTwo overrides Parent's "commonProperty(boost: 1.5)" with default mapping
+            SearchableChildTwo.searchable = true
+            Parent.searchable = {
+                commonProperty(boost: 1.5)
+            }
+            mapping = getClassMapping(SearchableChildTwo, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
+            assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes.size() == 0 }
+            assert mapping.getPropertyMappings().find { it.propertyName == 'childTwoProperty' }.every { it.property && it.attributes.size() == 0 }
+        } finally {
+            sv.each { c, v ->
+                c.searchable = v
+            }
+        }
     }
 
     CompassClassMapping getClassMapping(clazz, searchableClazzes, searchableValue) {

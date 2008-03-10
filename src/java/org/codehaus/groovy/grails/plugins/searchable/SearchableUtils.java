@@ -16,7 +16,6 @@
 package org.codehaus.groovy.grails.plugins.searchable;
 
 import org.codehaus.groovy.grails.commons.*;
-import org.codehaus.groovy.grails.plugins.searchable.compass.CompassGrailsDomainClassSearchabilityEvaluatorFactory;
 import org.codehaus.groovy.grails.plugins.searchable.util.PatternUtils;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
@@ -46,69 +45,26 @@ public class SearchableUtils {
     public static final String EXCEPT = "except";
 
     /**
-     * Are there "searchable" domain classes?
-     *
-     * @param application the GrailsApplication
-     * @param resourceLoader
-     * @return true if there are "searchable" domain classes
+     * Is the given class an emebedded property of another domain class?
+     * @param grailsDomainClass the GrailsDomainClass to check as n embedded property
+     * @param grailsDomainClasses all GrailsDomainClasses
+     * @return true if the given class is an embedded property of another class
      */
-    public static boolean hasSearchableGrailsDomainClasses(GrailsApplication application, ResourceLoader resourceLoader) {
-        return getSearchableGrailsDomainClasses(application, resourceLoader).length > 0;
-    }
-
-    /**
-     * Get the "searchable" Grails domain classes
-     *
-     * @param application the GrailsApplication
-     * @param resourceLoader
-     * @return the searchable domain classes, which may be empty
-     */
-    public static GrailsDomainClass[] getSearchableGrailsDomainClasses(GrailsApplication application, ResourceLoader resourceLoader) {
-        Assert.notNull(application, "GrailsApplication cannot be null");
-        List domainClasses = new ArrayList();
-        for (int i = 0, max = application.getArtefacts(DomainClassArtefactHandler.TYPE).length; i < max; i++) {
-            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) application.getArtefacts(DomainClassArtefactHandler.TYPE)[i];
-            if (isSearchable(grailsDomainClass, resourceLoader)) {
-                domainClasses.add(grailsDomainClass);
+    public static boolean isEmbeddedPropertyOfOtherDomainClass(GrailsDomainClass grailsDomainClass, Collection grailsDomainClasses) {
+        for (Iterator iter = grailsDomainClasses.iterator(); iter.hasNext(); ) {
+            GrailsDomainClass other = (GrailsDomainClass) iter.next();
+            if (grailsDomainClass == other) {
+                continue;
             }
-        }
-        return (GrailsDomainClass[]) domainClasses.toArray(new GrailsDomainClass[domainClasses.size()]);
-    }
-
-    /**
-     * Is the given GrailsDomainClass "searchable"?
-     *
-     * @param grailsDomainClass domain class
-     * @param resourceLoader
-     * @return true if it declares a "searchable" property not equal to false
-     */
-    public static boolean isSearchable(GrailsDomainClass grailsDomainClass, ResourceLoader resourceLoader) {
-        GrailsDomainClassSearchabilityEvaluator[] searchabilityEvaluators = CompassGrailsDomainClassSearchabilityEvaluatorFactory.getGrailsDomainClassSearchabilityEvaluators(resourceLoader);
-        for (int i = 0; i < searchabilityEvaluators.length; i++) {
-            if (searchabilityEvaluators[i].isSearchable(grailsDomainClass)) {
-                return true;
+            GrailsDomainClassProperty[] domainClassProperties = other.getProperties();
+            for (int i = 0; i < domainClassProperties.length; i++) {
+                GrailsDomainClass referencedDomainClass = domainClassProperties[i].getReferencedDomainClass();
+                if (referencedDomainClass != null && referencedDomainClass == grailsDomainClass && domainClassProperties[i].isEmbedded()) {
+                    return true;
+                }
             }
         }
         return false;
-    }
-
-    /**
-     * Get the "searchable" Grails domain classes and their searchable property value
-     *
-     * @param application the GrailsApplication
-     * @return a Map from GrailsDomainClass instance to "searchable" property value
-     */
-    public static Map getSearchableGrailsDomainClassesMap(GrailsApplication application) {
-        Assert.notNull(application, "GrailsApplication cannot be null");
-        Map searchables = new HashMap();
-        for (Iterator iter = getGrailsDomainClasses(application).iterator(); iter.hasNext(); ) {
-            GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-            Object searchable = getSearchablePropertyValue(grailsDomainClass);
-            if (searchable != null) {
-                searchables.put(grailsDomainClass, searchable);
-            }
-        }
-        return searchables;
     }
 
     /**
@@ -191,7 +147,7 @@ public class SearchableUtils {
      * @return true if included
      */
     public static boolean isIncludedProperty(String propertyName, Object searchable) {
-        if (searchable instanceof Boolean && searchable.equals(Boolean.TRUE)) {
+        if (searchable == null || (searchable instanceof Boolean && searchable.equals(Boolean.TRUE))) {
             return true;
         }
         if (!(searchable instanceof Map)) {

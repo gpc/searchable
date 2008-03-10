@@ -39,14 +39,14 @@ class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests exten
         strategy = null
     }
 
-    void testIsSearchableWhenMappingXmlAvailable() {
+    void testIsMappedByWhenMappingXmlAvailable() {
         strategy.resourceLoader = getResourceLoader(User)
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(User))
+        assert strategy.isMappedBy(new DefaultGrailsDomainClass(User))
     }
 
-    void testIsSearchableWhenMappingXmlNotAvailable() {
+    void testIsMappedByWhenMappingXmlNotAvailable() {
         strategy.resourceLoader = getResourceLoader()
-        assert strategy.isSearchable(new DefaultGrailsDomainClass(User)) == false
+        assert strategy.isMappedBy(new DefaultGrailsDomainClass(User)) == false
     }
 
     void testConfigureMappingWithoutCompassXml() {

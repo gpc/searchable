@@ -21,6 +21,8 @@ import org.compass.core.spi.InternalCompass;
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
@@ -28,6 +30,7 @@ import java.util.*;
  * @author Maurice Nicholson
  */
 public class CompassMappingUtils {
+    private static final Log LOG = LogFactory.getLog(CompassMappingUtils.class);
 
     /**
      * Get the Compass alias for the given Class
@@ -76,12 +79,41 @@ public class CompassMappingUtils {
     public static void resolveAliases(List classMappings, Collection grailsDomainClasses) {
         // set defaults for those classes without explicit aliases and collect aliases
         Map mappingByClass = new HashMap();
+        Map mappingsByAlias = new HashMap();
         for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
             CompassClassMapping classMapping = (CompassClassMapping) iter.next();
             if (classMapping.getAlias() == null) {
                 classMapping.setAlias(getDefaultAlias(classMapping.getMappedClass()));
             }
             mappingByClass.put(classMapping.getMappedClass(), classMapping);
+            List mappings = (List) mappingsByAlias.get(classMapping.getAlias());
+            if (mappings == null) {
+                mappings = new ArrayList();
+                mappingsByAlias.put(classMapping.getAlias(), mappings);
+            }
+            mappings.add(classMapping);
+        }
+
+        // override duplicate inherited aliases
+        for (Iterator iter = mappingsByAlias.keySet().iterator(); iter.hasNext(); ) {
+            List mappings = (List) mappingsByAlias.get(iter.next());
+            if (mappings.size() == 1) {
+                continue;
+            }
+            CompassClassMapping parentMapping = null;
+            for (Iterator miter = mappings.iterator(); miter.hasNext(); ) {
+                CompassClassMapping classMapping = (CompassClassMapping) miter.next();
+                if (classMapping.getMappedClassSuperClass() == null) {
+                    parentMapping = classMapping;
+                    break;
+                }
+            }
+            mappings.remove(parentMapping);
+            for (Iterator miter = mappings.iterator(); miter.hasNext(); ) {
+                CompassClassMapping classMapping = (CompassClassMapping) miter.next();
+                LOG.debug("Overriding duplicated alias [" + classMapping.getAlias() + "] for class [" + classMapping.getMappedClass().getName() + "] with default alias. (Aliases must be unique - maybe this was inherited from a superclass?)");
+                classMapping.setAlias(getDefaultAlias(classMapping.getMappedClass()));
+            }
         }
 
         // resolve property ref aliases
@@ -104,6 +136,16 @@ public class CompassMappingUtils {
                     }
                     propertyMapping.setAttrbute("refAlias", DefaultGroovyMethods.join(aliases, ", "));
                 }
+            }
+        }
+
+        // resolve extend aliases
+        for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
+            CompassClassMapping classMapping = (CompassClassMapping) iter.next();
+            Class mappedClassSuperClass = classMapping.getMappedClassSuperClass();
+            if (mappedClassSuperClass != null && classMapping.getExtend() == null) {
+                CompassClassMapping mapping = (CompassClassMapping) mappingByClass.get(mappedClassSuperClass);
+                classMapping.setExtend(mapping.getAlias());
             }
         }
     }

@@ -43,7 +43,7 @@ class SearchableGrailsPlugin {
     def title = 'Adds rich search functionality to Grails domain models.'
     def description = '''
 Adds rich search functionality to Grails domain models.
-Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucene.apache.org/)
+Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apache.org/)
 '''
     def documentation = 'http://grails.org/Searchable+Plugin'
 
@@ -55,16 +55,12 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
                      hibernate: grailsVersion]
 //	def watchedResources = "file:./grails-app/doai/*Codec.groovy"
     def config
-    def hasSearchable
 
     def doWithDynamicMethods = { applicationContext ->
-        if (!hasSearchable) {
-            return
-        }
-
+        def compass = applicationContext.getBean("compass")
         def searchableMethodFactory = applicationContext.getBean("searchableMethodFactory")
         for (grailsDomainClass in application.domainClasses) {
-            if (!SearchableUtils.isSearchable(grailsDomainClass, applicationContext)) {
+            if (!SearchableCompassUtils.isRootMappedClass(grailsDomainClass, compass)) {
                 continue
             }
             LOG.debug("Adding searchable methods to [${grailsDomainClass.clazz.name}]")
@@ -177,53 +173,44 @@ Built on Compass (http://www.opensymphony.com/compass/) and Lucene (http://lucen
 
     // Build Compass and Compass::GPS
     def doWithSpring = {
-        if (!SearchableUtils.hasSearchableGrailsDomainClasses(application, parentCtx)) {
-            LOG.debug("No searchable classes found")
-            hasSearchable = false
-            return
-        }
-        hasSearchable = true
-
         // Configuration
         config = getConfiguration(parentCtx)
 
         // Compass
         LOG.debug("Defining Compass and Compass::GPS beans")
-        new BeanBuilder(parentCtx).beans {
-            compass(DefaultSearchableCompassFactoryBean) { bean ->
-                bean.dependsOn = ["sessionFactory"] as String[]
-                grailsApplication = application
-                compassConnection = config?.compassConnection
-                compassSettings = config?.compassSettings
-                defaultExcludedProperties = config?.defaultExcludedProperties
-                defaultFormats = config?.defaultFormats
-                compassClassMappingXmlBuilder = new DefaultSearchableCompassClassMappingXmlBuilder()
-            }
+        compass(DefaultSearchableCompassFactoryBean) { bean ->
+            grailsApplication = application
+            compassConnection = config?.compassConnection
+            compassSettings = config?.compassSettings
+            defaultExcludedProperties = config?.defaultExcludedProperties
+            defaultFormats = config?.defaultFormats
+            compassClassMappingXmlBuilder = new DefaultSearchableCompassClassMappingXmlBuilder()
+        }
 
-            // Compass::GPS
-            compassGpsDevice(SpringHibernate3GpsDevice) {
-                name = "hibernate"
-                sessionFactory = ref("sessionFactory")
-                fetchCount = 5000
-            }
-            compassGps(SingleCompassGps) {
-                compass = compass
-                gpsDevices = [compassGpsDevice]
-            }
+        // Compass::GPS
+        compassGpsDevice(SpringHibernate3GpsDevice) {
+            name = "hibernate"
+            sessionFactory = ref("sessionFactory")
+            fetchCount = 5000
+        }
+        compassGps(SingleCompassGps) {
+            compass = compass
+            gpsDevices = [compassGpsDevice]
+        }
 
-            searchableMethodFactory(DefaultSearchableMethodFactory) {
-                compass = compass
-                compassGps = compassGps
-                searchDefaults = config?.defaultSearchOptions
-                grailsApplication = application
-            }
+        searchableMethodFactory(DefaultSearchableMethodFactory) {
+            compass = compass
+            compassGps = compassGps
+            searchDefaults = config?.defaultSearchOptions
+            grailsApplication = application
         }
         LOG.debug("Done defining Compass and Compass::GPS beans")
     }
 
     // Post initialization spring config
     def doWithApplicationContext = {
-        if (!hasSearchable) {
+        def compass = applicationContext.getBean("compass")
+        if (!SearchableCompassUtils.hasMappings(compass)) {
             return false
         }
 

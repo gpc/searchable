@@ -29,6 +29,7 @@ import java.util.Map;
  */
 public class CompassClassMapping {
     private Class mappedClass;
+    private Class mappedClassSuperClass;
     private String alias;
     private boolean poly = false;
     private String extend;
@@ -42,6 +43,14 @@ public class CompassClassMapping {
 
     public void setMappedClass(Class mappedClass) {
         this.mappedClass = mappedClass;
+    }
+
+    public void setMappedClassSuperClass(Class clazz) {
+        mappedClassSuperClass = clazz;
+    }
+
+    public Class getMappedClassSuperClass() {
+        return mappedClassSuperClass;
     }
 
     public String getAlias() {
@@ -109,6 +118,6 @@ public class CompassClassMapping {
      * @return String
      */
     public String toString() {
-        return "CompassClassMapping: mappedClass=[" + mappedClass + "], root=[" + root + "], poly=[" + poly + "], extend=[" + extend + "], propertyMappings=[" + propertyMappings + "]";
+        return "CompassClassMapping: mappedClass=[" + mappedClass + "],  mappedClassSuperClass=[" + mappedClassSuperClass + "], alias=[" + alias + "], root=[" + root + "], poly=[" + poly + "], extend=[" + extend + "], propertyMappings=[" + propertyMappings + "]";
     }
 }

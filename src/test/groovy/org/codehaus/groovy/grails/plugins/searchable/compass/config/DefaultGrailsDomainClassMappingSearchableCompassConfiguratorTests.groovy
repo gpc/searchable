@@ -61,13 +61,25 @@ class DefaultGrailsDomainClassMappingSearchableCompassConfiguratorTests extends 
         app.initialise()
         return app
     }
+
+    def makeClassMappingConfigurator(clazz) {
+        return [
+             getMappedBy: { Collection grailsDomainClasses ->
+                 [grailsDomainClasses.find { it.clazz == classShouldMap }]
+             },
+             configureMappings: { CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses ->
+                this.classDidMap = searchableGrailsDomainClasses[0].clazz
+            }
+        ] as SearchableGrailsDomainClassMappingConfigurator
+    }
 }
 
 class TestSearchableGrailsDomainClassMappingStrategy implements SearchableGrailsDomainClassMappingConfigurator {
     def classShouldMap
     def classDidMap
-    boolean isSearchable(GrailsDomainClass grailsDomainClass) {
-        classShouldMap == grailsDomainClass.clazz
+    
+    Collection getMappedBy(Collection grailsDomainClasses) {
+        return [grailsDomainClasses.find { it.clazz == classShouldMap }]
     }
     void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
         classDidMap = searchableGrailsDomainClasses[0].clazz

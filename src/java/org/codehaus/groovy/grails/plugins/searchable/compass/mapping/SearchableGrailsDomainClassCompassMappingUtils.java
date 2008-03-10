@@ -39,21 +39,16 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
      * Is the given GrailsDomainClass a root class in the Compass mapping?
      * @param grailsDomainClass the domain class to check for
      * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
-     * @return true unless it's an embedded class in another domain class
+     * @return true unless it's an embedded class in another domain class without explicit searchable declaration
      */
     public static boolean isRoot(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
         // TODO log warning when used as both component and non-component
-        for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
-            GrailsDomainClass otherDomainClass = (GrailsDomainClass) iter.next();
-            if (grailsDomainClass.equals(otherDomainClass)) {
-                continue;
-            }
-            for (int i = 0; i < otherDomainClass.getProperties().length; i++) {
-                GrailsDomainClassProperty property = otherDomainClass.getProperties()[i];
-                if (property.getType() != null && property.getType().equals(grailsDomainClass.getClazz()) && property.isEmbedded()) {
-                    return false;
-                }
-            }
+        Object value = SearchableUtils.getSearchablePropertyValue(grailsDomainClass);
+        if (value instanceof Boolean) {
+            return value.equals(Boolean.TRUE);
+        }
+        if (value == null) {
+            return !SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(grailsDomainClass, searchableGrailsDomainClasses);
         }
         return true;
     }
@@ -116,15 +111,13 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         classMapping.setMappedClass(grailsDomainClass.getClazz());
         if (alias != null) {
             classMapping.setAlias(alias);
-        } else {
-            classMapping.setAlias(CompassMappingUtils.getDefaultAlias(grailsDomainClass.getClazz()));
         }
         classMapping.setPropertyMappings(propertyMappings);
         classMapping.setRoot(SearchableGrailsDomainClassCompassMappingUtils.isRoot(grailsDomainClass, searchableGrailsDomainClasses));
         Collection superClasses = GrailsDomainClassUtils.getSuperClasses(grailsDomainClass, searchableGrailsDomainClasses);
         if (!superClasses.isEmpty()) {
             GrailsDomainClass parent = GrailsDomainClassUtils.getSuperClass(grailsDomainClass, superClasses);
-            classMapping.setExtend(CompassMappingUtils.getDefaultAlias(parent.getClazz())); // TODO use that class's mapping alias
+            classMapping.setMappedClassSuperClass(parent.getClazz());
         }
         if (GrailsDomainClassUtils.isWithinInhertitanceHierarchy(grailsDomainClass, searchableGrailsDomainClasses)) {
             classMapping.addConstantMetaData("$/poly/class", new HashMap() {{
@@ -132,7 +125,7 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
                 put("excludeFromAll", Boolean.TRUE);
             }}, Arrays.asList(new String [] {grailsDomainClass.getClazz().getName()}));
         }
-        classMapping.setPoly(!grailsDomainClass.getSubClasses().isEmpty() || classMapping.getExtend() != null);
+        classMapping.setPoly(!grailsDomainClass.getSubClasses().isEmpty() || classMapping.getMappedClassSuperClass() != null);
         return classMapping;
     }
 

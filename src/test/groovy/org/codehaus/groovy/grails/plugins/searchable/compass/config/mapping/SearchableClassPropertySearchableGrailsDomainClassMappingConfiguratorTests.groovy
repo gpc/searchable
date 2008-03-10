@@ -16,6 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
+import org.codehaus.groovy.grails.plugins.searchable.TestUtils
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.compass.core.config.CompassConfiguration
@@ -47,19 +48,33 @@ class SearchableClassPropertySearchableGrailsDomainClassMappingConfiguratorTests
         Post.searchable = oldSearchable
     }
 
-    void testIsSearchable() {
+    void testGetMappedBy() {
         Post.searchable = true
-        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
-        Post.searchable = [only: 'title']
-        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
-        Post.searchable = [except: 'version']
-        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
-        Post.searchable = { -> }
-        assert classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
-        Post.searchable = false
-        assert !classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(Post))
+        def mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
+        assert mappedBy.collect { it.clazz } == [Post]
 
-        assert !classMappingConfigurator.isSearchable(new DefaultGrailsDomainClass(NoSearchableProperty))
+        Post.searchable = [only: 'title']
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
+        assert mappedBy.collect { it.clazz } == [Post]
+
+        Post.searchable = [except: 'version']
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
+        assert mappedBy.collect { it.clazz } == [Post]
+
+        Post.searchable = { -> }
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
+        assert mappedBy.collect { it.clazz } == [Post]
+
+        Post.searchable = false
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
+        assert mappedBy.isEmpty()
+
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(NoSearchableProperty))
+        assert mappedBy.isEmpty()
+
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(ComponentOwner, Comp, SearchableComp, NonSearchableComp))
+        assert mappedBy.size() == 3
+        assert mappedBy.collect { it.clazz }.containsAll([ComponentOwner, SearchableComp, Comp])
     }
 
     void testConfigureMapping() {

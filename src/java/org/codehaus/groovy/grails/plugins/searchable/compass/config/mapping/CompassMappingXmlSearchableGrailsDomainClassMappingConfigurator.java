@@ -17,10 +17,10 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
-import org.codehaus.groovy.grails.plugins.searchable.GrailsDomainClassSearchabilityEvaluator;
 import org.compass.core.config.CompassConfiguration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.Ordered;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.util.Assert;
 import org.apache.commons.logging.Log;
@@ -36,7 +36,7 @@ import java.io.IOException;
  *
  * @author Maurice Nicholson
  */
-public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, GrailsDomainClassSearchabilityEvaluator, ResourceLoaderAware {
+public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, ResourceLoaderAware, Ordered {
     private static final Log LOG = LogFactory.getLog(CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator.class);
 
     private ResourceLoader resourceLoader;
@@ -47,7 +47,7 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator imp
      * @param grailsDomainClass the Grails domain class
      * @return true if the mapping of the class can be handled by this strategy
      */
-    public boolean isSearchable(GrailsDomainClass grailsDomainClass) {
+    public boolean isMappedBy(GrailsDomainClass grailsDomainClass) {
         Assert.notNull(resourceLoader, "resourceLoader cannot be null");
         Resource resource = getMappingResource(grailsDomainClass);
         return resource.exists();
@@ -69,7 +69,7 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator imp
         for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
             Resource resource = getMappingResource(grailsDomainClass);
-            Assert.isTrue(resource.exists(), "mapping resource must exist: did isSearchable() not return false?");
+            Assert.isTrue(resource.exists(), "expected mapping resource [" + resource + "] to exist but it does not");
             try {
                 compassConfiguration.addURL(resource.getURL());
             } catch (IOException ex) {
