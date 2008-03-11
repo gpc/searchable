@@ -133,8 +133,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
 
         // constant
         mapping = getClassMapping(User, [Comment, User, Post], {
-            constant drink: "beer"
-            constant eat: ["pie", "chips"]
+            constant name: "drink", value: "beer"
+            constant name: "eat", values: ["pie", "chips"], index: 'un_tokenized', excludeFromAll: true
         })
         assert mapping.mappedClass == User
         assert mapping.root == true
@@ -142,19 +142,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         def constant = mapping.constantMetaData.find {it.name == "drink"}
         assert constant.values == ["beer"] && constant.attributes == [:]
         constant = mapping.constantMetaData.find { it.name == "eat" }
-        assert constant.values == ["pie", "chips"] && constant.attributes == [:]
-
-        // constant expressed another way
-        mapping = getClassMapping(User, [Comment, User, Post], {
-            constants drink: "wine", eat: ["cheese", "biscuits"]
-        })
-        assert mapping.mappedClass == User
-        assert mapping.root == true
-        assert mapping.constantMetaData.size() == 2
-        constant = mapping.constantMetaData.find { it.name == "drink" }
-        assert constant.values == ["wine"] && constant.attributes == [:]
-        constant = mapping.constantMetaData.find { it.name == "eat" }
-        assert constant.values == ["cheese", "biscuits"] && constant.attributes == [:]
+        assert constant.values == ["pie", "chips"] && constant.attributes == [index: 'un_tokenized', excludeFromAll: true]
 
         // todo convert only/except to method-setting style
         // todo move special properties into "mapping closure?

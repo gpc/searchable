@@ -20,6 +20,8 @@ import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 
 /**
 *
@@ -27,6 +29,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 * @author Maurice Nicholson
 */
 class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
+    static final Log log = LogFactory.getLog(ClosureSearchableGrailsDomainClassCompassClassMapper);
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'propertyConverter', 'reverse', 'store', 'termVector']
     static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'refAlias', 'refComponentAlias']
     static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'refAlias']
@@ -111,17 +114,24 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             alias = args[0]
             return
         }
-        if ("constant".equals(name) || "constants".equals(name)) {
+        if ("constant".equals(name)) {
             if (args.size() != 1) {
-                throw new IllegalArgumentException("'${mappedClass.getName()}.${property.name}' declares an '${name}': there should be just one argument following '${name}' (the map of constants), but the arguments were ${args}")
+                throw new IllegalArgumentException("'${mappedClass.getName()}.${property.name}' declares an '${name}': there should be just one argument following '${name}', but the arguments were ${args}")
             }
-            args = args[0]
-            args.each { key, value ->
-                if (!(value instanceof List)) {
-                    value = [value]
-                }
-                constantMetadatas << [name: key, attributes: [:], value: value]
+            def constant = args[0]
+            if (!constant.name || !(constant.value || constant.values)) {
+                log.WARN("${mappedClass.name}.searchable defines a constant but this feature has been reimplented! You probably need to change the syntax from \"foo: 'bar'\" to \"name: 'foo', value: 'bar'\". Ignoring this constant for now since it doesn't provide 'name' + 'value(s)' attributes. See http://grails.org/Searchable+Plugin+-+Mapping#SearchablePlugin-Mapping-constant for details")
+                return
             }
+            def value = constant.value ? constant.value : constant.values
+            if (!(value instanceof List)) {
+                value = [value]
+            }
+            def attributes = new HashMap(constant)
+            attributes.remove("name")
+            attributes.remove("values")
+            attributes.remove("value")
+            constantMetadatas << [name: constant.name, attributes: attributes, value: value]
             return
         }
 
