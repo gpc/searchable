@@ -26,6 +26,7 @@ import org.compass.core.*;
 import org.springframework.util.Assert;
 
 import java.util.Map;
+import java.util.Collection;
 
 /**
  * The default search method implementation
@@ -65,7 +66,21 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
 //                long time = System.currentTimeMillis() - start;
 //                System.out.println("query: [" + compassQuery + "], [" + hits.length() + "] hits, took [" + time + "] millis");
                 Object collectedHits = hitCollector.collect(hits, options);
-                return searchResultFactory.buildSearchResult(hits, collectedHits, options);
+                Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, options);
+
+                if (collectedHits instanceof Collection) {
+                    Closure withHighlighter = (Closure) options.get("withHighlighter");
+                    if (withHighlighter != null) {
+                        withHighlighter = (Closure) withHighlighter.clone();
+                        for (int i = 0, length = ((Collection) collectedHits).size(); i < length; i++) {
+                            withHighlighter.call(new Object[] {
+                                hits.highlighter(i), new Integer(i), searchResult
+                            });
+                        }
+                    }
+                }
+
+                return searchResult;
             }
         });
     }

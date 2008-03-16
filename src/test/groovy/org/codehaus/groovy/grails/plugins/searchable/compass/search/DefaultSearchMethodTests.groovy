@@ -205,6 +205,17 @@ class DefaultSearchMethodTests extends AbstractSearchableCompassTests {
         assert results.results.size() == 100
         assert results.total == 100
         assert results.results*.class.unique() == [Post]
+
+        // "withHighlighter" option
+        results = Post.search("posty", withHighlighter: { highlighter, index, sr ->
+            if (!sr.highlights) {
+                sr.highlights = []
+            }
+            sr.highlights[index] = highlighter.fragment("post")
+            assert sr.results[index] instanceof Post
+        })
+        assert results.highlights
+        assert results.highlights.findAll { it }.size() == results.results.size()
     }
 
     void testSearchTop() {
@@ -378,6 +389,15 @@ class DefaultSearchMethodTests extends AbstractSearchableCompassTests {
 
         // should not fail
         results = Post.searchEvery("[this is a bad query]", [escape: true])
+
+        // "withHighlighter" option
+        def highlights = []
+        results = Post.searchEvery("posty", withHighlighter: { highlighter, index, sr ->
+            highlights[index] = highlighter.fragment("post")
+            assert sr[index] instanceof Post
+        })
+        assert highlights
+        assert highlights.findAll { it }.size() == results.size()
     }
 
     void testCountSearchHits() {
