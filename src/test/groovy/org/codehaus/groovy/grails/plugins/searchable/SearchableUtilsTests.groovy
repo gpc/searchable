@@ -116,6 +116,9 @@ class SearchableUtilsTests extends GroovyTestCase {
 
     // public static String getAppName(GrailsApplication grailsApplication) {
     void testGetAppName() {
+        // unnkown
+        assert SearchableUtils.getAppName() == "app.name"
+
         // with grails app
         def grailsApplication = [getMetadata: {-> ['app.name': "foobar"]}] as GrailsApplication
         assert SearchableUtils.getAppName(grailsApplication) == "foobar"
@@ -133,8 +136,5 @@ class SearchableUtilsTests extends GroovyTestCase {
         System.setProperty("base.dir", dir)
         assert SearchableUtils.getAppName() == "bazfoo"
         file.delete()
-
-        // unnkown
-        assert SearchableUtils.getAppName() == "app.name"
     }
 }
