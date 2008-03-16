@@ -50,7 +50,7 @@ task ('default': "Installs the Searchable Plugin configuration file: only requir
        if (answer == "n") exit(0)
            Ant.delete(file: destFile.toString())
     }
-    Ant.copy(file: "${basedir}/plugins/searchable-0.4-SNAPSHOT/src/conf/SearchableConfiguration.groovy", todir: dest)
+    Ant.copy(file: "${basedir}/plugins/searchable-0.4/src/conf/SearchableConfiguration.groovy", todir: dest)
     Ant.echo(message: """
         Searchable configuration file ${exists ? 're-' : ''}created:
 

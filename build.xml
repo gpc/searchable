@@ -1,6 +1,10 @@
 <project name="searchable" default="all">
 
-  <condition property="grails" value="grails.bat">
+  <property environment="ENV" />
+
+  <property name="grails.home" value="${ENV.GRAILS_HOME}" />
+
+  <condition property="grails" value="${grails.home}/bin/grails.bat">
     <os family="windows"/>
   </condition>
   <property name="grails" value="grails" />
@@ -17,9 +21,6 @@
   <property name="test.reports" value="${target}/test-reports"/>
   <property name="lib" value="lib"/>
 
-  <property environment="ENV" />
-
-  <property name="grails.home" value="${ENV.GRAILS_HOME}" />
   <path id="groovy.classpath">
     <fileset dir="${grails.home}/lib">
       <include name="groovy-all-*.jar" />
@@ -172,7 +173,7 @@
       <grails dir="@{app.dir}" arg1="install-plugin" arg2="${plugin.dist}" using.java.home="@{using.java.home}"/>
 
       <!-- Install web test plugin -->
-      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using.java.home="@{using.java.home}"/>
+      <!--<grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using.java.home="@{using.java.home}"/>-->
 
       <!-- Clean -->
       <grails dir="@{app.dir}" arg1="clean" using.java.home="@{using.java.home}"/>
@@ -181,7 +182,7 @@
       <grails dir="@{app.dir}" arg1="test-app" using.java.home="@{using.java.home}"/>
 
       <!-- Web test -->
-      <grails dir="@{app.dir}" arg1="run-webtest" using.java.home="@{using.java.home}"/>
+      <!--<grails dir="@{app.dir}" arg1="run-webtest" using.java.home="@{using.java.home}"/>-->
     </sequential>
   </macrodef>
 

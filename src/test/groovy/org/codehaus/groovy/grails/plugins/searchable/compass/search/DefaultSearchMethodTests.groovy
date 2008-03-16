@@ -216,6 +216,7 @@ class DefaultSearchMethodTests extends AbstractSearchableCompassTests {
         })
         assert results.highlights
         assert results.highlights.findAll { it }.size() == results.results.size()
+        assert results.highlights[0].indexOf("<b>posty</b>") > -1
     }
 
     void testSearchTop() {
