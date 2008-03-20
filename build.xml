@@ -173,7 +173,7 @@
       <grails dir="@{app.dir}" arg1="install-plugin" arg2="${plugin.dist}" using.java.home="@{using.java.home}"/>
 
       <!-- Install web test plugin -->
-      <!--<grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using.java.home="@{using.java.home}"/>-->
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using.java.home="@{using.java.home}"/>
 
       <!-- Clean -->
       <grails dir="@{app.dir}" arg1="clean" using.java.home="@{using.java.home}"/>
@@ -182,7 +182,7 @@
       <grails dir="@{app.dir}" arg1="test-app" using.java.home="@{using.java.home}"/>
 
       <!-- Web test -->
-      <!--<grails dir="@{app.dir}" arg1="run-webtest" using.java.home="@{using.java.home}"/>-->
+      <grails dir="@{app.dir}" arg1="run-webtest" using.java.home="@{using.java.home}"/>
     </sequential>
   </macrodef>
 

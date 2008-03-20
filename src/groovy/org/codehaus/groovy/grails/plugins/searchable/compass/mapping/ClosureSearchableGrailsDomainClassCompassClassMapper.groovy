@@ -219,7 +219,6 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         }
 
         // Check for invalid options
-        Class propertyType = property.getType()
         if (component) {
             invalidOptions = componentOptions.keySet() - SEARCHABLE_COMPONENT_OPTIONS
             if (invalidOptions) {
@@ -227,7 +226,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                     "'${mappedClass.getName()}.${name}' is ${implicitComponent ? 'implicitly' : 'defined to be'} a 'searchable component', meaning you can only define the options allowed " +
                     "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_COMPONENT_OPTIONS.join(', ')}]")
             }
-            mappedProperties << CompassClassPropertyMapping.getComponentInstance(name, propertyType, componentOptions)
+            mappedProperties << CompassClassPropertyMapping.getComponentInstance(name, defaultMapping.propertyType, componentOptions)
         }
         if (reference) {
             invalidOptions = referenceOptions.keySet() - SEARCHABLE_REFERENCE_OPTIONS
@@ -236,7 +235,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                     "'${mappedClass.getName()}.${name}' is ${implicitReference ? 'implicitly' : 'declared to be'} a 'searchable reference', meaning you can only define the options allowed " +
                     "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_REFERENCE_OPTIONS.join(', ')}]")
             }
-            mappedProperties << CompassClassPropertyMapping.getReferenceInstance(name, propertyType, referenceOptions)
+            mappedProperties << CompassClassPropertyMapping.getReferenceInstance(name, defaultMapping.propertyType, referenceOptions)
         }
     }
 

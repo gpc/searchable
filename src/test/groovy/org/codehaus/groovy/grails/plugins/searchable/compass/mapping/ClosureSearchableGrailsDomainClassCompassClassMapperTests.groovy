@@ -210,6 +210,22 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.propertyMappings.size() == 1
         assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'tokenized', termVector: 'yes', boost: 2.0f] }
 
+        // searchable component on a collection
+        mapping = getClassMapping(Post, [Comment, User, Post], {
+            comments component: true
+        })
+        assert mapping.mappedClass == Post
+        assert mapping.root == true
+        assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.component && it.propertyType == Comment }
+
+        // searchable reference on a collection
+        mapping = getClassMapping(Post, [Comment, User, Post], {
+            comments reference: true
+        })
+        assert mapping.mappedClass == Post
+        assert mapping.root == true
+        assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.propertyType == Comment }
+
         // searchable component + reference defaults true, true
         mapping = getClassMapping(Post, [Comment, User, Post], {
             only = "author"

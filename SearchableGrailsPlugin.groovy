@@ -190,7 +190,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
         // Compass::GPS
         compassGpsDevice(SpringHibernate3GpsDevice) {
             name = "hibernate"
-            sessionFactory = ref("sessionFactory")
+            sessionFactory = sessionFactory
             fetchCount = 5000
         }
         compassGps(SingleCompassGps) {
