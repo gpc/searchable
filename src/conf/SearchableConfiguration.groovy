@@ -17,7 +17,22 @@ class SearchableConfiguration {
     /**
      * Any settings you wish to pass to Compass
      *
-     * Use this to configure custom/override default analyzers, query parsers, etc
+     * Use this to configure custom/override default analyzers, query parsers, eg
+     *
+     *     Map compassSettings = [
+     *         'compass.engine.analyzer.german.type': 'German'
+     *     ]
+     *
+     * gives you an analyzer called "german" you can then use in mappings and queries, like
+     *
+     *    class Book {
+     *        static searchable = { content analyzer: 'german' }
+     *        String content
+     *    }
+     *
+     *    Book.search("unter", analyzer: 'german')
+     *
+     * Documentation for Compass settings is here: http://www.compass-project.org/docs/1.2.1/reference/html/core-settings.html
      */
     Map compassSettings = [:]
 
@@ -51,14 +66,14 @@ class SearchableConfiguration {
      * These can be overriden on a per-query basis by passing the search method a Map of options
      * containing those you want to override
      *
-     * reload: whether to reload domain class instances from the DB: true|false
-     *         If true, the search  will be slower but objects will be associated
-     *         with the current Hibernate session
-     * escape: whether to escape special characters in string queries: true|false
-     * offset: the 0-based hit offset of the first page of results.
-     *         Normally you wouldn't change it from 0, it's only here because paging
-     *         works by using an offset + max combo for a specific page
-     * max:    the page size, for paged search results
+     * @param reload whether to reload domain class instances from the DB: true|false
+     *               If true, the search  will be slower but objects will be associated
+     *               with the current Hibernate session
+     * @param escape whether to escape special characters in string queries: true|false
+     * @param offset the 0-based hit offset of the first page of results.
+     *               Normally you wouldn't change it from 0, it's only here because paging
+     *               works by using an offset + max combo for a specific page
+     * @param max    the page size, for paged search results
      */
     Map defaultSearchOptions = [reload: false, escape: false, offset: 0, max: 10]
 
