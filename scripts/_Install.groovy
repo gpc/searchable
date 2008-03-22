@@ -12,6 +12,7 @@
 Ant.property(environment:"env")
 grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
 
+// TODO this is ancient - remove in next version
 if (new File(basedir, 'grails-app/conf/SearchablePluginConfiguration.groovy').exists()) {
     println """
     
@@ -26,3 +27,16 @@ if (new File(basedir, 'grails-app/conf/SearchablePluginConfiguration.groovy').ex
             grails-app/conf/SearchableConfiguration.groovy
 """
 }
+
+println """
+
+Thanks for installing the Grails Searchable Plugin!
+
+
+Documentation is available at http://grails.org/Searchable+Plugin
+
+Help is available from user@grails.codehaus.org
+
+Issues and improvements should be raised at http://jira.codehaus.org/browse/GRAILSPLUGINS
+
+"""
