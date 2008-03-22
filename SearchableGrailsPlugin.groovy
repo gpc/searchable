@@ -257,20 +257,12 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
 
     // Get a configuration instance
     private getConfiguration = { resourceLoader ->
-        def locations = ["file:.", "/WEB-INF"]
-        for (location in locations) {
-            def name = location + "/grails-app/conf/SearchableConfiguration.groovy"
-            LOG.debug("Trying to load config from ${name}")
-            // TODO null check required because of the differences in grails run-app and test-app
-            // TODO raise issue
-            def resource = resourceLoader?.getResource(name)
-            if (resource?.exists()) {
-                def config = new GroovyClassLoader().parseClass(resource.inputStream).newInstance()
-                LOG.debug("Config instance: ${config?.properties}")
-                return config
-            }
-            LOG.debug("Not found: ${name}")
-        }
-        return null
+       try {
+           LOG.debug("Trying to load config from 'SearchableConfiguration.class'")
+           return Class.forName('SearchableConfiguration', true, Thread.currentThread().contextClassLoader).newInstance()
+       } catch (ClassNotFoundException e) {
+           LOG.debug("Not found: ${e.message}")
+           return null
+       }
     }
 }
