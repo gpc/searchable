@@ -536,4 +536,26 @@ class DefaultSearchMethodTests extends AbstractSearchableCompassTests {
         }
         assert hits*.id == [10l, 1l, 100l]
     }
+
+    void testWithHighlighter() {
+        // no offset
+        def highlights = []
+        def callback = new DefaultSearchMethod.SearchCompassCallback([withHighlighter: { hl, i, sr ->
+            highlights[i] = hl.fragment(String.valueOf(i))
+        }], "ignored")
+        callback.doWithHighlighter([size: {100}] as Collection, [highlighter: {i -> [fragment: {name -> "highlighter for hit " + name}] as CompassHighlighter}] as CompassHits, [:])
+        assert highlights.size() == 100
+        assert highlights[0] == "highlighter for hit 0"
+        assert highlights[42] == "highlighter for hit 42"
+
+        // with offset
+        highlights = []
+        callback = new DefaultSearchMethod.SearchCompassCallback([offset: 20, withHighlighter: { hl, i, sr ->
+            highlights[i] = hl.fragment(String.valueOf(i))
+        }], "ignored")
+        callback.doWithHighlighter([size: {10}] as Collection, [length: {1000}, highlighter: {i -> [fragment: {name -> "highlighter for hit " + i}] as CompassHighlighter}] as CompassHits, [:])
+        assert highlights.size() == 10
+        assert highlights[0] == "highlighter for hit 20"
+        assert highlights[4] == "highlighter for hit 24"
+    }
 }
