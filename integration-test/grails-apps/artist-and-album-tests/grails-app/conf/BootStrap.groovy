@@ -131,16 +131,14 @@ class BootStrap {
 
         for (entry in data) {
             def artist = new Artist(name: entry.name)
-            assert artist.validate(), artist.errors
-            assert artist.save()
             def genre = entry.genre
             for (item in entry.albums) {
                 def album = new Album(name: item.name, genre: genre, artist: artist)
                 assert album.validate(), album.errors
-                assert album.save()
                 artist.addToAlbums(album)
             }
-            artist.reindex()
+            assert artist.validate(), artist.errors
+            assert artist.save()
         }
      }
 

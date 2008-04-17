@@ -10,16 +10,13 @@ class SearchableServiceTests extends GroovyTestCase {
 
     void setUp() {
         def artist = new Artist(name: 'The Beatles')
-        assert artist.validate(), artist.errors
-        assert artist.save()
-        artist.save()
         for (name in ['Revolver', 'Abbey Road', 'Help', 'Magical Mystery Tour', 'Sgt. Pepper\'s Lonely Hearts Club Band', 'Yellow Submarine', 'Red Album', 'Blue Album', 'White Album']) {
             def album = new Album(name: name, artist: artist, genre: "pop")
             assert album.validate(), album.errors
-            assert album.save()
             artist.addToAlbums(album)
         }
-        artist.reindex()
+        assert artist.validate(), artist.errors
+        assert artist.save()
     }
 
     void tearDown() {

@@ -4,15 +4,13 @@ class AlbumTests extends GroovyTestCase {
 
     void setUp() {
         def deLa = new Artist(name: 'De la Soul')
-        assert deLa.validate(), deLa.errors
-        assert deLa.save()
         for (name in ['3 Feet High and Rising', 'De La is Dead', 'Stakes is High', 'The Grind Date', 'AOI: Mosaic Thump', 'AOI: Bionix']) {
             def album = new Album(name: name, artist: deLa, genre: "rap/hip-hop")
             assert album.validate(), album.errors
-            assert album.save()
             deLa.addToAlbums(album)
         }
-        deLa.save()
+        assert deLa.validate(), deLa.errors
+        assert deLa.save()
     }
 
     void tearDown() {

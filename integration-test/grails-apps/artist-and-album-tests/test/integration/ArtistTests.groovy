@@ -5,15 +5,13 @@ class ArtistTests extends GroovyTestCase {
     void setUp() {
         for (name in ['Elvis Costello', 'Elvis Presley', 'Loudon Wainwright III', 'Martha Wainwright']) {
             def artist = new Artist(name: name)
-            assert artist.validate(), artist.errors
-            assert artist.save()
             for (n in ['Greatest Hits I', 'Greatest Hits II']) {
                 def album = new Album(name: n, genre: 'rock/pop', artist: artist)
                 assert album.validate(), album.errors
-                assert album.save()
                 artist.addToAlbums(album)
             }
-            artist.reindex()
+            assert artist.validate(), artist.errors
+            assert artist.save()
         }
     }
 

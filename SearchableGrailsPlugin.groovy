@@ -30,6 +30,7 @@ import org.springframework.beans.factory.config.*
 import org.springframework.util.ClassUtils
 
 import grails.spring.BeanBuilder
+import org.compass.gps.device.hibernate.HibernateGpsDevice
 
 /**
 * @author Maurice Nicholson
@@ -188,7 +189,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
         }
 
         // Compass::GPS
-        compassGpsDevice(SpringHibernate3GpsDevice) {
+        compassGpsDevice(HibernateGpsDevice) {
             name = "hibernate"
             sessionFactory = sessionFactory
             fetchCount = 5000
