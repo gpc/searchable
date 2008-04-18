@@ -333,6 +333,15 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.component && it.propertyType == SearchableComp && it.attributes == [maxDepth: 1, cascade: 'create,delete'] }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
 //        assert mapping.properties == [version: [property: true], componentOwnerName: [property: true], searchableCompOne: [component: ], searchableCompTwo: [component: [refAlias: CompassMappingUtils.getDefaultAlias(SearchableComp)]]]
+
+        // convert an implicit component into a reference
+        mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
+            searchableCompOne(reference: true, component: false)
+        })
+        assert mapping.propertyMappings.size() == 4
+        assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
+        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.reference && it.propertyType == SearchableComp && it.attributes == [:] }
+        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
     }
 
     void testGetClassMappingWithInheritedMappings() {

@@ -34,6 +34,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'refAlias', 'refComponentAlias']
     static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'refAlias']
     static final SEARCHABLE_REFERENCE_MAPPING_OPTIONS = SEARCHABLE_REFERENCE_OPTIONS + ["reference", "component"]
+    static final SEARCHABLE_COMPONENT_MAPPING_OPTIONS = SEARCHABLE_COMPONENT_OPTIONS + ["reference", "component"]
 
     GrailsDomainClass grailsDomainClass;
     Class mappedClass;
@@ -161,13 +162,13 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
 
         // Arg check
         def defaultTypeReference = defaultMapping.reference
-        def validOptions = defaultTypeReference ? SEARCHABLE_REFERENCE_MAPPING_OPTIONS : SEARCHABLE_COMPONENT_OPTIONS
+        def validOptions = defaultTypeReference ? SEARCHABLE_REFERENCE_MAPPING_OPTIONS : SEARCHABLE_COMPONENT_MAPPING_OPTIONS
         def invalidOptions = args.keySet() - validOptions
         if (invalidOptions) {
             throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}.searchable' for property '${name}'. " +
                 (defaultTypeReference ? "'${mappedClass.getName()}.${name}' can either be implicitly defined as a 'searchable reference', in which case you can use the options for searchable reference directly " +
-                    "- eg, 'user(cascade: \"create,delete\")' - or you can defined it as a 'searchable reference' and/or 'searchable component' explicity and use their options within nested maps " +
-                    " - eg, 'user(reference: [cascade: \"create,delete\"], component: [maxDepth : 3])'. Supported options are [${SEARCHABLE_REFERENCE_MAPPING_OPTIONS.join(', ')}]. " :
+                    "- eg, 'user(cascade: \"create,delete\")' - or you can define it as a 'searchable reference' or 'searchable component' explicity and use their options within nested maps " +
+                    " - eg, 'user(reference: [cascade: \"create,delete\"])' or 'user(component: [maxDepth : 3])'. Supported options are [${SEARCHABLE_REFERENCE_MAPPING_OPTIONS.join(', ')}]. " :
                     "'${mappedClass.getName()}.${name}' is implicity a 'searchable component'. Supported options are [${SEARCHABLE_COMPONENT_OPTIONS.join(', ')}]. ") +
                 "The invalid options are: [${invalidOptions.join(', ')}]."
             )
@@ -207,11 +208,35 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                 component = true
             }
         } else {
+            reference = false
+            component = false
             implicitComponent = true
+            implicitReference = false
             assert defaultMapping.component
-            componentOptions = new HashMap(defaultMapping.attributes)
-            componentOptions.putAll(args)
-            component = true
+            if (!args.reference && !args.component) {
+                // eg "comments(cascade: true)" - assumed to be component
+                componentOptions = new HashMap(defaultMapping.attributes)
+                componentOptions.putAll(args)
+                component = true
+            }
+            if (args.reference != null) {
+                if (args.reference != false) {
+                    reference = true
+                    referenceOptions = new HashMap(defaultMapping.attributes)
+                    if (args.reference instanceof Map) {
+                        referenceOptions.putAll(args.reference)
+                    }
+                }
+            }
+            if (args.component != null) {
+                if (args.component != false) {
+                    component = true
+                    componentOptions = new HashMap(defaultMapping.attributes)
+                    if (args.component instanceof Map) {
+                        componentOptions.putAll(args.component)
+                    }
+                }
+            }
         }
 
         if (!reference && !component) {
@@ -224,7 +249,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             if (invalidOptions) {
                 throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}.searchable' for property '${name}'. " +
                     "'${mappedClass.getName()}.${name}' is ${implicitComponent ? 'implicitly' : 'defined to be'} a 'searchable component', meaning you can only define the options allowed " +
-                    "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_COMPONENT_OPTIONS.join(', ')}]")
+                    "for searchable components. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable components' are [${SEARCHABLE_COMPONENT_OPTIONS.join(', ')}]")
             }
             mappedProperties << CompassClassPropertyMapping.getComponentInstance(name, defaultMapping.propertyType, componentOptions)
         }
@@ -233,7 +258,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             if (invalidOptions) {
                 throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}.searchable' for property '${name}'. " +
                     "'${mappedClass.getName()}.${name}' is ${implicitReference ? 'implicitly' : 'declared to be'} a 'searchable reference', meaning you can only define the options allowed " +
-                    "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_REFERENCE_OPTIONS.join(', ')}]")
+                    "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable references' are [${SEARCHABLE_REFERENCE_OPTIONS.join(', ')}]")
             }
             mappedProperties << CompassClassPropertyMapping.getReferenceInstance(name, defaultMapping.propertyType, referenceOptions)
         }
