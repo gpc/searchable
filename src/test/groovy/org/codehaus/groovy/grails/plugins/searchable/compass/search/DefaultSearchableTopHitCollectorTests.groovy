@@ -16,6 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search
 
 import org.codehaus.groovy.grails.plugins.searchable.test.*
+import org.compass.core.CompassHits
 
 /**
  *
@@ -27,26 +28,17 @@ class DefaultSearchableTopHitCollectorTests extends GroovyTestCase {
         def hitCollector = new DefaultSearchableTopHitCollector()
 
         // without reload
-        def data = []
-        for (i in 0..<1000) data << new TestDataObject(i, "This is hit object #${i}")
-        def hits = new TestCompassHits(data: data)
-
-        def collectedHits = hitCollector.collect(hits, [reload: false])
-        assert collectedHits instanceof TestDataObject
+        def collectedHits = hitCollector.collect([length: {1000}, data: {i -> new DataObject(i, "This is hit object #${i}")}] as CompassHits, [reload: false])
+        assert collectedHits instanceof DataObject
         assert collectedHits.data == "This is hit object #0"
 
         // with reload
-        data = []
-        for (i in 0..<1000) data << new TestDataObject(i, "This is hit object #${i}")
-        hits = new TestCompassHits(data: data)
-
-        collectedHits = hitCollector.collect(hits, [reload: true])
-        assert collectedHits instanceof TestDataObject
+        collectedHits = hitCollector.collect([length: {1000}, data: {i -> new DataObject(i, "This is hit object #${i}")}] as CompassHits, [reload: true])
+        assert collectedHits instanceof DataObject
         assert collectedHits.data == "This is hit object #0 -- RELOADED"
 
         // Handles no hits (no exception)
-        hits = new TestCompassHits()
-        collectedHits = hitCollector.collect(hits, [reload: false])
+        collectedHits = hitCollector.collect([length: {0}] as CompassHits, [reload: false])
         assert collectedHits == null
     }
 }

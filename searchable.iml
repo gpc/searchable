@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="GRAILS_MODULE" version="4">
+<module relativePaths="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Groovy" name="Groovy" implicit="true">
+      <configuration />
+    </facet>
+    <facet type="Spring" name="Spring" implicit="true">
+      <configuration>
+        <options>
+          <option name="enableValidation" value="false" />
+          <option name="reportErrorsAsWarnings" value="true" />
+        </options>
+        <customNs />
+      </configuration>
+    </facet>
+    <facet type="Grails" name="Grails">
+      <configuration />
+    </facet>
+  </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
@@ -9,23 +26,14 @@
       <sourceFolder url="file://$MODULE_DIR$/grails-app/taglib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/groovy" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/groovy" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="Grails" />
-    <orderEntry type="library" name="Spring" level="project" />
-    <orderEntry type="library" name="Apache Commons" level="project" />
-    <orderEntry type="module-library">
-      <library name="Compass">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/compass.jar!/" />
-          <root url="jar://$MODULE_DIR$/lib/lucene-core-2.0.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="library" name="groovy-1.5.6" level="application" />
+    <orderEntry type="library" name="grails-1.0.4-SNAPSHOT" level="application" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="library" name="lib" level="project" />
     <orderEntryProperties />
   </component>
 </module>

@@ -73,6 +73,7 @@
     <mkdir dir="${test.reports}" />
     <junit fork="yes" showoutput="true" failureproperty="tests.failed" printsummary="yes">
       <formatter type="brief"/>
+      <formatter type="xml"/>
       <classpath refid="test.classpath" />
       <jvmarg value="-Dgroovy.test.dir=${test.groovy.src}" />
       <jvmarg value="-Dgroovy.test.pattern=**/*Tests.groovy" />

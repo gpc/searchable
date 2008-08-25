@@ -16,9 +16,10 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search
 
 import org.codehaus.groovy.grails.plugins.searchable.test.*
+import org.compass.core.CompassHits
 
 /**
- * 
+ *
  *
  * @author Maurice Nicholson
  */
@@ -27,25 +28,15 @@ class CountOnlyHitCollectorTests extends GroovyTestCase {
     void testCollect() {
         def hitCollector = new CountOnlyHitCollector()
 
-        // without reload
-        def data = []
-        for (i in 0..<501) data << new TestDataObject(i, "This is hit object #${i}")
-        def hits = new TestCompassHits(data: data)
-
-        def collectedHits = hitCollector.collect(hits, [reload: false])
+        def collectedHits = hitCollector.collect([length: {501}] as CompassHits, [reload: false])
         assert collectedHits == 501
 
         // with reload; makes no sense but it's a generic option
-        data = []
-        for (i in 0..<303) data << new TestDataObject(i, "This is hit object #${i}")
-        hits = new TestCompassHits(data: data)
-
-        collectedHits = hitCollector.collect(hits, [reload: true])
+        collectedHits = hitCollector.collect([length: {303}] as CompassHits, [reload: true])
         assert collectedHits == 303
 
         // Handles no hits (no exception)
-        hits = new TestCompassHits()
-        collectedHits = hitCollector.collect(hits, [reload: false])
+        collectedHits = hitCollector.collect([length: {0}] as CompassHits, [reload: false])
         assert collectedHits == 0
     }
 }

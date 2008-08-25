@@ -1,4 +1,4 @@
-<plugin name='searchable' version='0.4.2-SNAPSHOT'>
+<plugin name='searchable' version='0.4.2'>
   <author>Maurice Nicholson</author>
   <authorEmail>maurice@freeshell.org</authorEmail>
   <title>Adds rich search functionality to Grails domain models.</title>
@@ -18,5 +18,8 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
     <resource>Artist</resource>
     <resource>Album</resource>
     <resource>Artist</resource>
+    <resource>SearchableUrlMappings</resource>
+    <resource>SearchableController</resource>
+    <resource>SearchableService</resource>
   </resources>
 </plugin>
