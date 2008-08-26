@@ -1,12 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE compass-core-mapping PUBLIC
-   "-//Compass/Compass Core Mapping DTD 1.0//EN"
-   "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
+    "-//Compass/Compass Core Mapping DTD 2.0//EN"
+    "http://www.compass-project.org/dtd/compass-core-mapping-2.1.dtd">
 <compass-core-mapping>
   <class name='Artist' alias='composer' root='true'>
+    <all term-vector="yes"/> <!-- required for more-like-this -->
     <id name='id' />
     <property name='version'>
-      <meta-data>version</meta-data>
+      <meta-data index="no">version</meta-data>
     </property>
     <reference ref-alias='work' name='albums' />
     <property name='name'>

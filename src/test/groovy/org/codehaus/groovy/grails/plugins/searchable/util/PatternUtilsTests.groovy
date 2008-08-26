@@ -23,9 +23,9 @@ import java.util.regex.Pattern;
 class PatternUtilsTests extends GroovyTestCase {
 
     void testMakePatternFromWilcardString() {
-        assert PatternUtils.makePatternFromWilcardString("abc*123").toString() == "abc.*123"
-        assert PatternUtils.makePatternFromWilcardString("abc.").toString() == "abc."
-        assert PatternUtils.makePatternFromWilcardString("*abc.").toString() == ".*abc."
+        assert PatternUtils.makePatternStringFromWildcardString("abc*123") == "abc.*123", PatternUtils.makePatternStringFromWildcardString("abc*123")
+        assert PatternUtils.makePatternStringFromWildcardString("abc.") == "abc."
+        assert PatternUtils.makePatternStringFromWildcardString("*abc.") == ".*abc."
     }
     
     void testHasWildcards() {

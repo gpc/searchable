@@ -30,7 +30,7 @@ import org.jmock.core.constraint.*
  *
  * @author Maurice Nicholson
  */
-class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearchableCompassTests {
+class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearchableCompassTestCase {
     def compass
     def builder = new DefaultStringQuerySearchableCompassQueryBuilder()
 
@@ -166,6 +166,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockBuilder.verify()
         mockStringBuilder.verify()
 
+        // @deprecated todo emit deprecation warning on usage
         // Default AND operator ("andDefaultOperator" shorthand)
         mockBuilder = new Mock(CompassQueryBuilder.class)
         mockStringBuilder = new Mock(CompassQueryBuilder.CompassQueryStringBuilder.class)
@@ -187,12 +188,16 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockBuilder.verify()
         mockStringBuilder.verify()
 
-        // Default AND operator = false has no effect
+        // @deprecated todo emit deprecation warning on usage
+        // Default AND operator = false; means use OR
         mockBuilder = new Mock(CompassQueryBuilder.class)
         mockStringBuilder = new Mock(CompassQueryBuilder.CompassQueryStringBuilder.class)
 
         stringBuilderProxy = mockStringBuilder.proxy()
         mockBuilder.expects(new InvokeOnceMatcher()).method('queryString').'with'(new IsEqual("lime")).will(
+            new ReturnStub(stringBuilderProxy)
+        )
+        mockStringBuilder.expects(new InvokeOnceMatcher()).method('useOrDefaultOperator').withNoArguments().will(
             new ReturnStub(stringBuilderProxy)
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
@@ -205,6 +210,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockBuilder.verify()
         mockStringBuilder.verify()
 
+        // @deprecated todo emit deprecation warning on usage
         // Default AND operator ("useAndDefaultOperator" full name variant)
         mockBuilder = new Mock(CompassQueryBuilder.class)
         mockStringBuilder = new Mock(CompassQueryBuilder.CompassQueryStringBuilder.class)
@@ -226,12 +232,16 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         mockBuilder.verify()
         mockStringBuilder.verify()
 
-        // Default AND operator = false has no effect
+        // @deprecated todo emit deprecation warning on usage
+        // Default AND operator = false; means use OR
         mockBuilder = new Mock(CompassQueryBuilder.class)
         mockStringBuilder = new Mock(CompassQueryBuilder.CompassQueryStringBuilder.class)
 
         stringBuilderProxy = mockStringBuilder.proxy()
         mockBuilder.expects(new InvokeOnceMatcher()).method('queryString').'with'(new IsEqual("pear")).will(
+            new ReturnStub(stringBuilderProxy)
+        )
+        mockStringBuilder.expects(new InvokeOnceMatcher()).method('useOrDefaultOperator').withNoArguments().will(
             new ReturnStub(stringBuilderProxy)
         )
         mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
@@ -243,6 +253,53 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
 
         mockBuilder.verify()
         mockStringBuilder.verify()
+
+        // Default operator = 'and'
+        mockBuilder = new Mock(CompassQueryBuilder.class)
+        mockStringBuilder = new Mock(CompassQueryBuilder.CompassQueryStringBuilder.class)
+
+        stringBuilderProxy = mockStringBuilder.proxy()
+        mockBuilder.expects(new InvokeOnceMatcher()).method('queryString').'with'(new IsEqual("pear")).will(
+            new ReturnStub(stringBuilderProxy)
+        )
+        mockStringBuilder.expects(new InvokeOnceMatcher()).method('useAndDefaultOperator').withNoArguments().will(
+            new ReturnStub(stringBuilderProxy)
+        )
+        mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
+
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(null, mockSession, [defaultOperator: 'and'], "pear")
+
+        mockBuilder.verify()
+        mockStringBuilder.verify()
+
+        // Default operator = 'or'
+        mockBuilder = new Mock(CompassQueryBuilder.class)
+        mockStringBuilder = new Mock(CompassQueryBuilder.CompassQueryStringBuilder.class)
+
+        stringBuilderProxy = mockStringBuilder.proxy()
+        mockBuilder.expects(new InvokeOnceMatcher()).method('queryString').'with'(new IsEqual("pear")).will(
+            new ReturnStub(stringBuilderProxy)
+        )
+        mockStringBuilder.expects(new InvokeOnceMatcher()).method('useOrDefaultOperator').withNoArguments().will(
+            new ReturnStub(stringBuilderProxy)
+        )
+        mockStringBuilder.expects(new InvokeOnceMatcher()).method('toQuery').withNoArguments()
+
+        mockSession = [
+            queryBuilder: { mockBuilder.proxy() }
+        ] as CompassSession
+        builder.buildQuery(null, mockSession, [defaultOperator: 'or'], "pear")
+
+        mockBuilder.verify()
+        mockStringBuilder.verify()
+
+        // invalid value
+        shouldFail(IllegalArgumentException) {
+            builder.buildQuery(null, [queryBuilder: {[queryString: {[:] as CompassQueryBuilder.CompassQueryStringBuilder}] as CompassQueryBuilder}] as CompassSession, [defaultOperator: 'um'], "pear")
+        }
 
         // All together for basic string query
         mockBuilder = new Mock(CompassQueryBuilder.class)
@@ -346,11 +403,11 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
         withCompassSession { compassSession ->
             // No class, no escape
             def query = builder.buildQuery(null, compassSession, [escape: false], "Hello World")
-            assert query.toString() == "all:hello all:world"
+            assert query.toString() == "+hello +world"
 
             // escape does not affect normal queries
             query = builder.buildQuery(null, compassSession, [escape: true], "Hello World")
-            assert query.toString() == "all:hello all:world"
+            assert query.toString() == "+hello +world"
 
             // no escape, bad query
             shouldFail {
@@ -359,7 +416,7 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
 
             // should not fail with escape
             query = builder.buildQuery(null, compassSession, [escape: true], "[this is a bad query}")
-            assert query.toString() == "all:bad all:query"
+            assert query.toString() == "+bad +query"
         }
     }
 }

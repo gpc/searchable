@@ -21,6 +21,9 @@ import org.compass.core.spi.InternalCompass
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance.*
 import org.codehaus.groovy.grails.commons.*
+import org.compass.core.config.CompassConfiguration
+import org.compass.core.mapping.internal.DefaultCompassMapping
+import org.compass.core.util.ClassUtils
 
 /**
 * @author Maurice Nicholson
@@ -28,13 +31,13 @@ import org.codehaus.groovy.grails.commons.*
 class CompassMappingUtilsTests extends GroovyTestCase {
 
     void testGetDefaultAlias() {
-        assert CompassMappingUtils.getDefaultAlias(Post) == 'ALIASPostALIAS'
-        assert CompassMappingUtils.getDefaultAlias(User) == 'ALIASUserALIAS'
-        assert CompassMappingUtils.getDefaultAlias(Comment) == 'ALIASCommentALIAS'
+        assert CompassMappingUtils.getDefaultAlias(Post) == 'Post'
+        assert CompassMappingUtils.getDefaultAlias(User) == 'User'
+        assert CompassMappingUtils.getDefaultAlias(Comment) == 'Comment'
     }
 
     void testGetMappingAlias() {
-        def mapping = new CompassMapping()
+        def mapping = new DefaultCompassMapping()
         mapping.addMapping(getClassMapping(Post.class))
         def compass = [
             getMapping: {
@@ -46,7 +49,7 @@ class CompassMappingUtilsTests extends GroovyTestCase {
 
     //    public static String[] getMappingAliases(Compass compass, Collection clazzes) {
     void testGetMappingAliases() {
-        def mapping = new CompassMapping()
+        def mapping = new DefaultCompassMapping()
         mapping.addMapping(getClassMapping(Post.class))
         mapping.addMapping(getClassMapping(User.class))
         mapping.addMapping(getClassMapping(Comment.class))
@@ -59,8 +62,25 @@ class CompassMappingUtilsTests extends GroovyTestCase {
         assert (CompassMappingUtils.getMappingAliases(compass, [Post, User, Comment]) as List).sort() == ["Commentalias", "Postalias", "Useralias"]
     }
 
-//    public static void resolveAliases(List classMappings) {
-    void testResolveAliases() {
+//    public static void resolveAliases(List classMappings, Collection grailsDomainClasses, CompassConfiguration compassConfiguration) {
+    void testResolveAliasesWithCompassConfiguration() {
+        def classMappings = []
+        def pm = new CompassClassMapping(mappedClass: Post, alias: "what_i_call_posts")
+        pm.addPropertyMapping(CompassClassPropertyMapping.getComponentInstance("author", User))
+        classMappings << pm
+
+        def cm = new ClassMapping(clazz: User, alias: 'writer')
+        def compassConfiguration = new CompassConfiguration()
+        compassConfiguration.addResourceMapping(cm)
+        List domainClasses = getDomainClasses(Post, User)
+        CompassMappingUtils.resolveAliases(classMappings, [domainClasses.find { it.clazz == Post }], compassConfiguration)
+
+        assert pm.alias == "what_i_call_posts"
+        assert pm.getPropertyMappings().find { it.propertyName == 'author' }.attributes.refAlias == 'writer'
+    }
+
+//    public static void resolveAliases(List classMappings, Collection grailsDomainClasses) {
+    void testResolveAliasesNoCompassConfiguration() {
         // no poly classes
         def classMappings = []
         def pm = new CompassClassMapping(mappedClass: Post, alias: "what_i_call_posts")
@@ -128,15 +148,24 @@ class CompassMappingUtilsTests extends GroovyTestCase {
         assert classMappings.find { it.mappedClass == SearchableGrandChild }.every { it.alias == CompassMappingUtils.getDefaultAlias(SearchableGrandChild) && it.extend == CompassMappingUtils.getDefaultAlias(SearchableChildOne) }
     }
 
+    void testResolveSubIndexes() {
+        def post = new CompassClassMapping(mappedClass: Post)
+        def comment = new CompassClassMapping(mappedClass: Comment, subIndex: "ramblingrant")
+        def cm = [post, comment]
+        CompassMappingUtils.resolveSubIndexes(cm)
+        assert post.subIndex == "post"
+        assert comment.subIndex == "ramblingrant"
+    }
+
     private getClassMapping(Class clazz) {
         def classMapping = new ClassMapping()
         classMapping.clazz = clazz
-        classMapping.alias = clazz.simpleName + "alias"
+        classMapping.alias = ClassUtils.getShortName(clazz) + "alias"
         classMapping.name = clazz.name
         classMapping
     }
 
-    def getDomainClasses(Class... clazzes) {
+    def getDomainClasses(Class[] clazzes) {
         def domainClasses = []
         for (clazz in clazzes) {
             DefaultGrailsDomainClass domainClass = new DefaultGrailsDomainClass(clazz)

@@ -40,8 +40,9 @@ public interface SearchableGrailsDomainClassMappingConfigurator {
      * @param compassConfiguration the CompassConfiguration instance
      * @param configurationContext a configuration context, for flexible parameter passing
      * @param searchableGrailsDomainClasses searchable domain classes to map
+     * @param allSearchableGrailsDomainClasses all searchable domain classes, whether configured here or elsewhere
      */
-    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses);
+    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses, Collection allSearchableGrailsDomainClasses);
 
     /**
      * Get this strategy's name

@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.math.BigDecimal;
 
 /**
  * Describes a Compass searchable class mapping
@@ -30,10 +31,28 @@ import java.util.Map;
 public class CompassClassMapping {
     private Class mappedClass;
     private Class mappedClassSuperClass;
+
     private String alias;
-    private boolean poly = false;
+    private String analyzer;
+    private BigDecimal boost;
+    private String converter;
+    private Boolean enableAll;
+    private String allName;
+    private String allAnalyzer;
+    private String allTermVector;
+    private Boolean allExcludeAlias;
+    private Boolean allOmitNorms;
+    private String allSpellCheck;
     private String extend;
-    private boolean root = true;
+    private String managedId;
+    private boolean poly = false;
+    private Boolean root;
+    private String spellCheck;
+    private String subIndex;
+    private boolean supportUnmarshall = true;
+
+    private Map subIndexHash;
+
     private List propertyMappings = new ArrayList();
     private List constantMetaData = new ArrayList();
 
@@ -61,11 +80,19 @@ public class CompassClassMapping {
         this.alias = alias;
     }
 
-    public boolean isRoot() {
+    public String getSubIndex() {
+        return subIndex;
+    }
+
+    public void setSubIndex(String subIndex) {
+        this.subIndex = subIndex;
+    }
+
+    public Boolean getRoot() {
         return root;
     }
 
-    public void setRoot(boolean root) {
+    public void setRoot(Boolean root) {
         this.root = root;
     }
 
@@ -85,6 +112,126 @@ public class CompassClassMapping {
         this.extend = extend;
     }
 
+    public String getAnalyzer() {
+        return analyzer;
+    }
+
+    public void setAnalyzer(String analyzer) {
+        this.analyzer = analyzer;
+    }
+
+    public BigDecimal getBoost() {
+        return boost;
+    }
+
+    public void setBoost(BigDecimal boost) {
+        this.boost = boost;
+    }
+
+    public String getConverter() {
+        return converter;
+    }
+
+    public void setConverter(String converter) {
+        this.converter = converter;
+    }
+
+    public Boolean getEnableAll() {
+        return enableAll;
+    }
+
+    public void setEnableAll(Boolean enableAll) {
+        this.enableAll = enableAll;
+    }
+
+    public Boolean getAll() {
+        return enableAll;
+    }
+
+    public void setAll(Boolean enableAll) {
+        this.enableAll = enableAll;
+    }
+
+    public String getAllName() {
+        return allName;
+    }
+
+    public void setAllName(String allName) {
+        this.allName = allName;
+    }
+
+    public String getAllAnalyzer() {
+        return allAnalyzer;
+    }
+
+    public void setAllAnalyzer(String allAnalyzer) {
+        this.allAnalyzer = allAnalyzer;
+    }
+
+    public String getAllTermVector() {
+        return allTermVector;
+    }
+
+    public void setAllTermVector(String allTermVector) {
+        this.allTermVector = allTermVector;
+    }
+
+    public Boolean getAllExcludeAlias() {
+        return allExcludeAlias;
+    }
+
+    public void setAllExcludeAlias(Boolean allExcludeAlias) {
+        this.allExcludeAlias = allExcludeAlias;
+    }
+
+    public Boolean getAllOmitNorms() {
+        return allOmitNorms;
+    }
+
+    public void setAllOmitNorms(Boolean allOmitNorms) {
+        this.allOmitNorms = allOmitNorms;
+    }
+
+    public String getAllSpellCheck() {
+        return allSpellCheck;
+    }
+
+    public void setAllSpellCheck(String allSpellCheck) {
+        this.allSpellCheck = allSpellCheck;
+    }
+
+    public String getManagedId() {
+        return managedId;
+    }
+
+    public void setManagedId(String managedId) {
+        this.managedId = managedId;
+    }
+
+    public String getSpellCheck() {
+        return spellCheck;
+    }
+
+    public void setSpellCheck(String spellCheck) {
+        this.spellCheck = spellCheck;
+    }
+
+    public boolean isSupportUnmarshall() {
+        return supportUnmarshall;
+    }
+
+    public void setSupportUnmarshall(boolean supportUnmarshall) {
+        this.supportUnmarshall = supportUnmarshall;
+    }
+
+    public Map getSubIndexHash() {
+        return subIndexHash;
+    }
+
+    public void setSubIndexHash(Map subIndexHash) {
+        this.subIndexHash = subIndexHash;
+    }
+
     public List getConstantMetaData() {
         return constantMetaData;
     }
@@ -94,11 +241,11 @@ public class CompassClassMapping {
     }
 
     public void addConstantMetaData(final String name, final Map attributes, final List values) {
-        this.constantMetaData.add(new HashMap() {{
-            put("name", name);
-            put("attributes", attributes);
-            put("values", values);
-        }});
+        Map map = new HashMap();
+        map.put("name", name);
+        map.put("attributes", attributes);
+        map.put("values", values);
+        this.constantMetaData.add(map);
     }
 
     public List getPropertyMappings() {
@@ -118,6 +265,6 @@ public class CompassClassMapping {
      * @return String
      */
     public String toString() {
-        return "CompassClassMapping: mappedClass=[" + mappedClass + "],  mappedClassSuperClass=[" + mappedClassSuperClass + "], alias=[" + alias + "], root=[" + root + "], poly=[" + poly + "], extend=[" + extend + "], propertyMappings=[" + propertyMappings + "]";
+        return "CompassClassMapping: mappedClass=[" + mappedClass + "],  mappedClassSuperClass=[" + mappedClassSuperClass + "], alias=[" + alias + "], spellCheck=[" + spellCheck + "], subIndex=[" + subIndex + "], root=[" + root + "], poly=[" + poly + "], extend=[" + extend + "], propertyMappings=[" + propertyMappings + "]";
     }
 }

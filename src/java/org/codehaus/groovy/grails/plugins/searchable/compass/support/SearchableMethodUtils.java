@@ -20,6 +20,8 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.HashMap;
 
+import groovy.lang.Closure;
+
 /**
  * @author Maurice Nicholson
  */
@@ -50,4 +52,21 @@ public abstract class SearchableMethodUtils {
         return merged;
     }
 
+    /**
+     * Get the query argument - either a String or Closure
+     * @param args
+     * @return
+     */
+    public static Object getQueryArgument(Object args) {
+        if (args instanceof String || args instanceof Closure) {
+            return args;
+        }
+        Object[] argv = (Object[]) args;
+        for (int i = 0, max = argv.length; i < max; i++) {
+            if (argv[i] instanceof Closure || argv[i] instanceof String) {
+                return argv[i];
+            }
+        }
+        return null;
+    }
 }

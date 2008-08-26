@@ -22,11 +22,14 @@ import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.index.Term;
+import org.compass.core.util.Assert;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Lucene utils
@@ -58,7 +61,7 @@ public class LuceneUtils {
         tokenList.add(token);
       }
 
-      return (Token[]) tokenList.toArray(new Token[0]);
+      return (Token[]) tokenList.toArray(new Token[tokenList.size()]);
     }
 
     /**
@@ -106,7 +109,7 @@ public class LuceneUtils {
             List terms = new ArrayList();
             Token[] tokens = tokensFromAnalysis(analyzer, text);
             for (int i = 0; i < tokens.length; i++) {
-                terms.add(tokens[i].termText());
+                terms.add(new String(tokens[i].termBuffer(), 0, tokens[i].termLength()));
             }
             return (String[]) terms.toArray(new String[terms.size()]);
         } catch (IOException ex) {
@@ -114,6 +117,109 @@ public class LuceneUtils {
             LOG.error("Unable to analyze the given text: " + ex, ex);
             throw new IllegalArgumentException("Unable to analyze the given text: " + ex);
         }
+    }
+
+    /**
+     * Returns a list of terms by parsing the given query string - special query characters and words (OR/AND) are
+     * not included in the returned list
+     *
+     * @param queryString the query string to parse
+     * @param analyzerClass the Analyzer Class instance to instantiate, may be null in which case Lucene's
+     * StandardAnalyzer is used
+     * @return a list of text terms
+     */
+    public static String[] termsForQueryString(String queryString, Class analyzerClass) throws ParseException {
+        if (analyzerClass == null) {
+            return termsForQueryString(queryString, (Analyzer) null);
+        }
+        try {
+            return termsForQueryString(queryString, (Analyzer) analyzerClass.newInstance());
+        } catch (Exception ex) {
+            // Convert to unchecked
+            LOG.error("Failed to create instance of Analyzer class [" + analyzerClass + "]: " + ex, ex);
+            throw new IllegalStateException("Failed to create instance of Analyzer class [" + analyzerClass + "]: " + ex);
+        }
+    }
+
+    /**
+     * Returns a list of terms by parsing the given query string - special query characters and words (OR/AND) are
+     * not included in the returned list
+     *
+     * @param queryString the query string to parse
+     * @param analyzer the Analyzer instance, may be null in which case Lucene's StandardAnalyzer is used
+     * @return a list of text terms
+     */
+    public static String[] termsForQueryString(String queryString, Analyzer analyzer) throws ParseException {
+        if (analyzer == null) {
+            analyzer = new StandardAnalyzer();
+        }
+        final String defaultField = "$termsForQueryString_defaultField$";
+        QueryParser queryParser = new QueryParser(defaultField, analyzer);
+        Query query = queryParser.parse(queryString);
+        Set terms = new ListNotSet();
+        query.extractTerms(terms);
+        String[] termsArray = new String[terms.size()];
+        int i = 0;
+        for (Iterator iter = terms.iterator(); iter.hasNext(); ) {
+            termsArray[i++] = ((Term) iter.next()).text();
+        }
+        return termsArray;
+    }
+
+    /**
+     * Returns an array of {@link Term}s by parsing the given query string. Since Lucene's query parser is used,
+     * special query characters and words (OR / AND) are not included in the returned terms
+     *
+     * @param defaultField The default term field, cannot be null
+     * @param queryString the query string to parse, cannot be null
+     * @param analyzerClass the Class of Analyzer, may be null in which case Lucene's StandardAnalyzer is used
+     * @return the Term array (field + term pairs)
+     * @throws org.apache.lucene.queryParser.ParseException if the the query has invalid syntax
+     */
+    public static Term[] realTermsForQueryString(String defaultField, String queryString, Class analyzerClass) throws ParseException {
+        if (analyzerClass == null) {
+            return realTermsForQueryString(defaultField, queryString, (Analyzer) null);
+        }
+        try {
+            return realTermsForQueryString(defaultField, queryString, (Analyzer) analyzerClass.newInstance());
+        } catch (Exception ex) {
+            // Convert to unchecked
+            LOG.error("Failed to create instance of Analyzer class [" + analyzerClass + "]: " + ex, ex);
+            throw new IllegalStateException("Failed to create instance of Analyzer class [" + analyzerClass + "]: " + ex);
+        }
+    }
+
+    /**
+     * Returns an array of {@link Term}s by parsing the given query string. Since Lucene's query parser is used,
+     * special query characters and words (OR / AND) are not included in the returned terms
+     *
+     * @param defaultField The default term field, cannot be null
+     * @param queryString the query string to parse, cannot be null
+     * @param analyzer the Analyzer instance, may be null in which case Lucene's StandardAnalyzer is used
+     * @return the Term array (field + term pairs)
+     * @throws org.apache.lucene.queryParser.ParseException if the the query has invalid syntax
+     */
+    public static Term[] realTermsForQueryString(String defaultField, String queryString, Analyzer analyzer) throws ParseException {
+        Assert.notNull(defaultField, "defaultField cannot be null");
+        Assert.notNull(queryString, "queryString cannot be null");
+        if (analyzer == null) {
+            analyzer = new StandardAnalyzer();
+        }
+        QueryParser queryParser = new QueryParser(defaultField, analyzer);
+        Query query = queryParser.parse(queryString);
+        Set terms = new ListNotSet();
+        query.extractTerms(terms);
+        Term[] termsArray = new Term[terms.size()];
+        int i = 0;
+        for (Iterator iter = terms.iterator(); iter.hasNext(); ) {
+            Term term = (Term) iter.next();
+            termsArray[i++] = term;
+        }
+        return termsArray;
+    }
+
+    // A Set that allows dupes and maintains insertion order, so not really a set :-)
+    private static class ListNotSet extends ArrayList implements Set {
     }
 
     /**

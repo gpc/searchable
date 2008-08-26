@@ -18,22 +18,34 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 import org.springframework.core.JdkVersion
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.annotated.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator
 
 import org.compass.core.config.*
-import org.compass.annotations.config.CompassAnnotationsConfiguration
 
 /**
-*
-*
-* @author Maurice Nicholson
-*/
+ * @author Maurice Nicholson
+ */
 class CompassAnnotationSearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
     SearchableGrailsDomainClassMappingConfigurator strategy
+    Class compassAnnotated
 
     void setUp() {
-        assert JdkVersion.isAtLeastJava15()
+        def gcl = new GroovyClassLoader()
+        Thread.currentThread().setContextClassLoader(gcl)
+        if (JdkVersion.isAtLeastJava15()) {
+            def cl = Thread.currentThread().getContextClassLoader()
+            assert cl instanceof GroovyClassLoader
+            compassAnnotated = cl.parseClass("""
+package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
+
+import org.compass.annotations.*
+
+@Searchable
+private class CompassAnnotated {
+
+}
+""")
+        }
         strategy = new CompassAnnotationSearchableGrailsDomainClassMappingConfigurator()
     }
 
@@ -42,40 +54,45 @@ class CompassAnnotationSearchableGrailsDomainClassMappingConfiguratorTests exten
     }
 
     void testIsMappedByWhenNotAnnotated() {
-        // Should not fail, just return
         assert strategy.isMappedBy([
             getClazz: { Object.class } // not important
-        ] as GrailsDomainClass) == false
-
-        assert strategy.isMappedBy([
-            getClazz: { Other.class } // not important
         ] as GrailsDomainClass) == false
     }
 
     void testIsMappedByWhenAnnotated() {
-        // Should not fail, just return
+        if (!JdkVersion.isAtLeastJava15()) {
+            return
+        }
         assert strategy.isMappedBy([
-            getClazz: { AnnotatedSearchable.class }
+            getClazz: { return compassAnnotated }
         ] as GrailsDomainClass) == true
     }
 
     void testConfigureWithoutCompassXml() {
-        def config = new MyAnnotationCompassConfiguration()
-        strategy.configureMappings(config, [:], [[getClazz: { AnnotatedSearchable.class }] as GrailsDomainClass])
-        assert config.addedClass == AnnotatedSearchable.class
+        if (!JdkVersion.isAtLeastJava15()) {
+            return
+        }
+
+        def compassConfiguration = new MockCompassConfiguration()
+        strategy.configureMappings(compassConfiguration, [:], [[getClazz: { compassAnnotated }] as GrailsDomainClass], null)
+        assert compassConfiguration.addedClass == compassAnnotated
     }
 
     void testConfigureWithCompassXml() {
-        def config = new MyAnnotationCompassConfiguration()
-        strategy.configureMappings(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [[getClazz: { AnnotatedSearchable.class }] as GrailsDomainClass])
-        assert config.addedClass == null
+        if (!JdkVersion.isAtLeastJava15()) {
+            return
+        }
+
+        def compassConfiguration = new MockCompassConfiguration()
+        strategy.configureMappings(compassConfiguration, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [[getClazz: { compassAnnotated }] as GrailsDomainClass], null)
+        assert compassConfiguration.addedClass == null
     }
 }
 
-class MyAnnotationCompassConfiguration extends CompassAnnotationsConfiguration {
-    Class addedClass
+class MockCompassConfiguration extends CompassConfiguration {
+    def addedClass
     CompassConfiguration addClass(Class clazz) {
         addedClass = clazz
-        this
+        return this
     }
 }

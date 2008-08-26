@@ -43,7 +43,7 @@ class SearchableController {
      */
     def indexAll = {
         Thread.start {
-            searchableService.indexAll()
+            searchableService.index()
         }
         render("bulk index started in a background thread")
     }
@@ -52,7 +52,7 @@ class SearchableController {
      * Perform a bulk index of every searchable object in the database
      */
     def unindexAll = {
-        searchableService.unindexAll()
+        searchableService.unindex()
         render("unindexAll done")
     }
 }

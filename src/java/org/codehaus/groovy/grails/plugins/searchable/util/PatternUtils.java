@@ -28,6 +28,11 @@ public class PatternUtils {
      * @return a Pattern
      */
     public static Pattern makePatternFromWilcardString(String string) {
+        String str = makePatternStringFromWildcardString(string);
+        return Pattern.compile(str);
+    }
+
+    public static String makePatternStringFromWildcardString(String string) {
         StringBuffer buf = new StringBuffer();
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
@@ -42,7 +47,7 @@ public class PatternUtils {
                     buf.append(c);
             }
         }
-        return Pattern.compile(buf.toString());
+        return buf.toString();
     }
 
     /**

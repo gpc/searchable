@@ -28,12 +28,23 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
 
     /** Legal attribute names for known XML elements */
     static final PROPERTY_ATTR_NAMES = ['accessor', 'analyzer', 'boost', 'class', 'converter', 'exclude-from-all', 'managed-id', 'managed-id-index', 'managed-id-converter', 'name', 'override']
-    static final META_DATA_ATTR_NAMES = ['analyzer', 'boost', 'converter', 'exclude-from-all', 'format', 'index', 'reverse', 'store', 'term-vector']
+    static final META_DATA_ATTR_NAMES = ['analyzer', 'boost', 'converter', 'exclude-from-all', 'format', 'index', 'null-value', 'reverse', 'store', 'spell-check', 'term-vector']
     static final REFERENCE_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'name', 'ref-alias', 'ref-comp-alias']
     static final COMPONENT_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'max-depth', 'name', 'override', 'ref-alias']
 
     /** Mapping from input option names to output XML attribute names */
     static final OPTION_ATTR_MAP = [type: 'class', propertyConverter: 'converter', refComponentAlias: 'ref-comp-alias']
+
+    /** Mapping from class mapping option to XML attribute name */
+    static final CLASS_MAPPING_ATTR_MAP = [
+            alias: 'alias', subIndex: 'sub-index', analyzer: 'analyzer', root: 'root', poly: 'poly', extend: 'extends',
+            spellCheck: 'spell-check', supportUnmarshall: 'support-unmarshall', boost: 'boost', converter: 'converter'
+    ]
+    /** Mapping for all property -> attribute names */
+    static final ALL_PROPERTY_ATTR_MAP = [
+        enableAll: 'enable', allExcludeAlias: 'exclude-alias', allName: 'name', allTermVector: 'term-vector',
+        allOmitNorms: 'omit-norms', allSpellCheck: 'spell-check'
+    ]
 
     /**
      * Returns an InputStream for the given mapping description
@@ -48,15 +59,36 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
         def className = description.mappedClass.name
         LOG.debug("Building Compass mapping XML for [${className}] from description [${description}]")
         def self = this
-        def r = mkp."compass-core-mapping" {
+        mkp."compass-core-mapping" {
             def classAttrs = [name: className, alias: description.alias, root: description.root]
-            if (description.poly) {
-                classAttrs.poly = true
-            }
-            if (description.extend) {
-                classAttrs['extends'] = description.extend
+            CLASS_MAPPING_ATTR_MAP.each { propertyName, attrName ->
+                if (description[propertyName] != null) {
+                    classAttrs[attrName] = description[propertyName]
+                }
             }
             "class"(classAttrs) {
+                def allAttrs = [:]
+                for (key in ALL_PROPERTY_ATTR_MAP.keySet()) {
+                    Map properties = description.properties
+                    def value = properties[key]
+                    if (value != null) {
+                        allAttrs[ALL_PROPERTY_ATTR_MAP[key]] = value
+                    }
+                }
+                if (!allAttrs.isEmpty()) {
+                    all(allAttrs)
+                }
+
+                if (description.subIndexHash) {
+                    "sub-index-hash"(type: description.subIndexHash.type.getName()) {
+                        if (description.subIndexHash.settings) {
+                            for (name in description.subIndexHash.settings.keySet()) {
+                                "setting"(name: name, value: description.subIndexHash.settings[name])
+                            }
+                        }
+                    }
+                }
+
                 id(name: "id") // TODO support other "id" properties?
 
                 for (constantMetaData in description.constantMetaData) {
@@ -93,6 +125,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     if (propertyMapping.property) {
                         def metaDataAttrs = [:]
                         def tmp = self.transformAttrNames(attributes)
+                        def name = tmp.remove("name")
                         validateAttributes("property", tmp, PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES)
                         tmp.each { k, v ->
                             if (META_DATA_ATTR_NAMES.contains(k)) {
@@ -103,7 +136,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                             }
                         }
                         property(attrs) {
-                            "meta-data"(metaDataAttrs, propertyName)
+                            "meta-data"(metaDataAttrs, name ? name : propertyName)
                         }
                     }
                 }
@@ -111,9 +144,9 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
        }
 
        def xml = """<?xml version="1.0"?>
-<!DOCTYPE compass-core-mapping PUBLIC
-   "-//Compass/Compass Core Mapping DTD 1.0//EN"
-   "http://www.opensymphony.com/compass/dtd/compass-core-mapping.dtd">
+<!DOCTYPE compass-core-mapping PUBLIC 
+    "-//Compass/Compass Core Mapping DTD 2.0//EN"
+    "http://www.compass-project.org/dtd/compass-core-mapping-2.1.dtd">
 """ + writer.toString()
 
 //       System.out.println("${className} xml [${xml}]")

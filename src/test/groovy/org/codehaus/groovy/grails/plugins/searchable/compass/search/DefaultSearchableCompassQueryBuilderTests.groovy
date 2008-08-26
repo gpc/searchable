@@ -37,7 +37,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMapp
 *
 * @author Maurice Nicholson
 */
-class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompassTests {
+class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompassTestCase {
     def builder = new DefaultSearchableCompassQueryBuilder()
     def compass
     def grailsApplication
@@ -58,11 +58,11 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
         withCompassSession { compassSession ->
             // No class, no escape
             def query = builder.buildQuery(grailsApplication, compassSession, [escape: false], "Hello World")
-            assert query.toString() == "all:hello all:world"
+            assert query.toString() == "+hello +world", query.toString()
 
             // escape does not affect normal queries
-            query = builder.buildQuery(grailsApplication, compassSession, [escape: true], "Hello World")
-            assert query.toString() == "all:hello all:world"
+            query = builder.buildQuery(grailsApplication, compassSession, [escape: true], "Hello OR World")
+            assert query.toString() == "hello world", query.toString()
 
             // no escape, bad query
             shouldFail {
@@ -122,9 +122,9 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
         withCompassSession { compassSession ->
             // Normal string queries are as expected
             def query = builder.buildQuery(grailsApplication, compassSession, [:]) {
-                queryString("Hello WORLD")
+                queryString("Hello OR WORLD")
             }
-            assert query.toString() == "all:hello all:world"
+            assert query.toString() == "hello world", query.toString()
 
             // escape *does not affect string queries* when using a builder closure
             // this is more of an assertion of "not yet implemented" rather than a purposeful feature
@@ -141,7 +141,7 @@ class DefaultSearchableCompassQueryBuilderTests extends AbstractSearchableCompas
                     add("summary")
                 }
             }
-            assert query.toString() == "(title:hello summary:hello) (title:searchable summary:searchable) (title:plugin summary:plugin)" // internally Compass probably creates nested booleans
+            assert query.toString() == "+(title:hello summary:hello) +(title:searchable summary:searchable) +(title:plugin summary:plugin)", query.toString()
 
             // class *does have an effect* using the builder
             def mockQuery = new Mock(CompassQuery.class)

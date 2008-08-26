@@ -41,7 +41,7 @@ class SearchableControllerTest extends grails.util.WebTest {
                 page.verifyText("Grails Searchable Plugin")
 
                 def form = page.searchForm
-                page = form.submit(q: 'hip-hop', SearchableSearchPage)
+                page = form.submit(q: 'b*', SearchableSearchPage)
 
                 page.searchResults.verifyNumberOfResults(10)
 

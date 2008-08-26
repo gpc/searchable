@@ -1,6 +1,8 @@
 import org.compass.core.CompassTermFreq
 
 class AlbumTests extends GroovyTestCase {
+    def compass
+    def compassGps
 
     void setUp() {
         def deLa = new Artist(name: 'De la Soul')
@@ -22,7 +24,7 @@ class AlbumTests extends GroovyTestCase {
         assert deLa.albums.size() == 6
 
         def searchResult = Album.search("grind")
-        assert searchResult.total == 1
+        assert searchResult.total == 1, searchResult.total
         assert searchResult.results.size() == 1
         assert searchResult.results[0] instanceof Album
         assert searchResult.results[0].name == 'The Grind Date'
@@ -57,5 +59,121 @@ class AlbumTests extends GroovyTestCase {
         assert result.length > 0
         result = Album.termFreqs() // defaults to "all" property
         assert result.length > 0
+    }
+
+    void testClassStaticIndex() {
+        compassGps.stop()
+
+        def deLa = Artist.findAll()[0]
+
+        def album = new Album(name: 'Buhloone Mindstate', artist: deLa, genre: "rap/hip-hop")
+        deLa.addToAlbums(album)
+        assert album.save(), album.errors
+        assert Album.countHits("de la soul") == 6
+
+        // index a single instance
+        Album.index(album)
+        assert Album.countHits("de la soul") == 7, Album.countHits("de la soul")
+
+        def s = compass.openSession()
+        def tx = s.beginTransaction()
+
+        s.delete(s.queryBuilder().matchAll())
+
+        tx.commit()
+        s.close()
+
+        assert Album.countHits("de la soul") == 0
+
+        // index all instances
+        Album.index()
+        assert Album.countHits("de la soul") == 7
+
+        compassGps.start()
+    }
+
+    void testClassInstanceIndex() {
+        compassGps.stop()
+
+        def deLa = Artist.findAll()[0]
+
+        assert Album.countHits("de la soul") == 6, Album.countHits("de la soul")
+        def album = new Album(name: 'Buhloone Mindstate', artist: deLa, genre: "rap/hip-hop")
+        deLa.addToAlbums(album)
+        assert album.save(), album.errors
+
+        assert Album.countHits("de la soul") == 6
+        album.index()
+        assert Album.countHits("de la soul") == 7
+
+        compassGps.start()
+    }
+
+    void testClassStaticReindex() {
+        compassGps.stop()
+
+        def album = Album.findAll()[0]
+        assert Album.countHits("b-sides unreleased") == 0
+
+        album.name = "B-Sides and Unreleased"
+        assert album.save(), album.errors
+        assert Album.countHits("b-sides unreleased") == 0
+
+        // re-index an instance
+        Album.reindex(album)
+        assert Album.countHits("b-sides unreleased") == 1
+
+        // re-index all albums
+        Album.reindex()
+        assert Album.countHits("de la soul") == 6
+
+        compassGps.start()
+    }
+
+    void testClassInstanceReindex() {
+        compassGps.stop()
+
+        def album = Album.findAll()[0]
+        assert Album.countHits("b-sides unreleased") == 0
+
+        album.name = "B-Sides and Unreleased"
+        assert album.save(), album.errors
+        assert Album.countHits("b-sides unreleased") == 0
+
+        // re-index an instance
+        album.reindex()
+        assert Album.countHits("b-sides unreleased") == 1
+
+        compassGps.start()
+    }
+
+    void testClassStaticUnindex() {
+        compassGps.stop()
+
+        assert Album.countHits("de la soul") == 6, Album.countHits("de la soul")
+
+        // unindex a single instance
+        Album.unindex(Album.findAll()[0])
+        assert Album.countHits("de la soul") == 5, Album.countHits("de la soul")
+
+        // unindex all instances
+        Album.unindex()
+        assert Album.countHits("de la soul") == 0, Album.countHits("de la soul")
+
+        compassGps.start()
+    }
+
+    void testClassInstanceUnindex() {
+        compassGps.stop()
+
+        assert Album.countHits("de la soul") == 6, Album.countHits("de la soul")
+
+        // unindex a single instance
+        def album = Album.findAll()[0]
+
+        album.unindex()
+        assert Album.countHits("de la soul") == 5, Album.countHits("de la soul")
+
+        compassGps.start()
     }
 }

@@ -35,7 +35,6 @@ import java.lang.reflect.Method;
  */
 public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, Ordered {
     private static final String SEARCHABLE_ANNOTATION_CLASS_NAME = "org.compass.annotations.Searchable";
-    private static final String ANNOTATIONS_CONFIGURATION_CLASS_NAME = "org.compass.annotations.config.CompassAnnotationsConfiguration";
     private static final Log LOG = LogFactory.getLog(CompassAnnotationSearchableGrailsDomainClassMappingConfigurator.class);
     private static boolean annotationsAvailable = getSearchableAnnotationClass() != null;
 
@@ -63,8 +62,9 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator ext
      * @param compassConfiguration          the CompassConfiguration instance
      * @param configurationContext          a configuration context, for flexible parameter passing
      * @param searchableGrailsDomainClasses searchable domain classes to map
+     * @param allSearchableGrailsDomainClasses all searchable domain classes, whether configured here or elsewhere
      */
-    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
+    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses, Collection allSearchableGrailsDomainClasses) {
         Assert.isTrue(annotationsAvailable, "Annotations must be available");
         Assert.notNull(compassConfiguration, "compassConfiguration cannot be null");
         Assert.notNull(configurationContext, "configurationContext cannot be null");
@@ -73,10 +73,9 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator ext
             return;
         }
 
-        Class compassAnnotationsConfigurationClass = getCompassAnnotationConfigurationClass();
-        Assert.isTrue(compassAnnotationsConfigurationClass.isAssignableFrom(compassConfiguration.getClass()), "compassConfiguration must be an instance of CompassAnnotationsConfiguration");
         for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
-            compassConfiguration.addClass(((GrailsDomainClass) iter.next()).getClazz());
+            GrailsDomainClass gdc = (GrailsDomainClass) iter.next();
+            compassConfiguration.addClass(gdc.getClazz());
         }
     }
 
@@ -108,13 +107,5 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator ext
             LOG.debug("Annotations unavailable");
         }
         return null;
-    }
-
-    public Class getCompassAnnotationConfigurationClass() {
-        try {
-            return ClassUtils.forName(ANNOTATIONS_CONFIGURATION_CLASS_NAME);
-        } catch (ClassNotFoundException ex) {
-            throw new IllegalStateException("Cannot find Compass annotation class [" + ANNOTATIONS_CONFIGURATION_CLASS_NAME + "]: " + ex);
-        }
     }
 }

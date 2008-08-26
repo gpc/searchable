@@ -18,6 +18,7 @@ package org.codehaus.groovy.grails.plugins.searchable.lucene
 import org.apache.lucene.analysis.Analyzer
 import org.apache.lucene.analysis.WhitespaceAnalyzer
 import org.apache.lucene.analysis.SimpleAnalyzer
+import org.apache.lucene.index.Term
 
 /**
 *
@@ -35,6 +36,37 @@ class LuceneUtilsTests extends GroovyTestCase {
         // Another analyzer
         assert LuceneUtils.termsForText("The Quick Brown Fox Jumps Over The Lazy Dog", SimpleAnalyzer.class) == ['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'the', 'lazy', 'dog']
         assert LuceneUtils.termsForText("The Quick Brown Fox Jumps Over The Lazy Dog", new SimpleAnalyzer()) == ['the', 'quick', 'brown', 'fox', 'jumps', 'over', 'the', 'lazy', 'dog']
+    }
+
+    void testTermsForQueryString() {
+        assert LuceneUtils.termsForQueryString("this is a query", SimpleAnalyzer.class) == ["this", "is", "a", "query"] as String[]        
+        assert LuceneUtils.termsForQueryString("+wanted -unwanted dontcare", SimpleAnalyzer.class) == ["wanted", "unwanted", "dontcare"] as String[]
+        assert LuceneUtils.termsForQueryString("field:someterm anotherterm +(this OR that)", SimpleAnalyzer.class) == ["someterm", "anotherterm", "this", "that"] as String[]
+        assert LuceneUtils.termsForQueryString("what what what", SimpleAnalyzer.class) == ["what", "what", "what"] as String[]
+    }
+
+    void testRealTermsForQueryString() {
+        Term[] terms = LuceneUtils.realTermsForQueryString('$defaultfield$', "this is a query", SimpleAnalyzer.class)
+        assert terms[0].text() == "this"
+        assert terms[0].field() == '$defaultfield$'
+        assert terms[1].text() == "is"
+        assert terms[1].field() == '$defaultfield$'
+        assert terms[2].text() == "a"
+        assert terms[2].field() == '$defaultfield$'
+        assert terms[3].text() == "query"
+        assert terms[3].field() == '$defaultfield$'
+
+        terms = LuceneUtils.realTermsForQueryString('$defaultfield$', "+wanted -unwanted dontcare", SimpleAnalyzer.class)
+        assert terms*.text() == ["wanted", "unwanted", "dontcare"]
+        assert terms*.field() == ['$defaultfield$', '$defaultfield$', '$defaultfield$']
+
+        terms = LuceneUtils.realTermsForQueryString('$defaultfield$', "field:someterm anotherterm +(this OR that:that)", SimpleAnalyzer.class)
+        assert terms*.text() == ["someterm", "anotherterm", "this", "that"]
+        assert terms*.field() == ['field', '$defaultfield$', '$defaultfield$', 'that']
+
+        terms = LuceneUtils.realTermsForQueryString('$defaultfield$', "what what what", SimpleAnalyzer.class)
+        assert terms*.text() == ["what", "what", "what"]
+        assert terms*.field() == ['$defaultfield$', '$defaultfield$', '$defaultfield$']
     }
 
     void testEscapeQuery() {

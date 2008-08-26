@@ -30,8 +30,9 @@ public class CompassGpsUtils {
     /**
      * Calls CompassGps's index method, starting and stopping it if required
      * @param compassGps aCompassGps instance, cannot be null
+     * @param clazz the Class to index instances of, may be null
      */
-    public static void index(CompassGps compassGps) {
+    public static void index(CompassGps compassGps, Class clazz) {
         Assert.notNull(compassGps, "compassGps cannot be null");
 
         long start = System.currentTimeMillis();
@@ -41,7 +42,11 @@ public class CompassGpsUtils {
             if (!gpsRunning) {
                 compassGps.start();
             }
-            compassGps.index();
+            if (clazz != null) {
+                compassGps.index(new Class[] {clazz});
+            } else {
+                compassGps.index();
+            }
         } finally {
             if (!gpsRunning) {
                 compassGps.stop();

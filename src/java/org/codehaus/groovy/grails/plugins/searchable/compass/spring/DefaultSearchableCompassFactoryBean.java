@@ -59,10 +59,11 @@ public class DefaultSearchableCompassFactoryBean extends SearchableCompassFactor
         EnvironmentSearchableCompassConfigurator environment = SearchableCompassConfiguratorFactory.getEnvironmentConfigurator(compassConnection, compassSettings, grailsApplication);
         CompassXmlConfigurationSearchableCompassConfigurator compassXml = SearchableCompassConfiguratorFactory.getCompassXmlConfigurator(resourceLoader);
         DefaultGrailsDomainClassMappingSearchableCompassConfigurator mappings = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(grailsApplication, resourceLoader, defaultFormats, defaultExcludedProperties, compassClassMappingXmlBuilder);
+        InferredCompassSettingCompassConfigurator inferred = new InferredCompassSettingCompassConfigurator();
 
         CompositeSearchableCompassConfigurator configurator = new CompositeSearchableCompassConfigurator();
         configurator.setSearchableCompassConfigurators(new SearchableCompassConfigurator[] {
-            compassXml, environment, mappings
+            compassXml, environment, mappings, inferred
         });
 
         super.setSearchableCompassConfigurator(configurator);

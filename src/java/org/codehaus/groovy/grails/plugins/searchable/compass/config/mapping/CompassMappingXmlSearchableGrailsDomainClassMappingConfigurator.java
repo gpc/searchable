@@ -59,8 +59,9 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator ext
      * @param compassConfiguration          the CompassConfiguration instance
      * @param configurationContext          a configuration context, for flexible parameter passing
      * @param searchableGrailsDomainClasses searchable domain classes to map
+     * @param allSearchableGrailsDomainClasses all searchable domain classes, whether configured here or elsewhere
      */
-    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
+    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses, Collection allSearchableGrailsDomainClasses) {
         Assert.notNull(resourceLoader, "resourceLoader cannot be null");
         if (configurationContext.containsKey(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED)) {
             return;

@@ -28,13 +28,17 @@ import org.jmock.core.stub.*
 import org.jmock.core.matcher.*
 
 import groovy.mock.interceptor.MockFor
+import org.jmock.core.constraint.IsEqual
+import org.jmock.core.constraint.IsSame
+import org.jmock.core.constraint.IsArrayContaining
 
 /**
  * 
  *
  * @author Maurice Nicholson
  */
-class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
+// todo convert to functional tests as appropriate
+class DefaultIndexMethodTests extends AbstractSearchableCompassTestCase {
     def compass
 
     void setUp() {
@@ -50,12 +54,12 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
    indexAll()
 
    service.indexAll() // all searchable class instances
-   service.indexAll([class: Post]) // all Post instances - ERROR: not supported
+   service.indexAll([class: Post]) // all Post instances
    service.indexAll(1l, 2l, 3l) // ERROR: unknown class
    service.indexAll(1l, 2l, 3l, [class: Post]) // id'd Post instances
    service.indexAll(x, y, z) // given instances
 
-   Thing.indexAll() // all Thing instances - ERROR: not supported
+   Thing.indexAll() // all Thing instances
    Thing.indexAll(1l, 2l, 3l) // id'd Thing instances
    Thing.indexAll(x, y, z) // given instances
 
@@ -65,7 +69,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
     void testIndexAllNoArgsNoClass() {
         // No class, no args
         def mockGps = new Mock(CompassGps.class)
-        def indexAll = new DefaultIndexMethod("indexAll", compass, mockGps.proxy(), true)
+        def indexAll = new DefaultIndexMethod("indexAll", compass, mockGps.proxy())
 
         mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
         mockGps.expects(new InvokeOnceMatcher()).method('index').withNoArguments().after('isRunning').isVoid()
@@ -76,15 +80,19 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
 
     void testIndexAllNoArgsClassOption() {
         // With class, no args
-        def indexAll = new DefaultIndexMethod("indexAll", compass, null, true)
-        shouldFail {
-            indexAll.invoke([class: Post])
-        }
+        def mockGps = new Mock(CompassGps.class)
+        def indexAll = new DefaultIndexMethod("indexAll", compass, mockGps.proxy())
+
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').with(new IsArrayContaining(new IsSame(Post.class))).after('isRunning').isVoid()
+
+        indexAll.invoke(class: Post.class)
+        mockGps.verify()
     }
 
     void testIndexAllIdArgsNoClass() {
         // Id args, no class
-        def indexAll = new DefaultIndexMethod("indexAll", compass, null, true)
+        def indexAll = new DefaultIndexMethod("indexAll", compass, null)
         shouldFail {
             indexAll.invoke(301l, 60l)
         }
@@ -94,7 +102,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
         assert numberIndexed(Post) == 0
 
         // Id args and class
-        def indexAll = new DefaultIndexMethod("indexAll", compass, null, true)
+        def indexAll = new DefaultIndexMethod("indexAll", compass, null)
 
         def mockPost = new MockFor(Post.class)
         mockPost.demand.getAll { ids ->
@@ -105,7 +113,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
             ]
         }
         mockPost.use {
-            indexAll.invoke(301l, 60l, 25l, [class: Post])
+            indexAll.invoke(301l, 60l, 25l, class: Post)
         }
 
         assert numberIndexed(Post) == 3
@@ -114,7 +122,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
     void testIndexAllObjectArgs() {
         assert numberIndexed(Post) == 0
 
-        def indexAll = new DefaultIndexMethod("indexAll", compass, null, true)
+        def indexAll = new DefaultIndexMethod("indexAll", compass, null)
 
         indexAll.invoke([
             new Post(id: 301l, title: "First post", post: "I'm a beginner"),
@@ -127,14 +135,19 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
 
     void testClassStaticIndexAllNoArgs() {
         // On class
+        def mockGps = new Mock(CompassGps.class)
+
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').with(new IsArrayContaining(new IsSame(Post.class))).after('isRunning').isVoid()
+
         def metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.indexAll << { Object[] args ->
-            new DefaultIndexMethod("indexAll", compass, null, true, [class: Post]).invoke(*args)
+            new DefaultIndexMethod("indexAll", compass, mockGps.proxy(), [class: Post]).invoke(*args)
         }
         metaClass.initialize()
-        shouldFail {
-            Post.indexAll()
-        }
+
+        Post.indexAll()
+        mockGps.verify()
     }
 
 
@@ -142,7 +155,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.indexAll << { Object[] args ->
-            new DefaultIndexMethod("indexAll", compass, null, false, [class: Post]).invoke(*args)
+            new DefaultIndexMethod("indexAll", compass, null, [class: Post]).invoke(*args)
         }
         // hack for testing
         metaClass.'static'.getAll << { Object[] args ->
@@ -165,7 +178,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.indexAll << { Object[] args ->
-            new DefaultIndexMethod("indexAll", compass, null, false, [class: Post]).invoke(*args)
+            new DefaultIndexMethod("indexAll", compass, null, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
@@ -185,35 +198,45 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
 
     Like indexAll but without no-arg bulk behavoir
 
-    service.index() // ERROR: not allowed
-    service.index([class: Post]) // all Post instances - ERROR: not supported
+    service.index() // all searchable class instances, same as service.indexAll()
+    service.index([class: Post]) // all Post instances
     service.index(x, y, z) // given object(s)
     service.index(1, 2, 3, [class: Post]) // id'd objects
 
-    Thing.index() // ERROR: not allowed
+    Thing.index() // all Thing instances (same as Thing.indexAll())
     Thing.index(1,2,3) // id'd instances
     Thing.index(x,y,z) // given instances
 
     */
 
     void testIndexNoArgs() {
-        def index = new DefaultIndexMethod("index", compass, null, false)
-        shouldFail {
-            index.invoke()
-        }
+        def mockGps = new Mock(CompassGps.class)
+
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').withNoArguments().after('isRunning').isVoid()
+
+        def index = new DefaultIndexMethod("index", compass, mockGps.proxy())
+
+        index.invoke()
+        mockGps.verify()
     }
 
     void testIndexClassArg() {
-        def index = new DefaultIndexMethod("index", compass, null, false)
-        shouldFail {
-            index.invoke([class: Post])
-        }
+        def mockGps = new Mock(CompassGps.class)
+
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').with(new IsArrayContaining(new IsSame(Post.class))).after('isRunning').isVoid()
+
+        def index = new DefaultIndexMethod("index", compass, mockGps.proxy())
+
+        index.invoke(class: Post)
+        mockGps.verify()
     }
 
     void testIndexbjectArgs() {
         assert numberIndexed(Post) == 0
 
-        def index = new DefaultIndexMethod("index", compass, null, false)
+        def index = new DefaultIndexMethod("index", compass, null)
 
         index.invoke([
             new Post(id: 301l, title: "First post", post: "I'm a beginner"),
@@ -227,7 +250,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
     void testIndexIdArgsWithClass() {
         assert numberIndexed(Post) == 0
 
-        def index = new DefaultIndexMethod("index", compass, null, false)
+        def index = new DefaultIndexMethod("index", compass, null)
 
         def mockPost = new MockFor(Post.class)
         mockPost.demand.getAll { ids ->
@@ -238,7 +261,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
             ]
         }
         mockPost.use {
-            index.invoke(301l, 60l, 25l, [class: Post])
+            index.invoke(301l, 60l, 25l, class: Post)
         }
 
         assert numberIndexed(Post) == 3
@@ -246,21 +269,26 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
 
     void testClassStaticIndexNoArgs() {
         // On class
+        def mockGps = new Mock(CompassGps.class)
+
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').with(new IsArrayContaining(new IsSame(Post.class))).after('isRunning').isVoid()
+
         def metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.index << { Object[] args ->
-            new DefaultIndexMethod("index", compass, null, false, [class: Post]).invoke(*args)
+            new DefaultIndexMethod("index", compass, mockGps.proxy(), [class: Post]).invoke(*args)
         }
         metaClass.initialize()
-        shouldFail {
-            Post.index()
-        }
+
+        Post.index()
+        mockGps.verify()
     }
 
     void testClassStaticIndexIdsArgs() {
         // On class
         def metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.index << { Object[] args ->
-            new DefaultIndexMethod("index", compass, null, false, [class: Post]).invoke(*args)
+            new DefaultIndexMethod("index", compass, null, [class: Post]).invoke(*args)
         }
         // hack for testing
         metaClass.'static'.getAll << { Object[] args ->
@@ -283,7 +311,7 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.index << { Object[] args ->
-            new DefaultIndexMethod("index", compass, null, false, [class: Post]).invoke(*args)
+            new DefaultIndexMethod("index", compass, null, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
@@ -294,7 +322,12 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTests {
             new Post(id: 60l, title: "Second post", post: "I'm moderate"),
             new Post(id: 25l, title: "Another post", post: "Now an expert")
         )
-
         assert numberIndexed(Post) == 3
+
+        // single instance
+        Post.index(
+            new Post(id: 30l, title: "Posting again", post: "Par for the course")
+        )
+        assert numberIndexed(Post) == 4
     }
 }

@@ -61,6 +61,10 @@ public class SearchableCompassFactoryBean implements FactoryBean {
         // register custom converters
         configuration.registerConverter(StringMapConverter.CONVERTER_NAME, new StringMapConverter());
 
+        // register analyzers used internally
+        configuration.getSettings().setSetting("compass.engine.analyzer.searchableplugin_whitespace.type", "whitespace");
+        configuration.getSettings().setSetting("compass.engine.analyzer.searchableplugin_simple.type", "simple");
+
         searchableCompassConfigurator.configure(configuration, new HashMap());
 
         Compass compass = configuration.buildCompass();

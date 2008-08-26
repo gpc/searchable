@@ -22,12 +22,14 @@ import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance.*
+import org.compass.core.engine.subindex.ConstantSubIndexHash
 
 /**
 *
 *
 * @author Maurice Nicholson
 */
+// todo extract functional testing to dedicated functional tests
 class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTestCase {
     def classMapper
 
@@ -52,17 +54,17 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert classMapper.handlesSearchableValue(false) == false
     }
 
-    void testGetCompassClassMapping() {
+    void testGetCompassClassMappingSpotsInvalidOptions() {
         shouldFail(IllegalArgumentException) {
             getClassMapping(Comment, [Comment, User, Post], {
-                only = ["summary", "comment"]
+                only = ["summary", "comment"]  // only and except not allowed together
                 except = ["createdAt"]
             })
         }
 
         shouldFail(IllegalArgumentException) {
             getClassMapping(Comment, [Comment, User, Post], {
-                notAProperty(rubbish: true)
+                notAProperty(rubbish: true) // not a domain class property
             })
         }
 
@@ -86,25 +88,25 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
 
         shouldFail(IllegalArgumentException) {
             getClassMapping(Post, [Comment, User, Post], {
-                comments(nonsense: 'abc')
+                comments(nonsense: 'abc') // invalid option
             })
         }
 
         shouldFail(IllegalArgumentException) {
             getClassMapping(Post, [Comment, User, Post], {
-                comments(reference: [nonsense: 'abc'])
+                comments(reference: [nonsense: 'abc']) // invalid option
             })
         }
 
         shouldFail(IllegalArgumentException) {
             getClassMapping(Post, [Comment, User, Post], {
-                comments(component: [unsupportedOption: 'xyz'])
+                comments(component: [unsupportedOption: 'xyz']) // invalid option
             })
         }
 
         shouldFail(IllegalArgumentException) {
             getClassMapping(Post, [Comment, User, Post], {
-                comments(reference: [nonsense: 'abc'], component: [unsupportedOption: 'xyz'])
+                comments(reference: [nonsense: 'abc'], component: [unsupportedOption: 'xyz']) // invalid options
             })
         }
 
@@ -115,6 +117,14 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
             })
         }
 
+        shouldFail(IllegalArgumentException) {
+            getClassMapping(Post, [Comment, User, Post], {
+                author(component: true, reference: true) // reference + component disallowed
+            })
+        }
+    }
+    
+    void testGetCompassClassMappingWithEmptyClosure() {
         // Empty closure; same as "searchable = true"
         def mapping = getClassMapping(User, [Comment, User, Post], { }, ["password"])
         assert mapping.mappedClass == User
@@ -122,55 +132,22 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.propertyMappings.size() == 5
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'username', 'email', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'posts' }.every { it.reference && it.propertyType == Post }
+    }
 
-        // alias
-        mapping = getClassMapping(User, [Comment, User, Post], {
-            alias "my_user_alias"
-        })
-        assert mapping.mappedClass == User
-        assert mapping.alias == "my_user_alias"
-        assert mapping.root == true
-
-        // constant
-        mapping = getClassMapping(User, [Comment, User, Post], {
-            constant name: "drink", value: "beer"
-            constant name: "eat", values: ["pie", "chips"], index: 'un_tokenized', excludeFromAll: true
-        })
-        assert mapping.mappedClass == User
-        assert mapping.root == true
-        assert mapping.constantMetaData.size() == 2
-        def constant = mapping.constantMetaData.find {it.name == "drink"}
-        assert constant.values == ["beer"] && constant.attributes == [:]
-        constant = mapping.constantMetaData.find { it.name == "eat" }
-        assert constant.values == ["pie", "chips"] && constant.attributes == [index: 'un_tokenized', excludeFromAll: true]
-
-        // todo convert only/except to method-setting style
-        // todo move special properties into "mapping closure?
-
-        /*
-        searchable = {
-            mapping {
-                alias "myclass"
-                except ["password", "secretQuestion"]
-            }
-            username(...)
-            otherProperty(...)
-        }
-
-        need to look at GORM ORM DSL and also Compass stuff
-        */
-
+    void testGetCompassClassMappingWithOnly() {
         // with "only", otherwise defaults
-        mapping = getClassMapping(Comment, [Comment, User, Post], {
+        def mapping = getClassMapping(Comment, [Comment, User, Post], {
             only = ["summary", "comment"]
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 2
         assert mapping.propertyMappings.findAll { it.propertyName in ['summary', 'comment'] }.every { it.property && it.attributes.size() == 0 }
+    }
 
+    void testGetCompassClassMappingWithExcept() {
         // with "except", otherwise defaults
-        mapping = getClassMapping(Post, [Comment, User, Post], {
+        def mapping = getClassMapping(Post, [Comment, User, Post], {
             except = "createdAt"
         })
         assert mapping.mappedClass == Post
@@ -179,47 +156,62 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert mapping.propertyMappings.findAll { it.propertyName in ['title', 'post', 'version'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.propertyType == Comment }
         assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
+    }
 
+    void testGetCompassClassMappingForSearchableProperty() {
         // searchable property options
-        mapping = getClassMapping(Comment, [Comment, User, Post], {
-            only = "comment"
+        def mapping = getClassMapping(Comment, [Comment, User, Post], {
             comment(index: 'tokenized', termVector: 'yes', boost: 2.0f)
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 1
         assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'tokenized', termVector: 'yes', boost: 2.0f] }
 
         // same as above but with BigDecimal instead of float
         mapping = getClassMapping(Comment, [Comment, User, Post], {
-            only = "comment"
             comment(index: 'tokenized', termVector: 'yes', boost: 2.0) // <!-- BigDecimal
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 1
         assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'tokenized', termVector: 'yes', boost: 2.0] }
 
-        // searchable reference options
+        // converter and propertyConverter are equivalent
         mapping = getClassMapping(Comment, [Comment, User, Post], {
-            only = "comment"
-            comment(index: 'tokenized', termVector: 'yes', boost: 2.0f)
+            comment(converter: 'customConverter')
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 1
-        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'tokenized', termVector: 'yes', boost: 2.0f] }
+        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [converter: 'customConverter'] }
 
-        // searchable component on a collection
-        mapping = getClassMapping(Post, [Comment, User, Post], {
-            comments component: true
+        mapping = getClassMapping(Comment, [Comment, User, Post], {
+            comment(propertyConverter: 'customConverter')
         })
-        assert mapping.mappedClass == Post
+        assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.component && it.propertyType == Comment }
+        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [converter: 'customConverter'] }
+
+        mapping = getClassMapping(Comment, [Comment, User, Post], {
+            comment(nullValue: 'nullnullnull')
+        })
+        assert mapping.mappedClass == Comment
+        assert mapping.root == true
+        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [nullValue: 'nullnullnull'] }
+
+        mapping = getClassMapping(Comment, [Comment, User, Post], {
+            comment(spellCheck: 'include')
+        })
+        assert mapping.mappedClass == Comment
+        assert mapping.root == true
+        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [spellCheck: 'include'] }
+    }
+
+    void testGetCompassClassMappingForSearchableReference() {
+        // searchable reference options
+
+        // todo converter, accessor ...
 
         // searchable reference on a collection
-        mapping = getClassMapping(Post, [Comment, User, Post], {
+        def mapping = getClassMapping(Post, [Comment, User, Post], {
             comments reference: true
         })
         assert mapping.mappedClass == Post
@@ -228,73 +220,44 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
 
         // searchable component + reference defaults true, true
         mapping = getClassMapping(Post, [Comment, User, Post], {
-            only = "author"
             author(reference: true)
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 1
         assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
-
-        mapping = getClassMapping(Post, [Comment, User, Post], {
-            only = "author"
-            author(reference: true, component: true)
-        })
-        assert mapping.mappedClass == Post
-        assert mapping.root == true
-        assert mapping.propertyMappings.size() == 2
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.propertyType == User }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.propertyType == User }
 
         // Defined specific properties for reference
         mapping = getClassMapping(Post, [Comment, User, Post], {
-            only = "author"
             author(reference: [cascade: 'all', accessor: 'field'])
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 1
         def pm = mapping.propertyMappings[0]
         assert pm.propertyName == 'author'
         assert pm.reference
         assert pm.propertyType == User
         assert pm.attributes == [cascade: 'all', accessor: 'field']
+    }
 
-        // Defined specific properties for reference with default component
-        mapping = getClassMapping(Post, [Comment, User, Post], {
-            only = "author"
-            author(reference: [cascade: 'all', accessor: 'field'], component: true)
+    void testGetCompassClassMappingForSearchableComponent() {
+        // searchable component on a collection
+        def mapping = getClassMapping(Post, [Comment, User, Post], {
+            comments component: true
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 2
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.propertyType == User && it.attributes == [cascade: 'all', accessor: 'field'] }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.propertyType == User }
+        assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.component && it.propertyType == Comment }
+    }
 
-        // Defined specific properties for component with default reference
-        mapping = getClassMapping(Post, [Comment, User, Post], {
-            only = "author"
-            author(component: [cascade: 'all', accessor: 'field'], reference: true)
-        })
-        assert mapping.mappedClass == Post
-        assert mapping.root == true
-        assert mapping.propertyMappings.size() == 2
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.component }.every { it.propertyType == User && it.attributes == [cascade: 'all', accessor: 'field'] }
-        assert mapping.propertyMappings.find { it.propertyName == 'author' && it.reference }.every { it.propertyType == User }
-
-        // Components
+    void testgetClassMappingForImplicitSearchableComponent() {
+        // Invalid options
         shouldFail(IllegalArgumentException) {
             getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
                 searchableComp(noSuchComponentOption: true)
             })
         }
 
-        shouldFail(IllegalArgumentException) {
-            getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
-                searchableComp(component: true) // components are implicit
-            })
-        }
-
+        // todo not sure this is an error any more
         shouldFail(IllegalArgumentException) {
             getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
                 searchableComp(reference: true) // components are not allowed to be references
@@ -308,7 +271,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         }
 
         // with empty closure (same as true)
-        mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], { })
+        def mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], { })
         assert mapping.mappedClass == ComponentOwner
         assert mapping.root == true
         assert mapping.propertyMappings.size() == 4
@@ -336,12 +299,340 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
 
         // convert an implicit component into a reference
         mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
-            searchableCompOne(reference: true, component: false)
+            searchableCompOne(reference: true) // implies component: false
         })
         assert mapping.propertyMappings.size() == 4
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.reference && it.propertyType == SearchableComp && it.attributes == [:] }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
+
+        mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
+            searchableCompOne(reference: [cascade: 'true']) // implies component: false
+        })
+        assert mapping.propertyMappings.size() == 4
+        assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
+        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.reference && it.propertyType == SearchableComp && it.attributes == [cascade: 'true'] }
+        assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
+    }
+
+    void testGetClassMappingForClassMappingAttributes() {
+        // todo convert only/except to method-setting style
+
+        def cm
+
+        // alias
+        cm = getClassMapping(User, [Comment, User, Post], {
+            alias "my_user_alias"
+        })
+        assert cm.mappedClass == User
+        assert cm.alias == "my_user_alias"
+        assert cm.root == true
+
+        // sub-index
+        cm = getClassMapping(User, [Comment, User, Post], {
+            subIndex "my_specific_sub_index"
+        })
+        assert cm.mappedClass == User
+        assert cm.subIndex == "my_specific_sub_index"
+        assert cm.root == true
+
+        // constant
+        cm = getClassMapping(User, [Comment, User, Post], {
+            constant name: "drink", value: "beer"
+            constant name: "eat", values: ["pie", "chips"], index: 'un_tokenized', excludeFromAll: true
+        })
+        assert cm.mappedClass == User
+        assert cm.root == true
+        assert cm.constantMetaData.size() == 2
+        def cmd = cm.constantMetaData.find {it.name == "drink"}
+        assert cmd.values == ["beer"] && cmd.attributes == [:]
+        cmd = cm.constantMetaData.find { it.name == "eat" }
+        assert cmd.values == ["pie", "chips"] && cmd.attributes == [index: 'un_tokenized', excludeFromAll: true]
+
+        // analyzer
+        cm = getClassMapping(User, [Comment, User, Post], {
+            analyzer "funkyanalyzer"
+        })
+        assert cm.mappedClass == User
+        assert cm.analyzer == "funkyanalyzer"
+        assert cm.root == true
+
+        // boost
+        cm = getClassMapping(User, [Comment, User, Post], {
+            boost 5.0
+        })
+        assert cm.mappedClass == User
+        assert cm.boost == 5.0
+        assert cm.root == true
+
+        // converter
+        cm = getClassMapping(User, [Comment, User, Post], {
+            converter "myclassconverter"
+        })
+        assert cm.mappedClass == User
+        assert cm.converter == "myclassconverter"
+        assert cm.root == true
+
+        // enableAll
+        cm = getClassMapping(User, [Comment, User, Post], {
+            enableAll true
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == true
+        assert cm.root == true
+
+        cm = getClassMapping(User, [Comment, User, Post], {
+            enableAll false
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == false
+        assert cm.root == true
+
+        // managedId
+        cm = getClassMapping(User, [Comment, User, Post], {
+            managedId "false"
+        })
+        assert cm.mappedClass == User
+        assert cm.managedId == "false"
+        assert cm.root == true
+
+        // root
+        cm = getClassMapping(User, [Comment, User, Post], {
+            root true
+        })
+        assert cm.mappedClass == User
+        assert cm.root == true
+
+        cm = getClassMapping(User, [Comment, User, Post], {
+            root false
+        })
+        assert cm.mappedClass == User
+        assert cm.root == false
+
+        // supportUnmarshall
+        cm = getClassMapping(User, [Comment, User, Post], {
+            supportUnmarshall "false"
+        })
+        assert cm.mappedClass == User
+        assert cm.supportUnmarshall == false, cm.supportUnmarshall
+
+        // supportUnmarshall (boolean)
+        cm = getClassMapping(User, [Comment, User, Post], {
+            supportUnmarshall true
+        })
+        assert cm.mappedClass == User
+        assert cm.supportUnmarshall == true
+
+        // supportUnmarshall (boolean)
+        cm = getClassMapping(User, [Comment, User, Post], {
+            supportUnmarshall false
+        })
+        assert cm.mappedClass == User
+        assert cm.supportUnmarshall == false
+    }
+
+    void testGetClassMappingForSearchableAllPropertyOptions() {
+        // all metadata options
+        def cm = getClassMapping(User, [Comment, User, Post], {
+            all true // all and enableAll are interchangeable
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == true
+        assert !cm.allName
+        assert !cm.allAnalyzer
+        assert !cm.allTermVector
+
+        // using mapping
+        cm = getClassMapping(User, [Comment, User, Post], {
+            mapping all: true
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == true
+        assert !cm.allName
+        assert !cm.allAnalyzer
+        assert !cm.allTermVector
+
+        // all metadata options
+        cm = getClassMapping(User, [Comment, User, Post], {
+            all true // all and enableAll are interchangeable
+            allName "theallproperty"
+            allAnalyzer "theallanalyzer"
+            allTermVector "offsets"
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == true
+        assert cm.allName == "theallproperty"
+        assert cm.allAnalyzer == "theallanalyzer"
+        assert cm.allTermVector == "offsets"
+
+        // using mapping
+        cm = getClassMapping(User, [Comment, User, Post], {
+            mapping all: true, allName: "myall", allAnalyzer: "allanalyzer", allTermVector: "positions_offsets"
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == true
+        assert cm.allName == "myall"
+        assert cm.allAnalyzer == "allanalyzer"
+        assert cm.allTermVector == "positions_offsets"
+
+        // all
+        cm = getClassMapping(User, [Comment, User, Post], {
+            all name: "all", analyzer: "specificanalyzer", termVector: "offsets"
+        })
+        assert cm.mappedClass == User
+//        assert cm.enableAll == true
+        assert cm.allName == "all"
+        assert cm.allAnalyzer == "specificanalyzer"
+        assert cm.allTermVector == "offsets"
+
+        // using mapping
+        cm = getClassMapping(User, [Comment, User, Post], {
+            mapping all: [name: "xyz", analyzer: "coolanalyzer", termVector: "positions_offsets"]
+        })
+        assert cm.mappedClass == User
+//        assert cm.enableAll == true
+        assert cm.allName == "xyz"
+        assert cm.allAnalyzer == "coolanalyzer"
+        assert cm.allTermVector == "positions_offsets"
+
+        // disabling all
+        cm = getClassMapping(User, [Comment, User, Post], {
+            all false
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == false
+        assert !cm.allName
+        assert !cm.allAnalyzer
+        assert !cm.allTermVector
+
+        // using mapping
+        cm = getClassMapping(User, [Comment, User, Post], {
+            mapping all: false
+        })
+        assert cm.mappedClass == User
+        assert cm.enableAll == false
+        assert !cm.allName
+        assert !cm.allAnalyzer
+        assert !cm.allTermVector
+    }
+
+    void testGetClassMappingAllowsReservedWordsUsingMappingOption() {
+        // demonstrates that properties by the name of certain "reserved" words can be used as searchable
+        // properties as long as a mapping section is provided
+        def cls = new GroovyClassLoader().parseClass("""
+        class ThisClassHasCompassClassMappingOptionsAsProperties {
+            Long id
+            Long version
+            String alias
+            String subIndex
+            String constant
+        }
+        """)
+
+        def cm = getClassMapping(cls, [cls], {
+            mapping alias: "rocky", subIndex: "tomahawk"
+            alias store: 'compress'
+            subIndex store: 'compress'
+            constant store: 'compress'
+        })
+        assert cm.alias == "rocky"
+        assert cm.subIndex == "tomahawk"
+        assert cm.propertyMappings.size() == 4
+        assert cm.propertyMappings.find { it.propertyName == "alias" && it.attributes.store == 'compress'}
+        assert cm.propertyMappings.find { it.propertyName == "subIndex" && it.attributes.store == 'compress' }
+        assert cm.propertyMappings.find { it.propertyName == "constant" && it.attributes.store == 'compress' }
+
+        // define options using "mapping" option
+        cm = getClassMapping(cls, [cls], {
+            mapping {
+                alias "super"
+                subIndex "duper"
+                constant name: "wild", value: "bill"
+            }
+            alias store: 'compress'
+            subIndex store: 'compress'
+            constant store: 'compress'
+        })
+        assert cm.alias == "super"
+        assert cm.subIndex == "duper"
+        assert cm.constantMetaData.size() == 1
+        assert cm.constantMetaData.find { it.name == "wild" }.values == ["bill"]
+        assert cm.propertyMappings.size() == 4
+        assert cm.propertyMappings.find { it.propertyName == "alias" && it.attributes.store == 'compress'}
+        assert cm.propertyMappings.find { it.propertyName == "subIndex" && it.attributes.store == 'compress' }
+        assert cm.propertyMappings.find { it.propertyName == "constant" && it.attributes.store == 'compress' }
+
+        // define options using "mapping" option with mixture of Map and Closure 
+        cm = getClassMapping(cls, [cls], {
+            mapping alias: "rocky", subIndex: "tomahawk", {
+                constant name: "material", value: "wood"
+                constant name: "finish", values: ["polished", "laquered"]
+            }
+            alias store: 'compress'
+            subIndex store: 'compress'
+            constant store: 'compress'
+        })
+        assert cm.alias == "rocky"
+        assert cm.subIndex == "tomahawk"
+        assert cm.constantMetaData.size() == 2
+        assert cm.constantMetaData.find { it.name == "material" }.values == ["wood"]
+        assert cm.constantMetaData.find { it.name == "finish" }.values == ["polished", "laquered"]
+        assert cm.propertyMappings.size() == 4
+        assert cm.propertyMappings.find { it.propertyName == "alias" && it.attributes.store == 'compress'}
+        assert cm.propertyMappings.find { it.propertyName == "subIndex" && it.attributes.store == 'compress' }
+        assert cm.propertyMappings.find { it.propertyName == "constant" && it.attributes.store == 'compress' }
+    }
+
+    void testGetClassMappingWithSubIndexHash() {
+        // must implement SubIndexHash
+        shouldFail {
+            getClassMapping(Post, [Post], {
+                subIndexHash Object.class
+            })
+        }
+
+        def cm = getClassMapping(Post, [Post], {
+            subIndexHash ConstantSubIndexHash.class
+        })
+        assert cm.subIndexHash.type == ConstantSubIndexHash.class
+        assert cm.subIndexHash.settings == null
+
+        cm = getClassMapping(Post, [Post], {
+            subIndexHash type: ConstantSubIndexHash.class
+        })
+        assert cm.subIndexHash.type == ConstantSubIndexHash.class
+        assert cm.subIndexHash.settings == null
+
+        cm = getClassMapping(Post, [Post], {
+            subIndexHash ConstantSubIndexHash.class, settings: [foo: 'FOO', bar: 'BAR']
+        })
+        assert cm.subIndexHash.type == ConstantSubIndexHash.class
+        assert cm.subIndexHash.settings == [foo: 'FOO', bar: 'BAR']
+
+        cm = getClassMapping(Post, [Post], {
+            subIndexHash type: ConstantSubIndexHash.class, settings: [foo: 'FOO', bar: 'BAR']
+        })
+        assert cm.subIndexHash.type == ConstantSubIndexHash.class
+        assert cm.subIndexHash.settings == [foo: 'FOO', bar: 'BAR']
+
+        // must implement SubIndexHash
+        shouldFail {
+            getClassMapping(Post, [Post], {
+                mapping subIndexHash: Object.class
+            })
+        }
+
+        cm = getClassMapping(Post, [Post], {
+            mapping subIndexHash: ConstantSubIndexHash.class
+        })
+        assert cm.subIndexHash.type == ConstantSubIndexHash.class
+        assert cm.subIndexHash.settings == null
+
+        cm = getClassMapping(Post, [Post], {
+            mapping subIndexHash: [type: ConstantSubIndexHash.class, settings: ['blah': 'cuckoo']]
+        })
+        assert cm.subIndexHash.type == ConstantSubIndexHash.class
+        assert cm.subIndexHash.settings == [blah: 'cuckoo']
     }
 
     void testGetClassMappingWithInheritedMappings() {

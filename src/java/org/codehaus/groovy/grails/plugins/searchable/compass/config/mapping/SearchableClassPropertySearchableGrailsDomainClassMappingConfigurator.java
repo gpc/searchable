@@ -21,6 +21,9 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*;
 import org.compass.core.config.CompassConfiguration;
+import org.compass.core.util.FieldInvoker;
+import org.compass.core.mapping.CompassMapping;
+import org.compass.core.mapping.osem.ClassMapping;
 import org.springframework.util.Assert;
 import org.springframework.core.Ordered;
 
@@ -66,9 +69,9 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurat
      *
      * @param compassConfiguration          the CompassConfiguration instance
      * @param configurationContext          a configuration context, for flexible parameter passing
-     * @param searchableGrailsDomainClasses searchable domain classes to map
+     * @param searchableGrailsDomainClasses all searchable domain classes, whether configured here or elsewhere
      */
-    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
+    public void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses, Collection allSearchableGrailsDomainClasses) {
         Assert.notNull(classMapper, "classMapper cannot be null");
         Assert.notNull(compassClassMappingXmlBuilder, "compassClassMappingXmlBuilder cannot be null");
 
@@ -76,12 +79,15 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurat
         List classMappings = new ArrayList();
         for (Iterator iter = searchableGrailsDomainClasses.iterator(); iter.hasNext(); ) {
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-            CompassClassMapping classMapping = classMapper.getCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses);
+            CompassClassMapping classMapping = classMapper.getCompassClassMapping(grailsDomainClass, allSearchableGrailsDomainClasses);
             classMappings.add(classMapping);
         }
 
         // resolve aliases
-        CompassMappingUtils.resolveAliases(classMappings, searchableGrailsDomainClasses);
+        CompassMappingUtils.resolveAliases(classMappings, allSearchableGrailsDomainClasses, compassConfiguration);
+
+        // set default sub-index names
+        CompassMappingUtils.resolveSubIndexes(classMappings);
 
         // add completed mappings to compass
         for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {

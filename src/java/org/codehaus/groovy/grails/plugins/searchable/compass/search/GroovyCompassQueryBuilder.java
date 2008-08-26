@@ -133,9 +133,7 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
             // Remove Closure and options Map
             Assert.isInstanceOf(Object[].class, args);
             List invokeArgs = new ArrayList();
-            for (int i = 0; i < ((Object[]) args).length; i++) {
-                invokeArgs.add(((Object[]) args)[i]);
-            }
+            invokeArgs.addAll(Arrays.asList(((Object[]) args)));
             Closure closure = (Closure) remove(invokeArgs, Closure.class);
             Map options = (Map) remove(invokeArgs, Map.class);
 
@@ -326,9 +324,25 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
                 Object optionValue = options.get(optionName);
                 // special case for this single no-parameter, non-setter string query builder method
                 if (optionName.equals("useAndDefaultOperator")) {
-                    if (optionValue != null && optionValue.equals(Boolean.TRUE)) {
+                    if (optionValue != null) {
                         Assert.isTrue(result instanceof CompassQueryBuilder.CompassMultiPropertyQueryStringBuilder || result instanceof  CompassQueryBuilder.CompassQueryStringBuilder, "'useAndDefaultOperator' option provided when current query/builder is a " + getShortClassName(result) + ", but should be a Compass*QueryStringBuilder");
+                        if (optionValue.equals(Boolean.TRUE)) {
+                            InvokerHelper.invokeMethod(result, "useAndDefaultOperator", null);
+                        } else {
+                            InvokerHelper.invokeMethod(result, "useOrDefaultOperator", null);
+                        }
+                    }
+                    continue;
+                }
+                if (optionName.equals("defaultOperator")) {
+                    Assert.notNull(optionValue, "'defaultOperator' option value is null: it must be one of 'or' or 'and'");
+                    Assert.isInstanceOf(String.class, optionValue, "'defaultOperator' option value is must be a String but is: [" + optionValue.getClass().toString() + "]");
+                    if (((String)optionValue).equalsIgnoreCase("or")) {
+                        InvokerHelper.invokeMethod(result, "useOrDefaultOperator", null);
+                    } else if (((String)optionValue).equalsIgnoreCase("and")) {
                         InvokerHelper.invokeMethod(result, "useAndDefaultOperator", null);
+                    } else {
+                        throw new IllegalArgumentException("'defaultOperator' option value is not valid: it must be one of 'or' or 'and' but was '" + optionValue + "'");
                     }
                     continue;
                 }
@@ -457,12 +471,15 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
         }
 
         private Object remove(List args, Class clazz) {
-            Object instance = null;
-            if (args != null && args.size() > 0 && clazz.isAssignableFrom(args.get(args.size() - 1).getClass())) {
-                instance = args.get(args.size() - 1);
-                args.remove(instance);
+            if (args == null) {
+                return null;
             }
-            return instance;
+            for (int i = 0; i < args.size(); i++) {
+                if (clazz.isAssignableFrom(args.get(i).getClass())) {
+                    return args.remove(i);
+                }
+            }
+            return null;
         }
 
         private boolean isTraceEnabled() {

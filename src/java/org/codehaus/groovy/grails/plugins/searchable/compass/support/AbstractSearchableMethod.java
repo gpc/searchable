@@ -20,6 +20,7 @@ import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
 import org.compass.core.CompassTemplate;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
+import org.codehaus.groovy.grails.plugins.searchable.SearchableMethodFactory;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -30,13 +31,15 @@ import java.util.HashMap;
 public abstract class AbstractSearchableMethod implements SearchableMethod {
     private String methodName;
     private Compass compass;
+    private SearchableMethodFactory methodFactory;
     private Map defaultOptions;
 
-    public AbstractSearchableMethod(String methodName, Compass compass, Map defaultOptions) {
+    public AbstractSearchableMethod(String methodName, Compass compass, SearchableMethodFactory methodFactory, Map defaultOptions) {
         Assert.notNull(methodName, "methodName cannot be null");
         Assert.notNull(compass, "compass cannot be null");
         this.methodName = methodName;
         this.compass = compass;
+        this.methodFactory = methodFactory;
         this.defaultOptions = defaultOptions;
     }
 
@@ -68,5 +71,13 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
 
     public String getMethodName() {
         return methodName;
+    }
+
+    public SearchableMethodFactory getMethodFactory() {
+        return methodFactory;
+    }
+
+    public void setMethodFactory(SearchableMethodFactory methodFactory) {
+        this.methodFactory = methodFactory;
     }
 }

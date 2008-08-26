@@ -42,14 +42,12 @@ import java.util.Map;
 /*
     unindex()
 
-    Like unindexAll but without dangerous no-arg bulk behavoir
-
-    service.unindex() // ERROR: not allowed
+    service.unindex() // everything
     service.unindex([class: Post]) // all class instances
     service.unindex(x, y, z) // given object(s)
     service.unindex(1, 2, 3, [class: Post]) // id'd objects
 
-    Thing.unindex() // ERROR: not allowed
+    Thing.unindex() // all Things
     Thing.unindex(1,2,3) // id'd instances
     Thing.unindex(x,y,z) // given instances
 
@@ -61,12 +59,12 @@ import java.util.Map;
  */
 public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements SearchableMethod  {
 
-    public DefaultUnindexMethod(String methodName, Compass compass, boolean bulkAllowed, Map defaultOptions) {
-        super(methodName, compass, defaultOptions, bulkAllowed);
+    public DefaultUnindexMethod(String methodName, Compass compass, Map defaultOptions) {
+        super(methodName, compass, defaultOptions);
     }
 
-    public DefaultUnindexMethod(String methodName, Compass compass, boolean bulkAllowed) {
-        this(methodName, compass, bulkAllowed, new HashMap());
+    public DefaultUnindexMethod(String methodName, Compass compass) {
+        this(methodName, compass, new HashMap());
     }
 
     public Object invoke(final Object[] args) {
@@ -91,7 +89,7 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
                     query = queryBuilder.matchAll();
                 }
                 if (clazz != null && ids.isEmpty()) {
-                    query = queryBuilder.alias(CompassMappingUtils.getMappingAlias(getCompass(), clazz));
+                    query = queryBuilder.matchAll().setTypes(new Class[] {clazz});
                 }
                 if (query != null) {
                     session.delete(query);

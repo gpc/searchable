@@ -24,20 +24,12 @@ import java.util.*;
  * @author Maurice Nicholson
  */
 public abstract class AbstractDefaultIndexMethod extends AbstractSearchableMethod {
-    private boolean bulkAllowed = false;
 
-    public AbstractDefaultIndexMethod(String methodName, Compass compass, Map defaultOptions, boolean bulkAllowed) {
-        super(methodName, compass, defaultOptions);
-        this.bulkAllowed = bulkAllowed;
+    public AbstractDefaultIndexMethod(String methodName, Compass compass, Map defaultOptions) {
+        super(methodName, compass, null, defaultOptions);
     }
 
     protected void validateArguments(Object[] args, Class clazz, List ids, List objects, Map options) {
-        if (args.length == 0 && !bulkAllowed) {
-            throw new IllegalArgumentException(
-                "You called " + getMethodName() + "() without any arguments " +
-                "but that isn't supported"
-            );
-        }
         if (clazz == null && !ids.isEmpty()) {
             throw new IllegalArgumentException(
                 "You called " + getMethodName() + "() with object ids, but no Class! " +
@@ -84,9 +76,5 @@ public abstract class AbstractDefaultIndexMethod extends AbstractSearchableMetho
             }
         }
         return ids;
-    }
-
-    public boolean isBulkAllowed() {
-        return bulkAllowed;
     }
 }

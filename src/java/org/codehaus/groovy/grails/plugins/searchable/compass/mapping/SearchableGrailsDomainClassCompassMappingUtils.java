@@ -76,8 +76,9 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
 
         Class mappedClass = grailsDomainClass.getClazz();
         List properties = new ArrayList();
-        for (int i = 0, max = grailsDomainClass.getProperties().length; i < max; i++) {
-            GrailsDomainClassProperty property = grailsDomainClass.getProperties()[i];
+        GrailsDomainClassProperty[] domainClassProperties = grailsDomainClass.getProperties();
+        for (int i = 0, max = domainClassProperties.length; i < max; i++) {
+            GrailsDomainClassProperty property = domainClassProperties[i];
             String propertyName = property.getName();
             if (propertyName.equals("id")) { // TODO refactor with specific id mapping
                 continue;
@@ -106,14 +107,13 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
      * @param propertyMappings
      * @return
      */
-    public static CompassClassMapping buildCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, List propertyMappings, String alias) {
+    public static CompassClassMapping buildCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, List propertyMappings) {
         CompassClassMapping classMapping = new CompassClassMapping();
         classMapping.setMappedClass(grailsDomainClass.getClazz());
-        if (alias != null) {
-            classMapping.setAlias(alias);
-        }
         classMapping.setPropertyMappings(propertyMappings);
-        classMapping.setRoot(SearchableGrailsDomainClassCompassMappingUtils.isRoot(grailsDomainClass, searchableGrailsDomainClasses));
+        if (classMapping.getRoot() == null) {
+            classMapping.setRoot(Boolean.valueOf(SearchableGrailsDomainClassCompassMappingUtils.isRoot(grailsDomainClass, searchableGrailsDomainClasses)));
+        }
         Collection superClasses = GrailsDomainClassUtils.getSuperClasses(grailsDomainClass, searchableGrailsDomainClasses);
         if (!superClasses.isEmpty()) {
             GrailsDomainClass parent = GrailsDomainClassUtils.getSuperClass(grailsDomainClass, superClasses);

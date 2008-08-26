@@ -15,17 +15,15 @@
 */
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
-import org.compass.core.config.*
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.inheritance.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.converter.DefaultCompassConverterLookupHelper
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
 * @author Maurice Nicholson
 */
+// todo extract functional testing to dedicated functional tests
 class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTestCase {
     def classMapper
     def currentSearchableValues
@@ -55,25 +53,6 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
     }
 
     void testGetCompassClassMapping() {
-        // TODO refactor to sanity check tests
-/*        assert domainClassMap[Post].getPropertyByName("title").type == String
-        assert domainClassMap[Post].getPropertyByName("post").type == String
-        assert domainClassMap[Post].getPropertyByName("createdAt").type == Date
-        assert domainClassMap[Post].getPropertyByName("author").type == User
-        assert domainClassMap[Post].getRelatedClassType("comments") == Comment
-
-        assert domainClassMap[Comment].getPropertyByName("post").type == Post
-        assert domainClassMap[Comment].getPropertyByName("createdAt").type == Date
-
-        assert domainClassMap[User].getRelatedClassType("posts") == Post
-
-        assert domainClassMap[ComponentOwner].getPropertyByName("searchableCompOne").type == SearchableComp
-        assert domainClassMap[ComponentOwner].getPropertyByName("searchableCompOne").embedded
-        assert domainClassMap[ComponentOwner].getPropertyByName("searchableCompTwo").type == SearchableComp
-        assert domainClassMap[ComponentOwner].getPropertyByName("searchableCompTwo").embedded
-        assert domainClassMap[ComponentOwner].getPropertyByName("comp").type == Comp
-        assert domainClassMap[ComponentOwner].getPropertyByName("comp").embedded
-*/
         def classMapping
         def propertyMapping
 

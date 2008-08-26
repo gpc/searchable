@@ -37,12 +37,12 @@ import java.util.Map;
    indexAll()
 
    service.indexAll() // all searchable class instances
-   service.indexAll([class: Post]) // all Post instances - ERROR: not supported
+   service.indexAll([class: Post]) // all Post instances
    service.indexAll(1l, 2l, 3l) // ERROR: unknown class
    service.indexAll(1l, 2l, 3l, [class: Post]) // id'd Post instances
    service.indexAll(x, y, z) // given instances
 
-   Thing.indexAll() // all Thing instances - ERROR: not supported
+   Thing.indexAll() // all Thing instances
    Thing.indexAll(1l, 2l, 3l) // id'd Thing instances
    Thing.indexAll(x, y, z) // given instances
 
@@ -53,12 +53,12 @@ import java.util.Map;
 
     Same as indexAll
 
-    service.index() // ERROR: not allowed
-    service.index([class: Post]) // all Post instances - ERROR: not supported
+    service.index() // all searchable class instances
+    service.index([class: Post]) // all Post instances (same as service.indexAll(class: Thing))
     service.index(x, y, z) // given object(s)
     service.index(1, 2, 3, [class: Post]) // id'd objects
 
-    Thing.index() // ERROR: not allowed
+    Thing.index() // all thing instances (same as Thing.indexAll())
     Thing.index(1,2,3) // id'd instances
     Thing.index(x,y,z) // given instances
 
@@ -72,25 +72,25 @@ public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements Se
 
     private CompassGps compassGps;
 
-    public DefaultIndexMethod(String methodName, Compass compass, CompassGps compassGps, boolean bulkAllowed, Map defaultOptions) {
-        super(methodName, compass, defaultOptions, bulkAllowed);
+    public DefaultIndexMethod(String methodName, Compass compass, CompassGps compassGps, Map defaultOptions) {
+        super(methodName, compass, defaultOptions);
         this.compassGps = compassGps;
     }
 
-    public DefaultIndexMethod(String methodName, Compass compass, CompassGps compassGps, boolean bulkAllowed) {
-        this(methodName, compass, compassGps, bulkAllowed, new HashMap());
+    public DefaultIndexMethod(String methodName, Compass compass, CompassGps compassGps) {
+        this(methodName, compass, compassGps, new HashMap());
     }
 
     public Object invoke(Object[] args) {
         Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
-        final Class clazz = (Class) options.get("class");
+        final Class clazz = (Class) options.remove("class");
         final List ids = getIds(args);
         final List objects = getObjects(args);
 
         validateArguments(args, clazz, ids, objects, options);
 
-        if (isBulkAllowed() && args.length == 0 && clazz == null) {
-            CompassGpsUtils.index(compassGps);
+        if (args.length == 0 || (args.length == 1 && args[0] instanceof Map && clazz != null)) {
+            CompassGpsUtils.index(compassGps, clazz);
             return null;
         }
 
@@ -111,16 +111,6 @@ public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements Se
                 return null;
             }
         });
-    }
-
-    protected void validateArguments(Object[] args, Class clazz, List ids, List objects, Map options) {
-        super.validateArguments(args, clazz, ids, objects, options);
-        if (objects.isEmpty() && ids.isEmpty() && clazz != null) {
-            throw new IllegalArgumentException(
-                "You called " + getMethodName() + "() for a class, but did not provide ids. " +
-                "Unfortunately this isn't supported due to performance concerns"
-            );
-        }
     }
 
     public CompassGps getCompassGps() {

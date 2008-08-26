@@ -17,6 +17,12 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 
 import org.springframework.util.Assert;
 import org.compass.core.Compass;
+import org.compass.core.mapping.CompassMapping;
+import org.compass.core.mapping.AliasMapping;
+import org.compass.core.mapping.osem.ClassMapping;
+import org.compass.core.config.CompassConfiguration;
+import org.compass.core.util.ClassUtils;
+import org.compass.core.util.FieldInvoker;
 import org.compass.core.spi.InternalCompass;
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
@@ -33,18 +39,14 @@ public class CompassMappingUtils {
     private static final Log LOG = LogFactory.getLog(CompassMappingUtils.class);
 
     /**
-     * Get the Compass alias for the given Class
+     * Provide a default alias for the given Class. This is the Class's short-name
      *
      * @param clazz the class
      * @return the Compass alias
      */
     public static String getDefaultAlias(Class clazz) {
         Assert.notNull(clazz, "clazz cannot be null");
-        String alias = clazz.getName();
-        if (alias.indexOf(".") != -1) {
-            alias = alias.substring(alias.lastIndexOf(".") + 1, alias.length());
-        }
-        return "ALIAS" + alias + "ALIAS";
+        return ClassUtils.getShortName(clazz);
     }
 
     /**
@@ -70,6 +72,33 @@ public class CompassMappingUtils {
             aliases.add(getMappingAlias(compass, clazz));
         }
         return (String[]) aliases.toArray(new String[aliases.size()]);
+    }
+
+    /**
+     * Resolve aliases between mappings
+     * Note this method is destructive in the sense that it modifies the passed in mappings
+     */
+    public static void resolveAliases(List classMappings, Collection grailsDomainClasses, CompassConfiguration compassConfiguration) {
+        // resolve aliases, faking plugin class mappings for those classes already mapped by annotations/xml
+        List tempClassMappings = new ArrayList(classMappings);
+        try {
+            CompassMapping mapping = (CompassMapping) new FieldInvoker(CompassConfiguration.class, "mapping").prepare().get(compassConfiguration);
+            AliasMapping[] mappings = mapping.getMappings();
+            for (int i = 0; i < mappings.length; i++) {
+                AliasMapping am = mappings[i];
+                if (am instanceof ClassMapping) {
+                    ClassMapping cm = (ClassMapping) am;
+                    CompassClassMapping dummyMapping = new CompassClassMapping();
+                    dummyMapping.setAlias(cm.getAlias());
+                    dummyMapping.setMappedClass(cm.getClazz());
+                    tempClassMappings.add(dummyMapping);
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to get Compass mapping: " + e);
+        }
+
+        resolveAliases(tempClassMappings, grailsDomainClasses);
     }
 
     /**
@@ -146,6 +175,22 @@ public class CompassMappingUtils {
             if (mappedClassSuperClass != null && classMapping.getExtend() == null) {
                 CompassClassMapping mapping = (CompassClassMapping) mappingByClass.get(mappedClassSuperClass);
                 classMapping.setExtend(mapping.getAlias());
+            }
+        }
+    }
+
+    /**
+     * Sets the sub-index name to be the same as the short-class-name for each CompassClassMapping,
+     * if not already defined
+     * @param classMappings a List of CompassClassMapping
+     */
+    public static void resolveSubIndexes(List classMappings) {
+        for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
+            CompassClassMapping classMapping = (CompassClassMapping) iter.next();
+            Assert.notNull(classMapping.getMappedClass(), "Expected mappedClass to be defined for CompassClassMapping [" + classMapping + "] but was null");
+            if (classMapping.getSubIndex() == null) {
+                String subIndex = ClassUtils.getShortName(classMapping.getMappedClass()).toLowerCase();
+                classMapping.setSubIndex(subIndex);
             }
         }
     }

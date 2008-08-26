@@ -51,12 +51,32 @@ class TestCompassFactory {
         configurator.configure(config, [:])
         def compass = config.buildCompass()
 
+        deleteIndex(compass)
+
         if (instances) {
             CompassTemplate template = new CompassTemplate(compass)
             template.execute(new SaveInstancesCompassCallback(instances))
         }
 
         return compass
+    }
+
+    static deleteIndex(compass) {
+        compass.getSearchEngineIndexManager().clearCache();
+    //        verifyNoHandlers();
+        try {
+            compass.getSearchEngineIndexManager().deleteIndex();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (compass.getSpellCheckManager() != null) {
+            try {
+                compass.getSpellCheckManager().deleteIndex();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        compass.getSearchEngineIndexManager().verifyIndex();
     }
 }
 

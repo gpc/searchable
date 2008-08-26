@@ -19,6 +19,8 @@ import org.jmock.*
 import org.jmock.core.stub.*
 import org.jmock.core.matcher.*
 import org.compass.gps.CompassGps
+import org.jmock.core.constraint.IsSame
+import org.jmock.core.constraint.IsArrayContaining
 
 /**
 *
@@ -28,12 +30,11 @@ import org.compass.gps.CompassGps
 class CompassGpsUtilsTests extends GroovyTestCase {
 
     void testIndexWhenCompassGpsRunning() {
-//        assert false // does not seem to test the sequence!
         def mockGps  = new Mock(CompassGps.class)
         mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
         mockGps.expects(new InvokeOnceMatcher()).method('index').withNoArguments().after('isRunning').isVoid()
 
-        CompassGpsUtils.index(mockGps.proxy())
+        CompassGpsUtils.index(mockGps.proxy(), null)
 
         mockGps.verify()
     }
@@ -45,7 +46,29 @@ class CompassGpsUtilsTests extends GroovyTestCase {
         mockGps.expects(new InvokeOnceMatcher()).method('index').withNoArguments().after('start').isVoid()
         mockGps.expects(new InvokeOnceMatcher()).method('stop').withNoArguments().after('index').isVoid()
 
-        CompassGpsUtils.index(mockGps.proxy())
+        CompassGpsUtils.index(mockGps.proxy(), null)
+
+        mockGps.verify()
+    }
+
+    void testIndexWithClassWhenCompassGpsRunning() {
+        def mockGps  = new Mock(CompassGps.class)
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(true))
+        mockGps.expects(new InvokeOnceMatcher()).method('index').with(new IsArrayContaining(new IsSame(Integer.class))).after('isRunning').isVoid()
+
+        CompassGpsUtils.index(mockGps.proxy(), Integer.class)
+
+        mockGps.verify()
+    }
+
+    void testIndexWithClassWhenCompassGpsNotRunning() {
+        def mockGps  = new Mock(CompassGps.class)
+        mockGps.expects(new InvokeOnceMatcher()).method('isRunning').withNoArguments().will(new ReturnStub(false))
+        mockGps.expects(new InvokeOnceMatcher()).method('start').withNoArguments().after('isRunning').isVoid()
+        mockGps.expects(new InvokeOnceMatcher()).method('index').with(new IsArrayContaining(new IsSame(Integer.class))).after('isRunning').isVoid()
+        mockGps.expects(new InvokeOnceMatcher()).method('stop').withNoArguments().after('index').isVoid()
+
+        CompassGpsUtils.index(mockGps.proxy(), Integer.class)
 
         mockGps.verify()
     }

@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable;
 
 import org.codehaus.groovy.grails.commons.*;
 import org.codehaus.groovy.grails.plugins.searchable.util.PatternUtils;
+import org.codehaus.groovy.runtime.InvokerHelper;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
@@ -24,11 +25,17 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.compass.core.Compass;
+import org.compass.core.spi.InternalCompass;
+import org.compass.core.mapping.Mapping;
+import org.compass.core.mapping.ResourceMapping;
+import org.compass.core.mapping.osem.ObjectMapping;
 
 import java.util.*;
 import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 import grails.util.GrailsUtil;
 
@@ -90,6 +97,26 @@ public class SearchableUtils {
             domainClasses.add(grailsDomainClass);
         }
         return domainClasses;
+    }
+
+    /**
+     * Get the identifier of the given domain class instance
+     * @param compass Compass
+     * @param alias Compass alias
+     * @param instance object instance
+     * @return identifier
+     */
+    public static Serializable getIdent(Compass compass, String alias, Object instance) {
+        Assert.notNull(alias, "alias cannot be null");
+        ResourceMapping resourceMapping = ((InternalCompass) compass).getMapping().getMappingByAlias(alias);
+        Mapping[] ids = resourceMapping.getIdMappings();
+        if (ids == null || ids.length == 0) {
+            throw new IllegalArgumentException("Null or empty id mappings for alias [" + alias + "]");
+        }
+        if (ids.length > 1) {
+            throw new IllegalArgumentException("Too many id mappings for alias [" + alias + "]: expected only 1");
+        }
+        return (Serializable) ((ObjectMapping) ids[0]).getGetter().get(instance);
     }
 
     /**

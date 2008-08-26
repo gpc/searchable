@@ -1,26 +1,77 @@
+<!--
+/*
+ * Copyright 2007 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!--
+
+    Ant build file for the Grails Serchable Plugin
+
+    The default target (all) does a complete clean build and test.
+    This should be run before making a release with "grails release-plugin"
+
+-->
 <project name="searchable" default="all">
 
   <property environment="ENV" />
 
-  <property name="grails.home" value="${ENV.GRAILS_HOME}" />
+  <!-- Load properties according to platform and build profile -->
+  <condition property="os.family" value="windows">
+    <os family="windows"/>
+  </condition>
+  <condition property="os.family" value="mac">
+    <os family="mac"/>
+  </condition>
+  <condition property="os.family" value="unix">
+    <os family="unix"/>
+  </condition>
+  <property file="${os.family}.properties"/>
+  <property file="${build.profile}.properties"/>
+  <property file="project.properties" />
 
+  <!-- Locate Java and set version -->
+  <property name="target.vm" value="1.5" />
+  <condition property="using.java.home" value="${java15.home}">
+    <equals arg1="${target.vm}" arg2="1.5" />
+  </condition>
+  <property name="using.java.home" value="${java14.home}" />
+  <condition property="target.vm.14" value="true">
+    <equals arg1="${target.vm}" arg2="1.4" />
+  </condition>
+
+  <!-- Locate grails and set executables -->
+  <property name="grails.home" value="${ENV.GRAILS_HOME}" />
   <condition property="grails" value="${grails.home}/bin/grails.bat">
     <os family="windows"/>
   </condition>
   <property name="grails" value="grails" />
+  <condition property="grails-debug" value="${grails.home}/bin/grails-debug.bat">
+    <os family="windows"/>
+  </condition>
+  <property name="grails-debug" value="grails-debug" />
+  <property file="${grails.home}/build.properties" />
+  <property name="grails.work.dir" value="${ENV.HOME}/.grails/${grails.version}"/> <!-- standard location, may be overriden by -D or previous property files -->
 
-  <property file="project.properties" />
+  <!-- set java executable -->
+  <condition property="java.cmd" value="java.exe">
+    <os family="windows"/>
+  </condition>
+  <property name="java.cmd" value="java" />
 
-  <property name="java.src" value="src/java" />
-  <property name="groovy.src" value="src/groovy" />
-  <property name="target" value="target" />
-  <property name="classes" value="${target}/classes"/>
-  <property name="test.java.src" value="src/test/java" />
-  <property name="test.groovy.src" value="src/test/groovy" />
-  <property name="test.classes" value="${target}/test-classes"/>
-  <property name="test.reports" value="${target}/test-reports"/>
-  <property name="lib" value="lib"/>
-
+  <!-- Classpaths -->
   <path id="groovy.classpath">
     <fileset dir="${grails.home}/lib">
       <include name="groovy-all-*.jar" />
@@ -48,47 +99,75 @@
   <path id="test.classpath">
     <path refid="classpath" />
     <pathelement location="${test.groovy.src}"/>
+    <pathelement location="${func.test.groovy.src}"/>
     <pathelement location="${test.classes}"/>
   </path>
 
+  <!-- Taskdefs -->
   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
 <!--  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" /> -->
 
-  <target name="clean">
+  <!-- Targets -->
+  <target name="all" depends="clean, compile, test, package, integration-test" description="Clean, build, test, package"/>
+
+  <target name="clean" description="Cleanup after a previous build">
     <delete dir="${target}" />
   </target>
 
-  <target name="compile">
+  <target name="compile" description="Compile production (not test) source code">
     <mkdir dir="${classes}" />
-    <javac srcdir="${java.src}" destdir="${classes}" source="1.4" target="1.4" debug="true" classpathref="classpath" />
+    <javac srcdir="${java.src}" destdir="${classes}" source="${target.vm}" target="${target.vm}" debug="true" classpathref="classpath" />
     <groovyc srcdir="${groovy.src}" destdir="${classes}" classpathref="classpath" />
   </target>
 
-  <target name="compile-test">
-    <mkdir dir="${test.classes}" />
-    <javac srcdir="${test.java.src}" destdir="${test.classes}" source="1.5" target="1.5" debug="true" classpathref="classpath" />
+  <macrodef name="compile-tests">
+    <attribute name="src"/>
+    <sequential>
+      <mkdir dir="${test.classes}" />
+      <groovyc srcdir="@{src}" destdir="${test.classes}" classpathref="test.classpath" />
+    </sequential>
+  </macrodef>
+
+  <macrodef name="run-groovy-tests">
+    <attribute name="using-java-home"/>
+    <attribute name="groovy-test-dir"/>
+    <attribute name="test-name"/>
+    <sequential>
+      <mkdir dir="${test.reports}" />
+      <junit fork="yes" jvm="@{using-java-home}/bin/${java.cmd}" showoutput="true" failureproperty="tests.failed" printsummary="yes">
+        <formatter type="brief"/>
+        <formatter type="xml"/>
+        <classpath refid="test.classpath" />
+        <jvmarg value="-Dgroovy.test.dir=@{groovy-test-dir}" />
+        <jvmarg value="-Dgroovy.test.pattern=**/*Tests.groovy" />
+        <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${java.debug.port}" />
+        <test name="groovy.util.AllTestSuite" todir="${test.reports}" outfile="TEST-@{test-name}"/>
+      </junit>
+      <loadfile srcfile="${test.reports}/TEST-@{test-name}.txt" failonerror="yes" property="test.output" />
+      <fail if="tests.failed">
+        Tests failed
+
+        ${test.output}
+      </fail>
+    </sequential>
+  </macrodef>
+
+  <target name="unit-test" depends="compile" description="Run all unit tests">
+    <compile-tests src="${test.groovy.src}"/>
+    <!--<groovyc srcdir="${test.groovy.src}" destdir="${test.classes}" classpathref="test.classpath" />-->
+    <run-groovy-tests using-java-home="${using.java.home}" groovy-test-dir="${test.groovy.src}" test-name="all-units"/>
   </target>
 
-  <target name="test" depends="compile,compile-test">
-    <mkdir dir="${test.reports}" />
-    <junit fork="yes" showoutput="true" failureproperty="tests.failed" printsummary="yes">
-      <formatter type="brief"/>
-      <formatter type="xml"/>
-      <classpath refid="test.classpath" />
-      <jvmarg value="-Dgroovy.test.dir=${test.groovy.src}" />
-      <jvmarg value="-Dgroovy.test.pattern=**/*Tests.groovy" />
-      <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" />
-      <test name="grails.plugins.searchable.util.AllTestSuite" todir="${test.reports}" />
-    </junit>
-    <loadfile srcfile="${test.reports}/TEST-grails.plugins.searchable.util.AllTestSuite.txt" failonerror="yes" property="test.output" />
-    <fail if="tests.failed">
-      Tests failed
-
-      ${test.output}
-    </fail>
+  <target name="functional-test" depends="compile" description="Run all functional tests">
+    <compile-tests src="${func.test.groovy.src}"/>
+    <!--<groovyc srcdir="${func,test.groovy.src}" destdir="${test.classes}" classpathref="test.classpath" />-->
+    <run-groovy-tests using-java-home="${using.java.home}" groovy-test-dir="${func.test.groovy.src}" test-name="all-functional"/>
   </target>
 
-  <target name="single-test" depends="compile,compile-test">
+  <target name="test" depends="unit-test,functional-test" description="Run all unit and functional tests"/>
+
+  <target name="single-test" depends="compile" description="Run a single test - requires a '-Dtest=path/to/test/file' argument">
+    <compile-tests src="${test.groovy.src}"/>
     <java classname="groovy.ui.GroovyMain" fork="true" classpathref="test.classpath" failonerror="true">
       <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"/>
       <arg value="${test}" />
@@ -96,23 +175,24 @@
   </target>
 
   <macrodef name="grails">
-    <attribute name="using.java.home" default="${java14.home}"/>
+    <attribute name="using-java-home"/>
     <attribute name="dir" default="${basedir}"/>
     <attribute name="arg1"/>
     <attribute name="arg2" default=""/>
     <attribute name="arg3" default=""/>
     <sequential>
-      <available file="@{using.java.home}" property="using.java.home.available"/>
+      <available file="@{using-java-home}" property="using.java.home.available"/>
       <fail unless="using.java.home.available">
 
-      Not a valid JAVA_HOME: @{using.java.home}
+          Not a valid JAVA_HOME: @{using-java-home}
       </fail>
-      <echo>*** Running grails @{arg1} @{arg2} @{arg3} ***</echo>
-      <property name="path" value="@{using.java.home}/bin${path.separator}${ENV.PATH}" />
+      <echo>*** Running grails -Dgrails.work.dir=${grails.work.dir} @{arg1} @{arg2} @{arg3} ***</echo>
+      <property name="path" value="@{using-java-home}/bin${path.separator}${ENV.PATH}" />
       <exec executable="${grails}" dir="@{dir}" failonerror="yes">
-        <env key="JAVA_HOME" value="@{using.java.home}" />
+        <env key="JAVA_HOME" value="@{using-java-home}" />
         <env key="PATH" value="${path}" />
 
+        <arg value="-Dgrails.work.dir=${grails.work.dir}"/>
         <arg value="@{arg1}"/>
         <arg value="@{arg2}"/>
         <arg value="@{arg3}"/>
@@ -121,17 +201,23 @@
   </macrodef>
 
   <macrodef name="run-integration-test">
-    <attribute name="version" default="${version}"/>
     <attribute name="app.name" />
     <attribute name="app.dir"/>
     <attribute name="app.tests" />
     <attribute name="using.java.home" />
     <sequential>
-      <property name="plugin.dist" value="${basedir}/grails-searchable-@{version}.zip" />
+      <fail unless="version">
+
+      Please specify a version, eg
+
+          ant integration-test -Dversion=0.4-SNAPSHOT
+      </fail>
+
+      <property name="plugin.dist" value="${basedir}/grails-searchable-${version}.zip" />
       <property name="app.source" value="${basedir}/integration-test/grails-apps" />
       <available file="${plugin.dist}" property="plugin.dist.available" />
       <fail unless="plugin.dist.available">
-        
+
       No such file: ${plugin.dist}
       </fail>
       <echo>
@@ -150,7 +236,7 @@
       <mkdir dir="@{app.dir}"/>
 
       <!-- create vanilla app -->
-      <grails dir="${tmpdir}" arg1="create-app" arg2="@{app.name}" using.java.home="@{using.java.home}"/>
+      <grails dir="${tmpdir}" arg1="create-app" arg2="@{app.name}" using-java-home="@{using.java.home}"/>
 
       <!--
         delete any previous compilation output in grails' cache
@@ -171,48 +257,46 @@
       </copy>
 
       <!--Install Searchable Plugin -->
-      <grails dir="@{app.dir}" arg1="install-plugin" arg2="${plugin.dist}" using.java.home="@{using.java.home}"/>
-
-      <!-- Install web test plugin -->
-      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using.java.home="@{using.java.home}"/>
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="${plugin.dist}" using-java-home="@{using.java.home}"/>
 
       <!-- Clean -->
-      <grails dir="@{app.dir}" arg1="clean" using.java.home="@{using.java.home}"/>
+      <!--<grails dir="@{app.dir}" arg1="clean" using.java.home="@{using.java.home}"/>-->
 
       <!-- Test app -->
-      <grails dir="@{app.dir}" arg1="test-app" using.java.home="@{using.java.home}"/>
+      <grails dir="@{app.dir}" arg1="test-app" using-java-home="@{using.java.home}"/>
+
+      <!-- Install web test plugin -->
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" arg3="0.4" using-java-home="@{using.java.home}"/>
 
       <!-- Web test -->
-      <grails dir="@{app.dir}" arg1="run-webtest" using.java.home="@{using.java.home}"/>
+      <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_port                = 8080" value="webtest_port=${grails.server.port}" />
+      <grails dir="@{app.dir}" arg1="run-webtest" using-java-home="@{using.java.home}"/>
     </sequential>
   </macrodef>
 
-  <target name="integration-test" depends="package">
-    <fail unless="version">
+  <target name="integration-test" depends="package,simple-groovy-integration-test,compass-mapping-xml-groovy-integration-test,compass-annotated-groovy-integration-test" description="Runs the integration tests" />
 
-    Please specify a version, eg
-        
-        ant integration-test -Dversion=0.4-SNAPSHOT
-    </fail>
-
+  <target name="before-integration-test">
     <property name="tmpdir" value="${basedir}/../tmp"/>
     <delete dir="${tmpdir}"/>
     <mkdir dir="${tmpdir}"/>
-
-    <run-integration-test using.java.home="${java14.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/simple-groovy"/>
-    <run-integration-test using.java.home="${java15.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/simple-groovy"/>
-
-    <run-integration-test using.java.home="${java14.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-mapping-xml-groovy"/>
-    <run-integration-test using.java.home="${java15.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-mapping-xml-groovy"/>
-
-    <!-- this app uses annotations so is only Java 1.5 compatible -->
-    <run-integration-test using.java.home="${java15.home}" app.name="compass-annotated-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-annotated-groovy"/>
   </target>
 
-  <target name="package" unless="nopackage">
-    <grails arg1="package-plugin" />
+  <target name="simple-groovy-integration-test" depends="before-integration-test">
+    <run-integration-test using.java.home="${using.java.home}" app.name="simple-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/simple-groovy"/>
   </target>
 
-  <target name="all" depends="clean, compile, compile-test, test, package, integration-test" />
+  <target name="compass-mapping-xml-groovy-integration-test" depends="before-integration-test">
+    <run-integration-test using.java.home="${using.java.home}" app.name="compass-mapping-xml-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-mapping-xml-groovy"/>
+  </target>
+
+  <target name="compass-annotated-groovy-integration-test" depends="before-integration-test" unless="target.vm.14">
+    <run-integration-test using.java.home="${using.java.home}" app.name="compass-annotated-groovy" app.tests="artist-and-album-tests" app.dir="${tmpdir}/compass-annotated-groovy"/>
+  </target>
+
+  <target name="package" unless="nopackage" description="Package the plugin - same as 'grails package-plugin'">
+    <grails arg1="clean" using-java-home="${using.java.home}" />
+    <grails arg1="package-plugin" using-java-home="${using.java.home}" />
+  </target>
 
 </project>

@@ -63,7 +63,7 @@ public class SimpleSearchableGrailsDomainClassCompassClassMapper extends Abstrac
         if (propertyMappings == null) {
             return null;
         }
-        return SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, propertyMappings, null);
+        return SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, propertyMappings);
     }
 
     /**

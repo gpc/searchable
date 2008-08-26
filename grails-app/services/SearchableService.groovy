@@ -21,6 +21,7 @@
  */
 class SearchableService {
     boolean transactional = true
+    def compass
     def compassGps
     def searchableMethodFactory
 
@@ -60,6 +61,26 @@ class SearchableService {
     }
 
     /**
+     * More like what you provide, eg:
+     *
+     * <code>
+     * searchableService.moreLikeThis(post) // More anything like the Post instance
+     * searchableService.moreLikeThis(Post, 10l) // More anything like the given class + id
+     * searchableService.moreLikeThis(class: Post, id: 10l) // More anything like the given class + id (as named args)
+     *
+     * // to qualify the kind of class you're looking for use 'match' with any of the above, eg
+     *
+     * searchableService.moreLikeThis(class: Post, id: 10l, match: Comment) // More Comments like the given class + id (as named args)
+     * </code>
+     *
+     * @param object instance OR Class, id
+     * @param options a Map of options
+     */
+    def moreLikeThis(Object[] args) {
+        searchableMethodFactory.getMethod("moreLikeThis").invoke(*args)
+    }
+
+    /**
      * Returns the number of hits for the given query
      *
      * @param query the search query
@@ -74,6 +95,41 @@ class SearchableService {
      */
     def termFreqs(Object[] args) {
         searchableMethodFactory.getMethod("termFreqs").invoke(*args)
+    }
+
+    /**
+     * Suggest an alternative query (correcting possible spelling errors)
+     */
+    def suggestQuery(Object[] args) {
+        searchableMethodFactory.getMethod("suggestQuery").invoke(*args)
+    }
+
+    // todo extract to new SearchableMethod which applies to both single Class and all Classes!!
+    // todo then remove compass property
+    /**
+     * Rebuild the spelling suggestions index
+     */
+    def rebuildSpellingSuggestions(options) {
+        if (compass.settings.getSetting('compass.engine.spellcheck.enable') != 'true') {
+            throw new IllegalStateException(
+                "Suggestions are only available when the Compass Spell Check feature is enabled, but currently it is not. " +
+                "Please set Compass setting 'compass.engine.spellcheck.enable' to 'true'. " +
+                "One way to so this is to use the SearchableConfiguration.groovy file (run \"grails install-searchable-config\") and " +
+                "add \"'compass.engine.spellcheck.enable': 'true'\" to the compassSettings Map. " +
+                "Also see the Spell Check section in the Compass docs for additional settings."
+            )
+        }
+        def spellCheckManager = compass.getSpellCheckManager()
+        if (options?.fork && options?.subIndex) {
+            throw new IllegalArgumentException("The \"subIndex\" and \"fork\" options may not used together")
+        }
+        if (options?.fork) {
+            return spellCheckManager.concurrentRebuild()
+        }
+        if (options?.subIndex) {
+            return spellCheckManager.rebuild(options?.subIndex)
+        }
+        return spellCheckManager.rebuild()
     }
 
     /**

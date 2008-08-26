@@ -16,11 +16,20 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.Compass;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassSession;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+
+import java.util.Map;
 
 /**
  * @author Maurice Nicholson
  */
 public abstract class AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
+    private SearchableCompassQueryBuilderOptionsHelper[] optionHelpers = new SearchableCompassQueryBuilderOptionsHelper[] {
+        new SearchableCompassQueryBuilderClassOptionHelper(),
+        new SearchableCompassQueryBuilderSortOptionHelper()
+    };
     private Compass compass;
 
     public AbstractSearchableCompassQueryBuilder(Compass compass) {
@@ -33,5 +42,12 @@ public abstract class AbstractSearchableCompassQueryBuilder implements Searchabl
 
     public void setCompass(Compass compass) {
         this.compass = compass;
+    }
+
+    protected CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
+        for (int i = 0, max = optionHelpers.length; i < max; i++) {
+            compassQuery = optionHelpers[i].applyOptions(grailsApplication, compass, compassSession, compassQuery, options);
+        }
+        return compassQuery;
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE compass-core-mapping PUBLIC
+    "-//Compass/Compass Core Mapping DTD 2.0//EN"
+    "http://www.compass-project.org/dtd/compass-core-mapping-2.1.dtd">
+<compass-core-mapping>
+  <class name='org.codehaus.groovy.grails.plugins.searchable.test.mapping.mixed.CompassXml' alias='xml' root='true'>
+    <id name='id' />
+    <property name='version'>
+      <meta-data index="no">version</meta-data>
+    </property>
+    <property name='value'>
+      <meta-data>value</meta-data>
+    </property>
+    <reference name="searchableProperty" ref-alias="searchableproperty" />
+  </class>
+</compass-core-mapping>

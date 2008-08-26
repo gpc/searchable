@@ -17,13 +17,9 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.TestUtils
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
 import org.compass.core.config.CompassConfiguration
 import org.compass.core.config.ConfigurationException
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.nosearchableproperty.NoSearchableProperty
-import org.codehaus.groovy.grails.orm.hibernate.GrailsHibernateDomainClass
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassClassMapping
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableCompassClassMappingXmlBuilder
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper
@@ -36,37 +32,29 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.SearchableG
 */
 class SearchableClassPropertySearchableGrailsDomainClassMappingConfiguratorTests extends GroovyTestCase {
     def classMappingConfigurator
-    def oldSearchable
 
     void setUp() {
         classMappingConfigurator = new SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator()
-        oldSearchable = Post.searchable
     }
 
     void tearDown() {
         classMappingConfigurator = null
-        Post.searchable = oldSearchable
     }
 
     void testGetMappedBy() {
-        Post.searchable = true
-        def mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
-        assert mappedBy.collect { it.clazz } == [Post]
+        def mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(SearchablePropertyIsTrue))
+        assert mappedBy.collect { it.clazz } == [SearchablePropertyIsTrue]
 
-        Post.searchable = [only: 'title']
-        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
-        assert mappedBy.collect { it.clazz } == [Post]
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(SearchablePropertyIsOnlyMap))
+        assert mappedBy.collect { it.clazz } == [SearchablePropertyIsOnlyMap]
 
-        Post.searchable = [except: 'version']
-        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
-        assert mappedBy.collect { it.clazz } == [Post]
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(SearchablePropertyIsExceptMap))
+        assert mappedBy.collect { it.clazz } == [SearchablePropertyIsExceptMap]
 
-        Post.searchable = { -> }
-        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
-        assert mappedBy.collect { it.clazz } == [Post]
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(SearchablePropertyIsClosure))
+        assert mappedBy.collect { it.clazz } == [SearchablePropertyIsClosure]
 
-        Post.searchable = false
-        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(Post))
+        mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(SearchablePropertyIsFalse))
         assert mappedBy.isEmpty()
 
         mappedBy = classMappingConfigurator.getMappedBy(TestUtils.getDomainClasses(NoSearchableProperty))
@@ -91,13 +79,14 @@ class SearchableClassPropertySearchableGrailsDomainClassMappingConfiguratorTests
         ] as SearchableCompassClassMappingXmlBuilder
 
         def conf = new MyCompassConfiguration()
-        classMappingConfigurator.configureMappings(conf, null, [new DefaultGrailsDomainClass(Post)])
+        def classes = [new DefaultGrailsDomainClass(SearchablePropertyIsTrue)]
+        classMappingConfigurator.configureMappings(conf, null, classes, classes)
         assert conf.inputStream.text == "this is the mapping"
-        assert conf.resourceName == Post.class.name.replaceAll("\\.", "/") + ".cpm.xml"
+        assert conf.resourceName == SearchablePropertyIsTrue.class.name.replaceAll("\\.", "/") + ".cpm.xml"
     }
 }
 
-class MyCompassConfiguration extends CompassConfiguration {
+private class MyCompassConfiguration extends CompassConfiguration {
     def inputStream
     def resourceName
     CompassConfiguration addInputStream(InputStream inputStream, String resourceName) throws ConfigurationException {
@@ -109,7 +98,7 @@ class MyCompassConfiguration extends CompassConfiguration {
     }
 }
 
-class MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager extends CompositeSearchableGrailsDomainClassCompassClassMapper {
+private class MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager extends CompositeSearchableGrailsDomainClassCompassClassMapper {
     def classToHandle
     boolean handles(GrailsDomainClass grailsDomainClass) {
         grailsDomainClass.clazz == classToHandle
@@ -117,4 +106,59 @@ class MySearchableGrailsDomainClassCompassMappingDescriptionProviderManager exte
     CompassClassMapping getCompassMappingDescription(GrailsDomainClass grailsDomainClass, Collection searchableClasses) {
         new CompassClassMapping(mappedClass: grailsDomainClass.clazz)
     }
+}
+
+class SearchablePropertyIsTrue {
+    static searchable = true
+    Long id, version
+}
+
+class SearchablePropertyIsFalse {
+    static searchable = false
+    Long id, version
+}
+
+class SearchablePropertyIsOnlyMap {
+    static searchable = [only: 'title']
+    Long id, version
+}
+
+class SearchablePropertyIsExceptMap {
+    static searchable = [except: 'version']
+    Long id, version
+}
+
+class SearchablePropertyIsClosure {
+    static searchable = { -> }
+    Long id, version
+}
+
+class NoSearchableProperty {
+    Long id
+    Long version
+    String desscription
+}
+
+class ComponentOwner {
+    static embedded = ['searchableComp', 'comp', 'nonSearchableComp']
+    static searchable = true
+    Long id, version
+    SearchableComp searchableComp
+    Comp comp
+    NonSearchableComp nonSearchableComp
+
+}
+
+class Comp {
+    Long id, version
+}
+
+class SearchableComp {
+    static searchable = true
+    Long id, version
+}
+
+class NonSearchableComp {
+    static searchable = false
+    Long id, version
 }

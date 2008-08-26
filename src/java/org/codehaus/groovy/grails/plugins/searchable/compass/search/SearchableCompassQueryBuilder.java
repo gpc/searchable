@@ -16,14 +16,11 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.CompassQuery;
-import org.compass.core.CompassQueryBuilder;
-import org.compass.core.Compass;
 import org.compass.core.CompassSession;
+import org.compass.core.Compass;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 
 import java.util.Map;
-
-import groovy.lang.Closure;
 
 /**
  * A thread-safe Compass query builder
@@ -38,7 +35,7 @@ public interface SearchableCompassQueryBuilder {
      * @param grailsApplication
      * @param compassSession the current Compass session
      * @param options query options
-     * @param query the query object: either a String or Closure @return the compass query
+     * @param args
      */
-    CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query);
+    CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object args);
 }

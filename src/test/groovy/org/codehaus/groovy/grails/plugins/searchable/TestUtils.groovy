@@ -24,7 +24,7 @@ import org.codehaus.groovy.grails.commons.*
 */
 class TestUtils {
 
-    static getDomainClasses(Object... clazzes) {
+    static getDomainClasses(Class[] clazzes) {
         def domainClasses = []
         for (clazz in clazzes) {
             def domainClass = new DefaultGrailsDomainClass(clazz)

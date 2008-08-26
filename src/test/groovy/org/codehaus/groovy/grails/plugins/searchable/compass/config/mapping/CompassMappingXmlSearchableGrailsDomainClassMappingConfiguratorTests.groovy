@@ -18,7 +18,6 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config.mapping
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.Resource
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.compass.core.config.CompassConfiguration
 import org.compass.core.config.ConfigurationException
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.CompassXmlConfigurationSearchableCompassConfigurator
@@ -40,28 +39,28 @@ class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests exten
     }
 
     void testIsMappedByWhenMappingXmlAvailable() {
-        strategy.resourceLoader = getResourceLoader(User)
-        assert strategy.isMappedBy(new DefaultGrailsDomainClass(User))
+        strategy.resourceLoader = getResourceLoader(VanillaDomainClass)
+        assert strategy.isMappedBy(new DefaultGrailsDomainClass(VanillaDomainClass))
     }
 
     void testIsMappedByWhenMappingXmlNotAvailable() {
         strategy.resourceLoader = getResourceLoader()
-        assert strategy.isMappedBy(new DefaultGrailsDomainClass(User)) == false
+        assert strategy.isMappedBy(new DefaultGrailsDomainClass(VanillaDomainClass)) == false
     }
 
     void testConfigureMappingWithoutCompassXml() {
-        strategy.resourceLoader = getResourceLoader(User)
+        strategy.resourceLoader = getResourceLoader(VanillaDomainClass)
 
         def config = new MyCompassConfiguration2()
-        strategy.configureMappings(config, [:], [new DefaultGrailsDomainClass(User)])
-        assert config.url == new URL("file:/path/to" + getMappingResourceName(User))
+        strategy.configureMappings(config, [:], [new DefaultGrailsDomainClass(VanillaDomainClass)], null)
+        assert config.url == new URL("file:/path/to" + getMappingResourceName(VanillaDomainClass))
     }
 
     void testConfigureMappingWithCompassXml() {
-        strategy.resourceLoader = getResourceLoader(User)
+        strategy.resourceLoader = getResourceLoader(VanillaDomainClass)
 
         def config = new MyCompassConfiguration2()
-        strategy.configureMappings(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [new DefaultGrailsDomainClass(User)])
+        strategy.configureMappings(config, [(CompassXmlConfigurationSearchableCompassConfigurator.CONFIGURED): true], [new DefaultGrailsDomainClass(VanillaDomainClass)], null)
         assert config.url == null
     }
 
@@ -90,4 +89,8 @@ class MyCompassConfiguration2 extends CompassConfiguration {
         this.url = url
         this
     }
+}
+
+private class VanillaDomainClass {
+    Long id, version
 }

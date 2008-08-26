@@ -17,12 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable
 
 import org.codehaus.groovy.grails.commons.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.nosearchableproperty.NoSearchableProperty
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.annotated.AnnotatedSearchable
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.annotated.Other
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
-import org.springframework.core.io.Resource
-import org.springframework.core.io.ResourceLoader
 
 /**
 * @author Maurice Nicholson

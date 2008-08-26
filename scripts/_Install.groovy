@@ -39,4 +39,6 @@ Help is available from user@grails.codehaus.org
 
 Issues and improvements should be raised at http://jira.codehaus.org/browse/GRAILSPLUGINS
 
+If you are upgrading from a previous release, please see http://grails.org/Searchable+Plugin+-+Releases
+
 """

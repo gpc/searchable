@@ -16,22 +16,24 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.index;
 
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
+import org.codehaus.groovy.grails.plugins.searchable.compass.DefaultSearchableMethodFactory;
+import org.codehaus.groovy.grails.plugins.searchable.compass.support.AbstractSearchableMethod;
 import org.compass.core.Compass;
 import org.compass.gps.CompassGps;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /*
    reindexAll()
 
    service.reindexAll() // all searchable class instances
-   service.reindexAll([class: Post]) // all Post instances - ERROR: not supported
+   service.reindexAll([class: Post]) // all Post instances
    service.reindexAll(1l, 2l, 3l) // ERROR: unknown class
    service.reindexAll(1l, 2l, 3l, [class: Post]) // id'd Post instances
    service.reindexAll(x, y, z) // given instances
 
-   Thing.reindexAll() // all Thing instances - ERROR: not supported
+   Thing.reindexAll() // all Thing instances
    Thing.reindexAll(1l, 2l, 3l) // id'd Post instances
    Thing.reindexAll(x, y, z) // given instances
 
@@ -40,14 +42,12 @@ import java.util.HashMap;
 /*
     reindex()
 
-    Like reindexAll but without no-arg bulk behavoir
-
-    service.reindex() // ERROR: not allowed
-    service.reindex([class: Post]) // all class instances - ERROR: not supported
+    service.reindex() // all searchable class instances - same as service.reindexAll
+    service.reindex([class: Post]) // all class instances
     service.reindex(x, y, z) // given object(s)
     service.reindex(1, 2, 3, [class: Post]) // id'd objects
 
-    Thing.reindex() // all Thing instances - ERROR: not supported
+    Thing.reindex() // all Thing instances
     Thing.reindex(1,2,3) // id'd instances
     Thing.reindex(x,y,z) // given instances
 
@@ -57,15 +57,16 @@ import java.util.HashMap;
  * @author Maurice Nicholson
  */
 public class DefaultReindexMethod extends DefaultIndexMethod implements SearchableMethod {
-    private DefaultUnindexMethod unindexMethod;
+    private AbstractSearchableMethod unindexMethod;
 
-    public DefaultReindexMethod(String methodName, Compass compass, CompassGps compassGps, boolean bulkAllowed, Map defaultOptions) {
-        super(methodName, compass, compassGps, bulkAllowed, defaultOptions);
-        unindexMethod = new DefaultUnindexMethod(methodName, compass, bulkAllowed, defaultOptions);
+    public DefaultReindexMethod(String methodName, Compass compass, CompassGps compassGps, DefaultSearchableMethodFactory methodFactory, Map defaultOptions) {
+        super(methodName, compass, compassGps, defaultOptions);
+        unindexMethod = (AbstractSearchableMethod) methodFactory.getMethod("unindex");
+        unindexMethod.getDefaultOptions().putAll(getDefaultOptions());
     }
 
-    public DefaultReindexMethod(String methodName, Compass compass, CompassGps compassGps, boolean bulkAllowed) {
-        this(methodName, compass, compassGps, bulkAllowed, new HashMap());
+    public DefaultReindexMethod(String methodName, Compass compass, CompassGps compassGps, DefaultSearchableMethodFactory methodFactory) {
+        this(methodName, compass, compassGps, methodFactory, new HashMap());
     }
 
     public Object invoke(Object[] args) {

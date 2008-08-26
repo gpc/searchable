@@ -2,15 +2,19 @@ import org.compass.annotations.*
 
 // A domain class declaring itself "searchable" with Compass annotations
 @Searchable(alias = 'work')
+@SearchableAllMetaData(termVector = TermVector.YES) // required for more-like-this
 class Album {
-    static belongsTo = Artist
-
-    @SearchableComponent(refAlias = 'composer')
-    @SearchableReference(refAlias = 'composer')
-    Artist artist
 
     @SearchableId
     Long id
+
+    @SearchableProperty(index = Index.NO)
+    Long version
+
+    static belongsTo = Artist
+
+    @SearchableComponent(refAlias = 'composer')
+    Artist artist
 
     @SearchableProperty(boost = 1.5f)
     String name

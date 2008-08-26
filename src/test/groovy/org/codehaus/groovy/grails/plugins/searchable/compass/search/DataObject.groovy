@@ -16,7 +16,7 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search
 
 /**
- *
+ * 
  *
  * @author Maurice Nicholson
  */

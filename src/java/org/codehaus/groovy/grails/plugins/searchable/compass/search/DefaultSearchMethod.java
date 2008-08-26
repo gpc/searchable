@@ -20,7 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
-import org.codehaus.groovy.grails.plugins.searchable.util.MapUtils;
+import org.codehaus.groovy.grails.plugins.searchable.SearchableMethodFactory;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.AbstractSearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.compass.core.*;
@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
 
 import java.util.Map;
 import java.util.Collection;
+import java.util.HashMap;
 
 /**
  * The default search method implementation
@@ -41,9 +42,9 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
     private SearchableCompassQueryBuilder compassQueryBuilder;
     private SearchableHitCollector hitCollector;
     private SearchableSearchResultFactory searchResultFactory;
-    
-    public DefaultSearchMethod(String methodName, Compass compass, GrailsApplication grailsApplication, Map defaultOptions) {
-        super(methodName, compass, defaultOptions);
+
+    public DefaultSearchMethod(String methodName, Compass compass, GrailsApplication grailsApplication, SearchableMethodFactory methodFactory, Map defaultOptions) {
+        super(methodName, compass, methodFactory, defaultOptions);
         this.grailsApplication = grailsApplication;
     }
 
@@ -51,25 +52,15 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         Assert.notNull(args, "args cannot be null");
         Assert.notEmpty(args, "args cannot be empty");
 
-        final Object query = getQuery(args);
-        Assert.notNull(query, "No query String or Closure argument given to " + getMethodName() + "(): you must supply one");
-        final Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
+        SearchableMethod suggestQueryMethod = getMethodFactory().getMethod("suggestQuery");
 
-        SearchCompassCallback searchCallback = new SearchCompassCallback(options, query);
+        SearchCompassCallback searchCallback = new SearchCompassCallback(getCompass(), getDefaultOptions(), args);
         searchCallback.setGrailsApplication(grailsApplication);
         searchCallback.setCompassQueryBuilder(compassQueryBuilder);
         searchCallback.setHitCollector(hitCollector);
         searchCallback.setSearchResultFactory(searchResultFactory);
+        searchCallback.setSuggestQueryMethod(suggestQueryMethod);
         return doInCompass(searchCallback);
-    }
-
-    private Object getQuery(Object[] args) {
-        for (int i = 0, max = args.length; i < max; i++) {
-            if (args[i] instanceof Closure || args[i] instanceof String) {
-                return args[i];
-            }
-        }
-        return null;
     }
 
     public void setCompassQueryBuilder(SearchableCompassQueryBuilder compassQueryBuilder) {
@@ -89,38 +80,81 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
     }
 
     public static class SearchCompassCallback implements CompassCallback {
-        private final Map options;
-        private final Object query;
-
+        private Object[] args;
+        private Map defaultOptions;
         private GrailsApplication grailsApplication;
         private SearchableCompassQueryBuilder compassQueryBuilder;
         private SearchableHitCollector hitCollector;
         private SearchableSearchResultFactory searchResultFactory;
+        private SearchableMethod suggestQueryMethod;
 
-        public SearchCompassCallback(Map options, Object query) {
-            this.options = options;
-            this.query = query;
+        public SearchCompassCallback(Compass compass, Map defaultOptions, Object[] args) {
+            this.args = args;
+            this.defaultOptions = defaultOptions;
         }
 
         public Object doInCompass(CompassSession session) throws CompassException {
-            CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, options, query);
+            Map options = SearchableMethodUtils.getOptionsArgument(args, defaultOptions);
+            CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, options, args);
             long start = System.currentTimeMillis();
             CompassHits hits = compassQuery.hits();
             if (LOG.isDebugEnabled()) {
                 long time = System.currentTimeMillis() - start;
                 LOG.debug("query: [" + compassQuery + "], [" + hits.length() + "] hits, took [" + time + "] millis");
             }
-//                long time = System.currentTimeMillis() - start;
-//                System.out.println("query: [" + compassQuery + "], [" + hits.length() + "] hits, took [" + time + "] millis");
+            if (hitCollector == null && searchResultFactory == null) {
+                Assert.notNull(options.get("result"), "Missing 'result' option for search/query method: this should be provided if hitCollector/searchResultFactory are null to determine the type of result to return");
+                String result = (String) options.get("result");
+                if (result.equals("top")) {
+                    hitCollector = new DefaultSearchableTopHitCollector();
+                    searchResultFactory = new SearchableHitsOnlySearchResultFactory();
+                } else if (result.equals("every")) {
+                    hitCollector = new DefaultSearchableEveryHitCollector();
+                    searchResultFactory = new SearchableHitsOnlySearchResultFactory();
+                } else if (result.equals("searchResult")) {
+                    hitCollector = new DefaultSearchableSubsetHitCollector();
+                    searchResultFactory = new SearchableSubsetSearchResultFactory();
+                } else if (result.equals("count")) {
+                    hitCollector = new CountOnlyHitCollector();
+                    searchResultFactory = new SearchableHitsOnlySearchResultFactory();
+                } else {
+                    throw new IllegalArgumentException("Invalid 'result' option for search/query method [" + result + "]. Supported values are ['searchResult', 'every', 'top']");
+                }
+            }
             Object collectedHits = hitCollector.collect(hits, options);
             Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, options);
 
-            doWithHighlighter(collectedHits, hits, searchResult);
+            doWithHighlighter(collectedHits, hits, searchResult, options);
 
+            Object suggestOption = options.get("suggestQuery");
+            if (searchResult instanceof Map && suggestOption != null) {
+                addSuggestedQuery((Map) searchResult, suggestOption);
+            }
             return searchResult;
         }
 
-        public void doWithHighlighter(Object collectedHits, CompassHits hits, Object searchResult) {
+        private void addSuggestedQuery(Map searchResult, Object suggestOption) {
+            if (suggestOption instanceof Boolean && suggestOption.equals(Boolean.FALSE)) {
+                return;
+            }
+            Object[] suggestArgs = new Object[args.length];
+            for (int i = 0; i < args.length; i++) {
+                if (args[i] instanceof Map) {
+                    Map searchOptions = (Map) args[i];
+                    Map suggestOptions = new HashMap(searchOptions);
+                    if (suggestOption instanceof Map) {
+                        suggestOptions.putAll((Map) suggestOption);
+                    }
+                    suggestOptions.remove("suggestQuery"); // remove the option itself
+                    suggestArgs[i] = suggestOptions;
+                } else {
+                    suggestArgs[i] = args[i];
+                }
+            }
+            searchResult.put("suggestedQuery", suggestQueryMethod.invoke(suggestArgs));
+        }
+
+        public void doWithHighlighter(Object collectedHits, CompassHits hits, Object searchResult, Map options) {
             if (!(collectedHits instanceof Collection)) {
                 return;
             }
@@ -151,6 +185,10 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
 
         public void setSearchResultFactory(SearchableSearchResultFactory searchResultFactory) {
             this.searchResultFactory = searchResultFactory;
+        }
+
+        public void setSuggestQueryMethod(SearchableMethod suggestQueryMethod) {
+            this.suggestQueryMethod = suggestQueryMethod;
         }
     }
 }

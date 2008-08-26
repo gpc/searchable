@@ -28,8 +28,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultIndexM
 import org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultReindexMethod;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Default implementation of creating SearchableMethod instances
@@ -38,17 +37,23 @@ import java.util.HashMap;
  */
 public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
     private static final Log LOG = LogFactory.getLog(DefaultSearchableMethodFactory.class);
-    private static final Map DEFAULT_SEARCH_DEFAULTS = new HashMap() {{
-        put("escape", Boolean.FALSE);
-        put("offset", new Integer(0));
-        put("max", new Integer(10));
-        put("reload", Boolean.FALSE);
-    }};
-    private static final Map DEFAULT_TERM_FREQ_DEFAULTS = new HashMap() {{
-        put("properties", new String[] {"all"});
+    private static final Map DEFAULT_METHOD_OPTIONS = new HashMap() {{
+        put("search", new HashMap() {{
+            put("escape", Boolean.FALSE);
+            put("offset", new Integer(0));
+            put("max", new Integer(10));
+            put("reload", Boolean.FALSE);
+        }});
+        put("termFreqs", new HashMap() {{
+            put("properties", new String[] {"zzz-all"}); // todo make it respect the configured name
+        }});
+        put("suggestQuery", new HashMap() {{
+            put("userFriendly", Boolean.TRUE);
+            put("emulateCapitalisation", Boolean.TRUE);
+        }});
     }};
 
-    private Map searchDefaults;
+    private Map defaultMethodOptions = DEFAULT_METHOD_OPTIONS;
     private Compass compass;
     private CompassGps compassGps;
     private GrailsApplication grailsApplication;
@@ -56,7 +61,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
     public SearchableMethod getMethod(final Class clazz, String methodName) {
         AbstractSearchableMethod method = (AbstractSearchableMethod) getMethod(methodName);
         method.setDefaultOptions(new HashMap(method.getDefaultOptions()) {{ // clone to avoid corrupting original
-            put("class", clazz);
+            put("match", clazz);
         }});
         return method;
     }
@@ -64,67 +69,103 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
     public SearchableMethod getMethod(String methodName) {
         // TODO refactor to (injected) lookup map
         if (methodName.equals("indexAll")) {
-            return new DefaultIndexMethod(methodName, compass, compassGps, true);
+            System.out.println("The Searchable Plugin 'indexAll' method is deprecated and will be removed in the next version: please use 'index' instead");
+            LOG.warn("The Searchable Plugin 'indexAll' method is deprecated and will be removed in the next version: please use 'index' instead");
+            return new DefaultIndexMethod(methodName, compass, compassGps);
         }
         if (methodName.equals("index")) {
-            return new DefaultIndexMethod(methodName, compass, compassGps, false);
+            return new DefaultIndexMethod(methodName, compass, compassGps);
         }
         if (methodName.equals("unindexAll")) {
-            return new DefaultUnindexMethod(methodName, compass, true);
+            System.out.println("The Searchable Plugin 'unindexAll' method is deprecated and will be removed in the next version: please use 'unindex' instead");
+            LOG.warn("The Searchable Plugin 'unindexAll' method is deprecated and will be removed in the next version: please use 'unindex' instead");
+            return new DefaultUnindexMethod(methodName, compass);
         }
         if (methodName.equals("unindex")) {
-            return new DefaultUnindexMethod(methodName, compass, false);
+            return new DefaultUnindexMethod(methodName, compass);
         }
         if (methodName.equals("reindexAll")) {
-            return new DefaultReindexMethod(methodName, compass, compassGps, true);
+            System.out.println("The Searchable Plugin 'reindexAll' method is deprecated and will be removed in the next version: please use 'reindex' instead");
+            LOG.warn("The Searchable Plugin 'reindexAll' method is deprecated and will be removed in the next version: please use 'reindex' instead");
+            return new DefaultReindexMethod(methodName, compass, compassGps, this);
         }
         if (methodName.equals("reindex")) {
-            return new DefaultReindexMethod(methodName, compass, compassGps, false);
+            return new DefaultReindexMethod(methodName, compass, compassGps, this);
         }
 
         if (methodName.equals("termFreqs")) {
-            return new DefaultTermFreqsMethod(methodName, compass, grailsApplication, DEFAULT_TERM_FREQ_DEFAULTS);
+            return new DefaultTermFreqsMethod(methodName, compass, grailsApplication, getDefaultOptions(methodName));
         }
 
-        DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, buildSearchDefaults());
         if (methodName.equals("search")) {
+            DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
-            searchMethod.setHitCollector(new DefaultSearchableSubsetHitCollector());
-            searchMethod.setSearchResultFactory(new SearchableSubsetSearchResultFactory());
+            searchMethod.getDefaultOptions().put("result", "searchResult");
+            return searchMethod;
         }
-        if (methodName.equals("searchTop")) {
-            searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
-            searchMethod.setHitCollector(new DefaultSearchableTopHitCollector());
-            searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
-        }
-        if (methodName.equals("searchEvery")) {
-            searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
-            searchMethod.setHitCollector(new DefaultSearchableEveryHitCollector());
-            searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
+        if (methodName.equals("moreLikeThis")) {
+            DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
+            searchMethod.setCompassQueryBuilder(new MoreLikeThisCompassQueryBuilder(compass));
+            searchMethod.getDefaultOptions().put("result", "searchResult");
+            return searchMethod;
         }
         if (methodName.equals("countHits")) {
+            DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
             searchMethod.setHitCollector(new CountOnlyHitCollector());
             searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
+            return searchMethod;
         }
-        return searchMethod;
-    }
-
-    private Map buildSearchDefaults() {
-        Map m = new HashMap(DEFAULT_SEARCH_DEFAULTS);
-        if (searchDefaults != null) {
-            m.putAll(searchDefaults);
+        if (methodName.equals("searchTop")) {
+//            System.out.println("The Searchable Plugin 'searchTop' method is deprecated and will be removed in the next version: please use 'search(result: 'top', ...)' instead");
+//            LOG.warn("The Searchable Plugin 'searchTop' method is deprecated and will be removed in the next version: please use 'search(result: 'top', ...)' instead");
+            DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
+            searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
+            searchMethod.setHitCollector(new DefaultSearchableTopHitCollector());
+            searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
+            return searchMethod;
         }
-        LOG.debug("search defaults: " + m);
-        return m;
+        if (methodName.equals("searchEvery")) {
+//            System.out.println("The Searchable Plugin 'searchEvery' method is deprecated and will be removed in the next version: please use 'search(result: 'every', ...)' instead");
+//            LOG.warn("The Searchable Plugin 'searchEvery' method is deprecated and will be removed in the next version: please use 'search(result: 'every', ...)' instead");
+            DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
+            searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
+            searchMethod.setHitCollector(new DefaultSearchableEveryHitCollector());
+            searchMethod.setSearchResultFactory(new SearchableHitsOnlySearchResultFactory());
+            return searchMethod;
+        }
+        if (methodName.equals("suggestQuery")) {
+            DefaultSuggestQueryMethod suggestQueryMethod = new DefaultSuggestQueryMethod(methodName, compass, grailsApplication, getDefaultOptions(methodName));
+            suggestQueryMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
+            return suggestQueryMethod;
+        }
+        throw new IllegalArgumentException("Searchable Method not found for name [" + methodName + "]");
     }
 
-    public Map getSearchDefaults() {
-        return searchDefaults;
+    private Map getDefaultOptions(String methodName) {
+        if (defaultMethodOptions.containsKey(methodName)) {
+            return (Map) defaultMethodOptions.get(methodName);
+        }
+        final Collection searchMethodsNames = Arrays.asList(new String[] {"search", "searchTop", "searchEvery", "moreLikeThis", "countHits"});
+        if (searchMethodsNames.contains(methodName)) {
+            return (Map) defaultMethodOptions.get("search");
+        }
+        return null;
     }
 
-    public void setSearchDefaults(Map searchDefaults) {
-        this.searchDefaults = searchDefaults;
+    public Map getDefaultMethodOptions() {
+        return defaultMethodOptions;
+    }
+
+    /**
+     * Merges the user provided method default options with the defaults in {@link #DEFAULT_METHOD_OPTIONS}
+     * @param defaultMethodOptions
+     */
+    public void setDefaultMethodOptions(Map defaultMethodOptions) {
+        Map tmp = new HashMap();
+        tmp.putAll(DEFAULT_METHOD_OPTIONS);
+        tmp.putAll(defaultMethodOptions);
+        this.defaultMethodOptions = tmp;
     }
 
     public Compass getCompass() {

@@ -29,6 +29,8 @@ import org.compass.core.spi.InternalCompass
 import org.compass.core.mapping.CompassMapping
 import org.compass.core.mapping.osem.ClassMapping
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
+import org.compass.core.mapping.internal.DefaultCompassMapping
+import org.compass.core.util.ClassUtils
 
 /**
 * @author Maurice Nicholson
@@ -121,13 +123,13 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
         def getClassMapping = { Class clazz ->
             ClassMapping classMapping = new ClassMapping()
             classMapping.clazz = clazz
-            classMapping.alias = clazz.simpleName + "alias"
+            classMapping.alias = ClassUtils.getShortName(clazz) + "alias"
             classMapping.name = clazz.name
             classMapping
         }
 
         // with inheritance
-        CompassMapping mapping = new CompassMapping()
+        CompassMapping mapping = new DefaultCompassMapping()
         mapping.addMapping(getClassMapping(Parent.class))
         mapping.addMapping(getClassMapping(SearchableChildOne.class))
         mapping.addMapping(getClassMapping(SearchableChildTwo.class))
@@ -146,7 +148,7 @@ class SearchableGrailsDomainClassCompassMappingUtilsTests extends GroovyTestCase
         SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, SearchableGrandChild.class, application) as List == ["SearchableGrandChildalias"]
 
         // without inheritance
-        mapping = new CompassMapping()
+        mapping = new DefaultCompassMapping()
         mapping.addMapping(getClassMapping(Post.class))
         mapping.addMapping(getClassMapping(Comment.class))
         mapping.addMapping(getClassMapping(User.class))

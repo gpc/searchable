@@ -1,6 +1,8 @@
 import org.compass.core.CompassTermFreq
 
 class ArtistTests extends GroovyTestCase {
+    def compassGps
+    def compass
 
     void setUp() {
         for (name in ['Elvis Costello', 'Elvis Presley', 'Loudon Wainwright III', 'Martha Wainwright']) {
@@ -13,6 +15,7 @@ class ArtistTests extends GroovyTestCase {
             assert artist.validate(), artist.errors
             assert artist.save()
         }
+        compass.getSearchEngineIndexManager().refreshCache()
     }
 
     void tearDown() {
@@ -31,6 +34,19 @@ class ArtistTests extends GroovyTestCase {
         assert searchResult.results*.class.unique() == [Artist]
         assert searchResult.results*.name.containsAll(['Loudon Wainwright III', 'Martha Wainwright'])
         assert searchResult.results.every { it.albums.size() == 2 }
+
+        // top search hit
+        def top = Artist.search("elvis presley", result: 'top')
+        assert top instanceof Artist
+        assert top.name == 'Elvis Presley'
+        assert top.albums.size() == 2
+
+        // every search hit
+        def hits = Artist.search("elvis", result: 'every')
+        assert hits.size() == 2
+        assert hits*.class.unique() == [Artist]
+        assert hits*.name.containsAll(['Elvis Costello', 'Elvis Presley'])
+        assert hits.every { it.albums.size() == 2 }
 	}
 
 	void testSearchTop() {
@@ -47,6 +63,34 @@ class ArtistTests extends GroovyTestCase {
         assert hits*.class.unique() == [Artist]
         assert hits*.name.containsAll(['Elvis Costello', 'Elvis Presley'])
         assert hits.every { it.albums.size() == 2 }
+    }
+
+    void testCountHits() {
+        def count = Artist.countHits("elvis")
+        assert count == 2, count
+    }
+    
+    // note: requires term-vector on all property
+    void testMoreLikeThisInstanceMethod() {
+        def ep = Artist.findAll().find { it.name == 'Elvis Presley' }
+        println "id of elvis is [${ep.id}]"
+        def hits = ep.moreLikeThis(minResourceFreq: 1, minTermFreq: 1)
+        println hits
+//        assert hits.results.size() == 1, hits.results.size()
+//        assert hits.results[0].name == 'Elvis Costello'
+        assert hits.results.size() > 0, hits.results.size()
+    }
+
+    // note: requires term-vector on all property
+    void testMoreLikeThisStaticMethod() {
+        def ep = Artist.findAll().find { it.name == 'Elvis Presley' }
+        def hits = Artist.moreLikeThis(ep.id, minResourceFreq: 1, minTermFreq: 1)
+        println hits
+//        assert hits.results.size() == 1, hits.results.size()
+//        assert hits.results[0].name == 'Elvis Costello'
+        assert hits.results.size() > 0, hits.results.size()
+
+        // todo also count/every/top
     }
 
     void testTermFreqs() {

@@ -38,7 +38,7 @@ public class DefaultTermFreqsMethod extends AbstractSearchableMethod implements 
     private GrailsApplication grailsApplication;
 
     public DefaultTermFreqsMethod(String methodName, Compass compass, GrailsApplication grailsApplication, Map defaultOptions) {
-        super(methodName, compass, defaultOptions);
+        super(methodName, compass, null, defaultOptions);
         this.grailsApplication = grailsApplication;
     }
 
@@ -97,7 +97,11 @@ public class DefaultTermFreqsMethod extends AbstractSearchableMethod implements 
             options = org.codehaus.groovy.grails.plugins.searchable.util.MapUtils.nullSafeAddMaps(defaultOptions, options);
             tfa.setNormalizeRange(getNormalizeRange(options));
             tfa.setSize(MapUtils.getInteger(options, "size"));
-            tfa.setClazz((Class) options.get("class"));
+            if (options.containsKey("class")) {
+                tfa.setClazz((Class) options.get("class"));
+            } else {
+                tfa.setClazz((Class) options.get("match"));
+            }
             String sortName = MapUtils.getString(options, "sort");
             if (sortName != null) {
                 Assert.isTrue(sortName.equalsIgnoreCase("term") || sortName.equalsIgnoreCase("freq"), "sort option must be either 'term' or 'freq' but was '" + sortName + "'");

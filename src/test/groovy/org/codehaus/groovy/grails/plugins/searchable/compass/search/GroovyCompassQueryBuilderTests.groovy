@@ -47,20 +47,20 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 lt('pages', 50)         // <-- uses CompassQueryBuilder#lt, and adds a boolean "should" clause
                 term('type', 'poetry')  // <-- uses CompassQueryBuilder#term, and adds a boolean "should" clause
             }
-            assert query.toString() == "pages:[* TO 50} type:poetry"
+            assert query.toString() == "pages:[* TO 50} type:poetry", query.toString()
 
             query = builder.buildQuery {                          // <-- creates an implicit boolean query
                 lt('pages', 50)               // <-- uses CompassQueryBuilder#lt, and adds a boolean "should"
                 must(term('type', 'poetry'))  // <-- uses CompassQueryBuilder#term, adds a boolean "must"
             }
-            assert query.toString() == "pages:[* TO 50} +type:poetry"
+            assert query.toString() == "pages:[* TO 50} +type:poetry", query.toString()
 
             query = builder.buildQuery {                           // <-- creates an implicit boolean query
                 lt('pages', 50)                // <-- uses CompassQueryBuilder#lt, and adds a boolean "should"
                 must(term('type', 'poetry'))   // <-- uses CompassQueryBuilder#term, adds a boolean "must"
                 mustNot(term('theme', 'war'))  // <-- uses CompassQueryBuilder#term, adds a boolean "mustNot"
             }
-            assert query.toString() == "pages:[* TO 50} +type:poetry -theme:war"
+            assert query.toString() == "pages:[* TO 50} +type:poetry -theme:war", query.toString()
 
             query = builder.buildQuery {                                   // <-- creates an implicit boolean query
                 must(queryString("all hands on deck")) // <-- uses CompassQueryBuilder#queryString, and adds a boolean must
@@ -69,7 +69,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 mustNot(term('theme', 'war'))          // <-- uses CompassQueryBuilder#term, adds a boolean "mustNot"
             }
             // "on" is obviously a stop word for the default analyzer, so it's removed
-            assert query.toString() == "+(all:all all:hands all:deck) pages:[* TO 50} +type:poetry -theme:war"
+            assert query.toString() == "+(+all +hands +deck) pages:[* TO 50} +type:poetry -theme:war", query.toString()
 
             query = builder.buildQuery {                                      // <-- creates an implicit boolean query
                 must(queryString("all hands on deck") {   // <-- creates a nested CompassQueryStringBuilder context
@@ -80,7 +80,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 must(term('type', 'poetry'))              // <-- uses CompassQueryBuilder#term, adds a boolean "must"
                 mustNot(term('theme', 'war'))             // <-- uses CompassQueryBuilder#term, adds a boolean "mustNot"
             }
-            assert query.toString() == "+(+body:all +body:hands +body:deck) pages:[* TO 50} +type:poetry -theme:war"
+            assert query.toString() == "+(+body:all +body:hands +body:deck) pages:[* TO 50} +type:poetry -theme:war", query.toString()
 
             query = builder.buildQuery {                                    // <-- creates an implicit boolean query
                 must(queryString("all hands on deck", [useAndDefaultOperator: true, defaultSearchProperty: 'body']))
@@ -90,7 +90,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 must(term('type', 'poetry'))            // <-- uses CompassQueryBuilder#term, adds a boolean "must"
                 mustNot(term('theme', 'war'))           // <-- uses CompassQueryBuilder#term, adds a boolean "mustNot"
             }
-            assert query.toString() == "+(+body:all +body:hands +body:deck) pages:[* TO 50} +type:poetry -theme:war"
+            assert query.toString() == "+(+body:all +body:hands +body:deck) pages:[* TO 50} +type:poetry -theme:war", query.toString()
 
             query = builder.buildQuery {                                    // <-- creates an implicit boolean query
                 must(multiPhrase("body", [slop: 2]) {   // <-- creates a nested CompassMultiPhraseQueryBuilder context, calling setSlop(2)
@@ -103,7 +103,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 must(term('type', 'poetry'))            // <-- uses CompassQueryBuilder#term, adds a boolean "must"
                 mustNot(term('theme', 'war'))           // <-- uses CompassQueryBuilder#term, adds a boolean "mustNot"
             }
-            assert query.toString() == '+body:"all hands on deck"~2 pages:[* TO 50} +type:poetry -theme:war'
+            assert query.toString() == '+body:"all hands on deck"~2 pages:[* TO 50} +type:poetry -theme:war', query.toString()
 
             def date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2007-12-01 12:00:00")
             query = builder.buildQuery {                                    // <-- creates an implicit boolean query
@@ -123,7 +123,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 sort(CompassQuery.SortImplicitType.SCORE)                  // <-- uses CompassQuery#addSort
                 sort('authorSurname', CompassQuery.SortPropertyType.STRING) // <-- uses CompassQuery#addSort
             }
-            assert query.toString() == '+body:"all hands on deck"~2 +(pages:[50 TO *] pages:[* TO 50}^1.5) +type:poetry -theme:war publishedDate:[2007-12-01-12-00-00-0-PM TO *]'
+            assert query.toString() == '+body:"all hands on deck"~2 +(pages:[50 TO *] pages:[* TO 50}^1.5) +type:poetry -theme:war publishedDate:[2007-12-01-12-00-00-0-PM TO *]', query.toString()
         }
     }
 
@@ -135,9 +135,20 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
 
             // should not fail
             query = builder.buildQuery {
-                queryString("any terms optional")
+                queryString("any terms optional", [defaultOperator: 'or'])
             }
-            assert query.toString() == "all:any all:terms all:optional"
+            assert query.toString() == "any terms optional", query.toString()
+
+            // as above but without brackets for options Map
+            query = builder.buildQuery {
+                queryString("any terms optional", defaultOperator: 'or')
+            }
+            assert query.toString() == "any terms optional", query.toString()
+
+            query = builder.buildQuery {
+                queryString "any terms optional", defaultOperator: 'or'
+            }
+            assert query.toString() == "any terms optional", query.toString()
 
             shouldFail(UnsupportedOperationException) {
                 builder.buildQuery {
@@ -152,30 +163,30 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     useAndDefaultOperator()
                 }
             }
-            assert query.toString() == "+all:all +all:terms +all:required"
+            assert query.toString() == "+all +terms +required", query.toString()
 
             // Date properties can be evaluated against date objects
             def date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2007-12-01 12:00:00")
             query = builder.buildQuery {
                 gt("dateModified", date)
             }
-            assert query.toString() == "dateModified:{2007-12-01-12-00-00-0-PM TO *]"
+            assert query.toString() == "dateModified:{2007-12-01-12-00-00-0-PM TO *]", query.toString()
 
             query = builder.buildQuery {
                 term("type", "ARTS")
             }
-            assert query.toString() == "type:ARTS"
+            assert query.toString() == "type:ARTS", query.toString()
 
             query = builder.buildQuery {
                 wildcard("name", "Lond*")
             }
-            assert query.toString() == "name:Lond*"
+            assert query.toString() == "name:Lond*", query.toString()
 
             query = builder.buildQuery {
                 wildcard("name", "Lond*")
                 addSort("name", CompassQuery.SortPropertyType.STRING)
             }
-            assert query.toString() == "name:Lond*"
+            assert query.toString() == "name:Lond*", query.toString()
 
             query = builder.buildQuery {
                 bool {
@@ -185,7 +196,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     })
                 }
             }
-            assert query.toString() == "name:Lond* type:ARTS^2.0"
+            assert query.toString() == "name:Lond* type:ARTS^2.0", query.toString()
 
             // Same as above but using BigDecimal instead of float in method arg
             query = builder.buildQuery {
@@ -196,7 +207,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     })
                 }
             }
-            assert query.toString() == "name:Lond* type:ARTS^2.0"
+            assert query.toString() == "name:Lond* type:ARTS^2.0", query.toString()
 
             query = builder.buildQuery {
                 bool(true) {
@@ -206,7 +217,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     addShould(lt("createdAt", "20060212"))
                 }
             }
-            assert query.toString() == "name:lond* createdAt:[* TO 20060212}"
+            assert query.toString() == "name:lond* createdAt:[* TO 20060212}", query.toString()
 
             query = builder.buildQuery {
                 bool {
@@ -221,7 +232,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 addSort("familyName", CompassQuery.SortPropertyType.STRING)
                 addSort("birthdate", CompassQuery.SortPropertyType.INT)
             }
-            assert query.toString() == "+name:jack -familyName:london text:\"(blood and guts)\"~5^2.0"
+            assert query.toString() == "+name:jack -familyName:london text:\"(blood and guts)\"~5^2.0", query.toString()
 
             // Shorthand options: invalid option
             shouldFail(UnsupportedOperationException) {
@@ -234,13 +245,13 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
             query = builder.buildQuery {
                 term('code', 'DEF', [boost: 2.5f])
             }
-            assert query.toString() == 'code:DEF^2.5'
+            assert query.toString() == 'code:DEF^2.5', query.toString()
 
             // Same as above but using BigDecimal as option value
             query = builder.buildQuery {
                 term('code', 'DEF', [boost: 2.5]) // <-- BigDecimal 
             }
-            assert query.toString() == 'code:DEF^2.5'
+            assert query.toString() == 'code:DEF^2.5', query.toString()
 
             // Shorthand options: one for the multi-phrase builder and one for the query
             query = builder.buildQuery {
@@ -249,13 +260,39 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     add("ajar")
                 }
             }
-            assert query.toString() == 'text:"door ajar"~5^2.0'
+            assert query.toString() == 'text:"door ajar"~5^2.0', query.toString()
 
             // Shorthand options: special case for the String query builder useAndDefaultOperator() method
             query = builder.buildQuery {
                 queryString('Hawaii Five-O', [defaultSearchProperty: 'shows', useAndDefaultOperator: true])
             }
-            assert query.toString() == '+shows:hawaii +shows:"five o"'
+            assert query.toString() == '+hawaii +"five o"', query.toString() // todo test that defaultSearchProperty is right
+//            assert query.toString() == '+shows:hawaii +shows:"five o"', query.toString()
+
+            // Shorthand options: special case for the String query builder useOrDefaultOperator() method
+            query = builder.buildQuery {
+                queryString('Hawaii Five-O', [defaultSearchProperty: 'shows', useAndDefaultOperator: false])
+            }
+            assert query.toString() == 'hawaii "five o"', query.toString() // todo test that defaultSearchProperty is right
+//            assert query.toString() == '+shows:hawaii +shows:"five o"', query.toString()
+
+            // Shorthand options: special case for the String query builder useAndDefaultOperator() method
+            query = builder.buildQuery {
+                queryString('Hawaii Five-O', [defaultOperator: 'and'])
+            }
+            assert query.toString() == '+hawaii +"five o"', query.toString() // todo test that defaultSearchProperty is right
+
+            // Shorthand options: special case for the String query builder useOrDefaultOperator() method
+            query = builder.buildQuery {
+                queryString('Hawaii Five-O', [defaultOperator: 'or'])
+            }
+            assert query.toString() == 'hawaii "five o"', query.toString() // todo test that defaultSearchProperty is right
+
+            shouldFail(IllegalArgumentException) {
+                query = builder.buildQuery {
+                    queryString('Hawaii Five-O', [defaultOperator: 'quack'])
+                }
+            }
 
             // Same as above for multi property query string
             query = builder.buildQuery {
@@ -264,22 +301,23 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     add('titles')
                 }
             }
-            assert query.toString() == '+(shows:hawaii titles:hawaii) +(shows:"five o" titles:"five o")'
+            assert query.toString() == '+(shows:hawaii titles:hawaii) +(shows:"five o" titles:"five o")', query.toString()
 
-            // When value is false, has no effect
+            // When value is false means OR
             query = builder.buildQuery {
                 queryString('Hawaii Five-O', [defaultSearchProperty: 'shows', useAndDefaultOperator: false])
             }
-            assert query.toString() == 'shows:hawaii shows:"five o"'
+            assert query.toString() == 'hawaii "five o"', query.toString() // todo test that defaultSearchProperty is right
+//            assert query.toString() == 'shows:hawaii shows:"five o"', query.toString()
 
-            // When value is false, has no effect
+            // When value is false means OR
             query = builder.buildQuery {
                 multiPropertyQueryString('Hawaii Five-O', [useAndDefaultOperator: false]) {
                     add('shows')
                     add('titles')
                 }
             }
-            assert query.toString() == '(shows:hawaii titles:hawaii) (shows:"five o" titles:"five o")'
+            assert query.toString() == '(shows:hawaii titles:hawaii) (shows:"five o" titles:"five o")', query.toString()
 
             // Implicit boolean (implicit because there's no "bool") with method args
             query = builder.buildQuery {
@@ -287,7 +325,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 addMustNot(term("familyName", "london"))
                 addShould(queryString("blah"))
             }
-            assert query.toString() == "+name:jack -familyName:london all:blah"
+            assert query.toString() == "+name:jack -familyName:london blah", query.toString()
 
             // Implicit boolean with closure arg
             query = builder.buildQuery {
@@ -299,7 +337,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     term('keywords', 'flares')
                 }
             }
-            assert query.toString() == "+(category:shopping style:retro) -(keywords:flares)"
+            assert query.toString() == "+(category:shopping style:retro) -(keywords:flares)", query.toString()
 
             // Implicit lazy boolean (lazy because it omits the "should" for gt() and queryString())
             query = builder.buildQuery {
@@ -308,7 +346,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 addMustNot(term("familyName", "london"))
                 queryString("blah")
             }
-            assert query.toString() == "books:{5 TO *] +name:jack -familyName:london all:blah"
+            assert query.toString() == "books:{5 TO *] +name:jack -familyName:london blah", query.toString()
 
             // Implicit lazy boolean
             query = builder.buildQuery {
@@ -316,7 +354,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 term('keywords', 'hot')
                 must(lt('price', 300))
             }
-            assert query.toString() == "(all:activity all:holiday) keywords:hot +price:[* TO 300}"
+            assert query.toString() == "(+activity +holiday) keywords:hot +price:[* TO 300}", query.toString()
 
             // Nested and semi-implicit boolean
             query = builder.buildQuery {
@@ -333,7 +371,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     }
                 }
             }
-            assert query.toString() == "+type:Airport +(code:JFK^2.0 (+name:jfk*) (+cityName:jfk*))"
+            assert query.toString() == "+type:Airport +(code:JFK^2.0 (+name:jfk*) (+cityName:jfk*))", query.toString()
 
             query = builder.buildQuery {
                 must term('type', 'Airport')
@@ -349,7 +387,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     }
                 }
             }
-            assert query.toString() == "+type:Airport +((+name:jfk*) (+cityName:jfk*) code:JFK^2.0)"
+            assert query.toString() == "+type:Airport +((+name:jfk*) (+cityName:jfk*) code:JFK^2.0)", query.toString()
 
             query = builder.buildQuery {
                 must term('type', 'Airport')
@@ -365,7 +403,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     }
                 }
             }
-            assert query.toString() == "+type:Airport +(code:NEW^2.0 (+(name:new name:york)))"
+            assert query.toString() == "+type:Airport +(code:NEW^2.0 (+(name:new name:york)))", query.toString()
 
             // Nested implicit boolean with nested lazy boolean
             query = builder.buildQuery {
@@ -377,7 +415,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     must(queryString('theory'))
                 })
             }
-            assert query.toString() == "+keywords:book -keywords:audio +(all:color all:colour +all:theory)"
+            assert query.toString() == "+keywords:book -keywords:audio +(color colour +theory)", query.toString()
 
             // Nested implicit boolean with nested implicit lazy boolean (same as above without "bool" in last must())
             query = builder.buildQuery {
@@ -389,7 +427,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     must(queryString('theory'))
                 })
             }
-            assert query.toString() == "+keywords:book -keywords:audio +(all:color all:colour +all:theory)"
+            assert query.toString() == "+keywords:book -keywords:audio +(color colour +theory)", query.toString()
 
             // Implicit lazy boolean, with shorter sort method name
             query = builder.buildQuery {
@@ -401,7 +439,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 sort("familyName", CompassQuery.SortPropertyType.STRING)
                 sort("birthdate", CompassQuery.SortPropertyType.INT)
             }
-            assert query.toString() == '+name:jack -familyName:london +contents:"(blood and guts)"~5^2.0'
+            assert query.toString() == '+name:jack -familyName:london +contents:"(blood and guts)"~5^2.0', query.toString()
 
             // Implicit lazy boolean, with shorter sort method name, and last boolean clause implicit should
             query = builder.buildQuery {
@@ -413,7 +451,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 sort("familyName", CompassQuery.SortPropertyType.STRING)
                 sort("birthdate", CompassQuery.SortPropertyType.INT)
             }
-            assert query.toString() == '+name:jack -familyName:london contents:"(blood and guts)"~5^2.0'
+            assert query.toString() == '+name:jack -familyName:london contents:"(blood and guts)"~5^2.0', query.toString()
 
             // Use of supported method name as variable
             // "term" builds a term query when invoked as a method, but is here used as a variable
@@ -424,19 +462,20 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                     queryString(term)
                 }
             }
-            assert query.toString() == 'all:grails all:searchable all:plugin'
+            assert query.toString() == 'grails searchable plugin', query.toString()
 
             // Shorthand String query options; so it is more interchangeable with the String query API
             query = builder.buildQuery {
                 queryString('ham and eggs', [defaultProperty: 'title', andDefaultOperator: true, parser: 'default'])
             }
-            assert query.toString() == '+title:ham +title:eggs'
+            assert query.toString() == '+ham +eggs', query.toString()  // todo test that defaultSearchProperty is right
+//            assert query.toString() == '+title:ham +title:eggs', query.toString()
 
             // Additional (non-Compass) String query options; so it is more interchangeable with the String query API
             query = builder.buildQuery {
-                queryString('"ham "and "eggs', [escape: true])
+                queryString('"ham "and "eggs', [escape: true, defaultOperator: 'or'])
             }
-            assert query.toString() == 'all:ham all:eggs'
+            assert query.toString() == 'ham eggs', query.toString()
         }
     }
 
@@ -447,7 +486,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
             def query
 
             query = builder.term("type", "ARTS")
-            assert query.toString() == "type:ARTS"
+            assert query.toString() == "type:ARTS", query.toString()
 
             // boolean with short method names
             query = builder.bool {
@@ -455,7 +494,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 mustNot(term('keywords', 'audio'))
                 should(queryString('color theory'))
             }
-            assert query.toString() == "+keywords:book -keywords:audio (all:color all:theory)"
+            assert query.toString() == "+keywords:book -keywords:audio (+color +theory)", query.toString()
 
             // Semi-implicit boolean: the "should" is omitted for the should clause
             query = builder.bool {
@@ -463,7 +502,7 @@ class GroovyCompassQueryBuilderTests extends GroovyTestCase {
                 mustNot(term('keywords', 'audio'))
                 queryString('color theory')
             }
-            assert query.toString() == "+keywords:book -keywords:audio (all:color all:theory)"
+            assert query.toString() == "+keywords:book -keywords:audio (+color +theory)", query.toString()
         }
     }
 

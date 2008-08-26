@@ -34,6 +34,7 @@ import org.compass.core.engine.SearchEngineFactory
 import org.compass.core.Compass
 import org.compass.core.spi.InternalCompassSession
 import org.compass.core.spi.InternalCompass
+import org.compass.core.ResourceFactory
 
 /**
 *
@@ -62,12 +63,6 @@ class StringMapConverterTests extends GroovyTestCase {
    // TODO test supportUnmarshall = false 
 
     void testRoundtrip() {
-        def maps = [
-            EMPTY_MAP: EMPTY_MAP_AS_RESOURCE,
-            MY_STRING_MAP: MY_STRING_MAP_AS_RESOURCE,
-            NUMBERS_MAP: NUMBERS_MAP_AS_RESOURCE
-        ]
-
         for (map in [EMPTY_MAP, MY_STRING_MAP, NUMBERS_MAP]) {
             def resource = marshallToResourceMap(map, "theMap", true)
             assert unmarshallFromResourceMap(resource, "theMap", true) == map
@@ -113,7 +108,7 @@ class StringMapConverterTests extends GroovyTestCase {
     }
 
     private unmarshallFromResourceMap(resourceMap, propertyName, handleNulls = false) {
-        def resource = [get: {key ->
+        def resource = [getValue: {key ->
             resourceMap[key]
         }] as Resource
         def mapping = getResourcePropertyMapping(propertyName)
@@ -123,10 +118,10 @@ class StringMapConverterTests extends GroovyTestCase {
     }
 
     private getContext(handleNulls) {
-        def searchEngine = [
+        def resourceFactory = [
             createProperty: { Object[] args -> //String name, String value, Property.Store store, Property.Index index, Property.TermVector termVector = null ->
                 [getName: {args[0]}, getOjectValue: {args[1]}, getStringValue: {args[1]}, setBoost: {}, getBoost: {1.0f}] as Property
-            }] as SearchEngine
+            }] as ResourceFactory
         def searchEngineFactory = [
             getPropertyNamingStrategy: {
                 new DefaultPropertyNamingStrategy()
@@ -134,7 +129,7 @@ class StringMapConverterTests extends GroovyTestCase {
         def compass = [ getSearchEngineFactory: { searchEngineFactory } ] as InternalCompass
         def session = [ getCompass: { compass } ] as InternalCompassSession
         def context = [
-            getSearchEngine: { searchEngine },
+            getResourceFactory: { resourceFactory },
             getSession: { session },
             handleNulls: { handleNulls }
         ] as MarshallingContext

@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.compass.core.Compass;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassSession;
@@ -38,10 +39,6 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
 
     private SearchableCompassQueryBuilder stringQueryBuilder;
     private Class closureQueryBuilderClass;
-    private SearchableCompassQueryBuilderOptionsHelper[] optionHelpers = new SearchableCompassQueryBuilderOptionsHelper[] {
-        new SearchableCompassQueryBuilderClassOptionHelper(),
-        new SearchableCompassQueryBuilderSortOptionHelper()
-    };
 
     public DefaultSearchableCompassQueryBuilder(Compass compass) {
         super(compass);
@@ -55,23 +52,29 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
         }
     }
 
-    public CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object query) {
-        Assert.notNull(query, "query cannot be null");
+    public CompassQuery buildQuery(GrailsApplication grailsApplication, CompassSession compassSession, Map options, Object args) {
+        Object query = SearchableMethodUtils.getQueryArgument(args);
+        Assert.notNull(query, "Missing String or Closure query argument");
+
         CompassQuery compassQuery;
         if (query instanceof String) {
             compassQuery = stringQueryBuilder.buildQuery(grailsApplication, compassSession, options, query);
         } else {
             Assert.isInstanceOf(Closure.class, query, "query is neither String nor Closure: must be one of these but is [" + query.getClass().getName() + "]");
             Object closureQueryBuilder = InvokerHelper.invokeConstructorOf(closureQueryBuilderClass, compassSession.queryBuilder());
-            compassQuery = (CompassQuery) InvokerHelper.invokeMethod(closureQueryBuilder, "buildQuery", query);
+            compassQuery = (CompassQuery) InvokerHelper.invokeMethod(closureQueryBuilder, "buildQuery", query );
+        }
+//        Object clazz = options.get("class");
+//        if (clazz != null) {
+//            LOG.warn("The 'class' option for the Searchable Plugin search method is deprecated. Please use 'match' instead");
+//            System.out.println("The 'class' option for the Searchable Plugin search method is deprecated. Please use 'match' instead");
+//            if (!options.containsKey("match")) {
+//                options.put("match", )
+//            }
+//        }
+        if (!options.containsKey("class") && options.containsKey("match")) {
+            options.put("class", options.get("match"));
         }
         return applyOptions(grailsApplication, getCompass(), compassSession, compassQuery, options);
-    }
-
-    protected CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
-        for (int i = 0, max = optionHelpers.length; i < max; i++) {
-            compassQuery = optionHelpers[i].applyOptions(grailsApplication, compass, compassSession, compassQuery, options);
-        }
-        return compassQuery;
     }
 }

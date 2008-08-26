@@ -56,12 +56,10 @@ public class StringMapConverter implements Converter, CompassConfigurable {
         }
 
         ResourcePropertyMapping resourcePropertyMapping = (ResourcePropertyMapping) mapping;
-        SearchEngine searchEngine = context.getSearchEngine();
-
         Map map = (Map) root;
         for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry) it.next();
-            Property p = searchEngine.createProperty(entry.getKey().toString(), entry.getValue().toString(),
+            Property p = context.getResourceFactory().createProperty(entry.getKey().toString(), entry.getValue().toString(),
                     resourcePropertyMapping.getStore(), resourcePropertyMapping.getIndex(), resourcePropertyMapping.getTermVector());
             p.setBoost(resourcePropertyMapping.getBoost());
             resource.addProperty(p);
@@ -76,7 +74,7 @@ public class StringMapConverter implements Converter, CompassConfigurable {
                     searchEngineFactory.getPropertyNamingStrategy();
             // save stringifiedmap map (under an internal name)
             String keyPath = propertyNamingStrategy.buildPath(resourcePropertyMapping.getPath(), "stringmap").getPath();
-            Property p = searchEngine.createProperty(keyPath, stringmap, Property.Store.YES, Property.Index.UN_TOKENIZED);
+            Property p = context.getResourceFactory().createProperty(keyPath, stringmap, Property.Store.YES, Property.Index.UN_TOKENIZED);
             resource.addProperty(p);
         }
 
@@ -89,12 +87,12 @@ public class StringMapConverter implements Converter, CompassConfigurable {
         }
 
         ResourcePropertyMapping resourcePropertyMapping = (ResourcePropertyMapping) mapping;
-        SearchEngine searchEngine = context.getSearchEngine();
+//        SearchEngine searchEngine = context.getSearchEngine();
 
         PropertyNamingStrategy propertyNamingStrategy = context.getSession().getCompass().getSearchEngineFactory().getPropertyNamingStrategy();
         // parse map (from an internal name)
         String path = propertyNamingStrategy.buildPath(resourcePropertyMapping.getPath(), "stringmap").getPath();
-        String stringmap = resource.get(path);
+        String stringmap = resource.getValue(path);
         if (stringmap == null) {
             return null;
         }

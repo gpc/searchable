@@ -18,6 +18,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 import org.codehaus.groovy.grails.plugins.searchable.compass.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
+import org.compass.core.engine.subindex.ConstantSubIndexHash
 
 /**
  * @author Maurice Nicholson
@@ -36,6 +37,93 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
     void testConvertCamelCaseToLowerCaseDashed() {
         assert mappingXmlBuilder.convertCamelCaseToLowerCaseDashed("refAlias") == "ref-alias"
         assert mappingXmlBuilder.convertCamelCaseToLowerCaseDashed("refComponentAlias") == "ref-component-alias"
+    }
+
+    void testBuildClassMappingXmlForClassMappingOptions() {
+        // sub-index
+        CompassClassMapping mapping = new CompassClassMapping(mappedClass: Post)
+        def is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        def doc = getXmlSlurper(is)
+        assert doc.class.@"sub-index" == ''
+
+        mapping = new CompassClassMapping(mappedClass: Post, subIndex: "foobar")
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        assert doc.class.@"sub-index" == 'foobar'
+
+        mapping = new CompassClassMapping(mappedClass: Post,
+            analyzer: 'cleveranalyzer', boost: 1.5, converter: "improvedconverter",
+            managedId: "false", root: false, spellCheck: 'include', supportUnmarshall: false
+        )
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        assert doc.class.@analyzer == 'cleveranalyzer'
+        assert doc.class.@boost == 1.5
+        assert doc.class.@converter == 'improvedconverter'
+//        assert doc.class.@"managed-id" == 'false'
+        assert doc.class.@root == "false"
+        assert doc.class.@"support-unmarshall" == "false"
+        assert doc.class.@"spell-check" == 'include'
+    }
+
+    void testBuildClassMappingXmlForAllOptions() {
+        // no "all"
+        CompassClassMapping mapping = new CompassClassMapping(mappedClass: Post)
+        def is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        def doc = getXmlSlurper(is)
+        assert doc.class.all == ''
+
+        // enable=true|false
+        // exclude-alias=true|false
+        // name=xyz
+        // omit-norms=true|false
+        // term-vector=TermVector
+        // spell-check=include|exclude|na
+        mapping = new CompassClassMapping(mappedClass: Post,
+            enableAll: true, allExcludeAlias: true, allName: 'all', allOmitNorms: false,
+            allTermVector: 'yes', allSpellCheck: 'include'
+        )
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        assert doc.class.all.@enable == 'true'
+        assert doc.class.all.@'exclude-alias' == 'true'
+        assert doc.class.all.@'name' == 'all'
+        assert doc.class.all.@'omit-norms' == 'false'
+        assert doc.class.all.@'term-vector' == 'yes'
+        assert doc.class.all.@'spell-check' == 'include'
+
+        // enableAll and all are interchangeable
+        mapping = new CompassClassMapping(mappedClass: Post, all: false)
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        assert doc.class.all.@enable == 'false'
+    }
+
+    void testBuildClassMappingXmlForSubIndexHash() {
+        // sub-index hash
+        def mapping = new CompassClassMapping(mappedClass: Post, subIndexHash: [type: ConstantSubIndexHash, settings: [foo: 'FOO', bar: 'BAR']])
+        def is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        def doc = getXmlSlurper(is)
+        /*
+<compass-core-mapping>
+  <[mapping] alias="A">
+    <sub-index-hash type="eg.MySubIndexHash">
+        <setting name="param1" value="value1" />
+        <setting name="param2" value="value2" />
+    </sub-index-hash>
+    <!-- ... -->
+  </[mapping]>
+</compass-core-mapping>        */
+        assert doc.class."sub-index-hash".@type == 'org.compass.core.engine.subindex.ConstantSubIndexHash'
+        assert doc.class."sub-index-hash".setting.size() == 2
+        assert doc.class."sub-index-hash".setting.find { it.@name == 'foo' && it.@value == 'FOO' }
+        assert doc.class."sub-index-hash".setting.find { it.@name == 'bar' && it.@value == 'BAR' }
+
+        mapping = new CompassClassMapping(mappedClass: Post, subIndexHash: [type: ConstantSubIndexHash])
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        assert doc.class."sub-index-hash".@type == 'org.compass.core.engine.subindex.ConstantSubIndexHash'
+        assert doc.class."sub-index-hash".setting.isEmpty()
     }
 
     void testBuildClassMappingXmlWithConstantMetatData() {
@@ -363,6 +451,70 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         }
     }
 
+    void testBuildClassMappingXmlForSearchableProperty() {
+        CompassClassMapping description
+        def is
+        def mapping
+        def properties
+        def references
+
+        // converter and propertyConverter are equivalent
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [converter: 'customConverter']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].'meta-data'.@converter == "customConverter"
+
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [propertyConverter: 'customConverter']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].'meta-data'.@converter == "customConverter"
+
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [name: 'the_post']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].'meta-data' == "the_post"
+
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [nullValue: 'it_is_null']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].'meta-data'.@'null-value' == "it_is_null"
+
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [spellCheck: 'exclude']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].'meta-data'.@'spell-check' == "exclude"
+    }
+
     private getXmlSlurper(is) {
         // TODO ignore DTD?
         /*
@@ -370,6 +522,8 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
                 false) */
         def xmlSlurper = new XmlSlurper(false, false)
         xmlSlurper.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+//        def xmlSlurper = new XmlSlurper() //false, false)
+//        xmlSlurper.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
 //        try {
             return xmlSlurper.parse(is)
 //        } catch (java.net.UnknownHostException uhe) {

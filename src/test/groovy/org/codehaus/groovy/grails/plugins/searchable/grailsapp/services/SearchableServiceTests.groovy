@@ -37,11 +37,20 @@ import org.jmock.core.matcher.*
  *
  * @author Maurice Nicholson
  */
-class SearchableServiceTests extends AbstractSearchableCompassTests {
+class SearchableServiceTests extends AbstractSearchableCompassTestCase {
     def compass
+    def application
     def service
 
     void setUp() {
+        // todo this is naughty - need better test isolation
+        Post.searchable = {
+            all termVector: "yes" // required for more-like-this
+        }
+        Comment.searchable = {
+            all termVector: "yes" // required for more-like-this
+        }
+
         def posts = []
         def comments = []
         for (i in 0..<100) {
@@ -55,29 +64,34 @@ class SearchableServiceTests extends AbstractSearchableCompassTests {
         }
         assert posts.size() == 100
         assert comments.size() == 500
-        compass = TestCompassFactory.getCompass([Post, Comment], posts + comments)
+        application = TestCompassFactory.getGrailsApplication([Post, Comment])
+        compass = TestCompassFactory.getCompass(application, posts + comments)
         service = getSearchableService(compass)
     }
 
     void tearDown() {
         compass.close()
         compass = null
+        application = null
         service = null
+
+        // todo this is naughty - need better test isolation
+        Post.searchable = true
+        Comment.searchable = true
     }
 
     void testSearch() {
-        def results = service.search("live love", [max: 101])
+        def results = service.search("live OR love", [max: 101])
         assert results.results.size() == 101
         assert results.results*.class.unique() as Set == [Post, Comment] as Set
-
     }
 
     void testSearchTop() {
-        def post = service.searchTop("live odd")
+        def post = service.searchTop("live OR odd")
         assert post instanceof Post
         assert post.id % 2 == 1
 
-        def comment = service.searchTop("love ha")
+        def comment = service.searchTop("love OR ha")
         assert comment instanceof Comment
         assert comment.id % 5 == 0
     }
@@ -87,16 +101,35 @@ class SearchableServiceTests extends AbstractSearchableCompassTests {
         assert objects.size() == 50
         assert objects*.class.unique() == [Post]
 
-        objects = service.searchEvery("even comment")
+        objects = service.searchEvery("even OR comment")
         assert objects.size() == 550
         assert objects*.class.unique() as Set == [Post, Comment] as Set
+    }
+
+    void testMoreLikeThis() {
+        def metaClass = new ExpandoMetaClass(Post, true)
+        metaClass.ident << { Object[] args ->
+            return delegate.id
+        }
+        metaClass.initialize()
+
+        def s = compass.openSession()
+        def tx = s.beginTransaction()
+
+        def post = s.get(Post, 1l)
+
+        tx.commit()
+        s.close()
+
+        def result = service.moreLikeThis(post, max: 101, match: Post, minResourceFreq: 1, minTermFreq: 1)
+        assert result.results.size() == 99, result.results.size()
     }
 
     void testCountHits() {
         def count = service.countHits("+even +post")
         assert count == 50
 
-        count = service.countHits("even comment")
+        count = service.countHits("even OR comment")
         assert count == 550
 
         count = service.countHits("+live +comment")
@@ -233,7 +266,7 @@ class SearchableServiceTests extends AbstractSearchableCompassTests {
         def clazz = gcl.parseClass(new File(appHome, "grails-app/services/SearchableService.groovy"))
 
         def service = clazz.newInstance()
-        service.searchableMethodFactory = new DefaultSearchableMethodFactory(compass: compass)
+        service.searchableMethodFactory = new DefaultSearchableMethodFactory(compass: compass, grailsApplication: application)
         service
     }
 }

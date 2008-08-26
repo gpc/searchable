@@ -81,7 +81,7 @@ class TestSearchableGrailsDomainClassMappingStrategy implements SearchableGrails
     Collection getMappedBy(Collection grailsDomainClasses) {
         return [grailsDomainClasses.find { it.clazz == classShouldMap }]
     }
-    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses) {
+    void configureMappings(CompassConfiguration compassConfiguration, Map configurationContext, Collection searchableGrailsDomainClasses, Collection allSearchableGrailsDomainClasses) {
         classDidMap = searchableGrailsDomainClasses[0].clazz
     }
     String getName() {

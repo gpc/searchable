@@ -54,6 +54,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         // determine which classes are mapped by which strategy
         Map classesByStrategy = new HashMap();
         Collection grailsDomainClasses = SearchableUtils.getGrailsDomainClasses(grailsApplication);
+        Collection mappableClasses = new HashSet();
         Set notMapped = new HashSet(grailsDomainClasses);
         for (int i = 0; i < classMappingConfigurators.length; i++) {
             SearchableGrailsDomainClassMappingConfigurator configurator = classMappingConfigurators[i];
@@ -67,6 +68,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
                     }
                 }
                 classesByStrategy.put(classMappingConfigurators[i], classes);
+                mappableClasses.addAll(classes);
             }
         }
 
@@ -83,7 +85,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
             SearchableGrailsDomainClassMappingConfigurator classMappingConfigurator = classMappingConfigurators[i];
             Collection classes = (Collection) classesByStrategy.get(classMappingConfigurator);
             if (classes != null && !classes.isEmpty()) {
-                classMappingConfigurator.configureMappings(compassConfiguration, configurationContext, classes);
+                classMappingConfigurator.configureMappings(compassConfiguration, configurationContext, classes, mappableClasses);
             }
         }
     }

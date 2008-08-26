@@ -32,13 +32,14 @@ import org.compass.core.mapping.CompassMapping
 import org.compass.core.spi.InternalCompass
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils
 import org.compass.core.CompassQueryBuilder.*
+import org.compass.core.mapping.internal.DefaultCompassMapping
 
 /**
 *
 *
 * @author Maurice Nicholson
 */
-class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearchableCompassTests {
+class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearchableCompassTestCase {
     def helper
     def compass
     def grailsApplication
@@ -60,11 +61,11 @@ class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearch
         withCompassSession { compassSession ->
             def queryBuilder = compassSession.queryBuilder()
             def query = queryBuilder.queryString("some typical search term").toQuery()
-            assert query.toString() == "all:some all:typical all:search all:term"
+            assert query.toString() == "+some +typical +search +term"
 
             // Without class: no difference
             def queryApplied = helper.applyOptions(null, null, compassSession, query, [:])
-            assert queryApplied.toString() == "all:some all:typical all:search all:term"
+            assert queryApplied.toString() == "+some +typical +search +term"
 
             // With class
             def mockQuery = new Mock(CompassQuery.class)
@@ -72,7 +73,7 @@ class SearchableCompassQueryBuilderClassOptionHelperTests extends AbstractSearch
             mockQuery.expects(new InvokeOnceMatcher()).method('setAliases').'with'(new IsEqual(["apost"] as String[])).will(new ReturnStub(mockQueryProxy))
 
             def classMapping = new ClassMapping(clazz: Post, name: Post.name, alias: "apost")
-            def mapping = new CompassMapping()
+            def mapping = new DefaultCompassMapping()
             mapping.addMapping(classMapping)
             def compass = [
                 getMapping: {

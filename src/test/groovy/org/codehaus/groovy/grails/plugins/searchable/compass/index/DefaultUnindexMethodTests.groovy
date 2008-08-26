@@ -26,7 +26,8 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.test.*
  *
  * @author Maurice Nicholson
  */
-class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
+// todo convert to functional tests as appropriate
+class DefaultUnindexMethodTests extends AbstractSearchableCompassTestCase {
     def compass
 
     void setUp() {
@@ -51,18 +52,30 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         compass = null
     }
 
+/*
+    unindex()
+
+    service.unindex() // everything
+    service.unindex([class: Post]) // all class instances
+    service.unindex(x, y, z) // given object(s)
+    service.unindex(1, 2, 3, [class: Post]) // id'd objects
+
+    Thing.unindex() // all Things
+    Thing.unindex(1,2,3) // id'd instances
+    Thing.unindex(x,y,z) // given instances
+
+    */
+
     void testUnindexNoArgsNoOptions() {
         assert numberIndexed(Post) == 10
         assert numberIndexed(Comment) == 20
 
         // No class, no args
-        def unindex = new DefaultUnindexMethod("unindex", compass, false)
-        shouldFail {
-            unindex.invoke()
-        }
+        def unindex = new DefaultUnindexMethod("unindex", compass)
+        unindex.invoke()
 
-        assert numberIndexed(Post) == 10
-        assert numberIndexed(Comment) == 20
+        assert numberIndexed(Post) == 0
+        assert numberIndexed(Comment) == 0
     }
 
     void testUnindexNoArgsWithClassOption() {
@@ -70,7 +83,7 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         assert numberIndexed(Comment) == 20
 
         // With class
-        def unindex = new DefaultUnindexMethod("unindex", compass, false)
+        def unindex = new DefaultUnindexMethod("unindex", compass)
         unindex.invoke([class: Post])
 
         assert numberIndexed(Post) == 0
@@ -86,43 +99,39 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Comment, true)
         metaClass.'static'.unindex << { Object[] args ->
-            new DefaultUnindexMethod("unindex", compass, false, [class: Comment]).invoke(*args)
+            new DefaultUnindexMethod("unindex", compass, [class: Comment]).invoke(*args)
         }
         metaClass.initialize()
         metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.unindex << { Object[] args ->
-            new DefaultUnindexMethod("unindex", compass, false, [class: Post]).invoke(*args)
+            new DefaultUnindexMethod("unindex", compass, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
         assert numberIndexed(Post) == 10
         assert numberIndexed(Comment) == 20
 
-        shouldFail {
-            Post.unindex()
-        }
+        Post.unindex()
 
-        assert numberIndexed(Post) == 10
+        assert numberIndexed(Post) == 0
         assert numberIndexed(Comment) == 20
 
-        shouldFail {
-            Comment.unindex()
-        }
+        Comment.unindex()
 
-        assert numberIndexed(Post) == 10
-        assert numberIndexed(Comment) == 20
+        assert numberIndexed(Post) == 0
+        assert numberIndexed(Comment) == 0
     }
 
     void testUnindexOnClassInstancesArgs() {
         // On class
         def metaClass = new ExpandoMetaClass(Comment, true)
         metaClass.'static'.unindex << { Object[] args ->
-            new DefaultUnindexMethod("unindex", compass, false, [class: Comment]).invoke(*args)
+            new DefaultUnindexMethod("unindex", compass, [class: Comment]).invoke(*args)
         }
         metaClass.initialize()
         metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.unindex << { Object[] args ->
-            new DefaultUnindexMethod("unindex", compass, false, [class: Post]).invoke(*args)
+            new DefaultUnindexMethod("unindex", compass, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
@@ -149,12 +158,27 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         assert numberIndexed(Comment) == 17
     }
 
+/*
+    unindexAll()
+
+    service.unindexAll() // everything
+    service.unindexAll([class: Post]) // all class instances
+    service.unindexAll(1, 2, 3) // ERROR: unknown class
+    service.unindexAll(1, 2, 3, [class: Post]) // id'd objects
+    service.unindexAll(x, y, z) // given objects
+
+    Thing.unindexAll() // all class instances
+    Thing.unindexAll(1,2,3) // id'd instances
+    Thing.unindexAll(x,y,z) // given instances
+
+    */
+
     void testUnindexAllNoArgsNoOptions() {
         assert numberIndexed(Post) == 10
         assert numberIndexed(Comment) == 20
 
         // No class, no args
-        def unindexAll = new DefaultUnindexMethod("unindexAll", compass, true)
+        def unindexAll = new DefaultUnindexMethod("unindexAll", compass)
         unindexAll.invoke()
 
         assert numberIndexed(Post) == 0
@@ -166,7 +190,7 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         assert numberIndexed(Comment) == 20
 
         // With class
-        def unindexAll = new DefaultUnindexMethod("unindexAll", compass, true)
+        def unindexAll = new DefaultUnindexMethod("unindexAll", compass)
         unindexAll.invoke([class: Post])
 
         assert numberIndexed(Post) == 0
@@ -187,7 +211,7 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
             [1l, 3l, 5l, 7l, 9l].each { objects << session.get(Post, it) }
             [2l, 4l, 6l, 8l, 10l, 12l, 14l].each { objects << session.get(Comment, it) }
         }
-        def unindexAll = new DefaultUnindexMethod("unindexAll", compass, true)
+        def unindexAll = new DefaultUnindexMethod("unindexAll", compass)
         unindexAll.invoke(objects)
 
         assert numberIndexed(Post) == 5
@@ -198,7 +222,7 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         assert numberIndexed(Post) == 10
         assert numberIndexed(Comment) == 20
 
-        def unindexAll = new DefaultUnindexMethod("unindexAll", compass, true)
+        def unindexAll = new DefaultUnindexMethod("unindexAll", compass)
 
         shouldFail {
             unindexAll.invoke(1l, 2l, 3l)
@@ -218,7 +242,7 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         assert numberIndexed(Post) == 10
         assert numberIndexed(Comment) == 20
 
-        def unindexAll = new DefaultUnindexMethod("unindexAll", compass, true)
+        def unindexAll = new DefaultUnindexMethod("unindexAll", compass)
         unindexAll.invoke(1l, 2l, 3l, [class: Post]) // ids
 
         assert numberIndexed(Post) == 7
@@ -239,12 +263,12 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Comment, true)
         metaClass.'static'.unindexAll << { Object[] args ->
-            new DefaultUnindexMethod("unindexAll", compass, true, [class: Comment]).invoke(*args)
+            new DefaultUnindexMethod("unindexAll", compass, [class: Comment]).invoke(*args)
         }
         metaClass.initialize()
         metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.unindexAll << { Object[] args ->
-            new DefaultUnindexMethod("unindexAll", compass, true, [class: Post]).invoke(*args)
+            new DefaultUnindexMethod("unindexAll", compass, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
@@ -266,12 +290,12 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Comment, true)
         metaClass.'static'.unindexAll << { Object[] args ->
-            new DefaultUnindexMethod("unindexAll", compass, true, [class: Comment]).invoke(*args)
+            new DefaultUnindexMethod("unindexAll", compass, [class: Comment]).invoke(*args)
         }
         metaClass.initialize()
         metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.unindexAll << { Object[] args ->
-            new DefaultUnindexMethod("unindexAll", compass, true, [class: Post]).invoke(*args)
+            new DefaultUnindexMethod("unindexAll", compass, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
@@ -293,12 +317,12 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTests {
         // On class
         def metaClass = new ExpandoMetaClass(Comment, true)
         metaClass.'static'.unindexAll << { Object[] args ->
-            new DefaultUnindexMethod("unindexAll", compass, true, [class: Comment]).invoke(*args)
+            new DefaultUnindexMethod("unindexAll", compass, [class: Comment]).invoke(*args)
         }
         metaClass.initialize()
         metaClass = new ExpandoMetaClass(Post, true)
         metaClass.'static'.unindexAll << { Object[] args ->
-            new DefaultUnindexMethod("unindexAll", compass, true, [class: Post]).invoke(*args)
+            new DefaultUnindexMethod("unindexAll", compass, [class: Post]).invoke(*args)
         }
         metaClass.initialize()
 
