@@ -16,22 +16,16 @@
 import org.codehaus.groovy.grails.plugins.support.GrailsPluginUtils
 import org.codehaus.groovy.grails.plugins.searchable.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.config.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
 import org.codehaus.groovy.grails.plugins.searchable.compass.spring.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.search.*
 
 import org.apache.commons.logging.LogFactory
 
 import org.compass.gps.impl.SingleCompassGps
-import org.compass.spring.device.hibernate.dep.SpringHibernate3GpsDevice
 
-import org.springframework.beans.factory.config.*
-import org.springframework.util.ClassUtils
-
-import grails.spring.BeanBuilder
 import org.compass.gps.device.hibernate.HibernateGpsDevice
 import org.codehaus.groovy.grails.plugins.searchable.compass.domain.DynamicDomainMethodUtils
+import org.springframework.core.JdkVersion
 
 /**
 * @author Maurice Nicholson
@@ -42,10 +36,11 @@ class SearchableGrailsPlugin {
     def version = SearchableConstants.SEARCHABLE_PLUGIN_VERSION
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
-    def title = 'Adds rich search functionality to Grails domain models.'
+    def title = 'Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+'
     def description = '''
 Adds rich search functionality to Grails domain models.
 Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apache.org/)
+This version is recommended for JDK 1.5+
 '''
     def documentation = 'http://grails.org/Searchable+Plugin'
 
@@ -66,6 +61,11 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
 
     // Build Compass and Compass::GPS
     def doWithSpring = {
+        if (!JdkVersion.isAtLeastJava15()) {
+            LOG.error("This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
+            System.out.println("This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
+        }
+
         // Configuration
         config = getConfiguration(parentCtx)
 
@@ -143,7 +143,7 @@ Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apa
 
         // index the database?
         def bulkIndex = config.bulkIndexOnStartup in [null, true]
-        def forkBulkIndex = config.bulkIndexOnStartup == "fork"
+        def forkBulkIndex = config.bulkIndexOnStartup in ["fork"]
         if (bulkIndex) {
             CompassGpsUtils.index(compassGps, null)
         } else if (forkBulkIndex) {
