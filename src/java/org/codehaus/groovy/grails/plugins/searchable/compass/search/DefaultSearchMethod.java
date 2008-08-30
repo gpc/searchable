@@ -137,6 +137,9 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
             if (suggestOption instanceof Boolean && suggestOption.equals(Boolean.FALSE)) {
                 return;
             }
+            if (suggestOption instanceof String && !Boolean.valueOf((String) suggestOption).booleanValue()) {
+                return;
+            }
             Object[] suggestArgs = new Object[args.length];
             for (int i = 0; i < args.length; i++) {
                 if (args[i] instanceof Map) {
@@ -146,6 +149,10 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
                         suggestOptions.putAll((Map) suggestOption);
                     }
                     suggestOptions.remove("suggestQuery"); // remove the option itself
+                    // add other defaults for use from search method
+                    if (!suggestOptions.containsKey("allowSame")) {
+                        suggestOptions.put("allowSame", Boolean.FALSE);
+                    }
                     suggestArgs[i] = suggestOptions;
                 } else {
                     suggestArgs[i] = args[i];

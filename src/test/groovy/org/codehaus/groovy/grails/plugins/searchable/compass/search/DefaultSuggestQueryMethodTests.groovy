@@ -58,7 +58,8 @@ class DefaultSuggestQueryMethodTests extends GroovyTestCase {
         // basic emulation of captialised words
         // this option is enabled by default
 
-        assert new SuggestedQueryStringBuilder("REST web services", "rest web services").toSuggestedQueryString() == "REST web services"
+        def suggestion = new SuggestedQueryStringBuilder("REST web services", "rest web services").toSuggestedQueryString()
+        assert suggestion == "REST web services", suggestion
 
         assert new SuggestedQueryStringBuilder("Micheal Carltone", "michael carlton").toSuggestedQueryString() == "Michael Carlton"
     }
@@ -79,5 +80,13 @@ class DefaultSuggestQueryMethodTests extends GroovyTestCase {
         shouldFail {
             new SuggestedQueryStringBuilder("[this is a bad query]", "[this is also bad query]").escape(false).toSuggestedQueryString()
         }
+    }
+
+    void testAllowSame() {
+        assert new SuggestedQueryStringBuilder("foo bar baz", "foo bar baz").allowSame(true).toSuggestedQueryString() == "foo bar baz"
+    }
+
+    void testAllowSameFalse() {
+        assert new SuggestedQueryStringBuilder("foo bar baz", "foo bar baz").allowSame(false).toSuggestedQueryString() == null
     }
 }

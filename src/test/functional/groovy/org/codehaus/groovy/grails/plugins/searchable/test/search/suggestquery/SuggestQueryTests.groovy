@@ -26,14 +26,30 @@ class SuggestQueryTests extends SearchableFunctionalTestCase {
         return [A, B]
     }
 
-    void testGeneral() {
+    void testSuggestionRetainsStopWords() {
         new A(id: 1l, value: "white toast").index()
         new B(id: 1l, value: "blue sea").index()
-
         searchableService.rebuildSpellingSuggestions()
 
         // should be ok with stop words, which are normally removed when parsing
         assert searchableService.suggestQuery("is the sky as blue as the sea") == 'is the sky as blue as the sea', searchableService.suggestQuery("is the sky as blue as the sea")
+    }
+
+    void testAllowSameOption() {
+        new A(id: 1l, value: "white bread toast with jam").index()
+        searchableService.rebuildSpellingSuggestions()
+
+        def suggestion = searchableService.suggestQuery("quack")
+        assert suggestion == 'quack', suggestion
+
+        suggestion = searchableService.suggestQuery("white bread (toast OR jam)")
+        assert suggestion == "white bread (toast OR jam)", suggestion
+
+        suggestion = searchableService.suggestQuery("quack", allowSame: false) // boolean
+        assert suggestion == null, suggestion
+
+        suggestion = searchableService.suggestQuery("white bread (toast OR jam)", allowSame: "false") // string
+        assert suggestion == null, suggestion
     }
 
     void testServiceSuggestQueryMethod() {

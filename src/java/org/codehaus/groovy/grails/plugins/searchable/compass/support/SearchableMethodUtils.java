@@ -69,4 +69,28 @@ public abstract class SearchableMethodUtils {
         }
         return null;
     }
+
+    /**
+     * Gets the named boolean from the given map if present,
+     * otherwise the default value.
+     * Handles wrapped (Boolean) instances and converts "true" and "false" Strings
+     * to booleans
+     * @param options the Map containing the named entry
+     * @param name the entry name
+     * @param defaultValue the default if not present in options Map
+     * @return the boolean
+     */
+    public static boolean getBool(Map options, String name, boolean defaultValue) {
+        Object value = options.get(name);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean) {
+            return ((Boolean) value).booleanValue();
+        }
+        if (value instanceof String) {
+            return Boolean.valueOf((String) value).booleanValue();
+        }
+        throw new IllegalArgumentException("The value of option [" + name + "] should be a boolean (or string equivalent) but is [" + value.getClass() + "]");
+    }
 }

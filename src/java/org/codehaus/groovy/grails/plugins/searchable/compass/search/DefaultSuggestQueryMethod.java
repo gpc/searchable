@@ -65,7 +65,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
 
         Object query = SearchableMethodUtils.getQueryArgument(args);
         if (query instanceof Closure) {
-            throw new IllegalArgumentException("Closure queries are not support for query suggestions, only String queries.");
+            throw new UnsupportedOperationException("Closure queries are not support for query suggestions, only String queries.");
         }
         Assert.isInstanceOf(String.class, query, "Only String queries are supported for query suggestions");
 
@@ -99,6 +99,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
         private boolean userFriendly;
         private boolean emulateCapitalisation;
         private boolean escape;
+        private boolean allowSame;
 
         public SuggestQueryCompassCallback(Compass compass, Map defaultOptions, Object[] args) {
             this.defaultOptions = defaultOptions;
@@ -126,6 +127,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
                     userFriendly(userFriendly).
                     emulateCapitalisation(emulateCapitalisation).
                     escape(escape).
+                    allowSame(allowSame).
                     toSuggestedQueryString();
             } catch (ParseException ex) {
                 throw new SearchEngineQueryParseException(
@@ -147,23 +149,10 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
             if (options == null) {
                 return;
             }
-            this.userFriendly = getBool(options, "userFriendly", true);
-            this.emulateCapitalisation = getBool(options, "emulateCapitalisation", true);
-            this.escape = getBool(options, "escape", false);
-        }
-
-        private boolean getBool(Map options, String name, boolean defaultValue) {
-            Object value = options.get(name);
-            if (value == null) {
-                return defaultValue;
-            }
-            if (value instanceof Boolean) {
-                return ((Boolean) value).booleanValue();
-            }
-            if (value instanceof String) {
-                return Boolean.valueOf((String) value).booleanValue();
-            }
-            throw new IllegalArgumentException("The value of option [" + name + "] should be a boolean (or string equivalent) but is [" + value.getClass() + "]");
+            this.userFriendly = SearchableMethodUtils.getBool(options, "userFriendly", true);
+            this.emulateCapitalisation = SearchableMethodUtils.getBool(options, "emulateCapitalisation", true);
+            this.escape = SearchableMethodUtils.getBool(options, "escape", false);
+            this.allowSame = SearchableMethodUtils.getBool(options, "allowSame", true);
         }
     }
 
@@ -176,6 +165,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
         private boolean userFriendly = true;
         private boolean emulateCapitalisation = true;
         private boolean escape = false;
+        private boolean allowSame = true;
 
         /**
          * Create a suggested query string builder with the given original and suggested query strings
@@ -213,8 +203,19 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
         }
 
         /**
+         * Enable/disable whether to allow the same query to be suggested as the original
+         * This is enabled by default
+         * @param allowSame true or false to enable or disable
+         * @return this
+         */
+        public SuggestedQueryStringBuilder allowSame(boolean allowSame) {
+            this.allowSame = allowSame;
+            return this;
+        }
+
+        /**
          * Get the suggested query based on the options set
-         * @return the suggested query string
+         * @return the suggested query string or null if allowSame is false and the queries match
          * @throws ParseException if either original or suggested query is invalid
          */
         public String toSuggestedQueryString() throws ParseException {
@@ -246,7 +247,11 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
                 userFriendly.replace(pos, pos + snippet.length(), replacement);
                 offset = pos;
             }
-            return userFriendly.toString();
+            String suggestion = userFriendly.toString();
+            if (!this.allowSame && suggestion.equals(original)) {
+                return null;
+            }
+            return suggestion;
         }
 
         public SuggestedQueryStringBuilder escape(boolean escape) {

@@ -26,6 +26,14 @@ class SearchSuggestQueryOptionTests extends SearchableFunctionalTestCase {
         return [A]
     }
 
+    void testClosureQueriesNotSupported() {
+        shouldFail(UnsupportedOperationException) {
+            searchableService.search suggestQuery: true, {
+                queryString("hh")
+            }
+        }
+    }
+
     void testServiceSearchMethodWithSuggestQueryOption() {
         new A(id:1l, value: "deep blue sea").index()
 
@@ -58,6 +66,27 @@ class SearchSuggestQueryOptionTests extends SearchableFunctionalTestCase {
             result = searchableService.search("[this is a bad query]", suggestQuery: true)
         }
         result = searchableService.search("[this is a bad query]", escape: true, suggestQuery: true) // escape option fixes it
+
+        // does not suggest the exact same query - this would be pointless and confusing
+        result = searchableService.search("quack", suggestQuery: true)
+        assert result.suggestedQuery == null, result.suggestedQuery
+
+        result = searchableService.search("deep", suggestQuery: true)
+        assert result.suggestedQuery == null, result.suggestedQuery
+
+        result = searchableService.search("(deep OR blue) sea", suggestQuery: true)
+        assert result.suggestedQuery == null, result.suggestedQuery
+
+        // explicity false
+        result = searchableService.search("see blu", suggestQuery: false)
+        assert result.suggestedQuery == null
+
+        // string true / false
+        result = searchableService.search("deep OR BLU", suggestQuery: "true")
+        assert result.suggestedQuery == "deep OR BLUE", result.suggestedQuery
+
+        result = searchableService.search("see blu", suggestQuery: "false")
+        assert result.suggestedQuery == null
     }
 
     void testDomainClassSearchMethodWithSuggestQueryOption() {
