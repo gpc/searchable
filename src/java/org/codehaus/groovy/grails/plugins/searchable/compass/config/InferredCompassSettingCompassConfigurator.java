@@ -51,6 +51,9 @@ public class InferredCompassSettingCompassConfigurator implements SearchableComp
         try {
             FieldInvoker invoker = new FieldInvoker(CompassConfiguration.class, "mappingBinding").prepare();
             CompassMappingBinding mappingBinding = (CompassMappingBinding) invoker.get(compassConfiguration);
+            if (mappingBinding == null) {
+                return false;
+            }
 
             invoker = new FieldInvoker(CompassMappingBinding.class, "mapping").prepare();
             CompassMapping mapping = (CompassMapping) invoker.get(mappingBinding);
