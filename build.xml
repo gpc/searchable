@@ -41,6 +41,7 @@
   <property file="${os.family}.properties"/>
   <property file="${build.profile}.properties"/>
   <property file="project.properties" />
+  <property file="application.properties" />
 
   <!-- Locate Java and set version -->
   <property name="target.vm" value="1.5" />
@@ -213,7 +214,7 @@
           ant integration-test -Dversion=0.4-SNAPSHOT
       </fail>
 
-      <property name="plugin.dist" value="${basedir}/grails-searchable-${version}.zip" />
+      <property name="plugin.dist" value="${basedir}/grails-${app.name}-${version}.zip" />
       <property name="app.source" value="${basedir}/integration-test/grails-apps" />
       <available file="${plugin.dist}" property="plugin.dist.available" />
       <fail unless="plugin.dist.available">
