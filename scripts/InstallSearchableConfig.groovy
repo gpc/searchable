@@ -34,12 +34,15 @@ target('default': "Installs the Searchable Plugin configuration file: only requi
     if (destFile.exists()) {
         exists = true
         Ant.input(message: """
+
         STOP!
+
         Searchable configuration already exists:
 
             ${destFile}
 
         If you continue it will be overwritten.
+
         Are you sure you want to continue?
             """,
 			validargs:"y,n",
