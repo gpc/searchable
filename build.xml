@@ -97,16 +97,22 @@
     <fileset dir="${grails.home}/lib" includes="junit*.jar" />
   </path>
 -->
+  <path id="cobertura.classpath">
+      <fileset dir="${lib.build}/cobertura-1.9" includes="*.jar"/>
+  </path>
   <path id="test.classpath">
+    <pathelement location="${classes.instrumented}"/>
     <path refid="classpath" />
     <pathelement location="${test.groovy.src}"/>
     <pathelement location="${func.test.groovy.src}"/>
     <pathelement location="${test.classes}"/>
+    <path refid="cobertura.classpath" />
   </path>
 
   <!-- Taskdefs -->
   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
 <!--  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" /> -->
+  <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
   <!-- Targets -->
   <target name="all" depends="clean, compile, test, package, integration-test" description="Clean, build, test, package"/>
@@ -121,11 +127,21 @@
     <groovyc srcdir="${groovy.src}" destdir="${classes}" classpathref="classpath" />
   </target>
 
+  <target name="instrument" if="with.code.coverage">
+    <cobertura-instrument todir="${classes.instrumented}">
+      <classpath refid="test.classpath"/>
+      <fileset dir="${classes}">
+        <include name="**/*.class"/>
+      </fileset>
+    </cobertura-instrument>
+  </target>
+
   <macrodef name="compile-tests">
     <attribute name="src"/>
     <sequential>
       <mkdir dir="${test.classes}" />
       <groovyc srcdir="@{src}" destdir="${test.classes}" classpathref="test.classpath" />
+      <!-- todo place a log4j config file in here to suppress unwanted logging to console in tests -->
     </sequential>
   </macrodef>
 
@@ -165,7 +181,7 @@
     <run-groovy-tests using-java-home="${using.java.home}" groovy-test-dir="${func.test.groovy.src}" test-name="all-functional"/>
   </target>
 
-  <target name="test" depends="unit-test,functional-test" description="Run all unit and functional tests"/>
+  <target name="test" depends="compile,instrument,unit-test,functional-test,coverage-report" description="Run all unit and functional tests"/>
 
   <target name="single-test" depends="compile" description="Run a single test - requires a '-Dtest=path/to/test/file' argument">
     <compile-tests src="${test.groovy.src}"/>
@@ -173,6 +189,10 @@
       <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"/>
       <arg value="${test}" />
     </java>
+  </target>
+
+  <target name="coverage-report" if="with.code.coverage">
+   <cobertura-report srcdir="${java.src}" destdir="${coverage.reports}"/>
   </target>
 
   <macrodef name="grails">

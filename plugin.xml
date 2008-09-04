@@ -1,10 +1,11 @@
 <plugin name='searchable' version='0.5-SNAPSHOT'>
   <author>Maurice Nicholson</author>
   <authorEmail>maurice@freeshell.org</authorEmail>
-  <title>Adds rich search functionality to Grails domain models.</title>
+  <title>Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+</title>
   <description>
 Adds rich search functionality to Grails domain models.
 Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apache.org/)
+This version is recommended for JDK 1.5+
 </description>
   <documentation>http://grails.org/Searchable+Plugin</documentation>
   <resources>
