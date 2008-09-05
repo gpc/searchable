@@ -55,15 +55,18 @@
 
   <!-- Locate grails and set executables -->
   <property name="grails.home" value="${ENV.GRAILS_HOME}" />
-  <condition property="grails" value="${grails.home}/bin/grails.bat">
+  <condition property="grails" value="grails.bat">
     <os family="windows"/>
   </condition>
   <property name="grails" value="grails" />
-  <condition property="grails-debug" value="${grails.home}/bin/grails-debug.bat">
+  <condition property="grails-debug" value="grails-debug.bat">
     <os family="windows"/>
   </condition>
   <property name="grails-debug" value="grails-debug" />
   <property file="${grails.home}/build.properties" />
+  <propertyfile file="application.properties">
+    <entry key="app.grails.version" value="${grails.version}"/>
+  </propertyfile>
   <property name="grails.work.dir" value="${ENV.HOME}/.grails/${grails.version}"/> <!-- standard location, may be overriden by -D or previous property files -->
 
   <!-- set java executable -->
@@ -207,9 +210,10 @@
 
           Not a valid JAVA_HOME: @{using-java-home}
       </fail>
-      <echo>*** Running grails -Dgrails.work.dir=${grails.work.dir} @{arg1} @{arg2} @{arg3} ***</echo>
-      <property name="path" value="@{using-java-home}/bin${path.separator}${ENV.PATH}" />
-      <exec executable="${grails}" dir="@{dir}" failonerror="yes">
+      <echo>*** Running ${grails} -Dgrails.work.dir=${grails.work.dir} @{arg1} @{arg2} @{arg3} ***</echo>
+      <property name="path" value="${grails.home}/bin${path.separator}@{using-java-home}/bin${path.separator}${ENV.PATH}" />
+      <exec executable="${grails.home}/bin/${grails}" dir="@{dir}" failonerror="yes">
+        <env key="GRAILS_HOME" value="${grails.home}" />
         <env key="JAVA_HOME" value="@{using-java-home}" />
         <env key="PATH" value="${path}" />
 
