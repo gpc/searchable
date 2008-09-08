@@ -103,6 +103,9 @@
   <path id="cobertura.classpath">
       <fileset dir="${lib.build}/cobertura-1.9" includes="*.jar"/>
   </path>
+  <path id="findbugs.classpath">
+      <fileset dir="${findbugs.home}/lib" includes="*.jar"/>
+  </path>
   <path id="test.classpath">
     <pathelement location="${classes.instrumented}"/>
     <path refid="classpath" />
@@ -116,9 +119,10 @@
   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
 <!--  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" /> -->
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+  <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="findbugs.classpath"/>
 
   <!-- Targets -->
-  <target name="all" depends="clean, compile, test, package, integration-test" description="Clean, build, test, package"/>
+  <target name="all" depends="clean, compile, test, findbugs-report, package, integration-test" description="Clean, build, test, package"/>
 
   <target name="clean" description="Cleanup after a previous build">
     <delete dir="${target}" />
@@ -184,7 +188,7 @@
     <run-groovy-tests using-java-home="${using.java.home}" groovy-test-dir="${func.test.groovy.src}" test-name="all-functional"/>
   </target>
 
-  <target name="test" depends="compile,instrument,unit-test,functional-test,coverage-report" description="Run all unit and functional tests"/>
+  <target name="test" depends="compile, instrument, unit-test, functional-test, coverage-report" description="Run all unit and functional tests"/>
 
   <target name="single-test" depends="compile" description="Run a single test - requires a '-Dtest=path/to/test/file' argument">
     <compile-tests src="${test.groovy.src}"/>
@@ -195,7 +199,21 @@
   </target>
 
   <target name="coverage-report" if="with.code.coverage">
-   <cobertura-report srcdir="${java.src}" destdir="${coverage.reports}" format="xml"/>
+    <cobertura-report destdir="${coverage.reports}" format="xml">
+      <fileset dir="${java.src}" includes="**/*.java"/>
+      <fileset dir="${groovy.src}" includes="**/*.groovy"/>
+    </cobertura-report>
+  </target>
+
+  <target name="findbugs-report" depends="compile" if="with.findbugs">
+    <mkdir dir="${findbugs.reports}"/>
+    <findbugs home="${findbugs.home}"
+              output="xml"
+              outputFile="${findbugs.reports}/findbugs.xml" >
+      <auxClasspath refid="classpath" />
+      <sourcePath path="${java.src}" />
+      <class location="${classes}" />
+    </findbugs>
   </target>
 
   <macrodef name="grails">
