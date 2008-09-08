@@ -104,39 +104,52 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     }
                 }
 
+                def donePropertyMappings = []
                 for (propertyMapping in description.propertyMappings) {
+                    if (donePropertyMappings.contains(propertyMapping)) {
+                        continue
+                    }
+
                     def propertyName = propertyMapping.propertyName
-                    def attributes = propertyMapping.attributes
-                    LOG.debug("Mapping '${className}.${propertyName}' with attributes ${attributes}")
 
                     def attrs = [name: propertyName]
                     if (propertyMapping.reference) {
                         def refAttrs = new HashMap(attrs)
+                        def attributes = propertyMapping.attributes
+                        LOG.debug("Mapping Searchable Reference '${className}.${propertyName}' with attributes ${attributes}")
                         refAttrs.putAll(self.transformAttrNames(attributes))
                         validateAttributes("reference", refAttrs, REFERENCE_ATTR_NAMES)
                         reference(refAttrs)
                     }
                     if (propertyMapping.component) {
                         def compAttrs = new HashMap(attrs)
+                        def attributes = propertyMapping.attributes
+                        LOG.debug("Mapping Searchable Component '${className}.${propertyName}' with attributes ${attributes}")
                         compAttrs.putAll(self.transformAttrNames(attributes))
                         validateAttributes("component", compAttrs, COMPONENT_ATTR_NAMES)
                         component(compAttrs)
                     }
                     if (propertyMapping.property) {
-                        def metaDataAttrs = [:]
-                        def tmp = self.transformAttrNames(attributes)
-                        def name = tmp.remove("name")
-                        validateAttributes("property", tmp, PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES)
-                        tmp.each { k, v ->
-                            if (META_DATA_ATTR_NAMES.contains(k)) {
-                                metaDataAttrs[k] = v
-                            } else {
-                                assert PROPERTY_ATTR_NAMES.contains(k)
-                                attrs[k] = v
-                            }
-                        }
+                        def propertyMappings = description.propertyMappings.findAll { it.propertyName == propertyName }
+                        LOG.debug("Mapping Searchable Property '${className}.${propertyName}' with attributes ${propertyMappings.collect { it.attributes }.join(', ')}")
+                        donePropertyMappings.addAll(propertyMappings)
                         property(attrs) {
-                            "meta-data"(metaDataAttrs, name ? name : propertyName)
+                            for (mapping in propertyMappings) {
+                                def metaDataAttrs = [:]
+                                def attributes = mapping.attributes
+                                def tmp = self.transformAttrNames(attributes)
+                                def name = tmp.remove("name")
+                                validateAttributes("property", tmp, PROPERTY_ATTR_NAMES + META_DATA_ATTR_NAMES)
+                                tmp.each { k, v ->
+                                    if (META_DATA_ATTR_NAMES.contains(k)) {
+                                        metaDataAttrs[k] = v
+                                    } else {
+                                        assert PROPERTY_ATTR_NAMES.contains(k)
+                                        attrs[k] = v
+                                    }
+                                }
+                                "meta-data"(metaDataAttrs, name ? name : propertyName)
+                            }
                         }
                     }
                 }
