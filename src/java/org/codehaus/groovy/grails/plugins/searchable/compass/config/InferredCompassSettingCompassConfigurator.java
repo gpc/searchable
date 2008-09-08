@@ -16,16 +16,11 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.config;
 
 import org.compass.core.config.CompassConfiguration;
-import org.compass.core.config.CompassMappingBinding;
-import org.compass.core.util.FieldInvoker;
-import org.compass.core.mapping.*;
-import org.compass.core.mapping.osem.ClassPropertyMapping;
-import org.compass.core.mapping.osem.ClassPropertyMetaDataMapping;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils;
 
 import java.util.Map;
-import java.util.Iterator;
 
 /**
  * Sets Compas settings depending on mappings, eg, enables global spell check setting
@@ -38,7 +33,7 @@ public class InferredCompassSettingCompassConfigurator implements SearchableComp
     private static final String COMPASS_SPELL_CHECK_SETTING = "compass.engine.spellcheck.enable";
 
     public void configure(CompassConfiguration compassConfiguration, Map configurationContext) {
-        boolean spellCheck = hasSpellCheckMapping(compassConfiguration);
+        boolean spellCheck = CompassMappingUtils.hasSpellCheckMapping(compassConfiguration);
         if (spellCheck) {
             if (compassConfiguration.getSettings().getSetting(COMPASS_SPELL_CHECK_SETTING) == null) {
                 compassConfiguration.setSetting(COMPASS_SPELL_CHECK_SETTING, "true");
@@ -47,42 +42,4 @@ public class InferredCompassSettingCompassConfigurator implements SearchableComp
         }
     }
 
-    private boolean hasSpellCheckMapping(CompassConfiguration compassConfiguration) {
-        try {
-            FieldInvoker invoker = new FieldInvoker(CompassConfiguration.class, "mappingBinding").prepare();
-            CompassMappingBinding mappingBinding = (CompassMappingBinding) invoker.get(compassConfiguration);
-            if (mappingBinding == null) {
-                return false;
-            }
-
-            invoker = new FieldInvoker(CompassMappingBinding.class, "mapping").prepare();
-            CompassMapping mapping = (CompassMapping) invoker.get(mappingBinding);
-
-            ResourceMapping[] mappings = mapping.getRootMappings();
-            for (int i = 0; i < mappings.length; i++) {
-                ResourceMapping resourceMapping = mappings[i];
-                if (resourceMapping.getSpellCheck().equals(SpellCheckType.INCLUDE)) {
-                    return true;
-                }
-                for (Iterator iter = resourceMapping.mappingsIt(); iter.hasNext(); ) {
-                    Object o = iter.next();
-                    if (o instanceof ClassPropertyMapping) {
-                        for (Iterator iter2 = ((ClassPropertyMapping) o).mappingsIt(); iter2.hasNext(); ) {
-                            Object o2 = iter2.next();
-                            if (o2 instanceof ClassPropertyMetaDataMapping) {
-                                if (((ClassPropertyMetaDataMapping) o2).getSpellCheck().equals(SpellCheckType.INCLUDE)) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
-        } catch (IllegalAccessException ex) {
-            throw new RuntimeException("Failed to get CompassConfiguration#mappingBinding", ex);
-        } catch (NoSuchFieldException ex) {
-            throw new RuntimeException("Failed to get CompassConfiguration#mappingBinding", ex);
-        }
-    }
 }

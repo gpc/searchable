@@ -19,8 +19,13 @@ import org.springframework.util.Assert;
 import org.compass.core.Compass;
 import org.compass.core.mapping.CompassMapping;
 import org.compass.core.mapping.AliasMapping;
+import org.compass.core.mapping.ResourceMapping;
+import org.compass.core.mapping.SpellCheckType;
 import org.compass.core.mapping.osem.ClassMapping;
+import org.compass.core.mapping.osem.ClassPropertyMapping;
+import org.compass.core.mapping.osem.ClassPropertyMetaDataMapping;
 import org.compass.core.config.CompassConfiguration;
+import org.compass.core.config.CompassMappingBinding;
 import org.compass.core.util.ClassUtils;
 import org.compass.core.util.FieldInvoker;
 import org.compass.core.spi.InternalCompass;
@@ -192,6 +197,49 @@ public class CompassMappingUtils {
                 String subIndex = ClassUtils.getShortName(classMapping.getMappedClass()).toLowerCase();
                 classMapping.setSubIndex(subIndex);
             }
+        }
+    }
+
+    public static boolean hasSpellCheckMapping(Compass compass) {
+        return hasSpellCheckMapping(compass.getConfig());
+    }
+
+    public static boolean hasSpellCheckMapping(CompassConfiguration compassConfiguration) {
+        try {
+            FieldInvoker invoker = new FieldInvoker(CompassConfiguration.class, "mappingBinding").prepare();
+            CompassMappingBinding mappingBinding = (CompassMappingBinding) invoker.get(compassConfiguration);
+            if (mappingBinding == null) {
+                return false;
+            }
+
+            invoker = new FieldInvoker(CompassMappingBinding.class, "mapping").prepare();
+            CompassMapping mapping = (CompassMapping) invoker.get(mappingBinding);
+
+            ResourceMapping[] mappings = mapping.getRootMappings();
+            for (int i = 0; i < mappings.length; i++) {
+                ResourceMapping resourceMapping = mappings[i];
+                if (resourceMapping.getSpellCheck().equals(SpellCheckType.INCLUDE)) {
+                    return true;
+                }
+                for (Iterator iter = resourceMapping.mappingsIt(); iter.hasNext(); ) {
+                    Object o = iter.next();
+                    if (o instanceof ClassPropertyMapping) {
+                        for (Iterator iter2 = ((ClassPropertyMapping) o).mappingsIt(); iter2.hasNext(); ) {
+                            Object o2 = iter2.next();
+                            if (o2 instanceof ClassPropertyMetaDataMapping) {
+                                if (((ClassPropertyMetaDataMapping) o2).getSpellCheck().equals(SpellCheckType.INCLUDE)) {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        } catch (IllegalAccessException ex) {
+            throw new RuntimeException("Failed to get CompassConfiguration#mappingBinding", ex);
+        } catch (NoSuchFieldException ex) {
+            throw new RuntimeException("Failed to get CompassConfiguration#mappingBinding", ex);
         }
     }
 }

@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.AbstractSearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
+import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.lucene.LuceneUtils;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
@@ -53,6 +54,12 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
     }
 
     public Object invoke(Object[] args) {
+        if (!CompassMappingUtils.hasSpellCheckMapping(getCompass())) {
+            throw new IllegalStateException(
+                "Suggestions are only available when classes are mapped with \"spellCheck\" options, either at the class " +
+                "or property level. See the plugin/Compass documentation Mapping sections for details."
+            );
+        }
         if (!"true".equals(getCompass().getSettings().getSetting("compass.engine.spellcheck.enable"))) {
             throw new IllegalStateException(
                 "Suggestions are only available when the Compass Spell Check feature is enabled, but currently it is not. " +
