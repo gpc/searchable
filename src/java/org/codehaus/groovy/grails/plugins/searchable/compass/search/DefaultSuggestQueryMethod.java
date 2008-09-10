@@ -57,7 +57,8 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
         if (!CompassMappingUtils.hasSpellCheckMapping(getCompass())) {
             throw new IllegalStateException(
                 "Suggestions are only available when classes are mapped with \"spellCheck\" options, either at the class " +
-                "or property level. See the plugin/Compass documentation Mapping sections for details."
+                "or property level. The simplest way to do this is add spellCheck \"include\" to the domain class searchable mapping closure. " +
+                "See the plugin/Compass documentation Mapping sections for details."
             );
         }
         if (!"true".equals(getCompass().getSettings().getSetting("compass.engine.spellcheck.enable"))) {

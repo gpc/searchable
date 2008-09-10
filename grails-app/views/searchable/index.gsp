@@ -1,6 +1,7 @@
 <%@ page import="org.springframework.util.ClassUtils" %>
 <%@ page import="org.codehaus.groovy.grails.plugins.searchable.SearchableUtils" %>
 <%@ page import="org.codehaus.groovy.grails.plugins.searchable.lucene.LuceneUtils" %>
+<%@ page import="org.codehaus.groovy.grails.plugins.searchable.util.StringQueryUtils" %>
 <html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -111,6 +112,24 @@
       </span>
     </div>
 
+    <g:if test="${haveQuery && !haveResults && !parseException}">
+      <p>Nothing matched your query - <strong>${params.q}</strong></p>
+      <g:if test="${!searchResult?.suggestedQuery}">
+        <p>Suggestions:</p>
+        <ul>
+          <li>Try a suggested query: <g:link controller="searchable" action="index" params="[q: params.q, suggestQuery: true]">Search again with the <strong>suggestQuery</strong> option</g:link><br />
+            <em>Note: Suggestions are only available when classes are mapped with <strong>spellCheck</strong> options, either at the class or property level.<br />
+		The simplest way to do this is add <strong>spellCheck "include"</strong> to the domain class searchable mapping closure.<br />
+                See the plugin/Compass documentation Mapping sections for details.</em>
+          </li>
+        </ul>
+      </g:if>
+    </g:if>
+
+    <g:if test="${searchResult?.suggestedQuery}">
+      <p>Did you mean <g:link controller="searchable" action="index" params="[q: searchResult.suggestedQuery]">${StringQueryUtils.highlightTermDiffs(params.q.trim(), searchResult.suggestedQuery)}</g:link>?</p>
+    </g:if>
+
     <g:if test="${parseException}">
       <p>Your query - <strong>${params.q}</strong> - is not valid.</p>
       <p>Suggestions:</p>
@@ -122,15 +141,13 @@
           </li>
           <li>Escape special characters like <strong>" - [ ]</strong> with <strong>\</strong>, eg, <em><strong>${LuceneUtils.escapeQuery(params.q)}</strong></em><br />
               <em>Use the Searchable Plugin's <strong>LuceneUtils#escapeQuery</strong> helper method for this: <g:link controller="searchable" action="index" params="[q: LuceneUtils.escapeQuery(params.q)]">Search again with special characters escaped</g:link></em><br />
-              <em>Or use the Searchable Plugin's <strong>escape</strong> option: <em><g:link controller="searchable" action="index" params="[q: params.q, escape: true]">Search again with the <strong>escape</strong> option enabled</g:link></em>
+              <em>Or use the Searchable Plugin's <strong>escape</strong> option: <g:link controller="searchable" action="index" params="[q: params.q, escape: true]">Search again with the <strong>escape</strong> option enabled</g:link></em>
           </li>
         </g:if>
       </ul>
     </g:if>
-    <g:elseif test="${haveQuery && !haveResults}">
-      <p>Nothing matched your query - <strong>${params.q}</strong></p>
-    </g:elseif>
-    <g:elseif test="${haveResults}">
+
+    <g:if test="${haveResults}">
       <div class="results">
         <g:each var="result" in="${searchResult.results}" status="index">
           <div class="result">
@@ -155,7 +172,7 @@
           </g:if>
         </div>
       </div>
-    </g:elseif>
+    </g:if>
   </div>
   </body>
 </html>
