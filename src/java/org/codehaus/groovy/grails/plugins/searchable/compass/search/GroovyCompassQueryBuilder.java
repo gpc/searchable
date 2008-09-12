@@ -295,21 +295,24 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
 
             // Convert shorthand to longhand names
             Map tmp = new HashMap();
-            for (Iterator iter = options.keySet().iterator(); iter.hasNext(); ) {
-                String optionName = (String) iter.next();
+            for (Iterator iter = options.entrySet().iterator(); iter.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String optionName = (String) entry.getKey();
                 if (SHORT_OPTION_NAMES.containsKey(optionName)) {
-                    tmp.put(SHORT_OPTION_NAMES.get(optionName), options.get(optionName));
+                    tmp.put(SHORT_OPTION_NAMES.get(optionName), entry.getValue());
                 } else {
-                    tmp.put(optionName, options.get(optionName));
+                    tmp.put(optionName, entry.getValue());
                 }
             }
             options = tmp;
 
             // Convert any BigDecimals to floats: simple but does the job for now
-            for (Iterator iter = options.keySet().iterator(); iter.hasNext(); ) {
-                String optionName = (String) iter.next();
-                if (options.get(optionName) instanceof BigDecimal) {
-                    options.put(optionName, new Float(((BigDecimal) options.get(optionName)).floatValue()));
+            for (Iterator iter = options.entrySet().iterator(); iter.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String optionName = (String) entry.getKey();
+                Object value = entry.getValue();
+                if (value instanceof BigDecimal) {
+                    options.put(optionName, new Float(((BigDecimal) value).floatValue()));
                 }
             }
 
@@ -319,9 +322,10 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
             Map queryOptions = new HashMap();
 
             boolean hasToQuery = !isQuery(result) && hasToQuery(result);
-            for (Iterator iter = options.keySet().iterator(); iter.hasNext(); ) {
-                String optionName = (String) iter.next();
-                Object optionValue = options.get(optionName);
+            for (Iterator iter = options.entrySet().iterator(); iter.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String optionName = (String) entry.getKey();
+                Object optionValue = entry.getValue();
                 // special case for this single no-parameter, non-setter string query builder method
                 if (optionName.equals("useAndDefaultOperator")) {
                     if (optionValue != null) {
@@ -368,9 +372,10 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
             if (!queryOptions.isEmpty()) {
                 trace("setting query options");
                 result = toQuery(result);
-                for (Iterator iter = queryOptions.keySet().iterator(); iter.hasNext(); ) {
-                    String optionName = (String) iter.next();
-                    Object optionValue = queryOptions.get(optionName);
+                for (Iterator iter = queryOptions.entrySet().iterator(); iter.hasNext(); ) {
+                    Map.Entry entry = (Map.Entry) iter.next();
+                    String optionName = (String) entry.getKey();
+                    Object optionValue = entry.getValue();
                     String methodName = "set" + optionName.substring(0, 1).toUpperCase() + optionName.substring(1);
                     if (isTraceEnabled()) {
                         trace("method is -- " + methodName + "(" + optionValue + ")");
