@@ -221,7 +221,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
 
     private String getPluginHomeFileResourcePrefix(cl) {
         def pluginHome = getPluginHome(cl)
-        return "file://" + pluginHome.absolutePath.replace("\\", "/")
+        return "file://" + pluginHome.absolutePath.replaceAll("\\\\", "/")
     }
 
     private Class[] getAppClasses(GroovyClassLoader cl) {
