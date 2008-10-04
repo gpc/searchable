@@ -266,8 +266,13 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
 
     private Class[] getPluginClasses(cl) {
         def pluginHome = getPluginHome(cl)
-        return [cl.parseClass(new File(pluginHome, "SearchableGrailsPlugin.groovy"))
-                ] as Class[]
+        def pluginFile = new File(pluginHome, "SearchableGrailsPlugin.groovy")
+        if (pluginFile.exists()) {
+            return [cl.parseClass(pluginFile)] as Class[]
+        }
+        pluginFile = new File(pluginHome, "Searchable14GrailsPlugin.groovy")
+        assert pluginFile.exists(), "Neither \"SearchableGrailsPlugin.groovy\" nor \"Searchable14GrailsPlugin.groovy\" found in ${pluginHome}"
+        return [cl.parseClass(pluginFile)] as Class[]
     }
 
     private File getPluginHome(cl) {
