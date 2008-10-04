@@ -28,6 +28,35 @@ if (new File(basedir, 'grails-app/conf/SearchablePluginConfiguration.groovy').ex
 """
 }
 
+// @since 0.5
+if (new File(basedir, 'grails-app/conf/SearchableConfiguration.groovy').exists()) {
+    println """
+
+        STOP!
+
+        You have a deprecated Searchable Plugin Configuration file:
+
+            grails-app/conf/SearchableConfiguration.groovy
+
+        Support for this configuration file will be removed
+        in the next version!
+
+        Configuration for the Searchable Plugin should now be defined
+        with the standard Grails config mechanism.
+
+        You can either (1) add the plugin's config properties to
+        "grails-app/conf/Config.groovy", or (2) provide a
+        plugin-specific file called "grails-app/conf/Searchable.groovy".
+
+        Run "grails install-searchable-config" to try the second
+        option without affecting your existing configuration,
+        but you will need to merge your own settings into the new
+        configuration file.
+
+"""
+    Ant.input("[Please acknowledge this message by pressing ENTER]")
+}
+
 println """
 
 Thanks for installing the Grails Searchable Plugin!

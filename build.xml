@@ -162,6 +162,9 @@
         <formatter type="brief"/>
         <formatter type="xml"/>
         <classpath refid="test.classpath" />
+        <jvmarg value="-XX:MaxPermSize=512m" />
+        <jvmarg value="-Xmx1024m" />
+        <jvmarg value="-server" />
         <jvmarg value="-Dgroovy.test.dir=@{groovy-test-dir}" />
         <jvmarg value="-Dgroovy.test.pattern=**/*Tests.groovy" />
         <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${java.debug.port}" />

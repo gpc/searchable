@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
  * @author Maurice Nicholson
  */
 class MixedMappingTests extends SearchableFunctionalTestCase {
+    def searchableService
 
     public getDomainClasses() {
         return [PluginSearchableProperty, CompassXml]

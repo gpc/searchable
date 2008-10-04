@@ -29,7 +29,7 @@ target('default': "Installs the Searchable Plugin configuration file: only requi
     depends(checkVersion)
 
     def dest = "${basedir}/grails-app/conf"
-    def destFile = new File(dest, "SearchableConfiguration.groovy")
+    def destFile = new File(dest, "Searchable.groovy")
     def exists = false
     if (destFile.exists()) {
         exists = true
@@ -53,7 +53,7 @@ target('default': "Installs the Searchable Plugin configuration file: only requi
        if (answer == "n") exit(0)
            Ant.delete(file: destFile.toString())
     }
-    Ant.copy(file: "${basedir}/plugins/searchable-0.5-SNAPSHOT/src/conf/SearchableConfiguration.groovy", todir: dest)
+    Ant.copy(file: "${basedir}/plugins/searchable-0.5-SNAPSHOT/src/conf/Searchable.groovy", todir: dest)
     Ant.echo(message: """
         Searchable configuration file ${exists ? 're-' : ''}created:
 

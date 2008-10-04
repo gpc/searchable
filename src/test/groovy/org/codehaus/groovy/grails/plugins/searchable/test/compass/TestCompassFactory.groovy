@@ -28,10 +28,12 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
  *
  * @author Maurice Nicholson
  */
+// todo deprecated and remove
 class TestCompassFactory {
 
     static getGrailsApplication(Collection classes) {
-        def grailsApplication = new DefaultGrailsApplication(classes as Class[], Thread.currentThread().getContextClassLoader()) //new GroovyClassLoader())
+//        def grailsApplication = new DefaultGrailsApplication(classes as Class[], Thread.currentThread().getContextClassLoader()) //new GroovyClassLoader())
+        def grailsApplication = new DefaultGrailsApplication(classes as Class[], new GroovyClassLoader())
         grailsApplication.initialise()
         return grailsApplication
     }

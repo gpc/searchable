@@ -24,6 +24,7 @@ import org.jmock.*
 import org.jmock.core.stub.*
 import org.jmock.core.matcher.*
 import org.jmock.core.constraint.*
+import org.compass.core.config.CompassConfiguration
 
 /**
  * 
@@ -35,7 +36,9 @@ class DefaultStringQuerySearchableCompassQueryBuilderTests extends AbstractSearc
     def builder = new DefaultStringQuerySearchableCompassQueryBuilder()
 
     void setUp() {
-        compass = TestCompassFactory.getCompass([])
+        def compassConfiguration = new CompassConfiguration()
+        compassConfiguration.setConnection("ram://test-index")
+        compass = compassConfiguration.buildCompass()
     }
 
     void tearDown() {

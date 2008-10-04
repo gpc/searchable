@@ -73,4 +73,9 @@ public class DefaultReindexMethod extends DefaultIndexMethod implements Searchab
         unindexMethod.invoke(args);
         return super.invoke(args);
     }
+
+    public void setDefaultOptions(Map defaultOptions) {
+        super.setDefaultOptions(defaultOptions);
+        unindexMethod.getDefaultOptions().putAll(getDefaultOptions());
+    }
 }

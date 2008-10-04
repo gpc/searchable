@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 * @author Maurice Nicholson
 */
 class InheritanceTests extends SearchableFunctionalTestCase {
+    def searchableService
 
     def getDomainClasses() {
         return [P, C1, C2, NSC, GC, A]

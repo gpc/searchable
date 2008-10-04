@@ -21,6 +21,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
  * @author Maurice Nicholson
  */
 class NullValueTests extends SearchableFunctionalTestCase {
+    def compass
 
     public getDomainClasses() {
         return [Default, Custom]

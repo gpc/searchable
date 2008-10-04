@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.alias
-
-import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTestCase
+package org.codehaus.groovy.grails.plugins.searchable.test.index.unindex
 
 /**
  * @author Maurice Nicholson
  */
-class AliasTests extends SearchableFunctionalTestCase {
-    def searchableService
-
-    public getDomainClasses() {
-        return [A]
-    }
-
-    void testAlias() {
-        new A(id: 1L, value: "I've got my own special alias").index()
-        assert searchableService.searchTop("alias:my_own_alias").value == "I've got my own special alias"
-    }
+class B {
+    static searchable = true
+    Long id, version
+    String value
 }

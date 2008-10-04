@@ -69,7 +69,7 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements 
 
     public Object invoke(final Object[] args) {
         Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
-        final Class clazz = (Class) options.get("class");
+        final Class clazz = (Class) (options.containsKey("match") ? options.remove("match") : options.remove("class"));
         final List ids = getIds(args);
         final List objects = getObjects(args);
 

@@ -23,6 +23,7 @@ import org.compass.core.Compass;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassConfigurationFactory;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.DisposableBean;
 
 import java.util.HashMap;
 
@@ -31,7 +32,7 @@ import java.util.HashMap;
  *
  * @author Maurice Nicholson
  */
-public class SearchableCompassFactoryBean implements FactoryBean {
+public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean {
     private static final Log LOG = LogFactory.getLog(SearchableCompassFactoryBean.class);
 
     private SearchableCompassConfigurator searchableCompassConfigurator;
@@ -79,5 +80,19 @@ public class SearchableCompassFactoryBean implements FactoryBean {
 
     public void setSearchableCompassConfigurator(SearchableCompassConfigurator searchableCompassConfigurator) {
         this.searchableCompassConfigurator = searchableCompassConfigurator;
+    }
+
+    /**
+     * Destroy the Compass instance (if created), typically called when shutting down the Spring
+     * application context.
+     *
+     * Just calls {@link org.compass.core.Compass#close()} 
+     *
+     * @throws Exception
+     */
+    public void destroy() throws Exception {
+        if (compass != null) {
+            compass.close();
+        }
     }
 }

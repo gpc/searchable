@@ -22,6 +22,7 @@ import org.compass.core.Resource
  * @author Maurice Nicholson
  */
 class SupportUnmarshallTests extends SearchableFunctionalTestCase {
+    def compass
 
     public getDomainClasses() {
         return [Supported, Unsupported]

@@ -15,61 +15,257 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.test
 
-import org.codehaus.groovy.grails.plugins.searchable.compass.DefaultSearchableMethodFactory
+import grails.spring.BeanBuilder
+import grails.util.GrailsUtil
+import javax.servlet.ServletContext
+import junit.framework.AssertionFailedError
+import junit.framework.TestCase
+import junit.framework.TestResult
+import org.apache.commons.io.IOUtils
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-import org.codehaus.groovy.grails.plugins.searchable.compass.spring.DefaultSearchableCompassFactoryBean
-import org.springframework.core.io.DefaultResourceLoader
-import org.codehaus.groovy.grails.plugins.searchable.SearchableMethodFactory
-import org.codehaus.groovy.grails.plugins.searchable.compass.domain.DynamicDomainMethodUtils
-import org.compass.core.util.ClassUtils
-import org.compass.core.CompassTemplate
-import org.compass.core.Compass;
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.codehaus.groovy.grails.commons.spring.GrailsRuntimeConfigurator
+import org.codehaus.groovy.grails.plugins.DefaultGrailsPluginManager
+import org.codehaus.groovy.grails.plugins.DefaultPluginMetaManager
+import org.codehaus.groovy.grails.plugins.GrailsPluginManager
+import org.codehaus.groovy.grails.plugins.PluginManagerHolder
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.springframework.beans.BeanWrapperImpl
+import org.springframework.beans.factory.config.MapFactoryBean
+import org.springframework.context.ApplicationContext
+import org.springframework.context.support.GenericApplicationContext
+import org.springframework.core.io.Resource
+import org.springframework.instrument.classloading.SimpleThrowawayClassLoader
+import org.springframework.web.util.WebUtils
+import org.springframework.core.OverridingClassLoader
 
 /**
  * @author Maurice Nicholson
  */
 abstract class SearchableFunctionalTestCase extends GroovyTestCase {
-    Compass compass
-    def grailsApplication
-    def searchableMethodFactory
-    def searchableService
+    private String grailsEnv
+    private List injectedPropertiesNames = []
+    private ApplicationContext applicationContext
+    private GrailsApplication application
+
+    /**
+     * Runs the test case and collects the results in TestResult.
+     * This overrides the usual implementation to create a new instance of this test
+     * with an isolated classloader, in order to avoid problems with stale meta classes
+     * on classes required by the test
+     */
+    public void run(TestResult result) {
+        try {
+            OverridingClassLoader cl = new OverridingClassLoader(this.getClass().getClassLoader());
+            cl.excludePackage("junit.");
+            cl.excludePackage("com.opensymphony.oscache.");
+            cl.excludePackage("com.opensymphony.module.sitemesh.");
+            cl.excludePackage("com.opensymphony.sitemesh.");
+            cl.excludePackage("com.thoughtworks.xstream.");
+
+            cl.excludePackage("org.xml.sax.");
+            cl.excludePackage("org.dom4j.");
+
+            cl.excludePackage("org.apache.bcel.");
+            cl.excludePackage("org.apache.regexp.");
+            cl.excludePackage("org.apache.xalan.");
+            cl.excludePackage("org.apache.xml.");
+            cl.excludePackage("org.apache.xpath.");
+
+            cl.excludePackage("org.apache.xml.serlialize.");
+            cl.excludePackage("org.apache.xerces.");
+            cl.excludePackage("org.apache.wml.");
+            cl.excludePackage("org.apache.html.");
+            cl.excludePackage("org.w3c.dom.");
+            cl.excludePackage("org.aopalliance.");
+            cl.excludePackage("org.apache.bsf.");
+            cl.excludePackage("org.apache.commons.");
+            cl.excludePackage("org.apache.log4j.");
+            cl.excludePackage("org.apache.oro.");
+            cl.excludePackage("org.apache.taglibs.");
+            cl.excludePackage("org.apache.tools.ant.");
+            cl.excludePackage("org.apache.xml.serializer.");
+            cl.excludePackage("org.hibernate.");
+            cl.excludePackage("org.hsqldb.");
+            cl.excludePackage("org.jaxen.");
+            cl.excludePackage("org.xmlpull.");
+            cl.excludePackage("org.springframework.");
+            cl.excludePackage("net.sf.cglib.");
+            cl.excludePackage("net.sf.ehcache.");
+            Thread.currentThread().setContextClassLoader(cl)
+
+            Class newClass = cl.loadClass(this.getClass().getName())
+            TestCase isolatedTest = newClass.newInstance()
+            isolatedTest.setName(this.getName())
+
+            result.startTest(this)
+            try {
+                isolatedTest.runBare()
+            } catch (ThreadDeath e) { // don't catch ThreadDeath by accident
+                throw e
+            } catch (AssertionFailedError e) {
+                result.addFailure(this, e)
+            } catch (Throwable e) {
+                result.addError(this, e)
+            }
+
+            result.endTest(this)
+        } catch (Throwable e) {
+            throw new RuntimeException(e)
+        } finally {
+            Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader())
+        }
+    }
 
     void setUp() {
-        def cl = new GroovyClassLoader() //Thread.currentThread().getContextClassLoader())
-        Thread.currentThread().setContextClassLoader(cl)
+        capturePreTestEnvironment()
+        applyTestEnvironment()
+
+        ClassLoader classClassLoader = this.getClass().getClassLoader()
+        def gclClass = classClassLoader.loadClass(GroovyClassLoader.getName())
+        def constructor = gclClass.getConstructor(ClassLoader)
+        def cl = constructor.newInstance(classClassLoader)
 
         def registry = GroovySystem.metaClassRegistry
         if(!(registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle)) {
             registry.setMetaClassCreationHandle(new ExpandoMetaClassCreationHandle());
         }
 
-        // attach psuedo Grails domain class methods
-        def clazzes = getDomainClasses()
-        addMinimalGrailsDomainClassMethodsInjections(clazzes)
+        def searchableConfigMap = getSearchableConfig(cl)
+        def pluginClasses = getPluginClasses(cl)
+        def pluginXmlResources = getPluginResources(cl)
+        def appClasses = getAppClasses(cl)
 
-        // build grails app
-        grailsApplication = buildGrailsApplication(clazzes, cl)
+        def builder = new BeanBuilder()
+        builder.beans {
+            searchableConfig(MapFactoryBean) {
+                sourceMap = searchableConfigMap
+            }
 
-        // build compass
-        compass = buildCompass(grailsApplication, cl)
+            grailsApplication(DefaultGrailsApplication, appClasses, cl)
 
-        // attach searchable dynamic methods
-        searchableMethodFactory = new DefaultSearchableMethodFactory(compass: compass, grailsApplication: grailsApplication)
-        DynamicDomainMethodUtils.attachDynamicMethods(searchableMethodFactory, grailsApplication.domainClasses, compass)
+            pluginManager(DefaultGrailsPluginManager, pluginClasses, grailsApplication)
 
-        // build searchable service
-        searchableService = buildSearchableService(cl, searchableMethodFactory, compass)
+            pluginMetaManager(DefaultPluginMetaManager, pluginXmlResources)
+        }
+        def ctx = builder.createApplicationContext()
+
+        def pluginManager = ctx.getBean("pluginManager")
+//        PluginManagerHolder.setPluginManager(pluginManager)
+
+//        pluginManager.applicationContext = webAppCtx
+
+        def servletContext = getTestServletContext()
+//        webAppCtx.servletContext = servletContext
+
+        application = (GrailsApplication) ctx.getBean(GrailsApplication.APPLICATION_ID, GrailsApplication.class)
+        applyGrailsConfiguration(application, cl)
+
+        def configurator = new GrailsRuntimeConfigurator(application, ctx)
+        PluginManagerHolder.setPluginManager(pluginManager)
+        configurator.pluginManager = pluginManager
+
+        applicationContext = configurator.configure(servletContext)
+
+        injectBeanReferences(applicationContext)
     }
 
     void tearDown() {
-        compass = null
-        grailsApplication = null
-        searchableService = null
+        removeInjectedBeanReferences()
 
-        def classes = getDomainClasses()
-        for (clazz in classes) {
-            GroovySystem.metaClassRegistry.removeMetaClass(clazz)
+        GroovyClassLoader classLoader = application.getClassLoader();
+        MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
+        Class[] loadedClasses = classLoader.getLoadedClasses();
+        for (int i = 0; i < loadedClasses.length; i++) {
+            Class loadedClass = loadedClasses[i];
+            metaClassRegistry.removeMetaClass(loadedClass);
         }
+
+        GrailsPluginManager pluginManager = PluginManagerHolder.currentPluginManager();
+        pluginManager.shutdown();
+
+        while (applicationContext) {
+            def tmp = applicationContext.parent
+            applicationContext.close()
+            applicationContext = tmp
+        }
+
+//        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
+
+        ApplicationHolder.setApplication(null);
+        ServletContextHolder.setServletContext(null);
+        PluginManagerHolder.setPluginManager(null);
+        ConfigurationHolder.setConfig(null);
+        ExpandoMetaClass.disableGlobally();
+
+        applicationContext = null
+        injectedPropertiesNames = null
+        application = null
+
+        restorePreTestEnvironment()
+    }
+
+    private void injectBeanReferences(ApplicationContext ctx) {
+        def wrapper = new BeanWrapperImpl(this)
+        def propertyDescriptors = wrapper.getPropertyDescriptors()
+        for (propertyDescriptor in propertyDescriptors) {
+            String name = propertyDescriptor.name
+            if (ctx.containsBean(name)) {
+                wrapper.setPropertyValue(name, ctx.getBean(name))
+                injectedPropertiesNames << name
+            }
+        }
+    }
+
+    private void removeInjectedBeanReferences() {
+        def wrapper = new BeanWrapperImpl(this)
+        for (name in injectedPropertiesNames) {
+            wrapper.setPropertyValue(name, null)
+        }
+    }
+
+    private void capturePreTestEnvironment() {
+        grailsEnv = System.properties[GrailsApplication.ENVIRONMENT]
+    }
+
+    private void applyTestEnvironment() {
+        System.properties[GrailsApplication.ENVIRONMENT] = GrailsApplication.ENV_TEST
+    }
+
+    private void restorePreTestEnvironment() {
+        if (grailsEnv != null) {
+            System.properties[GrailsApplication.ENVIRONMENT] = grailsEnv
+        } else {
+            System.getProperties().remove(GrailsApplication.ENVIRONMENT)
+        }
+    }
+
+    protected void applyGrailsConfiguration(GrailsApplication grailsApplication, cl) {
+        def dataSourceClass = getDataSourceClass(cl)
+        ConfigSlurper configSlurper = new ConfigSlurper(GrailsUtil.getEnvironment())
+        def config = grailsApplication.config
+        config.merge(configSlurper.parse(dataSourceClass));
+    }
+
+    private Resource[] getPluginResources(cl) {
+        def resourceLoader = new GenericApplicationContext()
+        def standardResources = resourceLoader.getResources("classpath*:**/plugins/*/plugin.xml") as List
+
+        return (standardResources + resourceLoader.getResource(getPluginHomeFileResourcePrefix(cl) + "/plugin.xml")) as Resource[]
+    }
+
+    private String getPluginHomeFileResourcePrefix(cl) {
+        def pluginHome = getPluginHome(cl)
+        return "file://" + pluginHome.absolutePath.replace("\\", "/")
+    }
+
+    private Class[] getAppClasses(GroovyClassLoader cl) {
+        def pluginHome = getPluginHome(cl)
+        def serviceClass = cl.parseClass(new File(pluginHome, "grails-app/services/SearchableService.groovy"))
+        def domainClasses = getDomainClasses()
+        return [serviceClass] + domainClasses
     }
 
     /**
@@ -80,28 +276,38 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
     // todo make protected since part of API
     abstract getDomainClasses();
 
-    protected buildGrailsApplication(classes, ClassLoader cl) {
-        grailsApplication = new DefaultGrailsApplication(classes as Class[], cl)
-        grailsApplication.initialise()
-        grailsApplication
+    private ServletContext getTestServletContext() {
+        def attributes = [:]
+        def servletContext = [
+            setAttribute: { String name, Object value ->
+                attributes[name] = value
+            },
+            getAttribute: { String name ->
+                assert attributes.containsKey(name), "ServletContext attribute [${name}] was not set"
+                attributes[name]
+            },
+            getResource: { String name ->
+                return null
+            },
+            getResourceAsStream: { String name ->
+                return null
+            }
+        ] as ServletContext
+        servletContext.setAttribute(WebUtils.TEMP_DIR_CONTEXT_ATTRIBUTE, new File(System.properties['java.io.tmpdir']))
+        servletContext
     }
 
-    protected buildCompass(grailsApplication, cl) {
-        def fb = new DefaultSearchableCompassFactoryBean()
-        fb.resourceLoader = new DefaultResourceLoader()
-        fb.grailsApplication = grailsApplication
-        fb.compassClassMappingXmlBuilder = ClassUtils.forName("org.codehaus.groovy.grails.plugins.searchable.compass.mapping.DefaultSearchableCompassClassMappingXmlBuilder").newInstance()
-        fb.compassConnection = "ram://testindex"
-        fb.compassSettings = getCompassSettings(cl)
-        fb.afterPropertiesSet()
-
-        def compass = fb.getObject()
-        compass.spellCheckManager?.deleteIndex()
-
-        return compass
+    private Class getDataSourceClass(cl) {
+        return DataSource.class
     }
 
-    protected buildSearchableService(GroovyClassLoader cl, SearchableMethodFactory methodFactory, Compass compass) {
+    private Class[] getPluginClasses(cl) {
+        def pluginHome = getPluginHome(cl)
+        return [cl.parseClass(new File(pluginHome, "SearchableGrailsPlugin.groovy"))
+                ] as Class[]
+    }
+
+    private File getPluginHome(cl) {
         String resourceBaseName = this.getClass().getName().replaceAll("\\.", "/")
         def url = cl.getResource(resourceBaseName + ".class")
         if (!url) {
@@ -110,35 +316,41 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         assert url != null, "Failed to locate this class as resource! ${this.getClass().getName()}"
         for (def dir = new File(URLDecoder.decode(url.getFile())); dir; dir = dir.getParentFile()) {
             if (new File(dir, "grails-app").isDirectory()) {
-                searchableService = cl.parseClass(new File(dir, "grails-app/services/SearchableService.groovy")).newInstance()
-                break
+                return dir;
             }
         }
-        searchableService.searchableMethodFactory = methodFactory
-        searchableService.compass = compass
-        return searchableService
+        assert false, "plugin home was not found!"
     }
 
-    protected addMinimalGrailsDomainClassMethodsInjections(clazzes) {
-        for (clazz in clazzes) {
-            def metaClass = clazz.metaClass
-            metaClass.ident << { Object[] args ->
-                return delegate.id
-            }
+    protected Map getSearchableConfig(ClassLoader cl) {
+        def slurper = new ConfigSlurper()
+        try {
+            String resourceBaseName = this.getClass().getPackage().getName().replaceAll("\\.", "/")
+            Class configClass = cl.loadClass(resourceBaseName + "/" + "SearchableConfig.class")
+
+            return slurper.parse(configClass)
+        } catch (ClassNotFoundException e) {
         }
+        try {
+            String resourceBaseName = this.getClass().getPackage().getName().replaceAll("\\.", "/")
+            def is = cl.getResourceAsStream(resourceBaseName + "/" + "compass-settings.properties")
+            if (is != null) {
+                def props = new Properties()
+                props.load(is)
+//                System.out.println("${this.getClass().getName()}: compass-settings.properties is ${props}")
+
+                def searchableConfig = getTestConfig()
+                searchableConfig.searchable.compassSettings = slurper.parse(props)
+                return searchableConfig
+//            } else {
+//                System.out.println("${this.getClass().getName()}: NO compass-settings.properties")
+            }
+        } catch (ClassNotFoundException e) {
+        }
+        return getTestConfig()
     }
 
-    protected Map getCompassSettings(ClassLoader cl) {
-        def is = getClassPackageResourceAsStream(cl, "compass-settings.properties")
-        if (!is) return null
-
-        Properties props = new Properties()
-        props.load(is)
-        return props
-    }
-
-    protected InputStream getClassPackageResourceAsStream(ClassLoader cl, String resourceName) {
-        String resourceBaseName = this.getClass().getPackage().getName().replaceAll("\\.", "/")
-        return cl.getResourceAsStream(resourceBaseName + "/" + resourceName)
+    protected Map getTestConfig() {
+        return [searchable: [compassConnection: "ram://test-index", bulkIndexOnStartup: false, mirrorChanges: false]]
     }
 }

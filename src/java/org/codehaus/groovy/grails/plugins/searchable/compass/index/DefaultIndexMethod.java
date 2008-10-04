@@ -83,7 +83,7 @@ public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements Se
 
     public Object invoke(Object[] args) {
         Map options = SearchableMethodUtils.getOptionsArgument(args, getDefaultOptions());
-        final Class clazz = (Class) options.remove("class");
+        final Class clazz = (Class) (options.containsKey("match") ? options.remove("match") : options.remove("class"));
         final List ids = getIds(args);
         final List objects = getObjects(args);
 

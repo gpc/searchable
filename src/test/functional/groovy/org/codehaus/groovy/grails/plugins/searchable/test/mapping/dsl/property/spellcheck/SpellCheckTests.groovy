@@ -21,6 +21,8 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
  * @author Maurice Nicholson
  */
 class SpellCheckTests extends SearchableFunctionalTestCase {
+    def searchableService
+    def compass
 
     public getDomainClasses() {
         return [Include, Exclude]

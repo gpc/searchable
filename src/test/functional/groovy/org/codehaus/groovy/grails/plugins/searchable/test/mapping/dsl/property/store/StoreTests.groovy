@@ -22,6 +22,8 @@ import org.compass.core.Resource
  * @author Maurice Nicholson
  */
 class StoreTests extends SearchableFunctionalTestCase {
+    def searchableService
+    def compass
 
     public getDomainClasses() {
         return [Yes, No, Compress]

@@ -22,6 +22,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
  * @author Maurice Nicholson
  */
 class SearchSortOptionsTests extends SearchableFunctionalTestCase {
+    def searchableService
 
     public getDomainClasses() {
         return [Article]

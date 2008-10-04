@@ -26,6 +26,9 @@ import org.compass.gps.impl.SingleCompassGps
 import org.compass.gps.device.hibernate.HibernateGpsDevice
 import org.codehaus.groovy.grails.plugins.searchable.compass.domain.DynamicDomainMethodUtils
 import org.springframework.core.JdkVersion
+import grails.util.GrailsUtil
+import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.springframework.context.ApplicationContext
 
 /**
 * @author Maurice Nicholson
@@ -67,14 +70,14 @@ This version is recommended for JDK 1.5+
         }
 
         // Configuration
-        config = getConfiguration(parentCtx)
+        config = getConfiguration(parentCtx, application)
 
         // Compass
         LOG.debug("Defining Compass and Compass::GPS beans")
         compass(DefaultSearchableCompassFactoryBean) { bean ->
             grailsApplication = application
             compassConnection = config.compassConnection
-            compassSettings = config.compassSettings
+            compassSettings = config.compassSettings instanceof Properties ? config.compassSettings : config.compassSettings?.toProperties()
             defaultExcludedProperties = config.defaultExcludedProperties
             defaultFormats = config.defaultFormats
             compassClassMappingXmlBuilder = new DefaultSearchableCompassClassMappingXmlBuilder()
@@ -82,8 +85,9 @@ This version is recommended for JDK 1.5+
 
         // Compass::GPS
 //        lifecycleInjector(org.compass.gps.device.hibernate.lifecycle.DefaultHibernateEntityCollectionLifecycleInjector, true) {}
-        compassGpsDevice(HibernateGpsDevice) {
 //        compassGpsDevice(SpringHibernate3GpsDevice) {
+        compassGpsDevice(HibernateGpsDevice) { bean ->
+            bean.destroyMethod = "stop"
             name = "hibernate"
             sessionFactory = sessionFactory
             fetchCount = 5000
@@ -97,15 +101,15 @@ This version is recommended for JDK 1.5+
         def defaultMethodOptions = config.defaultMethodOptions
         if (!defaultMethodOptions && config.defaultSearchOptions) {
             LOG.warn(
-                "The Searchable Plugin SearchableConfiguration#defaultSearchOptions property is deprecated and " +
-                "will be removed in the next version. Please upgrade to the latest version of the SearchableConfiguration " +
-                "file (remember to make a backup first!) and read the deprecation notice for details"
-            );
+                "The Searchable Plugin \"defaultSearchOptions\" configuration option is deprecated and " +
+                "will be removed in the next version. Upgrade the Searchable plugin configuration to the latest format " +
+                "and use \"defaultMethodOptions\" instead"
+            )
             System.out.println(
-                "The Searchable Plugin SearchableConfiguration#defaultSearchOptions property is deprecated and " +
-                "will be removed in the next version. Please upgrade to the latest version of the SearchableConfiguration " +
-                "file (remember to make a backup first!) and read the deprecation notice for details"
-            );
+                "The Searchable Plugin \"defaultSearchOptions\" configuration option is deprecated and " +
+                "will be removed in the next version. Upgrade the Searchable plugin configuration to the latest format " +
+                "and use \"defaultMethodOptions\" instead"
+            )
             defaultMethodOptions = [search: config.defaultSearchOptions]
         }
         searchableMethodFactory(DefaultSearchableMethodFactory) {
@@ -174,14 +178,66 @@ This version is recommended for JDK 1.5+
     }*/
 
     // Get a configuration instance
-    private getConfiguration = { resourceLoader ->
-       try {
-           LOG.debug("Trying to load config from 'SearchableConfiguration.class'")
-           def obj = Class.forName('SearchableConfiguration', true, Thread.currentThread().contextClassLoader).newInstance()
-           return obj.properties
-       } catch (ClassNotFoundException e) {
-           LOG.debug("Not found: ${e.message}")
-           return [:]
-       }
+    private getConfiguration(ApplicationContext applicationContext, GrailsApplication application) {
+        // try to get it from GrailsApplication#config
+        def config = application.config
+        if (config.containsKey("searchable")) {
+            return config.searchable
+        }
+        // try to load it from class file and merge in to GrailsApplication#config
+        try {
+            Class dataSourceClass = application.getClassLoader().loadClass("Searchable")
+            ConfigSlurper configSlurper = new ConfigSlurper(GrailsUtil.getEnvironment())
+            Map binding = new HashMap()
+            binding.userHome = System.properties['user.home']
+            binding.grailsEnv = application.metadata["grails.env"]
+            binding.appName = application.metadata["app.name"]
+            binding.appVersion = application.metadata["app.version"]
+            configSlurper.binding = binding
+            config.merge(configSlurper.parse(dataSourceClass))
+            return config.searchable
+        } catch (ClassNotFoundException e) {
+            LOG.debug("Not found: ${e.message}")
+        }
+        // try to load from Spring context bean
+        if (applicationContext.containsBean("searchableConfig")) {
+            def searchableConfig = applicationContext.getBean("searchableConfig")
+            if (searchableConfig instanceof ConfigObject) {
+                config.merge(searchableConfig)
+            } else if (searchableConfig instanceof Map) {
+                def tmp = new ConfigObject()
+                tmp.putAll(searchableConfig)
+                config.merge(tmp)
+            } else {
+                throw new IllegalArgumentException("The 'searchableConfig' Spring bean must be a Map or ConfigObject instance but is: ${searchableConfig?.getClass()}")
+            }
+            return config.searchable
+        }
+        // try to load it from the previous config file
+        try {
+            LOG.debug("Trying to load config from 'SearchableConfiguration.class'")
+            def obj = Class.forName('SearchableConfiguration', true, Thread.currentThread().contextClassLoader).newInstance()
+            LOG.warn(
+                "The Searchable Plugin's 'SearchableConfiguration.groovy' file is deprecated and will be removed in the next version! " +
+                "Configuration for the Searchable Plugin should now be defined with the standard Grails config mechanism. " +
+                "You can either (1) add the plugin's config properties to \"grails-app/conf/Config.groovy\", or (2) provide a plugin-specific file " +
+                "called \"grails-app/conf/Searchable.groovy\". " +
+                "Run \"grails install-searchable-config\" to try the second option without affecting your existing configuration, " +
+                "but you will need to merge your own settings into the new configuration file."
+            )
+            System.out.println(
+                "WARN: " +
+                "The Searchable Plugin's 'SearchableConfiguration.groovy' file is deprecated and will be removed in the next version! " +
+                "Configuration for the Searchable Plugin should now be defined with the standard Grails config mechanism. " +
+                "You can either (1) add the plugin's config properties to \"grails-app/conf/Config.groovy\", or (2) provide a plugin-specific file " +
+                "called \"grails-app/conf/Searchable.groovy\". " +
+                "Run \"grails install-searchable-config\" to try the second option without affecting your existing configuration, " +
+                "but you will need to merge your own settings into the new configuration file."
+            )
+            return obj.properties
+        } catch (ClassNotFoundException e) {
+            LOG.debug("Not found: ${e.message}")
+            return [:]
+        }
     }
 }
