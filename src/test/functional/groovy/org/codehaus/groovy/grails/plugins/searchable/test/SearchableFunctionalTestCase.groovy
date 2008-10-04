@@ -21,7 +21,6 @@ import javax.servlet.ServletContext
 import junit.framework.AssertionFailedError
 import junit.framework.TestCase
 import junit.framework.TestResult
-import org.apache.commons.io.IOUtils
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
@@ -37,7 +36,6 @@ import org.springframework.beans.factory.config.MapFactoryBean
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.io.Resource
-import org.springframework.instrument.classloading.SimpleThrowawayClassLoader
 import org.springframework.web.util.WebUtils
 import org.springframework.core.OverridingClassLoader
 
@@ -58,42 +56,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
      */
     public void run(TestResult result) {
         try {
-            OverridingClassLoader cl = new OverridingClassLoader(this.getClass().getClassLoader());
-            cl.excludePackage("junit.");
-            cl.excludePackage("com.opensymphony.oscache.");
-            cl.excludePackage("com.opensymphony.module.sitemesh.");
-            cl.excludePackage("com.opensymphony.sitemesh.");
-            cl.excludePackage("com.thoughtworks.xstream.");
-
-            cl.excludePackage("org.xml.sax.");
-            cl.excludePackage("org.dom4j.");
-
-            cl.excludePackage("org.apache.bcel.");
-            cl.excludePackage("org.apache.regexp.");
-            cl.excludePackage("org.apache.xalan.");
-            cl.excludePackage("org.apache.xml.");
-            cl.excludePackage("org.apache.xpath.");
-
-            cl.excludePackage("org.apache.xml.serlialize.");
-            cl.excludePackage("org.apache.xerces.");
-            cl.excludePackage("org.apache.wml.");
-            cl.excludePackage("org.apache.html.");
-            cl.excludePackage("org.w3c.dom.");
-            cl.excludePackage("org.aopalliance.");
-            cl.excludePackage("org.apache.bsf.");
-            cl.excludePackage("org.apache.commons.");
-            cl.excludePackage("org.apache.log4j.");
-            cl.excludePackage("org.apache.oro.");
-            cl.excludePackage("org.apache.taglibs.");
-            cl.excludePackage("org.apache.tools.ant.");
-            cl.excludePackage("org.apache.xml.serializer.");
-            cl.excludePackage("org.hibernate.");
-            cl.excludePackage("org.hsqldb.");
-            cl.excludePackage("org.jaxen.");
-            cl.excludePackage("org.xmlpull.");
-            cl.excludePackage("org.springframework.");
-            cl.excludePackage("net.sf.cglib.");
-            cl.excludePackage("net.sf.ehcache.");
+            OverridingClassLoader cl = new SearchableFunctionalTestCaseClassLoader(this.getClass().getClassLoader());
             Thread.currentThread().setContextClassLoader(cl)
 
             Class newClass = cl.loadClass(this.getClass().getName())

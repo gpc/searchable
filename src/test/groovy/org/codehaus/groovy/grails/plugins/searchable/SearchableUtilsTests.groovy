@@ -112,7 +112,7 @@ class SearchableUtilsTests extends GroovyTestCase {
     // public static String getAppName(GrailsApplication grailsApplication) {
     void testGetAppName() {
         // unnkown
-        assert SearchableUtils.getAppName() == "app.name"
+        assert SearchableUtils.getAppName(null) == "app.name"
 
         // with grails app
         def grailsApplication = [getMetadata: {-> ['app.name': "foobar"]}] as GrailsApplication
@@ -121,15 +121,15 @@ class SearchableUtilsTests extends GroovyTestCase {
         // no grails app, finds application.properties on classpath
         def cl = Thread.currentThread().getContextClassLoader()
         Thread.currentThread().setContextClassLoader([getResource: {String name -> new URL("dummy://resource")}, getResourceAsStream: {String name -> new ByteArrayInputStream("app.name=barbaz".bytes)}] as ClassLoader)
-        assert SearchableUtils.getAppName() == "barbaz"
+        assert SearchableUtils.getAppName(null) == "barbaz"
         Thread.currentThread().setContextClassLoader(cl)
 
-        // no grails app uses base.dir property
+        // no grails app, uses base.dir property
         String dir = System.getProperty("java.io.tmpdir")
         def file = new File(dir, "application.properties")
         file.write("app.name=bazfoo");
         System.setProperty("base.dir", dir)
-        assert SearchableUtils.getAppName() == "bazfoo"
+        assert SearchableUtils.getAppName(null) == "bazfoo"
         file.delete()
     }
 }

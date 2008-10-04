@@ -147,8 +147,12 @@
     <attribute name="src"/>
     <sequential>
       <mkdir dir="${test.classes}" />
+      <javac srcdir="${test.java.src}" destdir="${test.classes}" source="${target.vm}" target="${target.vm}" debug="true" classpathref="classpath" />
       <groovyc srcdir="@{src}" destdir="${test.classes}" classpathref="test.classpath" />
-      <!-- todo place a log4j config file in here to suppress unwanted logging to console in tests -->
+      <!-- provide some dummy config files to silence irrelevant log output -->
+      <copy todir="${test.classes}" overwrite="true">
+        <fileset dir="${test.resources}" />
+      </copy>
     </sequential>
   </macrodef>
 

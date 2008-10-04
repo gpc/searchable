@@ -225,7 +225,7 @@ public class SearchableUtils {
         if (metadata == null) {
             metadata = loadMetadata();
         }
-        if (metadata == null) {
+        if (metadata == null || !metadata.containsKey("app.name")) {
             return "app.name";
         }
         return (String) metadata.get("app.name");
