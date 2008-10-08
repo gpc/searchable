@@ -39,14 +39,64 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert mappingXmlBuilder.convertCamelCaseToLowerCaseDashed("refComponentAlias") == "ref-component-alias"
     }
 
+    void testBuildClassMappingXmlForSearchableId() {
+        CompassClassMapping mapping = new CompassClassMapping(mappedClass: Object)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
+
+        def is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        def doc = getXmlSlurper(is)
+        def ids = doc.class.id
+        assert ids.size() == 1
+        assert ids[0].@name == "id"
+        assert ids[0].'meta-data' == "" // meaning there isn't a meta-data element!
+
+        mapping = new CompassClassMapping(mappedClass: Object)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id", [converter: 'id_converter', accessor: 'field']))
+
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        ids = doc.class.id
+        assert ids.size() == 1
+        assert ids[0].@name == "id"
+        assert ids[0].@accessor == "field"
+        assert ids[0].'meta-data' == "id"
+        assert ids[0].'meta-data'.@converter == "id_converter"
+
+        mapping = new CompassClassMapping(mappedClass: Object)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id", [name: 'my_id']))
+
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        ids = doc.class.id
+        assert ids.size() == 1
+        assert ids[0].@name == "id"
+        assert ids[0].'meta-data' == "my_id"
+
+        // multiple ids
+        mapping = new CompassClassMapping(mappedClass: Object)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id1"))
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id2", [name: 'second_id']))
+
+        is = mappingXmlBuilder.buildClassMappingXml(mapping)
+        doc = getXmlSlurper(is)
+        ids = doc.class.id
+        assert ids.size() == 2
+        assert ids[0].@name == "id1"
+        assert ids[0].'meta-data' == ""
+        assert ids[1].@name == "id2"
+        assert ids[1].'meta-data' == "second_id"
+    }
+
     void testBuildClassMappingXmlForClassMappingOptions() {
         // sub-index
         CompassClassMapping mapping = new CompassClassMapping(mappedClass: Post)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         def is = mappingXmlBuilder.buildClassMappingXml(mapping)
         def doc = getXmlSlurper(is)
         assert doc.class.@"sub-index" == ''
 
         mapping = new CompassClassMapping(mappedClass: Post, subIndex: "foobar")
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         is = mappingXmlBuilder.buildClassMappingXml(mapping)
         doc = getXmlSlurper(is)
         assert doc.class.@"sub-index" == 'foobar'
@@ -55,6 +105,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
             analyzer: 'cleveranalyzer', boost: 1.5, converter: "improvedconverter",
             managedId: "false", root: false, spellCheck: 'include', supportUnmarshall: false
         )
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         is = mappingXmlBuilder.buildClassMappingXml(mapping)
         doc = getXmlSlurper(is)
         assert doc.class.@analyzer == 'cleveranalyzer'
@@ -69,6 +120,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
     void testBuildClassMappingXmlForAllOptions() {
         // no "all"
         CompassClassMapping mapping = new CompassClassMapping(mappedClass: Post)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         def is = mappingXmlBuilder.buildClassMappingXml(mapping)
         def doc = getXmlSlurper(is)
         assert doc.class.all == ''
@@ -83,6 +135,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
             enableAll: true, allExcludeAlias: true, allName: 'all', allOmitNorms: false,
             allTermVector: 'yes', allSpellCheck: 'include'
         )
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         is = mappingXmlBuilder.buildClassMappingXml(mapping)
         doc = getXmlSlurper(is)
         assert doc.class.all.@enable == 'true'
@@ -94,6 +147,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // enableAll and all are interchangeable
         mapping = new CompassClassMapping(mappedClass: Post, all: false)
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         is = mappingXmlBuilder.buildClassMappingXml(mapping)
         doc = getXmlSlurper(is)
         assert doc.class.all.@enable == 'false'
@@ -102,6 +156,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
     void testBuildClassMappingXmlForSubIndexHash() {
         // sub-index hash
         def mapping = new CompassClassMapping(mappedClass: Post, subIndexHash: [type: ConstantSubIndexHash, settings: [foo: 'FOO', bar: 'BAR']])
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         def is = mappingXmlBuilder.buildClassMappingXml(mapping)
         def doc = getXmlSlurper(is)
         /*
@@ -120,6 +175,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert doc.class."sub-index-hash".setting.find { it.@name == 'bar' && it.@value == 'BAR' }
 
         mapping = new CompassClassMapping(mappedClass: Post, subIndexHash: [type: ConstantSubIndexHash])
+        mapping.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         is = mappingXmlBuilder.buildClassMappingXml(mapping)
         doc = getXmlSlurper(is)
         assert doc.class."sub-index-hash".@type == 'org.compass.core.engine.subindex.ConstantSubIndexHash'
@@ -135,6 +191,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // single meta data, single value, no attributes
         description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post")) // not essentially important here
         description.addConstantMetaData('myextradata', [:], ['thevalue'])
         is = mappingXmlBuilder.buildClassMappingXml(description)
@@ -170,6 +227,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // multiple meta datas, single/many values, with attributes
         description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post")) // not essentially important here
         description.addConstantMetaData('singleval', [:], ['value'])
         description.addConstantMetaData('multivalue', [:], ['valueone', 'valuetwo'])
@@ -240,6 +298,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         // BigDecimal option value mapping
         description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [boost: 2.0]))
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
         <?xml version="1.0"?>
@@ -265,6 +324,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // float option value mapping
         description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [boost: 2.0f]))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
@@ -291,6 +351,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // default mapping
         description = new CompassClassMapping(mappedClass: Post, alias: "postalias")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("title"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt"))
@@ -332,6 +393,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // Date format
         description = new CompassClassMapping(mappedClass: Comment, alias: 'commentalias')
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("summary"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("comment"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt", [format: "yyyy-MM-dd'T'HH:mm:ss"]))
@@ -375,6 +437,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert references[0].@"ref-alias" == 'postalias'
 
         description = new CompassClassMapping(mappedClass: Post, alias: 'postalias')
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("createdAt", [format: 'yyyyMMdd', excludeFromAll: true]))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('title', [boost: 2.0f, store: 'compress']))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance('post', [termVector: 'yes']))
@@ -460,6 +523,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         // converter and propertyConverter are equivalent
         description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [converter: 'customConverter']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         mapping = getXmlSlurper(is)
@@ -471,6 +535,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert properties[0].'meta-data'.@converter == "customConverter"
 
         description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [propertyConverter: 'customConverter']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         mapping = getXmlSlurper(is)
@@ -482,6 +547,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert properties[0].'meta-data'.@converter == "customConverter"
 
         description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [name: 'the_post']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         mapping = getXmlSlurper(is)
@@ -493,6 +559,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert properties[0].'meta-data' == "the_post"
 
         description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [nullValue: 'it_is_null']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         mapping = getXmlSlurper(is)
@@ -504,6 +571,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert properties[0].'meta-data'.@'null-value' == "it_is_null"
 
         description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [spellCheck: 'exclude']))
         is = mappingXmlBuilder.buildClassMappingXml(description)
         mapping = getXmlSlurper(is)

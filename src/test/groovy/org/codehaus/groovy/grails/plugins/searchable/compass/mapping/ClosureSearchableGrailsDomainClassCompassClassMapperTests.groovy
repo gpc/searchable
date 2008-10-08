@@ -129,7 +129,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         def mapping = getClassMapping(User, [Comment, User, Post], { }, ["password"])
         assert mapping.mappedClass == User
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 5
+        assert mapping.propertyMappings.size() == 6, mapping.propertyMappings.size()
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'username', 'email', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'posts' }.every { it.reference && it.propertyType == Post }
     }
@@ -141,7 +142,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 2
+        assert mapping.propertyMappings.size() == 3
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['summary', 'comment'] }.every { it.property && it.attributes.size() == 0 }
     }
 
@@ -152,10 +154,33 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         })
         assert mapping.mappedClass == Post
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 5
+        assert mapping.propertyMappings.size() == 6
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['title', 'post', 'version'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.propertyType == Comment }
         assert mapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
+    }
+
+    void testGetCompassClassMappingForSearchableId() {
+        def cls = new GroovyClassLoader().parseClass("""
+        class IdMapping {
+            Object id
+            Long version
+            String value
+        }
+        """)
+
+        def cm = getClassMapping(cls, [cls], {
+            id converter: "my_id_converter", accessor: "property"
+        })
+        assert cm.propertyMappings.size() == 3
+        assert cm.propertyMappings.find { it.propertyName == "id" && it.id && it.attributes.converter == 'my_id_converter' }
+
+        cm = getClassMapping(cls, [cls], {
+            id name: "the_id"
+        })
+        assert cm.propertyMappings.size() == 3
+        assert cm.propertyMappings.find { it.propertyName == "id" && it.id && it.attributes.name == 'the_id' }
     }
 
     void testGetCompassClassMappingForSearchableProperty() {
@@ -274,7 +299,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         def mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], { })
         assert mapping.mappedClass == ComponentOwner
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 4
+        assert mapping.propertyMappings.size() == 5
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.findAll { it.propertyName in ['searchableCompOne', 'searchableCompTwo'] }.every { it.component && it.propertyType == SearchableComp }
 
@@ -282,7 +308,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         mapping = getClassMapping(SearchableComp, [ComponentOwner, SearchableComp], { })
         assert mapping.mappedClass == SearchableComp
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 2
+        assert mapping.propertyMappings.size() == 3
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'searchableCompName'] }.every { it.property && it.attributes.size() == 0 }
 
         // define options for implicit searchable component
@@ -291,7 +318,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         })
         assert mapping.mappedClass == ComponentOwner
         assert mapping.root == true
-        assert mapping.propertyMappings.size() == 4
+        assert mapping.propertyMappings.size() == 5
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.component && it.propertyType == SearchableComp && it.attributes == [maxDepth: 1, cascade: 'create,delete'] }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
@@ -301,7 +329,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
             searchableCompOne(reference: true) // implies component: false
         })
-        assert mapping.propertyMappings.size() == 4
+        assert mapping.propertyMappings.size() == 5
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.reference && it.propertyType == SearchableComp && it.attributes == [:] }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
@@ -309,7 +338,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         mapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], {
             searchableCompOne(reference: [cascade: 'true']) // implies component: false
         })
-        assert mapping.propertyMappings.size() == 4
+        assert mapping.propertyMappings.size() == 5
+        assert mapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert mapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }.every { it.reference && it.propertyType == SearchableComp && it.attributes == [cascade: 'true'] }
         assert mapping.propertyMappings.find { it.propertyName == 'searchableCompTwo' }.every { it.component && it.propertyType == SearchableComp }
@@ -537,7 +567,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         })
         assert cm.alias == "rocky"
         assert cm.subIndex == "tomahawk"
-        assert cm.propertyMappings.size() == 4
+        assert cm.propertyMappings.size() == 5
+        assert cm.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert cm.propertyMappings.find { it.propertyName == "alias" && it.attributes.store == 'compress'}
         assert cm.propertyMappings.find { it.propertyName == "subIndex" && it.attributes.store == 'compress' }
         assert cm.propertyMappings.find { it.propertyName == "constant" && it.attributes.store == 'compress' }
@@ -557,7 +588,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert cm.subIndex == "duper"
         assert cm.constantMetaData.size() == 1
         assert cm.constantMetaData.find { it.name == "wild" }.values == ["bill"]
-        assert cm.propertyMappings.size() == 4
+        assert cm.propertyMappings.size() == 5
+        assert cm.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert cm.propertyMappings.find { it.propertyName == "alias" && it.attributes.store == 'compress'}
         assert cm.propertyMappings.find { it.propertyName == "subIndex" && it.attributes.store == 'compress' }
         assert cm.propertyMappings.find { it.propertyName == "constant" && it.attributes.store == 'compress' }
@@ -577,7 +609,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         assert cm.constantMetaData.size() == 2
         assert cm.constantMetaData.find { it.name == "material" }.values == ["wood"]
         assert cm.constantMetaData.find { it.name == "finish" }.values == ["polished", "laquered"]
-        assert cm.propertyMappings.size() == 4
+        assert cm.propertyMappings.size() == 5
+        assert cm.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert cm.propertyMappings.find { it.propertyName == "alias" && it.attributes.store == 'compress'}
         assert cm.propertyMappings.find { it.propertyName == "subIndex" && it.attributes.store == 'compress' }
         assert cm.propertyMappings.find { it.propertyName == "constant" && it.attributes.store == 'compress' }

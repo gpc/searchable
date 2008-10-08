@@ -26,6 +26,7 @@ import java.util.Map;
  * @author Maurice Nicholson
  */
 public class CompassClassPropertyMapping {
+    public static final String ID = "id";
     public static final String PROPERTY = "property";
     public static final String REFERENCE = "reference";
     public static final String COMPONENT = "component";
@@ -85,6 +86,25 @@ public class CompassClassPropertyMapping {
         this(type, propertyName);
         Assert.notNull(attributes, "attributes cannot be null");
         this.attributes = attributes;
+    }
+
+    /**
+     * Factory-style constructor for type-safe id type
+     * @param propertyName the name of the mapped id
+     * @return a new CompassClassPropertyMapping instance
+     */
+    public static CompassClassPropertyMapping getIdInstance(String propertyName) {
+        return new CompassClassPropertyMapping(ID, propertyName);
+    }
+
+    /**
+     * Factory-style constructor for type-safe id type
+     * @param propertyName the name of the mapped id
+     * @param attributes mapping attributes
+     * @return a new CompassClassPropertyMapping instance
+     */
+    public static CompassClassPropertyMapping getIdInstance(String propertyName, Map attributes) {
+        return new CompassClassPropertyMapping(ID, propertyName, attributes);
     }
 
     /**
@@ -152,6 +172,14 @@ public class CompassClassPropertyMapping {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    /**
+     * Is the strategy a searchable id?
+     * @return true if this is a searchable property strategy
+     */
+    public boolean isId() {
+        return type.equals(ID);
     }
 
     /**

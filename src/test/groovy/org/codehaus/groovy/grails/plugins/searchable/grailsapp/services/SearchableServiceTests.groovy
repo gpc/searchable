@@ -37,6 +37,7 @@ import org.jmock.core.matcher.*
  *
  * @author Maurice Nicholson
  */
+// todo refactor to functional tests
 class SearchableServiceTests extends AbstractSearchableCompassTestCase {
     def compass
     def application

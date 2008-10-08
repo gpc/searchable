@@ -60,7 +60,8 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(Post, [Comment, Post, User], true)
         assert classMapping.mappedClass == Post
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 6
+        assert classMapping.propertyMappings.size() == 7
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'title', 'post', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         assert classMapping.propertyMappings.find { it.propertyName == 'comments' }.every { it.reference && it.propertyType == Comment }
         assert classMapping.propertyMappings.find { it.propertyName == 'author' }.every { it.reference && it.propertyType == User }
@@ -68,7 +69,8 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(Comment, [Comment, Post, User], true)
         assert classMapping.mappedClass == Comment
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 5
+        assert classMapping.propertyMappings.size() == 6
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'summary', 'comment', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'post' }
         assert propertyMapping.reference
@@ -79,7 +81,8 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(Post, [Comment, Post], true)
         assert classMapping.mappedClass == Post
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 5
+        assert classMapping.propertyMappings.size() == 6
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'title', 'post', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'comments' }
         assert propertyMapping.reference
@@ -89,14 +92,16 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(Post, [Post], true)
         assert classMapping.mappedClass == Post
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 4
+        assert classMapping.propertyMappings.size() == 5
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'title', 'post', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
 
         // NOT mapping password!
         classMapping = getClassMapping(User, [Comment, Post, User], true, ["password"])
         assert classMapping.mappedClass == User
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 5
+        assert classMapping.propertyMappings.size() == 6
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'username', 'email', 'createdAt'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'posts' }
         assert propertyMapping.reference
@@ -106,7 +111,8 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(User, [Comment, Post, User], true, ["createdAt", "version"])
         assert classMapping.mappedClass == User
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 4
+        assert classMapping.propertyMappings.size() == 5
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['username', 'password', 'email'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'posts' }
         assert propertyMapping.reference
@@ -116,7 +122,8 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(ComponentOwner, [ComponentOwner, SearchableComp], true)
         assert classMapping.mappedClass == ComponentOwner
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 4
+        assert classMapping.propertyMappings.size() == 5
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
         propertyMapping = classMapping.propertyMappings.find { it.propertyName == 'searchableCompOne' }
         assert propertyMapping.component
@@ -129,13 +136,15 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(SearchableComp, [ComponentOwner, SearchableComp], true)
         assert classMapping.root == true
         assert classMapping.mappedClass == SearchableComp
-        assert classMapping.propertyMappings.size() == 2
+        assert classMapping.propertyMappings.size() == 3
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['version', 'componentOwnerName'] }.every { it.property && it.attributes.size() == 0 }
 
         // implied searchability of components
         classMapping = getClassMapping(ComponentOwner, [ComponentOwner, Comp, SearchableComp], true)
         assert classMapping.mappedClass == ComponentOwner
         assert classMapping.root == true
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.find { it.propertyName == "comp" && it.propertyType == Comp && it.component }
         assert classMapping.propertyMappings.find { it.propertyName == "searchableCompOne" && it.propertyType == SearchableComp && it.component }
         assert classMapping.propertyMappings.find { it.propertyName == "searchableCompTwo" && it.propertyType == SearchableComp && it.component }
@@ -144,6 +153,7 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(Comp, [ComponentOwner, Comp, SearchableComp], null)
         assert classMapping.mappedClass == Comp
         assert classMapping.root == false
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.find { it.propertyName == "compName" && it.property }
 
         classMapping = getClassMapping(SearchableComp, [ComponentOwner, Comp, SearchableComp], null)
@@ -165,39 +175,43 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         classMapping = getClassMapping(Post, [Post, Comment, User], [only: ["title", "post"]])
         assert classMapping.mappedClass == Post
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 2
+        assert classMapping.propertyMappings.size() == 3
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['title', 'post'] }.every { it.property && it.attributes.size() == 0 }
 
         classMapping = getClassMapping(Post, [Post, Comment, User], [only: "comments"])
         assert classMapping.mappedClass == Post
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 1
+        assert classMapping.propertyMappings.size() == 2
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings[0].propertyName == 'comments'
         assert classMapping.propertyMappings[0].propertyType == Comment
 
         classMapping = getClassMapping(User, [Post, Comment, User], [only: ["username", "email"]])
         assert classMapping.mappedClass == User
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 2
+        assert classMapping.propertyMappings.size() == 3
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['username', 'email'] }.every { it.property && it.attributes.size() == 0 }
 
         // "only" overrides any excluded properties
         classMapping = getClassMapping(User, [Post, Comment, User], [only: ["username", "password"]], ["password"])
         assert classMapping.mappedClass == User
         assert classMapping.root == true
-        assert classMapping.propertyMappings.size() == 2
+        assert classMapping.propertyMappings.size() == 3
+        assert classMapping.propertyMappings.find { it.propertyName == 'id' }.every { it.id }
         assert classMapping.propertyMappings.findAll { it.propertyName in ['username', 'password'] }.every { it.property && it.attributes.size() == 0 }
 
         // When searchable = [except: ...]
         classMapping = getClassMapping(Comment, [Comment, Post, User], [except: "comment"])
-        assert classMapping.propertyMappings*.propertyName as Set == ["version", "summary", "post", "createdAt"] as Set
+        assert classMapping.propertyMappings*.propertyName as Set == ["id", "version", "summary", "post", "createdAt"] as Set
 
         classMapping = getClassMapping(Comment, [Comment, Post, User], [except: ["comment", "summary"]])
-        assert classMapping.propertyMappings*.propertyName as Set == ["version", "post", "createdAt"] as Set
+        assert classMapping.propertyMappings*.propertyName as Set == ["id", "version", "post", "createdAt"] as Set
 
         // "except" overrides any excluded properties
         classMapping = getClassMapping(User, [Comment, Post, User], [except: "createdAt"], ["password"])
-        assert classMapping.propertyMappings*.propertyName as Set == ["version", "username", "email", "password", "posts"] as Set
+        assert classMapping.propertyMappings*.propertyName as Set == ["id", "version", "username", "email", "password", "posts"] as Set
 
         // with default format
         classMapper.domainClassPropertyMappingStrategyFactory.defaultFormats = [(Date): 'yyyy-MMM-dd, HH:mm', (Long): '0000']

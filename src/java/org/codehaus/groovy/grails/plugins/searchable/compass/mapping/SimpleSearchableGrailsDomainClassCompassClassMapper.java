@@ -17,7 +17,6 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.mapping;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
-import org.springframework.util.Assert;
 
 import java.util.*;
 

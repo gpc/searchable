@@ -17,6 +17,9 @@ package org.codehaus.groovy.grails.plugins.searchable.util;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.CompositeIdentity;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.Mapping;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -25,6 +28,20 @@ import java.util.*;
  * @author Maurice Nicholson
  */
 public class GrailsDomainClassUtils {
+
+    /**
+     * Is the given property an identity property? Checks the property as well as the custom domain class mapping
+     * @param domainClassProperty domain clas property
+     * @return true if the property is the/an identity property
+     */
+    public static boolean isIndentityProperty(GrailsDomainClassProperty domainClassProperty) {
+        Mapping mapping = GrailsDomainBinder.getMapping(domainClassProperty.getDomainClass().getClazz());
+        if (mapping != null && mapping.getIdentity() instanceof CompositeIdentity) {
+            CompositeIdentity identity = (CompositeIdentity) mapping.getIdentity();
+            return Arrays.asList(identity.getPropertyNames()).contains(domainClassProperty.getName());
+        }
+        return domainClassProperty.isIdentity();
+    }
 
     /**
      * Get the subclasses for the given GrailsDomainClass, filtering out any not in the given collection

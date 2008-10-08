@@ -19,6 +19,9 @@ import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder
+import org.hibernate.cfg.Mappings
+import org.hibernate.cfg.Configuration
 
 /**
 * @author Maurice Nicholson
@@ -140,5 +143,65 @@ class GrailsDomainClassUtilsTests extends GroovyTestCase {
         assert GrailsDomainClassUtils.isWithinInhertitanceHierarchy(aadc, [adc, aadc, aaadc, bdc]) == true
         assert GrailsDomainClassUtils.isWithinInhertitanceHierarchy(aaadc, [adc, aadc, aaadc, bdc]) == true
         assert GrailsDomainClassUtils.isWithinInhertitanceHierarchy(bdc, [adc, aadc, aaadc, bdc]) == false
+    }
+
+    void testIsIdentityPropertyForSimpleId() {
+        def simple = gcl.parseClass("""
+class B {
+    Long id, version
+    String value
+}
+""")
+
+        try {
+            def ga = new DefaultGrailsApplication([simple] as Class[], gcl)
+            ga.initialise()
+            def simpleDomainClass = ga.getArtefact(DomainClassArtefactHandler.TYPE, "B")
+
+            Configuration config = new Configuration()
+            GrailsDomainBinder.bindClass(simpleDomainClass, config.createMappings())
+
+            assert GrailsDomainClassUtils.isIndentityProperty(simpleDomainClass.getPropertyByName("id"))
+            assert !GrailsDomainClassUtils.isIndentityProperty(simpleDomainClass.getPropertyByName("value"))
+        } finally {
+            clearGrailsMappingCache()
+        }
+    }
+
+    void testIsIdentityPropertyForCompositeId() {
+        def composite = gcl.parseClass("""
+class A {
+    static mapping = {
+        id composite: ['a', 'b']
+    }
+    Long id, version
+    String a, b
+    String value
+}
+        """)
+
+        try {
+            def ga = new DefaultGrailsApplication([composite] as Class[], gcl)
+            ga.initialise()
+            def compositeDomainClass = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
+
+            Configuration config = new Configuration()
+            GrailsDomainBinder.bindClass(compositeDomainClass, config.createMappings())
+
+            assert GrailsDomainClassUtils.isIndentityProperty(compositeDomainClass.getPropertyByName("a"))
+            assert GrailsDomainClassUtils.isIndentityProperty(compositeDomainClass.getPropertyByName("b"))
+            assert !GrailsDomainClassUtils.isIndentityProperty(compositeDomainClass.getPropertyByName("id"))
+            assert !GrailsDomainClassUtils.isIndentityProperty(compositeDomainClass.getPropertyByName("value"))
+        } finally {
+            clearGrailsMappingCache()
+        }
+    }
+
+    // cleans up static mapping cache created in tests
+    private void clearGrailsMappingCache() {
+        def mappingCacheField = GrailsDomainBinder.getDeclaredField("MAPPING_CACHE")
+        mappingCacheField.setAccessible(true)
+        def mappingCache = mappingCacheField.get(null)
+        mappingCache.clear()
     }
 }

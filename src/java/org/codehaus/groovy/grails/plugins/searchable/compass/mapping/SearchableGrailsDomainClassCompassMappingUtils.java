@@ -23,6 +23,7 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.grails.plugins.searchable.SearchableUtils;
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.Mapping;
 import org.compass.core.Compass;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
@@ -80,10 +81,7 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         for (int i = 0, max = domainClassProperties.length; i < max; i++) {
             GrailsDomainClassProperty property = domainClassProperties[i];
             String propertyName = property.getName();
-            if (propertyName.equals("id")) { // TODO refactor with specific id mapping
-                continue;
-            }
-            if (!SearchableUtils.isIncludedProperty(propertyName, searchableValue)) {
+            if (!GrailsDomainClassUtils.isIndentityProperty(property) && !SearchableUtils.isIncludedProperty(propertyName, searchableValue)) {
                 LOG.debug(
                     "Not mapping [" + ClassUtils.getShortName(mappedClass) + "." + propertyName + "] because of " +
                     (defaultExcludes ? "default property exclusions" : "specified only/except rule")

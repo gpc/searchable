@@ -37,7 +37,6 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.web.util.WebUtils
-import org.springframework.core.OverridingClassLoader
 
 /**
  * @author Maurice Nicholson
@@ -56,7 +55,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
      */
     public void run(TestResult result) {
         try {
-            OverridingClassLoader cl = new SearchableFunctionalTestCaseClassLoader(this.getClass().getClassLoader());
+            ClassLoader cl = new SearchableFunctionalTestCaseClassLoader(this.getClass().getClassLoader());
             Thread.currentThread().setContextClassLoader(cl)
 
             Class newClass = cl.loadClass(this.getClass().getName())

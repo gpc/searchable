@@ -23,6 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
  *
  * @author Maurice Nicholson
  */
+// todo deprecate and remove
 abstract class AbstractSearchableCompassTestCase extends GroovyTestCase {
 
     def withCompassQueryBuilder(closure) {

@@ -21,6 +21,9 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUt
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.CompassConverterLookupHelper;
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.StringMapConverter;
 import org.codehaus.groovy.grails.plugins.searchable.util.GrailsDomainClassUtils;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.Mapping;
+import org.codehaus.groovy.grails.orm.hibernate.cfg.CompositeIdentity;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 
 import java.util.*;
@@ -37,6 +40,10 @@ public class SearchableGrailsDomainClassPropertyMappingFactory {
     public CompassClassPropertyMapping getGrailsDomainClassPropertyMapping(GrailsDomainClassProperty domainClassProperty, Collection searchableGrailsDomainClasses) {
         Class propertyType = domainClassProperty.getType();
         String propertyName = domainClassProperty.getName();
+
+        if (GrailsDomainClassUtils.isIndentityProperty(domainClassProperty)) {
+            return idCompassClassPropertyMapping(propertyName);
+        }
 
         if (Map.class.isAssignableFrom(propertyType) && !domainClassProperty.isAssociation()) {
             return stringMapCompassClassPropertyMapping(propertyName);
@@ -63,6 +70,10 @@ public class SearchableGrailsDomainClassPropertyMappingFactory {
         }
 
         return referenceCompassClassPropertyMapping(propertyName, propertyType);
+    }
+
+    public CompassClassPropertyMapping idCompassClassPropertyMapping(String propertyName) {
+        return CompassClassPropertyMapping.getIdInstance(propertyName);
     }
 
     public CompassClassPropertyMapping propertyCompassClassPropertyMapping(String propertyName, String format) {

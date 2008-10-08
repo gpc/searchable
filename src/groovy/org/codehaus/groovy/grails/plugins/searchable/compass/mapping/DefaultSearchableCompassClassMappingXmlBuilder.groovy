@@ -27,6 +27,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
     private static final Log LOG = LogFactory.getLog(DefaultSearchableCompassClassMappingXmlBuilder.class)
 
     /** Legal attribute names for known XML elements */
+    static final ID_ATTR_NAMES = ['accessor', 'name']
     static final PROPERTY_ATTR_NAMES = ['accessor', 'analyzer', 'boost', 'class', 'converter', 'exclude-from-all', 'managed-id', 'managed-id-index', 'managed-id-converter', 'name', 'override']
     static final META_DATA_ATTR_NAMES = ['analyzer', 'boost', 'converter', 'exclude-from-all', 'format', 'index', 'null-value', 'reverse', 'store', 'spell-check', 'term-vector']
     static final REFERENCE_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'name', 'ref-alias', 'ref-comp-alias']
@@ -89,7 +90,31 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     }
                 }
 
-                id(name: "id") // TODO support other "id" properties?
+                def idPropertyMappings = description.propertyMappings.findAll { it.id }
+                if (!idPropertyMappings) {
+                    throw new IllegalArgumentException("No searchable id mapping(s) found - there must be (at least) one");
+                }
+                for (idPropertyMapping in idPropertyMappings) {
+                    def idAttrs = [:]
+                    def idMetaDataAttrs = [:]
+                    def idTmp = new HashMap(self.transformAttrNames(idPropertyMapping.attributes))
+                    def idName = idTmp.remove("name")
+                    validateAttributes("id", idTmp, ID_ATTR_NAMES + META_DATA_ATTR_NAMES)
+                    idTmp.each { k, v ->
+                        if (META_DATA_ATTR_NAMES.contains(k)) {
+                            idMetaDataAttrs[k] = v
+                        } else {
+                            assert ID_ATTR_NAMES.contains(k)
+                            idAttrs[k] = v
+                        }
+                    }
+                    idAttrs.name = idPropertyMapping.propertyName
+                    id(idAttrs) {
+                        if (idMetaDataAttrs.size() || idName) {
+                            "meta-data"(idMetaDataAttrs, idName ? idName : idPropertyMapping.propertyName)
+                        }
+                    }
+                }
 
                 for (constantMetaData in description.constantMetaData) {
                     def metaData = new HashMap(constantMetaData) // clone to avoid corruption
@@ -104,7 +129,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                     }
                 }
 
-                def donePropertyMappings = []
+                def donePropertyMappings = [] + idPropertyMappings
                 for (propertyMapping in description.propertyMappings) {
                     if (donePropertyMappings.contains(propertyMapping)) {
                         continue

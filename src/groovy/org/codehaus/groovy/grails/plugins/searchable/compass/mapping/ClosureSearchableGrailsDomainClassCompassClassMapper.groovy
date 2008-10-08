@@ -32,12 +32,14 @@ import org.springframework.beans.BeanWrapperImpl
 */
 class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
     static final Log log = LogFactory.getLog(ClosureSearchableGrailsDomainClassCompassClassMapper);
+    static final SEARCHABLE_ID_OPTIONS = ['accessor', 'converter', 'name']
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'name', 'nullValue', 'propertyConverter', 'reverse', 'store', 'spellCheck', 'termVector']
     static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'refAlias', 'refComponentAlias']
     static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'refAlias']
     static final SEARCHABLE_REFERENCE_MAPPING_OPTIONS = SEARCHABLE_REFERENCE_OPTIONS + ["reference", "component"]
     static final SEARCHABLE_COMPONENT_MAPPING_OPTIONS = SEARCHABLE_COMPONENT_OPTIONS + ["reference", "component"]
 
+    static final SEARCHABLE_ID_OPTION_ALIASES = [:]
     static final SEARCHABLE_PROPERTY_OPTION_ALIASES = [propertyConverter: 'converter']
 
     static final CLASS_MAPPING_OPTIONS = ['all', 'allName', 'allAnalyzer', 'allTermVector', 'alias', 'analyzer', 'boost', 'converter', 'enableAll', 'managedId', 'root', 'spellCheck', 'subIndex', 'supportUnmarshall']
@@ -205,6 +207,21 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                 }
             }
             mappedProperties << CompassClassPropertyMapping.getPropertyInstance(name, args)
+            return
+        } else if (defaultMapping.id) {
+            def invalidOptions = args.keySet() - SEARCHABLE_ID_OPTIONS
+            if (invalidOptions) {
+                throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}#searchable' for property '${name}'. " +
+                    "'${mappedClass.getName()}.${name}' is assumed to be a 'searchable id', meaning you can only define the options allowed " +
+                    "for searchable ids. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for searchable properties are [${SEARCHABLE_ID_OPTIONS.join(', ')}]")
+            }
+            SEARCHABLE_ID_OPTION_ALIASES.each { k, v ->
+                if (args.containsKey(k)) {
+                    args[v] = args[k]
+                    args.remove(k)
+                }
+            }
+            mappedProperties << CompassClassPropertyMapping.getIdInstance(name, args)
             return
         }
 
