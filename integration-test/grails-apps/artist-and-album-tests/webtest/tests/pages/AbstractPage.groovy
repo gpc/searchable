@@ -16,7 +16,7 @@
 package pages
 
 /**
- * Abstract super class for zipatrip pages
+ * Abstract super class for pages
  */
 abstract class AbstractPage extends components.AbstractComponent {
 
