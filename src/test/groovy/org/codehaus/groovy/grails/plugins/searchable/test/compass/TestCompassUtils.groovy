@@ -25,20 +25,6 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMapp
 */
 class TestCompassUtils {
 
-    static withCompassQueryBuilder(compass, closure) {
-        def session = compass.openSession()
-        def tx = session.beginTransaction()
-        def result
-        try {
-            def queryBuilder = session.queryBuilder()
-            result = closure(queryBuilder)
-        } finally {
-            tx.commit()
-            session.close()
-        }
-        return result
-    }
-
     static withCompassSession(compass, closure) {
         def session = compass.openSession()
         def tx = session.beginTransaction()
@@ -58,14 +44,6 @@ class TestCompassUtils {
         }
     }
 
-    static countHits(compass, closure) {
-        withCompassSession(compass) { session ->
-            def queryBuilder = session.queryBuilder()
-            def query = closure(queryBuilder)
-            return query.hits().length()
-        }
-    }
-
     static saveToCompass(compass, Object[] objects) {
         withCompassSession(compass) { session ->
             objects.each { object ->
@@ -79,12 +57,6 @@ class TestCompassUtils {
     static loadFromCompass(compass, clazz, id) {
         withCompassSession(compass) { session ->
             session.load(clazz, id)
-        }
-    }
-
-    static clearIndex(compass) {
-        withCompassSession(compass) { session ->
-            session.delete(session.queryBuilder().matchAll())
         }
     }
 }

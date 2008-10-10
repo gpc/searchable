@@ -163,17 +163,4 @@ class SearchableCompassQueryBuilderSortOptionHelperTests extends GroovyTestCase 
         conf.connection = "ram://testindex"
         return conf.buildCompass()
     }
-
-    def withCompassSession(closure) {
-        def session = compass.openSession()
-        def trans = session.beginTransaction()
-        def result
-        try {
-            result = closure(session)
-        } finally {
-            trans.commit()
-            session.close()
-        }
-        return result
-    }
 }

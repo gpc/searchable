@@ -112,6 +112,7 @@
     <pathelement location="${test.groovy.src}"/>
     <pathelement location="${func.test.groovy.src}"/>
     <pathelement location="${test.classes}"/>
+    <fileset dir="${lib.test}" includes="*.jar"/>
     <path refid="cobertura.classpath" />
   </path>
 

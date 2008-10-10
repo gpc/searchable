@@ -26,10 +26,6 @@ import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
 // todo deprecate and remove
 abstract class AbstractSearchableCompassTestCase extends GroovyTestCase {
 
-    def withCompassQueryBuilder(closure) {
-        TestCompassUtils.withCompassQueryBuilder(compass, closure)
-    }
-
     def withCompassSession(closure) {
         TestCompassUtils.withCompassSession(compass, closure)
     }
@@ -38,19 +34,11 @@ abstract class AbstractSearchableCompassTestCase extends GroovyTestCase {
         TestCompassUtils.numberIndexed(compass, clazz)
     }
 
-    def countHits(closure) {
-        TestCompassUtils.countHits(compass, closure)
-    }
-
     def saveToCompass(Object[] objects) {
         TestCompassUtils.saveToCompass(compass, objects)
     }
 
     def loadFromCompass(clazz, id) {
         TestCompassUtils.loadFromCompass(compass, clazz, id)
-    }
-
-    def clearIndex() {
-        TestCompassUtils.clearIndex(compass)
     }
 }
