@@ -66,7 +66,7 @@ This version is recommended for JDK 1.5+
     def doWithSpring = {
         if (!JdkVersion.isAtLeastJava15()) {
             LOG.error("This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
-            System.out.println("This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
+            System.out.println("ERROR: This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
         }
 
         // Configuration
@@ -105,7 +105,7 @@ This version is recommended for JDK 1.5+
                 "will be removed in the next version. Upgrade the Searchable plugin configuration to the latest format " +
                 "and use \"defaultMethodOptions\" instead"
             )
-            System.out.println(
+            System.out.println("WARN: " +
                 "The Searchable Plugin \"defaultSearchOptions\" configuration option is deprecated and " +
                 "will be removed in the next version. Upgrade the Searchable plugin configuration to the latest format " +
                 "and use \"defaultMethodOptions\" instead"
@@ -225,8 +225,7 @@ This version is recommended for JDK 1.5+
                 "Run \"grails install-searchable-config\" to try the second option without affecting your existing configuration, " +
                 "but you will need to merge your own settings into the new configuration file."
             )
-            System.out.println(
-                "WARN: " +
+            System.out.println("WARN: " +
                 "The Searchable Plugin's 'SearchableConfiguration.groovy' file is deprecated and will be removed in the next version! " +
                 "Configuration for the Searchable Plugin should now be defined with the standard Grails config mechanism. " +
                 "You can either (1) add the plugin's config properties to \"grails-app/conf/Config.groovy\", or (2) provide a plugin-specific file " +

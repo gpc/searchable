@@ -67,7 +67,7 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
 //        Object clazz = options.get("class");
 //        if (clazz != null) {
 //            LOG.warn("The 'class' option for the Searchable Plugin search method is deprecated. Please use 'match' instead");
-//            System.out.println("The 'class' option for the Searchable Plugin search method is deprecated. Please use 'match' instead");
+//            System.out.println("WARN: The 'class' option for the Searchable Plugin search method is deprecated. Please use 'match' instead");
 //            if (!options.containsKey("match")) {
 //                options.put("match", )
 //            }

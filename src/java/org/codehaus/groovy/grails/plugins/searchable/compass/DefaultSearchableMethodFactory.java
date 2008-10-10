@@ -69,7 +69,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
     public SearchableMethod getMethod(String methodName) {
         // TODO refactor to (injected) lookup map
         if (methodName.equals("indexAll")) {
-            System.out.println("The Searchable Plugin 'indexAll' method is deprecated and will be removed in the next version: please use 'index' instead");
+            System.out.println("WARN: The Searchable Plugin 'indexAll' method is deprecated and will be removed in the next version: please use 'index' instead");
             LOG.warn("The Searchable Plugin 'indexAll' method is deprecated and will be removed in the next version: please use 'index' instead");
             return new DefaultIndexMethod(methodName, compass, compassGps);
         }
@@ -77,7 +77,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
             return new DefaultIndexMethod(methodName, compass, compassGps);
         }
         if (methodName.equals("unindexAll")) {
-            System.out.println("The Searchable Plugin 'unindexAll' method is deprecated and will be removed in the next version: please use 'unindex' instead");
+            System.out.println("WARN: The Searchable Plugin 'unindexAll' method is deprecated and will be removed in the next version: please use 'unindex' instead");
             LOG.warn("The Searchable Plugin 'unindexAll' method is deprecated and will be removed in the next version: please use 'unindex' instead");
             return new DefaultUnindexMethod(methodName, compass);
         }
@@ -85,7 +85,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
             return new DefaultUnindexMethod(methodName, compass);
         }
         if (methodName.equals("reindexAll")) {
-            System.out.println("The Searchable Plugin 'reindexAll' method is deprecated and will be removed in the next version: please use 'reindex' instead");
+            System.out.println("WARN: The Searchable Plugin 'reindexAll' method is deprecated and will be removed in the next version: please use 'reindex' instead");
             LOG.warn("The Searchable Plugin 'reindexAll' method is deprecated and will be removed in the next version: please use 'reindex' instead");
             return new DefaultReindexMethod(methodName, compass, compassGps, this);
         }
@@ -117,7 +117,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
             return searchMethod;
         }
         if (methodName.equals("searchTop")) {
-//            System.out.println("The Searchable Plugin 'searchTop' method is deprecated and will be removed in the next version: please use 'search(result: 'top', ...)' instead");
+//            System.out.println("WARN: The Searchable Plugin 'searchTop' method is deprecated and will be removed in the next version: please use 'search(result: 'top', ...)' instead");
 //            LOG.warn("The Searchable Plugin 'searchTop' method is deprecated and will be removed in the next version: please use 'search(result: 'top', ...)' instead");
             DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
@@ -126,7 +126,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
             return searchMethod;
         }
         if (methodName.equals("searchEvery")) {
-//            System.out.println("The Searchable Plugin 'searchEvery' method is deprecated and will be removed in the next version: please use 'search(result: 'every', ...)' instead");
+//            System.out.println("WARN: The Searchable Plugin 'searchEvery' method is deprecated and will be removed in the next version: please use 'search(result: 'every', ...)' instead");
 //            LOG.warn("The Searchable Plugin 'searchEvery' method is deprecated and will be removed in the next version: please use 'search(result: 'every', ...)' instead");
             DefaultSearchMethod searchMethod = new DefaultSearchMethod(methodName, compass, grailsApplication, this, getDefaultOptions(methodName));
             searchMethod.setCompassQueryBuilder(new DefaultSearchableCompassQueryBuilder(compass));
