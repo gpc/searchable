@@ -77,7 +77,7 @@ This version is recommended for JDK 1.5+
         compass(DefaultSearchableCompassFactoryBean) { bean ->
             grailsApplication = application
             compassConnection = config.compassConnection
-            compassSettings = config.compassSettings instanceof Properties ? config.compassSettings : config.compassSettings?.toProperties()
+            compassSettings = config.compassSettings instanceof ConfigObject ? config.compassSettings.toProperties() : config.compassSettings
             defaultExcludedProperties = config.defaultExcludedProperties
             defaultFormats = config.defaultFormats
             compassClassMappingXmlBuilder = new DefaultSearchableCompassClassMappingXmlBuilder()

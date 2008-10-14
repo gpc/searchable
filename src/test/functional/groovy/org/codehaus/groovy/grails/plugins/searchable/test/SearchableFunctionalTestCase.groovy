@@ -102,8 +102,8 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
 
         def builder = new BeanBuilder()
         builder.beans {
-            searchableConfig(MapFactoryBean) {
-                sourceMap = searchableConfigMap
+            if (searchableConfigMap) {
+                searchableConfig(LinkedHashMap, searchableConfigMap)
             }
 
             grailsApplication(DefaultGrailsApplication, appClasses, cl)
@@ -176,6 +176,9 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
             String name = propertyDescriptor.name
             if (ctx.containsBean(name)) {
                 wrapper.setPropertyValue(name, ctx.getBean(name))
+                injectedPropertiesNames << name
+            } else if (name == "applicationContext") {
+                wrapper.setPropertyValue(name, ctx)
                 injectedPropertiesNames << name
             }
         }
@@ -276,7 +279,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         return [cl.parseClass(pluginFile)] as Class[]
     }
 
-    private File getPluginHome(cl) {
+    protected File getPluginHome(cl) {
         String resourceBaseName = this.getClass().getName().replaceAll("\\.", "/")
         def url = cl.getResource(resourceBaseName + ".class")
         if (!url) {
@@ -320,6 +323,6 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
     }
 
     protected Map getTestConfig() {
-        return [searchable: [compassConnection: "ram://test-index", bulkIndexOnStartup: false, mirrorChanges: false]]
+        return [searchable: [compassConnection: "ram://functional-test-index", bulkIndexOnStartup: false, mirrorChanges: false]]
     }
 }
