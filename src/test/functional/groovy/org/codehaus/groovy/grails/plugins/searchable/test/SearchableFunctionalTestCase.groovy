@@ -32,11 +32,11 @@ import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.springframework.beans.BeanWrapperImpl
-import org.springframework.beans.factory.config.MapFactoryBean
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.io.Resource
 import org.springframework.web.util.WebUtils
+import org.springframework.util.ClassUtils
 
 /**
  * @author Maurice Nicholson
@@ -296,15 +296,16 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
 
     protected Map getSearchableConfig(ClassLoader cl) {
         def slurper = new ConfigSlurper()
+        def packageName = ClassUtils.getPackageName(this.getClass())
         try {
-            String resourceBaseName = this.getClass().getPackage().getName().replaceAll("\\.", "/")
+            String resourceBaseName = packageName.replaceAll("\\.", "/")
             Class configClass = cl.loadClass(resourceBaseName + "/" + "SearchableConfig.class")
 
             return slurper.parse(configClass)
         } catch (ClassNotFoundException e) {
         }
         try {
-            String resourceBaseName = this.getClass().getPackage().getName().replaceAll("\\.", "/")
+            String resourceBaseName = packageName.replaceAll("\\.", "/")
             def is = cl.getResourceAsStream(resourceBaseName + "/" + "compass-settings.properties")
             if (is != null) {
                 def props = new Properties()
