@@ -16,12 +16,8 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.mapping
 
 import org.codehaus.groovy.grails.plugins.searchable.compass.converter.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.blog.*
 import org.codehaus.groovy.grails.plugins.searchable.test.domain.component.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.stringmap.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.referencemap.*
 import org.codehaus.groovy.grails.commons.DefaultGrailsDomainClass
-import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils
 
 /**
 *
@@ -29,12 +25,12 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUt
 * @author Maurice Nicholson
 */
 class SearchableGrailsDomainClassPropertyMappingFactoryTests extends GroovyTestCase {
-    def factory
-    def domainClassMap
+    SearchableGrailsDomainClassPropertyMappingFactory factory
+    Map domainClassMap
 
     void setUp() {
         domainClassMap = [:]
-        for (type in [Post, Comment, User, ComponentOwner, SearchableComp, StringMapOwner, ReferenceMapOwner, MapReferee]) {
+        for (type in [ComponentOwner, SearchableComp]) {
             domainClassMap[type] = new DefaultGrailsDomainClass(type)
         }
         factory = new SearchableGrailsDomainClassPropertyMappingFactory()
@@ -51,89 +47,166 @@ class SearchableGrailsDomainClassPropertyMappingFactoryTests extends GroovyTestC
         domainClassMap = null
     }
 
+    // Simple types become searchable properties
     void testSearchableProperty() {
-        def propertyMapping
+        def gcl = new GroovyClassLoader()
+        def a = gcl.parseClass("""
+class A {
+    Long id, version
+    int number
+    String text
+    Date createdAt
+}
+""")
+        def gdc = new DefaultGrailsDomainClass(a)
 
-        propertyMapping = getPropertyMapping(Post, "post", [Post, Comment, User])
+        def propertyMapping = factory.getGrailsDomainClassPropertyMapping(gdc.getPropertyByName("number"), [gdc])
         assert propertyMapping
         assert propertyMapping.property
         assert propertyMapping.attributes.size() == 0
 
-        propertyMapping = getPropertyMapping(Post, "createdAt", [Post, Comment, User])
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(gdc.getPropertyByName("text"), [gdc])
+        assert propertyMapping
+        assert propertyMapping.property
+        assert propertyMapping.attributes.size() == 0
+
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(gdc.getPropertyByName("createdAt"), [gdc])
         assert propertyMapping
         assert propertyMapping.property
         assert propertyMapping.attributes.size() == 0
 
         // with default format
         factory.defaultFormats = [(Date): 'xyzabc123'] // any string
-        propertyMapping = getPropertyMapping(Post, "createdAt", [Post, Comment, User])
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(gdc.getPropertyByName("createdAt"), [gdc])
         assert propertyMapping
         assert propertyMapping.property
         assert propertyMapping.attributes == [format: 'xyzabc123']
     }
 
+    // a simple String key + value map is mapped as a searchable property with
+    // the plugin's stringmap converter
     void testGrailsStringMapSearchableProperty() {
-        def propertyMapping
+        def gcl = new GroovyClassLoader()
+        def a = gcl.parseClass("""
+class A {
+    Long id, version
+    Map map
+}
+        """)
+        def gdc = new DefaultGrailsDomainClass(a)
 
-        propertyMapping = getPropertyMapping(StringMapOwner, "myStringMap", [StringMapOwner])
+        def propertyMapping = factory.getGrailsDomainClassPropertyMapping(gdc.getPropertyByName("map"), [gdc])
         assert propertyMapping
         assert propertyMapping.property
         assert propertyMapping.attributes == [converter: 'stringmap', managedId: false]
     }
 
-    void testSearchableReference() {
-        def propertyMapping
+    // Complex (user) types become searchable references
+    void testSearchableReferenceOne() {
+        def gcl = new GroovyClassLoader()
+        def a = gcl.parseClass("""
+class A {
+    Long id, version
+}
+        """)
+        def b = gcl.parseClass("""
+class B {
+    Long id, version
+    A a
+}
+        """)
+        def agdc = new DefaultGrailsDomainClass(a)
+        def bgdc = new DefaultGrailsDomainClass(b)
 
         // One, where other side is searchable
-        propertyMapping = getPropertyMapping(Post, "author", [Post, Comment, User])
+        def propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("a"), [agdc, bgdc])
         assert propertyMapping
         assert propertyMapping.reference
-        assert propertyMapping.propertyType == User
+        assert propertyMapping.propertyType == a
 
         // One, where other side is NOT searchable
-        propertyMapping = getPropertyMapping(Post, "author", [Post, Comment])
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("a"), [bgdc])
         assert propertyMapping == null
+    }
+
+    // Complex (user) types become searchable references
+    void testSearchableReferenceMany() {
+        def gcl = new GroovyClassLoader()
+        def a = gcl.parseClass("""
+class A {
+    Long id, version
+}
+        """)
+        def b = gcl.parseClass("""
+class B {
+    Long id, version
+    Set a
+    static hasMany = [a: A]
+}
+        """)
+        def agdc = new DefaultGrailsDomainClass(a)
+        def bgdc = new DefaultGrailsDomainClass(b)
 
         // Many, where other side is searchable
-        propertyMapping = getPropertyMapping(Post, "comments", [Post, Comment, User])
+        def propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("a"), [agdc, bgdc])
         assert propertyMapping
         assert propertyMapping.reference
-        assert propertyMapping.propertyType == Comment
+        assert propertyMapping.propertyType == a
 
         // Many, where other side is NOT searchable
-        propertyMapping = getPropertyMapping(Post, "comments", [Post, User])
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("a"), [bgdc])
         assert propertyMapping == null
     }
 
     void testGrailsReferenceMapProperty() {
-        def propertyMapping
+        def gcl = new GroovyClassLoader()
+        def a = gcl.parseClass("""
+class A {
+    Long id, version
+}        """)
+        def b = gcl.parseClass("""
+class B {
+    Long id, version
+    Map refs
+    static hasMany = [refs: A]
+}        """)
+        def agdc = new DefaultGrailsDomainClass(a)
+        def bgdc = new DefaultGrailsDomainClass(b)
 
         // where other side is searchable
-        propertyMapping = getPropertyMapping(ReferenceMapOwner, "referenceMap", [ReferenceMapOwner, MapReferee])
+        def propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("refs"), [agdc, bgdc])
         assert propertyMapping
         assert propertyMapping.reference
-        assert propertyMapping.propertyType == MapReferee
+        assert propertyMapping.propertyType == a
 
-        // where other side is searchable
-        propertyMapping = getPropertyMapping(ReferenceMapOwner, "referenceMap", [ReferenceMapOwner])
+        // where other side is not searchable
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("refs"), [bgdc])
         assert propertyMapping == null
     }
 
     void testSearchableComponent() {
-        def propertyMapping
+        def gcl = new GroovyClassLoader()
+        def a = gcl.parseClass("""
+class A {
+    Long id, version
+}        """)
+        def b = gcl.parseClass("""
+class B {
+    Long id, version
+    A a
+    static embedded = ['a']
+}        """)
+        def agdc = new DefaultGrailsDomainClass(a)
+        def bgdc = new DefaultGrailsDomainClass(b)
 
         // Embedded component searchable
-        propertyMapping = getPropertyMapping(ComponentOwner, "searchableCompOne", [ComponentOwner, SearchableComp])
+        def propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("a"), [agdc, bgdc])
         assert propertyMapping
         assert propertyMapping.component
-        assert propertyMapping.propertyType == SearchableComp
+        assert propertyMapping.propertyType == a
 
         // Embedded component NOT searchable
-        propertyMapping = getPropertyMapping(ComponentOwner, "comp", [ComponentOwner, SearchableComp])
+        propertyMapping = factory.getGrailsDomainClassPropertyMapping(bgdc.getPropertyByName("a"), [bgdc])
         assert propertyMapping == null
-    }
-
-    private getPropertyMapping(type, name, searchableClasses) {
-        factory.getGrailsDomainClassPropertyMapping(domainClassMap[type].getPropertyByName(name), searchableClasses.collect { domainClassMap[it]})
     }
 }
