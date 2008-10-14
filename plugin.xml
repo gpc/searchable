@@ -9,15 +9,15 @@ This version is recommended for JDK 1.5+
 </description>
   <documentation>http://grails.org/Searchable+Plugin</documentation>
   <resources>
-    <resource>Album</resource>
-    <resource>Artist</resource>
-    <resource>Album</resource>
-    <resource>Artist</resource>
-    <resource>Album</resource>
-    <resource>Artist</resource>
-    <resource>BootStrap</resource>
+    <resource>SearchableUrlMappings</resource>
     <resource>SearchableController</resource>
     <resource>SearchableService</resource>
-    <resource>SearchableUrlMappings</resource>
+    <resource>BootStrap</resource>
+    <resource>Album</resource>
+    <resource>Artist</resource>
+    <resource>Album</resource>
+    <resource>Artist</resource>
+    <resource>Album</resource>
+    <resource>Artist</resource>
   </resources>
 </plugin>
