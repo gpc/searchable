@@ -70,13 +70,15 @@ class IndexTests extends SearchableFunctionalTestCase {
 
         assert searchableService.countHits("instance") == 0
 
-        searchableService.index(b1) // single
+        def result = searchableService.index(b1) // single
+        assert result.equals(b1), result // returns given object
 
         def hits = searchableService.search("instance", result: 'every')
         assert hits.size() == 1
         assert hits.every { it instanceof B && it.id == 1l }
 
-        searchableService.index(a1, b2) // list
+        result = searchableService.index(a1, b2) // list
+        assert result == [a1, b2], result // returns same list
 
         hits = searchableService.search("instance", result: 'every')
         assert hits.size() == 3
@@ -97,13 +99,15 @@ class IndexTests extends SearchableFunctionalTestCase {
 
         assert searchableService.countHits("instance") == 0
 
-        searchableService.index(3l, class: A) // single
+        def result = searchableService.index(3l, class: A) // single
+        assert result.class == A && result.id == 3l
 
         def hits = searchableService.search(result: 'every', "instance")
         assert hits.size() == 1
         assert hits.any { it instanceof A && it.id == 3l }
 
-        searchableService.index(1l, 2l, class: A) // list
+        result = searchableService.index(1l, 2l, class: A) // list
+        assert result*.class.every { it == A } && result*.id == [1l, 2l]
 
         hits = searchableService.search(result: 'every', "instance")
         assert hits.size() == 3
@@ -142,13 +146,15 @@ class IndexTests extends SearchableFunctionalTestCase {
         assert A.countHits("instance") == 0
         assert B.countHits("instance") == 0
 
-        A.index(3l) // single
+        def result = A.index(3l) // single
+        assert result.class == A && result.id == 3l
 
         assert A.countHits("instance") == 1
         assert A.search("instance", result: 'top').id == 3l
         assert B.countHits("instance") == 0
 
-        A.index(1l, 2l) // list
+        result = A.index(1l, 2l) // list
+        assert result*.class.every { it == A } && result*.id == [1l, 2l]
 
         assert A.countHits("instance") == 3 // just As
         assert A.search("instance", result: 'every')*.id.sort() == [1l, 2l, 3l]
@@ -167,13 +173,15 @@ class IndexTests extends SearchableFunctionalTestCase {
         assert A.countHits("instance") == 0
         assert B.countHits("instance") == 0
 
-        A.index(a1) // single
+        def result = A.index(a1) // single
+        assert result == a1
 
         assert A.countHits("instance") == 1
         assert A.search("instance", result: 'top').id == 1l
         assert B.countHits("instance") == 0
 
-        B.index(b1, b2) // list
+        result = B.index(b1, b2) // list
+        assert result == [b1, b2]
 
         assert A.countHits("instance") == 1
         assert B.countHits("instance") == 2
@@ -190,8 +198,11 @@ class IndexTests extends SearchableFunctionalTestCase {
         assert A.countHits("instance") == 0
         assert B.countHits("instance") == 0
 
-        a1.index()
-        b2.index()
+        def result = a1.index()
+        assert result == a1
+
+        result = b2.index()
+        assert result == b2
 
         def hits = A.search("instance", result: 'every')
         assert hits.size() == 1

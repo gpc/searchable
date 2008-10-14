@@ -111,7 +111,8 @@ class ReindexTests extends SearchableFunctionalTestCase {
         a3.value = "peanut butter"
         a3.save()
 
-        searchableService.reindex(a1) // single
+        def result = searchableService.reindex(a1) // single
+        assert result == a1
 
         assert searchableService.countHits("alias:B AND value") == 2 // no Bs were reindexed
         def hits = searchableService.search("alias:A", result: 'every')
@@ -119,7 +120,8 @@ class ReindexTests extends SearchableFunctionalTestCase {
         assert hits.any { it.id == 1l && it.value == "jam" } // was reindexed
         assert hits.any { it.id == 3l && it.value == "value" } // not reindexed
 
-        searchableService.reindex(a3, b2) // list
+        result = searchableService.reindex(a3, b2) // list
+        assert result == [a3, b2]
 
         hits = searchableService.search("alias:B", result: 'every')
         assert hits.size() == 2
@@ -153,14 +155,16 @@ class ReindexTests extends SearchableFunctionalTestCase {
         a3.value = "peanut butter"
         a3.save()
 
-        searchableService.reindex(class: B, 2l) // single
+        def result = searchableService.reindex(class: B, 2l) // single
+        assert result.class == B && result.id == 2l
 
         assert searchableService.countHits("alias:A AND value") == 3 // no As were reindexed
         def hits = searchableService.search("alias:B", result: 'every')
         assert hits.size() == 2
         assert hits.any { it.id == 2l && it.value == "honey" } // was reindexed
 
-        searchableService.reindex(class: A, 1l, 3l) // list
+        result = searchableService.reindex(class: A, 1l, 3l) // list
+        assert result*.class.every { it == A } && result*.id [1l, 3l]
 
         hits = searchableService.search("alias:B", result: 'every')
         assert hits.size() == 2
@@ -228,14 +232,16 @@ class ReindexTests extends SearchableFunctionalTestCase {
         a3.value = "peanut butter"
         a3.save()
 
-        B.reindex(2l) // single
+        def result = B.reindex(2l) // single
+        assert result instanceof B && result.id == 2l
 
         assert searchableService.countHits("alias:A AND value") == 3 // no As were reindexed
         def hits = searchableService.search("alias:B", result: 'every')
         assert hits.size() == 2
         assert hits.any { it.id == 2l && it.value == "honey" } // was reindexed
 
-        A.reindex(1l, 3l) // list
+        result = A.reindex(1l, 3l) // list
+        assert result*.class.every { it == A } && result*.id == [1l, 3l]
 
         hits = B.search("alias:B", result: 'every')
         assert hits.size() == 2
@@ -272,14 +278,16 @@ class ReindexTests extends SearchableFunctionalTestCase {
         a3.value = "peanut butter"
         a3.save()
 
-        B.reindex(b2) // single
+        def result = B.reindex(b2) // single
+        assert result == b2
 
         assert searchableService.countHits("alias:A AND value") == 3 // no As were reindexed
         def hits = searchableService.search("alias:B", result: 'every')
         assert hits.size() == 2
         assert hits.any { it.id == 2l && it.value == "honey" } // was reindexed
 
-        A.reindex(a1, a3) // list
+        result = A.reindex(a1, a3) // list
+        assert result == [a1, a3]
 
         hits = B.search("alias:B", result: 'every')
         assert hits.size() == 2
@@ -310,7 +318,7 @@ class ReindexTests extends SearchableFunctionalTestCase {
 
         a1.value = "ham"
         a1.save()
-        a1.reindex()
+        assert a1.reindex() == a1
 
         assert A.countHits("value") == 1
         assert A.search("value", result: 'top').id == 2l

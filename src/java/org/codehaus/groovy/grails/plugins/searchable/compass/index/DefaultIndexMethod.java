@@ -108,7 +108,8 @@ public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements Se
                         session.save(o);
                     }
                 }
-                return null;
+                return ids.isEmpty() ? (objectsToSave.size() == 1 ? objectsToSave.get(0) : objectsToSave)
+                                     : (ids.size() == 1 ? objectsToSave.get(0) : objectsToSave);
             }
         });
     }

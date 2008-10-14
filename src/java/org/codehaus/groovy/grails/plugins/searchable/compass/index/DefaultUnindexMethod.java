@@ -16,7 +16,6 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.index;
 
 import org.codehaus.groovy.grails.plugins.searchable.SearchableMethod;
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.CompassMappingUtils;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.compass.core.*;
 
