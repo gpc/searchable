@@ -317,7 +317,7 @@
       <grails dir="@{app.dir}" arg1="test-app" using-java-home="@{using.java.home}"/>
 
       <!-- Install web test plugin -->
-      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" using-java-home="@{using.java.home}"/>
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" arg3="0.4" using-java-home="@{using.java.home}"/>
 
       <!-- Web test -->
       <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_port                = 8080" value="webtest_port=${grails.server.port}" />
