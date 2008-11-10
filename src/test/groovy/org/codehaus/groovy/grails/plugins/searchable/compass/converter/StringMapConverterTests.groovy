@@ -93,6 +93,11 @@ class StringMapConverterTests extends GroovyTestCase {
         assert unmarshallFromResourceMap(NUMBERS_MAP_AS_RESOURCE, 'numbers', false) == NUMBERS_MAP
     }
 
+    void testHibernateNullCollection() {
+        def obj = new MapWhoseEntrySetMethodThrowsNpe()
+        assert converter.marshall(null, obj, null, null) == false
+    }
+
     private marshallToResourceMap(map, propertyName, handleNulls = false) {
         def mapping = getResourcePropertyMapping(propertyName)
         def context = getContext(handleNulls)
@@ -138,5 +143,12 @@ class StringMapConverterTests extends GroovyTestCase {
 
     private getResourcePropertyMapping(propertyName) {
         return [getAnalyzer: {null}, getBoost: {1.0f}, getIndex: {null}, getStore: {null}, getTermVector: {null}, getName: { propertyName }, getPath: { new StaticPropertyPath('$/TheClass/' + propertyName) }] as ResourcePropertyMapping
+    }
+}
+
+class MapWhoseEntrySetMethodThrowsNpe extends HashMap {
+
+    public Set entrySet() {
+        throw new NullPointerException()
     }
 }

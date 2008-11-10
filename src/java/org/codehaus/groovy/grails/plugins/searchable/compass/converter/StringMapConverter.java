@@ -35,6 +35,7 @@ import org.compass.core.spi.InternalCompassSession;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Based on the example from Compass's unit tests
@@ -57,7 +58,15 @@ public class StringMapConverter implements Converter, CompassConfigurable {
 
         ResourcePropertyMapping resourcePropertyMapping = (ResourcePropertyMapping) mapping;
         Map map = (Map) root;
-        for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
+        Set entries;
+        try {
+            entries = map.entrySet();
+        } catch (NullPointerException ex) {
+            // this can happen with Hibernate when cascading the delete from an owner of a Map<String, String>
+            // see http://jira.codehaus.org/browse/GRAILSPLUGINS-482
+            return false;
+        }
+        for (Iterator it = entries.iterator(); it.hasNext();) {
             Map.Entry entry = (Map.Entry) it.next();
             Property p = context.getResourceFactory().createProperty(entry.getKey().toString(), entry.getValue().toString(),
                     resourcePropertyMapping.getStore(), resourcePropertyMapping.getIndex(), resourcePropertyMapping.getTermVector());
