@@ -37,7 +37,7 @@ public class InferredCompassSettingCompassConfigurator implements SearchableComp
         if (spellCheck) {
             if (compassConfiguration.getSettings().getSetting(COMPASS_SPELL_CHECK_SETTING) == null) {
                 compassConfiguration.setSetting(COMPASS_SPELL_CHECK_SETTING, "true");
-                LOG.debug("Eabled Compass global Spell Check setting \"" + COMPASS_SPELL_CHECK_SETTING + "\" since it was not already set and there are spell-check mappings");
+                LOG.debug("Enabled Compass global Spell Check setting \"" + COMPASS_SPELL_CHECK_SETTING + "\" since it was not already set and there are spell-check mappings");
             }
         }
     }
