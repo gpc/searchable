@@ -85,6 +85,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSea
         if (defaultSearchProperty != null) {
             InvokerHelper.invokeMethod(stringBuilder, "setDefaultSearchProperty", defaultSearchProperty);
         }
+        // todo deprecate "useAndDefaultOperator" - "defaultOperator" is better
         if (useAndDefaultOperator != null) {
             if (useAndDefaultOperator.booleanValue()) {
                 InvokerHelper.invokeMethod(stringBuilder, "useAndDefaultOperator", null);
