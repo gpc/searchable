@@ -20,6 +20,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 /**
  * @author Maurice Nicholson
  */
+// todo this is currently testing class boost rather than property boost - needs fixing
 class BoostTests extends SearchableFunctionalTestCase {
     def searchableService
 
