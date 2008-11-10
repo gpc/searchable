@@ -119,7 +119,7 @@ searchable {
      * Should changes made through GORM/Hibernate be mirrored to the index
      * automatically (using Compass::GPS)?
      *
-     * If false, you must manage the index manually using index/indexAll/unindex/unindexAll/reindex/renindexAll
+     * If false, you must manage the index manually using index/unindex/reindex
      */
     mirrorChanges = true
 
