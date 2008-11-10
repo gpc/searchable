@@ -34,8 +34,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     static final Log log = LogFactory.getLog(ClosureSearchableGrailsDomainClassCompassClassMapper);
     static final SEARCHABLE_ID_OPTIONS = ['accessor', 'converter', 'name']
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'name', 'nullValue', 'propertyConverter', 'reverse', 'store', 'spellCheck', 'termVector']
-    static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'refAlias', 'refComponentAlias']
-    static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'refAlias']
+    static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'lazy', 'refAlias', 'refComponentAlias']
+    static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'prefix', 'refAlias']
     static final SEARCHABLE_REFERENCE_MAPPING_OPTIONS = SEARCHABLE_REFERENCE_OPTIONS + ["reference", "component"]
     static final SEARCHABLE_COMPONENT_MAPPING_OPTIONS = SEARCHABLE_COMPONENT_OPTIONS + ["reference", "component"]
 

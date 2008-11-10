@@ -30,8 +30,8 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
     static final ID_ATTR_NAMES = ['accessor', 'name']
     static final PROPERTY_ATTR_NAMES = ['accessor', 'analyzer', 'boost', 'class', 'converter', 'exclude-from-all', 'managed-id', 'managed-id-index', 'managed-id-converter', 'name', 'override']
     static final META_DATA_ATTR_NAMES = ['analyzer', 'boost', 'converter', 'exclude-from-all', 'format', 'index', 'null-value', 'reverse', 'store', 'spell-check', 'term-vector']
-    static final REFERENCE_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'name', 'ref-alias', 'ref-comp-alias']
-    static final COMPONENT_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'max-depth', 'name', 'override', 'ref-alias']
+    static final REFERENCE_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'lazy', 'name', 'ref-alias', 'ref-comp-alias']
+    static final COMPONENT_ATTR_NAMES = ['accessor', 'cascade', 'converter', 'max-depth', 'name', 'override', 'prefix', 'ref-alias']
 
     /** Mapping from input option names to output XML attribute names */
     static final OPTION_ATTR_MAP = [type: 'class', propertyConverter: 'converter', refComponentAlias: 'ref-comp-alias']
