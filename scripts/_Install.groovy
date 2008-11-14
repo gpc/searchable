@@ -10,7 +10,6 @@
 //
 
 def ant = binding.variables['ant'] ?: binding.variables['Ant']
-ant.property(environment:"env")
 
 // TODO this is ancient - remove in next version
 if (new File(basedir, 'grails-app/conf/SearchablePluginConfiguration.groovy').exists()) {
