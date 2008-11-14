@@ -20,8 +20,9 @@
  *
  * @author Maurice Nicholson
  */
-Ant.property(environment:"env")
-grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
+def ant = binding.variables['ant'] ?: binding.variables['Ant']
+ant.property(environment:"env")
+grailsHome = ant.antProject.properties."env.GRAILS_HOME"
 
 includeTargets << new File ( "${grailsHome}/scripts/Init.groovy" )
 
@@ -33,7 +34,7 @@ target('default': "Installs the Searchable Plugin configuration file: only requi
     def exists = false
     if (destFile.exists()) {
         exists = true
-        Ant.input(message: """
+        ant.input(message: """
 
         STOP!
 
@@ -48,13 +49,13 @@ target('default': "Installs the Searchable Plugin configuration file: only requi
 			validargs:"y,n",
 			addproperty:"grails.install.searchable.config.warning")
 
-       def answer = Ant.antProject.properties."grails.install.searchable.config.warning"
+       def answer = ant.antProject.properties."grails.install.searchable.config.warning"
 
        if (answer == "n") exit(0)
-           Ant.delete(file: destFile.toString())
+           ant.delete(file: destFile.toString())
     }
-    Ant.copy(file: "${basedir}/plugins/searchable-0.5-SNAPSHOT/src/conf/Searchable.groovy", todir: dest)
-    Ant.echo(message: """
+    ant.copy(file: "${searchablePluginDir}/src/conf/Searchable.groovy", todir: dest)
+    ant.echo(message: """
         Searchable configuration file ${exists ? 're-' : ''}created:
 
             ${destFile}

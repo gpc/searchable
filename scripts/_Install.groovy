@@ -3,14 +3,14 @@
 // This script is executed by Grails after plugin was installed to project.
 // This script is a Gant script so you can use all special variables provided
 // by Gant (such as 'baseDir' which points on project base dir). You can
-// use 'Ant' to access a global instance of AntBuilder
+// use 'ant' to access a global instance of AntBuilder
 //
 // For example you can create directory under project tree:
-// Ant.mkdir(dir:"/tmp/newplugin/grails-app/jobs")
+// ant.mkdir(dir:"/tmp/newplugin/grails-app/jobs")
 //
 
-Ant.property(environment:"env")
-grailsHome = Ant.antProject.properties."env.GRAILS_HOME"
+def ant = binding.variables['ant'] ?: binding.variables['Ant']
+ant.property(environment:"env")
 
 // TODO this is ancient - remove in next version
 if (new File(basedir, 'grails-app/conf/SearchablePluginConfiguration.groovy').exists()) {
@@ -54,7 +54,7 @@ if (new File(basedir, 'grails-app/conf/SearchableConfiguration.groovy').exists()
         configuration file.
 
 """
-    Ant.input("[Please acknowledge this message by pressing ENTER]")
+    ant.input("[Please acknowledge this message by pressing ENTER]")
 }
 
 println """
