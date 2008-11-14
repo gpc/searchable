@@ -45,7 +45,7 @@ public class StringQueryUtils {
      * zero is the highlighted term text
      * @return a new copy of second with term differences highlighted
      * @throws ParseException if either first or second query is invalid
-     * @see {@link #highlightTermDiffs(String, String, String)}
+     * @see #highlightTermDiffs(String, String, String)
      */
     public static String highlightTermDiffs(String first, String second) throws ParseException {
         return highlightTermDiffs(first, second, DEFAULT_DIFFS_HIGHLIGHT_PATTERN);
@@ -61,7 +61,7 @@ public class StringQueryUtils {
      * zero is the highlighted term text
      * @return a new copy of second with term differences highlighted
      * @throws ParseException if either first or second query is invalid
-     * @see {@link #highlightTermDiffs(String, String)}
+     * @see #highlightTermDiffs(String, String)
      */
     public static String highlightTermDiffs(String first, String second, String highlightPattern) throws ParseException {
         final String defaultField = "$StringQueryUtils_highlightTermDiffs$";
