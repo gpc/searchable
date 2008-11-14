@@ -9,18 +9,18 @@ class Artist {
         albums(nullable: true)
     }
 
-    @SearchableId
+    @SearchableId(accessor = 'property')
     Long id
 
-    @SearchableProperty(index = Index.NO)
+    @SearchableProperty(index = Index.NO, accessor = 'property')
     Long version
 
     // not normally necessary, but needed since Groovy doesn't support generics yet and
     // also useful to test the the plugin honours user-defined aliases
-    @SearchableReference(refAlias = 'work')
+    @SearchableReference(refAlias = 'work', accessor = 'property')
     Set albums
 
-    @SearchableProperty
+    @SearchableProperty(accessor = 'property')
     String name
 
     /**
