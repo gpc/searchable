@@ -184,22 +184,6 @@ public class CompassMappingUtils {
         }
     }
 
-    /**
-     * Sets the sub-index name to be the same as the short-class-name for each CompassClassMapping,
-     * if not already defined
-     * @param classMappings a List of CompassClassMapping
-     */
-    public static void resolveSubIndexes(List classMappings) {
-        for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
-            CompassClassMapping classMapping = (CompassClassMapping) iter.next();
-            Assert.notNull(classMapping.getMappedClass(), "Expected mappedClass to be defined for CompassClassMapping [" + classMapping + "] but was null");
-            if (classMapping.getSubIndex() == null) {
-                String subIndex = ClassUtils.getShortName(classMapping.getMappedClass()).toLowerCase();
-                classMapping.setSubIndex(subIndex);
-            }
-        }
-    }
-
     public static boolean hasSpellCheckMapping(Compass compass) {
         return hasSpellCheckMapping(compass.getConfig());
     }

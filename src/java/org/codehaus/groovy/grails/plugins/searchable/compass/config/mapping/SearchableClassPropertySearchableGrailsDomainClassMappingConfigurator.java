@@ -86,9 +86,6 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurat
         // resolve aliases
         CompassMappingUtils.resolveAliases(classMappings, allSearchableGrailsDomainClasses, compassConfiguration);
 
-        // set default sub-index names
-        CompassMappingUtils.resolveSubIndexes(classMappings);
-
         // add completed mappings to compass
         for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
             CompassClassMapping classMapping = (CompassClassMapping) iter.next();

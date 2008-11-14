@@ -148,15 +148,6 @@ class CompassMappingUtilsTests extends GroovyTestCase {
         assert classMappings.find { it.mappedClass == SearchableGrandChild }.every { it.alias == CompassMappingUtils.getDefaultAlias(SearchableGrandChild) && it.extend == CompassMappingUtils.getDefaultAlias(SearchableChildOne) }
     }
 
-    void testResolveSubIndexes() {
-        def post = new CompassClassMapping(mappedClass: Post)
-        def comment = new CompassClassMapping(mappedClass: Comment, subIndex: "ramblingrant")
-        def cm = [post, comment]
-        CompassMappingUtils.resolveSubIndexes(cm)
-        assert post.subIndex == "post"
-        assert comment.subIndex == "ramblingrant"
-    }
-
     private getClassMapping(Class clazz) {
         def classMapping = new ClassMapping()
         classMapping.clazz = clazz
