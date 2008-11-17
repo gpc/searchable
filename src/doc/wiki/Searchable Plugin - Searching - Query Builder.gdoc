@@ -1,0 +1,150 @@
+h1. Query Builder
+
+Searchable Plugin comes with a builder, which makes programatic queries Groovy baby.
+
+When you pass a closure to one of the search methods, you are using the query builder.
+
+_TODO the query builder needs a reference section_
+
+h2. It builds on Compass
+
+The query builder syntax mirrors Compass's own [CompassQueryBuilder|http://www.compass-project.org/docs/2.1.0RC/api/org/compass/core/CompassQueryBuilder.html]: to get the most out of the Searchable Plugin's query builder, you should take a moment to familiarise yourself with it.
+
+h2. And makes it better
+
+The plugin's Groovy query builder improves on the raw Compass experience in a few ways. First it relieves you of the burden to call *toQuery()* when using the various specific builders obtained from calling some [CompassQueryBuilder|http://www.compass-project.org/docs/2.1.0RC/api/org/compass/core/CompassQueryBuilder.html] methods, and it allows you to easily nest these specific builders using closures.
+
+It also simplifies the job of constructing boolean queries by not requiring you to explicitly create a boolean builder and add &quot;should&quot; clauses. You still need to explicitly add _must_ and _must not_ clauses, but other clauses in a boolean context are assumed to be _should_ clauses.
+
+h2. The rules
+
+The methods you can invoke depend on the current context. In the outer-most context you can invoke [CompassQueryBuilder|http://www.compass-project.org/docs/2.1.0RC/api/org/compass/core/CompassQueryBuilder.html] methods.
+
+Within nested contexts (which are created by nested closures) you can call both CompassQueryBuilder methods and whatever methods the current nested builder supports.
+
+The builder also allows you to call Compass's various query builders' options &quot;setters&quot; using a literal options Map as the last argument, instead of requiring method invocations.
+
+The builder shortens a few method names too, so the [CompassBooleanQueryBuilder|http://www.compass-project.org/docs/2.1.0RC/api/org/compass/core/CompassQueryBuilder.CompassBooleanQueryBuilder.html] @addMust@, @addShould@, and @addMustNot@ methods can be shortened to @must@, @should@, and @mustNot@ (and as already mentioned you typically don't need to use @should@ because any clause that is not a @must@ or @mustNot@ is assumed to be @should@) and the [CompassQuery|http://www.compass-project.org/docs/2.1.0RC/api/org/compass/core/CompassQuery.html] @addSort@ method can be shortedned to @sort@.
+
+And finally because it's Groovy, you have the language at your disposal so you can use control flow, loops, variables etc.
+
+Enough theory, let's explore some examples.
+
+h2. By Example
+
+Say you want to search for items in the index where &quot;pages&quot; is less than 50 and &quot;type&quot; is &quot;poetry&quot;. A String query for this might look like *@&quot;pages:\[\* TO 50\] type:poetry&quot;@*.
+
+Using the builder you would do
+
+{code}
+search {                    // &lt;-- create an implicit boolean query
+    lt(&quot;pages&quot;, 50)         // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot; clause
+    term(&quot;type&quot;, &quot;poetry&quot;)  // &lt;-- uses CompassQueryBuilder#term, and adds a boolean &quot;should&quot; clause
+}
+{code}
+
+We just built a boolean query\! It has two clauses: the search must match EITHER &quot;pages&quot; &lt; 50 OR &quot;type&quot; == &quot;poetry&quot;. Not bad but this query will match when _either_ condition is true, and not necessarily both.
+
+So let's improve the search results and make sure that matches DO have &quot;type&quot; == &quot;poetry&quot;.
+
+{code}
+search {                          // &lt;-- creates an implicit boolean query
+    lt(&quot;pages&quot;, 50)               // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot;
+    must(term(&quot;type&quot;, &quot;poetry&quot;))  // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+}
+
+{code}
+
+Ok let's assume we're getting matches we don't want, and so we add another &quot;mustNot&quot; clause:
+
+{code}
+search {                           // &lt;-- creates an implicit boolean query
+    lt(&quot;pages&quot;, 50)                // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot;
+    must(term(&quot;type&quot;, &quot;poetry&quot;))   // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+    mustNot(term(&quot;theme&quot;, &quot;war&quot;))  // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;mustNot&quot;
+}
+{code}
+
+Great, so now we're matching any non-war poetry under 50 pages\!
+
+Now we want to search for a specific phrase &quot;all hands on deck&quot;, let's add it to the query. First we try it as a nested String query:
+
+{code}
+search {                                   // &lt;-- creates an implicit boolean query
+    must(queryString(&quot;all hands on deck&quot;)) // &lt;-- uses CompassQueryBuilder#queryString, and adds a boolean must
+    lt(&quot;pages&quot;, 50)                        // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot;
+    must(term(&quot;type&quot;, &quot;poetry&quot;))           // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+    mustNot(term(&quot;theme&quot;, &quot;war&quot;))          // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;mustNot&quot;
+}
+{code}
+
+The nested String query has introduced the possibility for the query to matching anything containing any of the words &quot;all&quot;, &quot;hands&quot;, &quot;on&quot;, or &quot;deck&quot; and maybe in any searchable property. But we wanted to search for this exact text, hmmm.
+
+Check the [CompassQueryBuilder|http://www.compass-project.org/docs/2.1.0RC/api/org/compass/core/CompassQueryBuilder.html] API and you'll notice that CompassQueryBuilder#queryString returns a CompassQueryStringBuilder, so in fact we can create a context for that builder with a closure and in that closure call any methods the CompassQueryStringBuilder exposes to tighten up the query:
+
+{code}
+search {                                      // &lt;-- creates an implicit boolean query
+    must(queryString(&quot;all hands on deck&quot;) {   // &lt;-- creates a nested CompassQueryStringBuilder context
+        useAndDefaultOperator()               // &lt;-- calls CompassQueryStringBuilder#useAndDefaultOperator
+        setDefaultSearchProperty(&quot;body&quot;)      // &lt;-- calls CompassQueryStringBuilder#setDefaultSearchProperty
+    })                                        // &lt;-- added as boolean must to surrounding boolean
+    lt(&quot;pages&quot;, 50)                           // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot;
+    must(term(&quot;type&quot;, &quot;poetry&quot;))              // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+    mustNot(term(&quot;theme&quot;, &quot;war&quot;))             // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;mustNot&quot;
+}
+{code}
+
+Ok, now the query requires that ALL of the words &quot;all hands on deck&quot; are present in matches. And we have set the defaultSearchProperty to &quot;body&quot;, so the string query will now match terms in the searchable &quot;body&quot; property.
+
+But we can do a little better. First let's use an options Map instead of calling those setters:
+
+{code}
+search {                                    // &lt;-- creates an implicit boolean query
+    must(queryString(&quot;all hands on deck&quot;, [useAndDefaultOperator: true, defaultSearchProperty: &quot;body&quot;]))
+        // ^^ add a &quot;must&quot; nested query string, calling useAndDefaultOperator() and setDefaultSearchProperty(&quot;body&quot;)
+        //    on the CompassQueryStringBuilder
+    lt(&quot;pages&quot;, 50)                         // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot;
+    must(term(&quot;type&quot;, &quot;poetry&quot;))            // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+    mustNot(term(&quot;theme&quot;, &quot;war&quot;))           // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;mustNot&quot;
+}
+{code}
+
+This is the same query as before, only fewer lines of code.
+
+So now let's use CompassQueryBuilder#multiPhrase instead of queryString, since a multi-phrase query can require that the words appear in order, whereas a query string generally just requires the words appear _somewhere_.
+
+{code}
+search {                                    // &lt;-- creates an implicit boolean query
+    must(multiPhrase(&quot;body&quot;, [slop: 2]) {   // &lt;-- creates a nested CompassMultiPhraseQueryBuilder context, calling setSlop(2)
+        add(&quot;all&quot;)                          // &lt;-- calls CompassMultiPhraseQueryBuilder#add
+        add(&quot;hands&quot;)                        // &lt;-- calls CompassMultiPhraseQueryBuilder#add
+        add(&quot;on&quot;)
+        add(&quot;deck&quot;)
+    })                                      // &lt;-- adds multiPhrase as boolean &quot;must&quot;
+    lt(&quot;pages&quot;, 50)                         // &lt;-- uses CompassQueryBuilder#lt, and adds a boolean &quot;should&quot;
+    must(term(&quot;type&quot;, &quot;poetry&quot;))            // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+    mustNot(term(&quot;theme&quot;, &quot;war&quot;))           // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;mustNot&quot;
+}
+{code}
+
+Let's go all out for the final example and add three new features: (i) move the number pages clause into a nested boolean with a new clause for items with _50 or more_ pages, and a &quot;boost&quot; (meaning higher score/relevance) for the smaller number, (ii) a clause for &quot;publishedDate&quot; being within the last 4 weeks (and note the use of a _Date_ object) and (iii) a sort first by relevance then author surname.
+
+{code}
+search {                                    // &lt;-- creates an implicit boolean query
+    must(multiPhrase(&quot;body&quot;, [slop: 2]) {   // &lt;-- creates a nested CompassMultiPhraseQueryBuilder context, and calls setSlop(2)
+        add(&quot;all&quot;)                          // &lt;-- calls CompassMultiPhraseQueryBuilder#add
+        add(&quot;hands&quot;)                        // &lt;-- calls CompassMultiPhraseQueryBuilder#add
+        add(&quot;on&quot;)
+        add(&quot;deck&quot;)
+    })                                      // &lt;-- adds multiPhrase as boolean &quot;must&quot;
+    must {                                  // &lt;-- creates an nested boolean query, implicitly
+        ge(&quot;pages&quot;, 50)                     // &lt;-- uses CompassQueryBuilder#ge, adds a boolean &quot;should&quot;
+        lt(&quot;pages&quot;, 50, [boost: 1.5])       // &lt;-- uses CompassQueryBuilder#lt, calls setBoost(1.5f), adds a boolean &quot;should&quot;
+    }                                       // &lt;-- adds nested boolean as &quot;must&quot; clause to outer boolean
+    must(term(&quot;type&quot;, &quot;poetry&quot;))            // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;must&quot;
+    mustNot(term(&quot;theme&quot;, &quot;war&quot;))           // &lt;-- uses CompassQueryBuilder#term, adds a boolean &quot;mustNot&quot;
+    ge(&quot;publishedDate&quot;, new Date() - 28)
+    sort(CompassQuery.SortImplicitType.SCORE)                  // &lt;-- uses CompassQuery#addSort
+    sort(&quot;authorSurname&quot;, CompassQuery.SortPropertyType.STRING) // &lt;-- uses CompassQuery#addSort
+}
+{code}
