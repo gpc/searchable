@@ -16,7 +16,7 @@ and prompt you if others should be downloaded.
 
 To upload, from the trunk dir:
 
-    roovy tools/sync-docs/scripts/put -server=localhost:8080 -dir=src/doc/wiki 
-                                      -username=user -password=password
+    groovy tools/sync-docs/scripts/put -server=localhost:8080 -dir=src/doc/wiki \
+                                       -username=user -password=password
 
 which uploads the pages in dir.
