@@ -83,7 +83,7 @@ public class StringMapConverter implements Converter, CompassConfigurable {
                     searchEngineFactory.getPropertyNamingStrategy();
             // save stringifiedmap map (under an internal name)
             String keyPath = propertyNamingStrategy.buildPath(resourcePropertyMapping.getPath(), "stringmap").getPath();
-            Property p = context.getResourceFactory().createProperty(keyPath, stringmap, Property.Store.YES, Property.Index.UN_TOKENIZED);
+            Property p = context.getResourceFactory().createProperty(keyPath, stringmap, Property.Store.YES, Property.Index.NOT_ANALYZED);
             resource.addProperty(p);
         }
 
