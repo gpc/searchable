@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project relativePaths="false" version="4">
+  <component name="AntConfiguration">
+    <defaultAnt bundledAnt="true" />
+  </component>
   <component name="BuildJarProjectSettings">
     <option name="BUILD_JARS_ON_MAKE" value="false" />
   </component>
   <component name="CodeStyleSettingsManager">
-    <option name="PER_PROJECT_SETTINGS" />
+    <option name="PER_PROJECT_SETTINGS">
+      <value />
+    </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="false" />
   </component>
   <component name="CompilerConfiguration">
@@ -367,7 +372,9 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$PROJECT_DIR$/lib/compass-2.1.0-src.jar!/" />
+        <root url="file:///Users/maurice/lucene-2.4.0/src/java" />
       </SOURCES>
+      <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
     </library>
     <library name="lib-test">
       <CLASSES>
