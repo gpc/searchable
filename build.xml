@@ -217,7 +217,8 @@
     <mkdir dir="${findbugs.reports}"/>
     <findbugs home="${findbugs.home}"
               output="xml"
-              outputFile="${findbugs.reports}/findbugs.xml" >
+              outputFile="${findbugs.reports}/findbugs.xml"
+              jvmargs="-Xmx512m">
       <auxClasspath refid="classpath" />
       <sourcePath path="${java.src}" />
       <class location="${classes}" />
