@@ -75,8 +75,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         if (LOG.isDebugEnabled() && !notMapped.isEmpty()) {
             for (Iterator iter = notMapped.iterator(); iter.hasNext(); ) {
                 GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
-                LOG.debug("No mapping strategy found for class [" + grailsDomainClass.getClazz() + "]: assuming this class is not searchable");
-
+                LOG.debug("No mapping strategy found for class [" + grailsDomainClass.getClazz().getName() + "]: assuming this class is not searchable");
             }
         }
 
