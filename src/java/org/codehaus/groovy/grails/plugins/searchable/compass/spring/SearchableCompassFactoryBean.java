@@ -24,6 +24,9 @@ import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassConfigurationFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
 
@@ -32,11 +35,20 @@ import java.util.HashMap;
  *
  * @author Maurice Nicholson
  */
-public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean {
+public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean, ApplicationContextAware {
     private static final Log LOG = LogFactory.getLog(SearchableCompassFactoryBean.class);
 
+    private ApplicationContext applicationContext;
     private SearchableCompassConfigurator searchableCompassConfigurator;
     private Compass compass;
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
 
     public Object getObject() throws Exception {
         if (compass == null) {
@@ -65,6 +77,9 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
         // register analyzers used internally
         configuration.getSettings().setSetting("compass.engine.analyzer.searchableplugin_whitespace.type", "whitespace");
         configuration.getSettings().setSetting("compass.engine.analyzer.searchableplugin_simple.type", "simple");
+
+        // add reference to Spring in Compass
+        configuration.getSettings().setObjectSetting(ApplicationContext.class.getName() + ".INSTANCE", applicationContext);
 
         searchableCompassConfigurator.configure(configuration, new HashMap());
 

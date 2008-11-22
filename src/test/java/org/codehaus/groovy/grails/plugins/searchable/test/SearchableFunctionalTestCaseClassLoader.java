@@ -18,16 +18,32 @@ package org.codehaus.groovy.grails.plugins.searchable.test;
 
 import org.springframework.core.OverridingClassLoader;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * @author Maurice Nicholson
  */
 public class SearchableFunctionalTestCaseClassLoader extends OverridingClassLoader {
+    private Map preloadedClasses = new HashMap();
 
     public SearchableFunctionalTestCaseClassLoader(ClassLoader classLoader) {
         super(classLoader);
     }
 
     protected boolean isEligibleForOverriding(String className) {
-        return className.startsWith("org.codehaus.groovy.grails.plugins.searchable.test.");
+        return preloadedClasses.containsKey(className) || className.startsWith("org.codehaus.groovy.grails.plugins.searchable.test.");
+//        return className.startsWith("org.codehaus.groovy.grails.plugins.searchable.test.");
+    }
+
+    protected Class loadClassForOverriding(String name) throws ClassNotFoundException {
+        if (preloadedClasses.containsKey(name)) {
+            return (Class) preloadedClasses.get(name);
+        }
+        return super.loadClassForOverriding(name);
+    }
+
+    public void addPreloadedClass(String name, Class clazz) {
+        preloadedClasses.put(name, clazz);
     }
 }

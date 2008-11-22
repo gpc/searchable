@@ -86,9 +86,11 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         applyTestEnvironment()
 
         ClassLoader classClassLoader = this.getClass().getClassLoader()
+
         def gclClass = classClassLoader.loadClass(GroovyClassLoader.getName())
         def constructor = gclClass.getConstructor(ClassLoader)
         def cl = constructor.newInstance(classClassLoader)
+        preloadResourcesClass(classClassLoader)
 
         def registry = GroovySystem.metaClassRegistry
         if(!(registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle)) {
@@ -292,6 +294,18 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
             }
         }
         assert false, "plugin home was not found!"
+    }
+
+    protected void preloadResourcesClass(ClassLoader cl) {
+        try {
+            def packageName = ClassUtils.getPackageName(this.getClass())
+            def clazz = cl.loadClass(packageName + "." + "resources")
+            if (clazz != null) {
+                cl.addPreloadedClass(GrailsRuntimeConfigurator.SPRING_RESOURCES_CLASS, clazz)
+            }
+        } catch (ClassNotFoundException ex) {
+            // ignore
+        }
     }
 
     protected Map getSearchableConfig(ClassLoader cl) {

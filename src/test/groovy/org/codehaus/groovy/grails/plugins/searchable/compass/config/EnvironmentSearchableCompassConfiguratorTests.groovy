@@ -19,6 +19,9 @@ import org.codehaus.groovy.grails.commons.*
 import org.compass.core.config.CompassConfiguration
 import org.compass.core.config.CompassEnvironment
 import org.compass.core.config.CompassSettings
+import org.apache.lucene.analysis.Analyzer
+import org.compass.core.converter.Converter
+import org.apache.lucene.analysis.TokenStream
 
 /**
 * @author Maurice Nicholson
@@ -77,9 +80,23 @@ class EnvironmentSearchableCompassConfiguratorTests extends GroovyTestCase {
         configurator.configure(config, [:])
 
         // Check that the settings have been set
-        [string: "String", number: "152634", clazz: "java.net.URL"].each { k, v ->
-            assert config.settings.getProperties()[k] == v
+        [string: "String", number: 152634, clazz: URL].each { k, v ->
+            assert config.getSettings().getSettingAsObject(k) == v
         }
+    }
+
+    void testConfigureWithBeans() {
+        Analyzer myAnalyzer = [tokenStream: { String, Reader -> }] as Analyzer
+        Analyzer otherAnalyzer = [tokenStream: { String, Reader -> }] as Analyzer
+        Converter specialConverter = [:] as Converter
+        configurator.beans = [myAnalyzer: myAnalyzer, otherAnalyzer: otherAnalyzer, specialConveter: specialConverter]
+
+        def config = new CompassConfiguration()
+        configurator.configure(config, [:])
+
+        assertEquals myAnalyzer, config.settings.getSettingAsObject('compass.engine.analyzer.myAnalyzer.type')
+        assertEquals otherAnalyzer, config.settings.getSettingAsObject('compass.engine.analyzer.otherAnalyzer.type')
+        assertEquals specialConverter, config.@temporaryConvertersByName.specialConveter.@converter
     }
 
     void testNotConfigureConnectionIfAlreadySet() {

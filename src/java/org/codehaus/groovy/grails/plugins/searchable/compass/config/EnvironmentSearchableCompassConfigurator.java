@@ -17,16 +17,20 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.config;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.Analyzer;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.plugins.searchable.compass.SearchableCompassUtils;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassEnvironment;
+import org.compass.core.converter.Converter;
+import org.compass.core.lucene.LuceneEnvironment;
 import org.springframework.beans.PropertyEditorRegistrySupport;
 import org.springframework.util.Assert;
 
 import java.beans.PropertyEditor;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Responsible for setting the Compass environment, most importantly the "connection" (ie, Lucene index dir),
@@ -40,6 +44,7 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
     private String connection;
     private Map compassSettings;
     private GrailsApplication grailsApplication;
+    private Map beans;
 
     /**
      * Configure the Compass environment
@@ -60,12 +65,29 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
         }
 
         if (compassSettings != null) {
-            ToStringConverterHelper helper = new ToStringConverterHelper();
             for (Iterator iter = compassSettings.keySet().iterator(); iter.hasNext(); ) {
                 String name = iter.next().toString();
-                String value = helper.convertToStringIfNecessary(compassSettings.get(name));
+                Object value = compassSettings.get(name);
                 LOG.debug("Setting Compass setting [" + name + "] = [" + value + "]");
                 compassConfiguration.setSetting(name, value);
+            }
+        }
+
+        if (beans != null) {
+            for (Iterator iter = beans.entrySet().iterator(); iter.hasNext(); ) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                String name = (String) entry.getKey();
+                Object value = entry.getValue();
+                if (value instanceof Converter) {
+                    LOG.debug("Registering Converter bean [" + name + "] with value [" + value + "]");
+                    compassConfiguration.registerConverter(name, (Converter) value);
+                    //compassConfiguration.setSetting("compass.engine.converter." + name + ".type", value);
+                } else if (value instanceof Analyzer) {
+                    LOG.debug("Registering Analyzer bean [" + name + "] with value [" + value + "]");
+                    compassConfiguration.setSetting("compass.engine.analyzer." + name + ".type", value);
+                } else {
+                    LOG.warn("Bean [" + name + "] value is null or not a recognised type [" + (value != null ? value.getClass().getName() : "null") + "] - ignoring");
+                }
             }
         }
     }
@@ -90,22 +112,7 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
         this.grailsApplication = grailsApplication;
     }
 
-    /**
-     * Helper for converting objects to Strings
-     */
-    private static class ToStringConverterHelper extends PropertyEditorRegistrySupport {
-        public ToStringConverterHelper() {
-            registerDefaultEditors();
-        }
-
-        public String convertToStringIfNecessary(Object value) {
-            Assert.notNull(value, "value cannot be null");
-            if (value instanceof String) {
-                return (String) value;
-            }
-            PropertyEditor propertyEditor = getDefaultEditor(value.getClass());
-            propertyEditor.setValue(value);
-            return propertyEditor.getAsText();
-        }
+    public void setBeans(Map beans) {
+        this.beans = beans;
     }
 }

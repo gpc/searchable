@@ -32,11 +32,12 @@ import java.util.Map;
 public abstract class SearchableCompassConfiguratorFactory {
     private static final Log LOG = LogFactory.getLog(SearchableCompassConfiguratorFactory.class);
 
-    public static EnvironmentSearchableCompassConfigurator getEnvironmentConfigurator(String compassConnection, Map compassSettings, GrailsApplication grailsApplication) {
+    public static EnvironmentSearchableCompassConfigurator getEnvironmentConfigurator(String compassConnection, Map compassSettings, GrailsApplication grailsApplication, Map beans) {
         EnvironmentSearchableCompassConfigurator environment = new EnvironmentSearchableCompassConfigurator();
         environment.setConnection(compassConnection);
         environment.setCompassSettings(compassSettings);
         environment.setGrailsApplication(grailsApplication);
+        environment.setBeans(beans);
         return environment;
     }
 

@@ -17,16 +17,21 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.spring;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.analysis.Analyzer;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.plugins.searchable.compass.config.*;
 import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
+import org.compass.core.converter.Converter;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A default Compass configuration strategy
@@ -43,6 +48,8 @@ public class DefaultSearchableCompassFactoryBean extends SearchableCompassFactor
     private List defaultExcludedProperties;
     private Map defaultFormats;
     private ResourceLoader resourceLoader;
+    private boolean registerConverterBeans = true;
+    private boolean registerAnalyzerBeans = true;
 
     /**
      * Build the superclass; the "real" factory bean
@@ -56,7 +63,7 @@ public class DefaultSearchableCompassFactoryBean extends SearchableCompassFactor
 
         LOG.debug("Building SearchableCompassFactoryBean with grailsApplication [" + grailsApplication + "] and compassClassMappingXmlBuilder [" + compassClassMappingXmlBuilder + "]");
 
-        EnvironmentSearchableCompassConfigurator environment = SearchableCompassConfiguratorFactory.getEnvironmentConfigurator(compassConnection, compassSettings, grailsApplication);
+        EnvironmentSearchableCompassConfigurator environment = SearchableCompassConfiguratorFactory.getEnvironmentConfigurator(compassConnection, compassSettings, grailsApplication, getBeans());
         CompassXmlConfigurationSearchableCompassConfigurator compassXml = SearchableCompassConfiguratorFactory.getCompassXmlConfigurator(resourceLoader);
         DefaultGrailsDomainClassMappingSearchableCompassConfigurator mappings = SearchableCompassConfiguratorFactory.getDomainClassMappingConfigurator(grailsApplication, resourceLoader, defaultFormats, defaultExcludedProperties, compassClassMappingXmlBuilder);
         InferredCompassSettingCompassConfigurator inferred = new InferredCompassSettingCompassConfigurator();
@@ -67,6 +74,17 @@ public class DefaultSearchableCompassFactoryBean extends SearchableCompassFactor
         });
 
         super.setSearchableCompassConfigurator(configurator);
+    }
+
+    private Map getBeans() {
+        Map beans = new HashMap();
+        if (isRegisterAnalyzerBeans()) {
+            beans.putAll(getApplicationContext().getBeansOfType(Analyzer.class));
+        }
+        if (isRegisterConverterBeans()) {
+            beans.putAll(getApplicationContext().getBeansOfType(Converter.class));
+        }
+        return beans;
     }
 
     public GrailsApplication getGrailsApplication() {
@@ -116,5 +134,43 @@ public class DefaultSearchableCompassFactoryBean extends SearchableCompassFactor
 
     public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
+    }
+
+    /**
+     * If <code>true</code>, automatically registers {@link Converter} instances
+     * found in the {@link org.springframework.context.ApplicationContext}
+     * as Compass converters named after their Spring bean name.
+     * Default is <code>true</code>
+     * @return true if enabled
+     */
+    public boolean isRegisterConverterBeans() {
+        return registerConverterBeans;
+    }
+
+    /**
+     * @see {@link #isRegisterConverterBeans()}
+     * @param registerConverterBeans whether to enable
+     */
+    public void setRegisterConverterBeans(boolean registerConverterBeans) {
+        this.registerConverterBeans = registerConverterBeans;
+    }
+
+    /**
+     * If <code>true</code>, automatically registers {@link Analyzer} instances
+     * found in the {@link org.springframework.context.ApplicationContext}
+     * as Compass analyzers named after their Spring bean name.
+     * Default is <code>true</code>
+     * @return true if enabled
+     */
+    public boolean isRegisterAnalyzerBeans() {
+        return registerAnalyzerBeans;
+    }
+
+    /**
+     * @see {@link #isRegisterAnalyzerBeans()}
+     * @param registerAnalyzerBeans whether to enable
+     */
+    public void setRegisterAnalyzerBeans(boolean registerAnalyzerBeans) {
+        this.registerAnalyzerBeans = registerAnalyzerBeans;
     }
 }
