@@ -75,4 +75,22 @@ class SearchableMethodUtilsTests extends GroovyTestCase {
         assert !options.is(userOptions)
         assert !options.is(defaultOptions)
     }
+    
+    void testGetOptionsArgumentWithOverrideWithDefaultsIfNull() {
+        def userOptions = [offset: null, max: null, q: 'bark']
+        def options = SearchableMethodUtils.getOptionsArgument([userOptions] as Object[], [offset: 0, max: 10], [] as String[])
+        assertNull options.max
+        assertNull options.offset
+        assertEquals 'bark', options.q
+
+        options = SearchableMethodUtils.getOptionsArgument([userOptions] as Object[], [offset: 0, max: 10], ['offset', 'max'] as String[])
+        assertEquals 10, options.max
+        assertEquals 0, options.offset
+        assertEquals 'bark', options.q
+
+        options = SearchableMethodUtils.getOptionsArgument([userOptions] as Object[], [offset: 0, max: 10], null as String[])
+        assertNull options.max
+        assertNull options.offset
+        assertEquals 'bark', options.q
+    }
 }

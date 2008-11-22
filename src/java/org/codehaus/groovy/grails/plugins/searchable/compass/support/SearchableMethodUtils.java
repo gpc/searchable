@@ -53,6 +53,27 @@ public abstract class SearchableMethodUtils {
     }
 
     /**
+     * Get the options Map from the given argument array
+     * @param args the given array of arguments, may not be null, may be empty
+     * @param defaultOptions the default options, to be merged with user options, may be null
+     * @param overrideWithDefaultsIfNull an array of keys which if null in the given options
+     * are overriden with defaults
+     * @return a Map of options, never null
+     */
+    public static Map getOptionsArgument(Object[] args, Map defaultOptions, String[] overrideWithDefaultsIfNull) {
+        Map options = getOptionsArgument(args, defaultOptions);
+        if (overrideWithDefaultsIfNull != null) {
+            for (int i = 0; i < overrideWithDefaultsIfNull.length; i++) {
+                String key = overrideWithDefaultsIfNull[i];
+                if (options.containsKey(key) && options.get(key) == null) {
+                    options.put(key, defaultOptions.get(key));
+                }
+            }
+        }
+        return options;
+    }
+
+    /**
      * Get the query argument - either a String or Closure
      * @param args
      * @return

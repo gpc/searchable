@@ -56,6 +56,10 @@ class SearchTests extends SearchableFunctionalTestCase {
         assert results.scores
         assert results.scores.size() == 101
 
+        // null args are overriden by defaults
+        results = searchableService.search("live OR love", offset: null, max: null)
+        assert results.results.size() == 10
+
         // With closure
         results = searchableService.search {
             queryString("live OR love")
@@ -113,6 +117,10 @@ class SearchTests extends SearchableFunctionalTestCase {
         assert results.max == 30
         assert results.offset == 15
         assert results.total == 50
+
+        // null args are overriden by defaults
+        results = Post.search("even", offset: null, max: null)
+        assert results.results.size() == 10
 
         results = Comment.search("commenty") // should match all
         assert results.results.size() == 10

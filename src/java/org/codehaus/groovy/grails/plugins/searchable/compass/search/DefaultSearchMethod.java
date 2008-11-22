@@ -87,6 +87,7 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         private SearchableHitCollector hitCollector;
         private SearchableSearchResultFactory searchResultFactory;
         private SearchableMethod suggestQueryMethod;
+        private static final String[] OVERRIDE_WITH_DEFAULTS_IF_NULL = {"max", "offset"};
 
         public SearchCompassCallback(Compass compass, Map defaultOptions, Object[] args) {
             this.args = args;
@@ -94,7 +95,7 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
         }
 
         public Object doInCompass(CompassSession session) throws CompassException {
-            Map options = SearchableMethodUtils.getOptionsArgument(args, defaultOptions);
+            Map options = SearchableMethodUtils.getOptionsArgument(args, defaultOptions, OVERRIDE_WITH_DEFAULTS_IF_NULL);
             CompassQuery compassQuery = compassQueryBuilder.buildQuery(grailsApplication, session, options, args);
             long start = System.currentTimeMillis();
             CompassHits hits = compassQuery.hits();
