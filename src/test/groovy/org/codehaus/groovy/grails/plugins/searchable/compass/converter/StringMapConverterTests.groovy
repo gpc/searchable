@@ -15,26 +15,16 @@
  */
 package org.codehaus.groovy.grails.plugins.searchable.compass.converter
 
-import org.codehaus.groovy.grails.plugins.searchable.test.compass.*
-import org.codehaus.groovy.grails.plugins.searchable.test.domain.stringmap.*
-import org.codehaus.groovy.grails.commons.DefaultGrailsApplication
-import org.compass.core.config.CompassConfiguration
-import org.compass.core.util.ClassUtils
+import org.compass.core.Property
+import org.compass.core.Resource
+import org.compass.core.ResourceFactory
+import org.compass.core.engine.SearchEngineFactory
+import org.compass.core.engine.naming.DefaultPropertyNamingStrategy
+import org.compass.core.engine.naming.StaticPropertyPath
 import org.compass.core.mapping.ResourcePropertyMapping
 import org.compass.core.marshall.MarshallingContext
-import org.compass.core.engine.SearchEngine
-import org.compass.core.Property
-import org.compass.core.Property.TermVector
-import org.compass.core.Property.Store
-import org.compass.core.Property.Index
-import org.compass.core.Resource
-import org.compass.core.engine.naming.*
-import org.compass.core.CompassSession
-import org.compass.core.engine.SearchEngineFactory
-import org.compass.core.Compass
-import org.compass.core.spi.InternalCompassSession
 import org.compass.core.spi.InternalCompass
-import org.compass.core.ResourceFactory
+import org.compass.core.spi.InternalCompassSession
 
 /**
 *
