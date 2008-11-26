@@ -1,4 +1,5 @@
 import java.util.regex.Pattern
+import java.security.MessageDigest
 
 class Get {
     static classLoader = Thread.currentThread().contextClassLoader
@@ -10,6 +11,8 @@ class Get {
             }
         }
     }
+    static String CREATED = "A "
+    static String UPDATED = "U "
 
     def server
     def dir
@@ -33,7 +36,7 @@ class Get {
             assert this.getProperty(required), "Please specify a ${required} with -${required}=xxx"
         }
         if (!match) {
-            println "Note: you can specify a pattern to automatically confirm pages to get with -match=xxx"
+            println("Note: you can specify a pattern to automatically confirm pages to get with -match=xxx")
         }
 
         if (match) {
@@ -66,7 +69,7 @@ class Get {
             makeDir(dir.getAbsoluteFile().getParentFile(), false)
             dir.mkdir()
             if (messageIfMade) {
-                println "Created directory: \"${dir.absolutePath}\""
+                println(CREATED + dir.absolutePath)
             }
         }
     }
@@ -100,22 +103,27 @@ class Get {
 
     def getPage(client, pageName, andSay = true) {
         if (andSay) {
-            println "Getting page \"${pageName}\""
+            println "Fetching \"${pageName}\""
         }
         def post = classLoader.loadClass('org.apache.http.client.methods.HttpPost').newInstance(server + "/edit/" + URLEncoder.encode(pageName))
         def resp = responseToText(client.execute(post))
-        
-        def start = resp.indexOf('<textarea ')
-        if (start == -1) {
-            println "No wiki content found on page ${pageName}"
-            return
-        }
-        start = resp.indexOf('>', start) + 1
-        def end = resp.indexOf('</textarea>')
-        def text = resp.substring(start, end)
 
-        new File(dir, pageName + extension).write(text)
-        done << pageName.replaceAll('\\+', ' ')
+        def text = getPageText(resp)
+        def hash = getHash(text)
+
+        def file = new File(dir, pageName + extension)
+        if (!file.exists()) {
+            file.write(text)
+            println(CREATED + file.absolutePath)
+        } else {
+            def fileHash = getHash(file.text)
+            if (fileHash != hash) {
+                println(UPDATED + file.absolutePath)
+                file.write(text)
+            }
+        }
+
+        done << pageName
  
         processLinkedPages(text, client, pageName)
     }
@@ -181,7 +189,7 @@ class Get {
     }
 
     def confirmGet(link) {
-        if (new File(dir, link).exists() || (match && match.matcher(link).matches())) {
+        if (new File(dir, link + extension).exists() || (match && match.matcher(link).matches())) {
             return false
         }
         return true
@@ -203,5 +211,24 @@ class Get {
         def os = new ByteArrayOutputStream()
         response.entity.writeTo(os)
         os.toString()
+    }
+
+    def getPageText(String resp) {
+        def start = resp.indexOf('<textarea ')
+        if (start == -1) {
+            println "No wiki content found on page ${pageName}"
+            return
+        }
+        start = resp.indexOf('>', start) + 1
+        def end = resp.indexOf('</textarea>')
+        def text = resp.substring(start, end)
+        text.replaceAll('&quot;', '"')
+    }
+
+    def getHash(String text) {
+        MessageDigest md = MessageDigest.getInstance("SHA");
+        md.update(text.getBytes());
+        byte[] digest = md.digest();
+        return new String(digest);
     }
 }

@@ -1,3 +1,5 @@
+import java.security.MessageDigest
+
 class Put {
     static classLoader = Thread.currentThread().contextClassLoader
     static {
@@ -8,6 +10,8 @@ class Put {
             }
         }
     }
+    static String CREATED = "A "
+    static String UPDATED = "U "
 
     def server
     def dir
@@ -63,13 +67,22 @@ class Put {
         // does the page exist?
         def exists = pageExists(client, pageName)
 
-        // get the current version?
-        def version = exists ? getCurrentVersion(client, pageName) : null
-        //        println "version => ${version}"
+        def version, hash
+        if (exists) {
+            def resp = getPageResponse(client, pageName)
+            version = findMessageWithin(resp, '<input type="hidden" name="version" value="', '" />')
+            hash = getHash(getPageText(resp))
+        }
 
-        // todo only need to upload new version if changed
-
-        println "Putting \"${pageName}\" (to ${server + "/save/" + URLEncoder.encode(pageName)})"
+        // is it different?
+        def doUpload = true
+        if (exists) {
+            doUpload = hash != getHash(text)
+        }
+        if (!doUpload) {
+            return
+        }
+        println "Checking \"${pageName}\" (at ${server + "/save/" + URLEncoder.encode(pageName)})"
         def post = classLoader.loadClass('org.apache.http.client.methods.HttpPost').newInstance(server + "/save/" + URLEncoder.encode(pageName))
         post.setEntity(classLoader.loadClass('org.apache.http.entity.StringEntity').newInstance("version=${version}&title=${URLEncoder.encode(pageName)}&body=${URLEncoder.encode(text)}" as String))
         post.setHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -81,11 +94,7 @@ class Put {
             System.exit(1)
         }
         def message = findMessage(resp)
-        if (message) {
-            println "Server says \"${message}\""
-        } else if (!exists) {
-            println "The page was created"
-        }
+        println "${exists ? UPDATED : CREATED}${pageName}" + (message ? " (server: \"${message}\")" : '')
     }
 
     def pageExists(client, pageName) {
@@ -94,10 +103,9 @@ class Put {
         !resp.contains("NOT_FOUND")
     }
 
-    def getCurrentVersion(client, pageName) {
+    def getPageResponse(client, pageName) {
         def post = classLoader.loadClass('org.apache.http.client.methods.HttpPost').newInstance(server + "/edit/" + URLEncoder.encode(pageName))
-        def resp = responseToText(client.execute(post))
-        findMessageWithin(resp, '<input type="hidden" name="version" value="', '" />')
+        responseToText(client.execute(post))
     }
 
     def findError(resp) {
@@ -131,5 +139,24 @@ class Put {
         def os = new ByteArrayOutputStream()
         response.entity.writeTo(os)
         os.toString()
+    }
+
+    def getPageText(String resp) {
+        def start = resp.indexOf('<textarea ')
+        if (start == -1) {
+            println "No wiki content found on page ${pageName}"
+            return
+        }
+        start = resp.indexOf('>', start) + 1
+        def end = resp.indexOf('</textarea>')
+        def text = resp.substring(start, end)
+        text.replaceAll('&quot;', '"')
+    }
+
+    def getHash(String text) {
+        MessageDigest md = MessageDigest.getInstance("SHA");
+        md.update(text.getBytes());
+        byte[] digest = md.digest();
+        return new String(digest);
     }
 }
