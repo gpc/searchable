@@ -21,26 +21,26 @@ DomainClass.moreLikeThis(DomainClass domainObject, Map options)
 
 {code}
 searchableService.moreLikeThis(Map options)
-searchableService.moreLikeThis(DomainClass domainClass, Serializable id)
-searchableService.moreLikeThis(DomainClass domainClass, Serializable id, Map options)
+searchableService.moreLikeThis(Class domainClass, Serializable id)
+searchableService.moreLikeThis(Class domainClass, Serializable id, Map options)
 searchableService.moreLikeThis(DomainClass domainObject)
 searchableService.moreLikeThis(DomainClass domainObject, Map options)
 {code}
 
 h2. Description
 
-Issues a &quot;more-like-this&quot; query to the search engine and returns the result.
+Issues a "more-like-this" query to the search engine and returns the result.
 
 Note that you do not create the more-like-this query, it is created by the search engine for a given searchable class instance. You _do_ need to provide or identify the class instance though.
 
-Conceptually (apart from the difference in the query) this method is like @[search|Searchable Plugin - Methods - search]@, and you could think of it like a specialised &quot;search&quot; for more-like-some-object.
+Conceptually (apart from the difference in the query) this method is like @[search|Searchable Plugin - Methods - search]@, and you could think of it like a specialised "search" for more-like-some-object.
 
 Unsurprisingly then they share code and this method has many options in common with @[search|Searchable Plugin - Methods - search]@ itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].
 
 {note}
 
 To use @moreLikeThis@ you need to add @termVector@ to the
-searchable domain class's [&quot;all&quot; property mapping|Searchable Plugin - Mapping - all] and rebuild the index.
+searchable domain class's ["all" property mapping|Searchable Plugin - Mapping - all] and rebuild the index.
 
 See the [example here|Searchable Plugin - Mapping - all#Examples].
 {note}
@@ -67,7 +67,7 @@ If you prefer you can identify the domain class instance with options alone:
 These options tweak the more-like-this query:
 
 * *@aliases@* - Exposes the Compass @aliases@ option allowing you to narrow the search space by alias. A @List@ of aliases, eg @\['post', 'comment'\]@
-* *@boost@* - Sets whether to boost terms in query based on &quot;score&quot; or not. @true@ or @false@
+* *@boost@* - Sets whether to boost terms in query based on "score" or not. @true@ or @false@
 * *@maxNumTokensParsed@* - The maximum number of tokens to parse in each example doc field that is not stored with TermVector support
 * *@maxQueryTerms@* - The maximum number of query terms that will be included in any generated query.
 * *@maxWordLen@* - The maximum word length above which words will be ignored. Set this to @0@ for no maximum word length. The default is @0@.
@@ -80,9 +80,9 @@ These options tweak the more-like-this query:
 
 h4. Options affecting the return value
 
-* *@result@* - What should the method return? If defined, one of @&quot;searchResult&quot;@, @&quot;top&quot;@, @&quot;every&quot;@ or @&quot;count&quot;@. Default is @&quot;searchResult&quot;@. (See [Returns|Searchable Plugin - Methods - moreLikeThis#Returns] below)
+* *@result@* - What should the method return? If defined, one of @"searchResult"@, @"top"@, @"every"@ or @"count"@. Default is @"searchResult"@. (See [Returns|Searchable Plugin - Methods - moreLikeThis#Returns] below)
 * *@offset@* - The 0-based start result offset (default 0)
-* *@max@* - The maximum number of results to return (default 10). Only used with @result: &quot;searchResult&quot;@ 
+* *@max@* - The maximum number of results to return (default 10). Only used with @result: "searchResult"@ 
 * *@reload@* - If @true@, reloads the objects from the database, attaching them to a Hibernate session, otherwise the objects are reconstructed from the index. Default is @false@
 * *@withHighlighter@* - A @Closure@ instance that is called for each search result hit to support highlighting. [More|Searchable Plugin - Searching - Highlighting]
 
@@ -90,7 +90,7 @@ There are also some [additional options for string queries|Searchable Plugin - S
 
 h2. Returns
 
-By default (if @result@ is undefined) or if @result@ is *@&quot;searchResult&quot;@*, returns a &quot;search result&quot; object containing a subset of similar objects, with the following properties:
+By default (if @result@ is undefined) or if @result@ is *@"searchResult"@*, returns a "search result" object containing a subset of similar objects, with the following properties:
 
 * *@results@* - A @List@ of domain objects
 * *@scores@* - A @List@ of scores: one for for each entry in *results*
@@ -98,11 +98,11 @@ By default (if @result@ is undefined) or if @result@ is *@&quot;searchResult&quo
 * *@offset@* - The 0-based hit object offset
 * *@max@* - The maximum number of results _requested_. Note that this may be higher than @results.size()@ if there were fewer hits than requested
 
-If @result@ is *@&quot;every&quot;@*, returns every similar object.
+If @result@ is *@"every"@*, returns every similar object.
 
-If @result@ is *@&quot;top&quot;@*, returns the first similar domain object.
+If @result@ is *@"top"@*, returns the first similar domain object.
 
-If @result@ is *@&quot;count&quot;@*, returns the number of similar domain objects.
+If @result@ is *@"count"@*, returns the number of similar domain objects.
 
 The order of the hits is either by relevance (the default) or [a sort you define|Searchable Plugin - Searching - Sorting].
 
@@ -113,18 +113,18 @@ h2. Examples
 def searchResult = searchableService.moreLikeThis(Artist, 101l)
 
 assert searchResult instanceof Map
-println &quot;${searchResult.total} hits:&quot;
+println "${searchResult.total} hits:"
 for (i in 0..&lt;searchResult.results.size()) {
-    println &quot;${searchResult.offset + i + 1}: &quot; +
-        &quot;${searchResult.results[i].toString()} &quot; +
-        &quot;(score ${searchResult.scores[i]})&quot;
+    println "${searchResult.offset + i + 1}: " +
+        "${searchResult.results[i].toString()} " +
+        "(score ${searchResult.scores[i]})"
 }
 {code}
 
 {code}
 // Find similar items to a Product
 def products = product.moreLikeThis(result: 'every')
-println &quot;We can also recommend ${products.size()} other items&quot;
+println "We can also recommend ${products.size()} other items"
 {code}
 
 {code}
@@ -149,8 +149,8 @@ def mostSimilar = searchableService.moreLikeThis(item, result: 'top')
 def highlights = []
 def bookHighlighter = { highlighter, index, sr -&gt;
     highlights[index] = [
-        title: highlighter.fragment(&quot;title&quot;),
-        summary: highlighter.fragment(&quot;summary&quot;)
+        title: highlighter.fragment("title"),
+        summary: highlighter.fragment("summary")
     ]
 }
 def books = Book.moreLikeThis(

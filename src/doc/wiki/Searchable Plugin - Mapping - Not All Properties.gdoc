@@ -48,7 +48,7 @@ You can combine [class property mappings|Searchable Plugin - Mapping - Class Pro
 {code}
 class Post {
     static searchable = {
-        except = [&quot;version&quot;, &quot;createdAt&quot;]   // version and createdAt will not be mapped to the index
+        except = ["version", "createdAt"]   // version and createdAt will not be mapped to the index
         category index: 'not_analyzed', excludeFromAll: true
         title boost: 2.0
         comments component: true

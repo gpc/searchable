@@ -38,17 +38,17 @@ h2. Parameters
 
 h3. Options
 
-* *@accessor@* - How the property is accessed. One of @&quot;field&quot;@ or @&quot;property&quot;@. Default is @&quot;property&quot;@
-* *@cascade@* - The operations to cascade to the target association. A @String@ comma-delimited-list of values in @&quot;all&quot;@, @&quot;create&quot;@, @&quot;save&quot;@ and @&quot;delete&quot;@.
+* *@accessor@* - How the property is accessed. One of @"field"@ or @"property"@. Default is @"property"@
+* *@cascade@* - The operations to cascade to the target association. A @String@ comma-delimited-list of values in @"all"@, @"create"@, @"save"@ and @"delete"@.
 * *@converter@* - The name of a configured converter to use to convert the property value to/from text
 * *@maxDepth@* - The depth of cyclic component references allowed. Default is @1@
-* *@prefix@* - A @String@ prefix to apply to the component's properties. A prefix can be used to distinguish between multiple components of the same type. Without a prefix you can search within a component's properties with their property names, eg, @&quot;city:london&quot;@, with a prefix like @'homeAddress$'@ you can search for @'homeAddress$city:london'@
+* *@prefix@* - A @String@ prefix to apply to the component's properties. A prefix can be used to distinguish between multiple components of the same type. Without a prefix you can search within a component's properties with their property names, eg, @"city:london"@, with a prefix like @'homeAddress$'@ you can search for @'homeAddress$city:london'@
 
 h2. Examples
 
 {code}
 // Provide a custom converter
-metadata converter: &quot;metadata\_converter&quot;
+metadata converter: "metadata\_converter"
 {code}
 
 {code}
@@ -59,5 +59,5 @@ metadata component: true
 {code}
 // Map metadata as a component, overriding any conventional mapping
 // and define some options
-metadata component: [converter: &quot;metadata\_converter&quot;]
+metadata component: [converter: "metadata\_converter"]
 {code}

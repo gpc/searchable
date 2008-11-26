@@ -9,16 +9,16 @@ Please add stuff that you think others may find helpful.
 
 h2. Negative numbers are indexed as positive
 
-This is probably because the number is being &quot;analyzed&quot; during the index process.
+This is probably because the number is being "analyzed" during the index process.
 
 This process is usually applied to searchable text to normalize it and remove what are normally useless words and characters (punctuation for example).
 
-If you want to store the value of any searchable property _exactly_ as it appears map that field with @index: &quot;not_analyzed&quot;@.
+If you want to store the value of any searchable property _exactly_ as it appears map that field with @index: "not_analyzed"@.
 
 {code}
 class Idea {
     static searchable = {
-        votes index: &quot;not_analyzed&quot;
+        votes index: "not_analyzed"
     }
     int votes
     // ...
@@ -34,7 +34,7 @@ Say you have the following domain class:
 {code}
 class Bug {
     static searchable = {
-        votes index: &quot;not_analyzed&quot;
+        votes index: "not_analyzed"
     }
     int votes = 0
     // ...
@@ -44,19 +44,19 @@ class Bug {
 And you want to search for Bugs with between 0 and 20 votes. With the Searchable plugin you could do it this way
 
 {code}
-def results = Bug.search(&quot;votes:[0 TO 20]&quot;)
+def results = Bug.search("votes:[0 TO 20]")
 {code}
 
 But you might get back bugs with votes with 100 votes! What gives?
 
 Data in the search index is not typed like a database, everything is text. So comparisons are done lexicographically, rather than numerically as you would expect in this case.
 
-The solution is to apply some formatting that pads the number with zeros. The &quot;format&quot; mapping option defines how the number is converted to searchable text in the index:
+The solution is to apply some formatting that pads the number with zeros. The "format" mapping option defines how the number is converted to searchable text in the index:
 
 {code}
 class Bug {
     static searchable = {
-        votes index: &quot;not_analyzed&quot;, format: &quot;000000000&quot;
+        votes index: "not_analyzed", format: "000000000"
     }
     int votes = 0
     // ...
@@ -83,9 +83,9 @@ You can also perform a bulk-index in a separate thread easily like:
 
 {code}
 Thread.start {
-    println &quot;forked bulk index thread&quot;
+    println "forked bulk index thread"
     searchableService.index()
-    println &quot;bulk index thread finished&quot;
+    println "bulk index thread finished"
 }
 {code}
 
@@ -103,7 +103,7 @@ class BootStrap {
         searchableService.stopMirroring()
 
         for (i in 0..&lt;10000) {
-            def thingie = new Thingie(description: &quot;this right here is a thingie and it's number ${i}&quot;)
+            def thingie = new Thingie(description: "this right here is a thingie and it's number ${i}")
             assert thingie.validate(), thingie.errors
             thingie.save()
         }

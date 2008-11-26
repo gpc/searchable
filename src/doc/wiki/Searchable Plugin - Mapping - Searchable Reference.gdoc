@@ -38,8 +38,8 @@ h2. Parameters
 
 h3. Options
 
-* *@accessor@* - How the property is accessed. One of @&quot;field&quot;@ or @&quot;property&quot;@. Default is @&quot;property&quot;@
-* *@cascade@* - The operations to cascade to the target association. A @String@ comma-delimited-list of values in @&quot;all&quot;@, @&quot;create&quot;@, @&quot;save&quot;@ and @&quot;delete&quot;@.
+* *@accessor@* - How the property is accessed. One of @"field"@ or @"property"@. Default is @"property"@
+* *@cascade@* - The operations to cascade to the target association. A @String@ comma-delimited-list of values in @"all"@, @"create"@, @"save"@ and @"delete"@.
 * *@converter@* - The name of a configured converter to use to convert the property value to/from text
 * *@lazy@* - If @true@ the association is lazy when recreating the owing instance for search results. Only applicable to Collections or arrays. Default is @false@
 
@@ -47,7 +47,7 @@ h2. Examples
 
 {code}
 // Provide a custom converter
-metadata converter: &quot;metadata\_converter&quot;
+metadata converter: "metadata\_converter"
 {code}
 
 {code}
@@ -58,5 +58,5 @@ metadata reference: true
 {code}
 // Map metadata as a reference, overriding any conventional mapping
 // and define some options
-metadata reference: [converter: &quot;metadata\_converter&quot;]
+metadata reference: [converter: "metadata\_converter"]
 {code}

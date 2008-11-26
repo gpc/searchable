@@ -5,8 +5,8 @@ A searchable class mapping describes how the class instance appears in the index
 This includes things like:
 
 * Which properties are searchable
-* How a property is processed during indexing - whether it is &quot;analyzed&quot; or not, for example
-* How a property influences the search - whether it has a &quot;boost&quot;, for example
+* How a property is processed during indexing - whether it is "analyzed" or not, for example
+* How a property influences the search - whether it has a "boost", for example
 * How associated searchable classes are linked and/or embed one another's searchable data
 
 When you declare

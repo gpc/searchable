@@ -60,17 +60,17 @@ h2. Examples
 {code}
 // Get a suggested query, using all available class instances
 // for spelling suggestions
-def suggestedQuery = searchableService.suggestQuery(&quot;grate briton&quot;)
-println &quot;Did you mean ${suggestedQuery}&quot;
+def suggestedQuery = searchableService.suggestQuery("grate briton")
+println "Did you mean ${suggestedQuery}"
 {code}
 
 {code}
-// Get a suggested query using only searchable text from &quot;Player&quot; 
+// Get a suggested query using only searchable text from "Player" 
 // instances for spelling suggestions, allowing for bad
 // characters and disabling the user-friendly options
 def suggestedQuery = Player.suggestQuery(
-    &quot;kartoon&quot;, 
+    "kartoon", 
     escape: true, userFriendly: false, emulateCapitalisation: false
 )
-println &quot;Did you mean ${suggestedQuery}&quot;
+println "Did you mean ${suggestedQuery}"
 {code}

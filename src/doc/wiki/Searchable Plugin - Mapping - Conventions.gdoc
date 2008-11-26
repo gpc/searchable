@@ -11,7 +11,7 @@ The easiest way to map a class to the search index is by declaring
 static searchable = true
 {code}
 
-which maps all &quot;mappable&quot; properties in the class using built-in rules:
+which maps all "mappable" properties in the class using built-in rules:
 
 # *Simple property types* like numbers, dates and strings, or a collection of, are mapped as *[searchable-properties|Searchable Plugin - Mapping - Compass concepts#Searchable Property]*, which becomes the searchable text in the index.
 # *Non-embedded domain class properties* or element type if a collection are mapped as *[searchable-references|Searchable Plugin - Mapping - Compass concepts#Searchable Reference]* as long as they are searchable too.
@@ -47,9 +47,9 @@ The simple type properties @category@, @title@, @post@ and @createdAt@ are mappe
 
 As is the case with [searchable-properties|Searchable Plugin - Mapping - Compass concepts#Searchable Property], the values of these properties becomes searchable text in the index, in fields named after the property.
 
-Additionally an @&quot;all&quot;@ field is created which combines all searchable text for the object.
+Additionally an @"all"@ field is created which combines all searchable text for the object.
 
-Therefore you can search for @&quot;title:grails&quot;@ or @&quot;category:javascript&quot;@ to target those specific fields, whereas if you search for just @&quot;grails&quot;@ it will match any text in any searchable field.
+Therefore you can search for @"title:grails"@ or @"category:javascript"@ to target those specific fields, whereas if you search for just @"grails"@ it will match any text in any searchable field.
 
 h3. Non-embedded domain class properties become searchable references
 

@@ -2,7 +2,7 @@ h1. all
 
 h2. Summary
 
-A [class mapping|Searchable Plugin - Mapping - Class Mapping] option that controls the &quot;all&quot; field for instances of a class.
+A [class mapping|Searchable Plugin - Mapping - Class Mapping] option that controls the "all" field for instances of a class.
 
 h2. Syntax
 
@@ -16,24 +16,24 @@ all options
 
 h2. Description
 
-Unless you decide otherwise, a field known as the &quot;all&quot; field is created in the index for each class instance's data. This &quot;all&quot; field contains the combined searchable text for that instance.
+Unless you decide otherwise, a field known as the "all" field is created in the index for each class instance's data. This "all" field contains the combined searchable text for that instance.
 
 {info}
 
-The reason for the &quot;all&quot; field is due to the way Lucene thinks.
+The reason for the "all" field is due to the way Lucene thinks.
 
 Each class instance is represented in the Lucene index as one Lucene _document_. A _document_ has many _fields_ and each field has one or more values. Think of it like a multi-valued Map.
 
-When you search with Lucene you can choose to prefix your query terms with the field to match in, like &quot;name:bill&quot;, which will only return hits if the index contains a document with a field whose value contains &quot;bill&quot;.
+When you search with Lucene you can choose to prefix your query terms with the field to match in, like "name:bill", which will only return hits if the index contains a document with a field whose value contains "bill".
 
 But what about query terms that are not prefixed? How does Lucene cope? It doesn't! That responsibility is pushed back to the user. So when you query a Lucene index you also have to tell Lucene which field to search in for terms in the query that are not prefixed.
 
-To save you the bother of all this, Compass creates a field known as the &quot;all&quot; field, which combines all of the instance's searchable data, and makes that field the default for un-prefixed query terms.
+To save you the bother of all this, Compass creates a field known as the "all" field, which combines all of the instance's searchable data, and makes that field the default for un-prefixed query terms.
 {info}
 
 The first syntax disables creation of the all field. In this case you would have to prefix query terms with the properties you wish to query, otherwise they won't match anything.
 
-The second syntax allows you to provide a @Map@ of [options|#Options] that change the built-in &quot;all&quot; field default settings.
+The second syntax allows you to provide a @Map@ of [options|#Options] that change the built-in "all" field default settings.
 
 h2. Parameters
 
@@ -43,30 +43,30 @@ h3. Options
 
 * *@analyzer@* - The name of a configured Analyzer used to analyze the searchable text.
 * *@name@* - The name of the all field. If not defined, defaults to the global Compass setting.
-* *@termVector@* - Should the term-vector data be collected for the &quot;all&quot; field? One of @&quot;yes&quot;@, @&quot;no&quot;@, @&quot;with\_positions@&quot;, @&quot;with\_offsets@&quot;, @&quot;with\_positions\_offsets@&quot;. If not defined inherits the class's term-vector mapping. This is required for [more-like-this|Searchable Plugin - Methods - moreLikeThis] searches.
+* *@termVector@* - Should the term-vector data be collected for the "all" field? One of @"yes"@, @"no"@, @"with\_positions@", @"with\_offsets@", @"with\_positions\_offsets@". If not defined inherits the class's term-vector mapping. This is required for [more-like-this|Searchable Plugin - Methods - moreLikeThis] searches.
 
 h2. Examples
 
 {code}
-// Disable the &quot;all&quot; field for this class
+// Disable the "all" field for this class
 static searchable = {
     all false
 }
 {code}
 
 {code}
-// Enable term-vectors for the &quot;all&quot; field
+// Enable term-vectors for the "all" field
 // This is required for more-like-this searches
 static searchable = {
-    all termVector: &quot;yes&quot;
+    all termVector: "yes"
 }
 {code}
 
 {code}
-// Define some &quot;all&quot; field settings within a nested &quot;mapping&quot; closure
+// Define some "all" field settings within a nested "mapping" closure
 static searchable = {
     mapping {
-        all name: &quot;\_\_all_field\_\_&quot;, analyzer: &quot;my\_analyzer&quot;
+        all name: "\_\_all_field\_\_", analyzer: "my\_analyzer"
     }
 }
 {code}

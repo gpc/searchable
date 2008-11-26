@@ -22,13 +22,13 @@ h2. Parameters
 
 h3. Options
 
-* *@name@* - The name of the searchable id field in the index. Default is @id@. This allows you to target the id field in a query, eg, if you decided to name your id @&quot;\_\_the\_id\_\_&quot;@ you could query it with @&quot;\_\_the\_id\_\_:10&quot;@.
-* *@accessor@* - How the property is accessed. One of @&quot;field&quot;@ or @&quot;property&quot;@. Default is @&quot;property&quot;@
+* *@name@* - The name of the searchable id field in the index. Default is @id@. This allows you to target the id field in a query, eg, if you decided to name your id @"\_\_the\_id\_\_"@ you could query it with @"\_\_the\_id\_\_:10"@.
+* *@accessor@* - How the property is accessed. One of @"field"@ or @"property"@. Default is @"property"@
 * *@converter@* - The name of a configured converter to use to convert the property value to/from text
 
 h2. Examples
 
 {code}
 // Obscure the name of the id property
-id name: &quot;\_\_the\_id\_\_&quot;
+id name: "\_\_the\_id\_\_"
 {code}

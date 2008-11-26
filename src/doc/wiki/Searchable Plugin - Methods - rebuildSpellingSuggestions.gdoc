@@ -39,5 +39,5 @@ searchableService.rebuildSpellingSuggestions(fork: true)
 
 {code}
 // Rebuild for just one sub-index (maps to one class hierarchy)
-searchableService.rebuildSpellingSuggestions(subIndex: &quot;House&quot;)
+searchableService.rebuildSpellingSuggestions(subIndex: "House")
 {code}
