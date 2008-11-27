@@ -26,7 +26,7 @@ import org.codehaus.groovy.grails.plugins.searchable.compass.test.*
  *
  * @author Maurice Nicholson
  */
-// delete when unindexAll is removed
+// todo delete when unindexAll is removed
 class DefaultUnindexMethodTests extends AbstractSearchableCompassTestCase {
     def compass
 
@@ -48,6 +48,9 @@ class DefaultUnindexMethodTests extends AbstractSearchableCompassTestCase {
     }
 
     void tearDown() {
+        MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
+        metaClassRegistry.removeMetaClass(Post)
+        metaClassRegistry.removeMetaClass(Comment)
         compass.close()
         compass = null
     }

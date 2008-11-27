@@ -37,7 +37,7 @@ import org.jmock.core.constraint.IsArrayContaining
  *
  * @author Maurice Nicholson
  */
-// remove when reindexAll is gone
+// todo remove when reindexAll is gone
 class DefaultReindexMethodTests extends AbstractSearchableCompassTestCase {
     def compass
     def methodFactory
@@ -61,6 +61,9 @@ class DefaultReindexMethodTests extends AbstractSearchableCompassTestCase {
     }
 
     void tearDown() {
+        MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
+        metaClassRegistry.removeMetaClass(Post)
+        metaClassRegistry.removeMetaClass(Comment)
         compass.close()
         compass = null
         methodFactory = null

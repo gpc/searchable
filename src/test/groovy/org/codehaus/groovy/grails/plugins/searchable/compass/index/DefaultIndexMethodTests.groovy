@@ -46,6 +46,9 @@ class DefaultIndexMethodTests extends AbstractSearchableCompassTestCase {
     }
 
     void tearDown() {
+        MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
+        metaClassRegistry.removeMetaClass(Post)
+        metaClassRegistry.removeMetaClass(Comment) 
         compass.close()
         compass = null
     }
