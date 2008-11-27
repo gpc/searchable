@@ -41,30 +41,6 @@ public class LuceneUtils {
     public static final String SPECIAL_QUERY_CHARACTERS = "\\+-!():^[]\"{}~*?";
 
     /**
-     * Return the Lucene tokens for the given Analyzer and text.
-     * Note: copied directry from "lia.AnalyzerUtils" from the "Lucene in Action"
-     * book source code
-     *
-     * @param analyzer a Lucene Analyzer
-     * @param text the text
-     * @return Tokens
-     * @throws IOException
-     */
-    public static Token[] tokensFromAnalysis(Analyzer analyzer, String text) throws IOException {
-      TokenStream stream =
-          analyzer.tokenStream("contents", new StringReader(text));
-      ArrayList tokenList = new ArrayList();
-      while (true) {
-        Token token = stream.next();
-        if (token == null) break;
-
-        tokenList.add(token);
-      }
-
-      return (Token[]) tokenList.toArray(new Token[tokenList.size()]);
-    }
-
-    /**
      * Returns a list of terms by analysing the given text with Lucene's StandardAnalyzer
      *
      * @param text the text to analyse
@@ -102,14 +78,18 @@ public class LuceneUtils {
      * @return a list of text terms
      */
     public static String[] termsForText(String text, Analyzer analyzer) {
-        if (analyzer == null) {
-            analyzer = new StandardAnalyzer();
-        }
         try {
-            List terms = new ArrayList();
-            Token[] tokens = tokensFromAnalysis(analyzer, text);
-            for (int i = 0; i < tokens.length; i++) {
-                terms.add(new String(tokens[i].termBuffer(), 0, tokens[i].termLength()));
+            if (analyzer == null) {
+                analyzer = new StandardAnalyzer();
+            }
+            TokenStream stream = analyzer.tokenStream("contents", new StringReader(text));
+            ArrayList terms = new ArrayList();
+            Token token = new Token();
+            while (true) {
+                token = stream.next(token);
+                if (token == null) break;
+
+                terms.add(new String(token.termBuffer(), 0, token.termLength()));
             }
             return (String[]) terms.toArray(new String[terms.size()]);
         } catch (IOException ex) {
@@ -148,6 +128,7 @@ public class LuceneUtils {
      * @param queryString the query string to parse
      * @param analyzer the Analyzer instance, may be null in which case Lucene's StandardAnalyzer is used
      * @return a list of text terms
+     * @throws org.apache.lucene.queryParser.ParseException if the query is invalid
      */
     public static String[] termsForQueryString(String queryString, Analyzer analyzer) throws ParseException {
         if (analyzer == null) {
