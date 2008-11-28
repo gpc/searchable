@@ -98,7 +98,7 @@ class A {
         def propertyMapping = factory.getGrailsDomainClassPropertyMapping(gdc.getPropertyByName("map"), [gdc])
         assert propertyMapping
         assert propertyMapping.property
-        assert propertyMapping.attributes == [converter: 'stringmap', managedId: false]
+        assert propertyMapping.attributes == [converter: 'stringmap', managedIdConverter: 'stringmap']
     }
 
     // Complex (user) types become searchable references

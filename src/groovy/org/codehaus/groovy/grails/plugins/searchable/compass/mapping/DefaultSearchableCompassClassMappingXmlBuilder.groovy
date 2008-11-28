@@ -168,8 +168,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                             tmp.each { k, v ->
                                 if (META_DATA_ATTR_NAMES.contains(k)) {
                                     metaDataAttrs[k] = v
-                                }
-                                if (PROPERTY_ATTR_NAMES.contains(k)) {
+                                } else if (PROPERTY_ATTR_NAMES.contains(k)) {
                                     propAttrs[k] = v
                                 }
                             }
