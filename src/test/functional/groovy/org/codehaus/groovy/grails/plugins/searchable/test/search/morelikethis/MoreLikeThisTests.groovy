@@ -102,4 +102,24 @@ class MoreLikeThisTests extends SearchableFunctionalTestCase {
 
         // todo count
     }
+
+    void testMoreLikeThisInstanceMethod() {
+        def a, b
+        for (i in 0..10) {
+            a = new A(id: i as Long, value: "quack quack quack").index()
+            b = new B(id: i as Long, value: "quack quack quack").index()
+        }
+
+        // without options
+        def sr = a.moreLikeThis()
+        assertTrue sr.results.size() > 1
+        assertFalse sr.results.contains(a)
+        assertTrue sr.results*.class.unique() == [A]
+
+        // with options
+        sr = b.moreLikeThis(properties: ['value'], maxWordLen: 10)
+        assertTrue sr.results.size() > 1
+        assertFalse sr.results.contains(b)
+        assertTrue sr.results*.class.unique() == [B]
+    }
 }

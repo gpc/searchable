@@ -130,10 +130,22 @@ class DynamicDomainMethodUtils {
             // instance methods
 
             /**
-             * moreLikeThis: Returns more objects like this instance
+             * Find more objects like this instance
+             * @return a search result containing a subset of similar objects, if any
              */
-            grailsDomainClass.metaClass.moreLikeThis << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate.class, "moreLikeThis").invoke(([delegate] + args[0].toList()) as Object[])
+            grailsDomainClass.metaClass.moreLikeThis << { ->
+                searchableMethodFactory.getMethod(delegate.class, "moreLikeThis").invoke(delegate)
+            }
+
+            /**
+             * Returns more objects like this instance
+             * @param options a Map of options
+             * @return a search result for similar objects, if any;
+             * the exact <em>type</em> of search result can be controlled with the
+             * optional <code>result</code> option
+             */
+            grailsDomainClass.metaClass.moreLikeThis << { Map options ->
+                searchableMethodFactory.getMethod(delegate.class, "moreLikeThis").invoke(delegate, options)
             }
 
             /**

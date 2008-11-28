@@ -70,29 +70,6 @@ class ArtistTests extends GroovyTestCase {
         assert count == 2, count
     }
     
-    // note: requires term-vector on all property
-    void testMoreLikeThisInstanceMethod() {
-        def ep = Artist.findAll().find { it.name == 'Elvis Presley' }
-        println "id of elvis is [${ep.id}]"
-        def hits = ep.moreLikeThis(minResourceFreq: 1, minTermFreq: 1)
-        println hits
-//        assert hits.results.size() == 1, hits.results.size()
-//        assert hits.results[0].name == 'Elvis Costello'
-        assert hits.results.size() > 0, hits.results.size()
-    }
-
-    // note: requires term-vector on all property
-    void testMoreLikeThisStaticMethod() {
-        def ep = Artist.findAll().find { it.name == 'Elvis Presley' }
-        def hits = Artist.moreLikeThis(ep.id, minResourceFreq: 1, minTermFreq: 1)
-        println hits
-//        assert hits.results.size() == 1, hits.results.size()
-//        assert hits.results[0].name == 'Elvis Costello'
-        assert hits.results.size() > 0, hits.results.size()
-
-        // todo also count/every/top
-    }
-
     void testTermFreqs() {
         // sanity test: try out some argument combos: more tests elsewhere
         def result = Artist.termFreqs('name')
