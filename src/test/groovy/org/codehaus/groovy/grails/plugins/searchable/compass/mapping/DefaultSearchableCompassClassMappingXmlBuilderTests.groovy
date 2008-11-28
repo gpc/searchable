@@ -182,7 +182,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert doc.class."sub-index-hash".setting.isEmpty()
     }
 
-    void testBuildClassMappingXmlWithConstantMetatData() {
+    void testBuildClassMappingXmlWithConstantMetaData() {
         CompassClassMapping description
         InputStream is
         def mapping
@@ -581,6 +581,47 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert properties.size() == 1
         assert properties[0].@name == "post"
         assert properties[0].'meta-data'.@'spell-check' == "exclude"
+
+        /* multiple property mappings
+
+            value name: "value_un_tokenized", index: 'un_tokenized'
+            value name: "value"
+
+            <property name='value'>
+              <meta-data index='un_tokenized'>value_un_tokenized</meta-data>
+              <meta-data>value</meta-data>
+            </property>
+        */
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [name: 'post']))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [name: 'post_term', index: 'not_analyzed', store: 'no']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].'meta-data'.size() == 2
+        assert properties[0].'meta-data'[0] == "post"
+        assert properties[0].'meta-data'[1] == "post_term"
+        assert properties[0].'meta-data'[1].@'index' == "not_analyzed"
+        assert properties[0].'meta-data'[1].@'store' == "no"
+
+        // mixed property and meta-data attributes
+        description = new CompassClassMapping(mappedClass: Post, alias: "post")
+        description.addPropertyMapping(CompassClassPropertyMapping.getIdInstance("id"))
+        description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post", [managedIdConverter: 'a_converter', converter: 'a_converter']))
+        is = mappingXmlBuilder.buildClassMappingXml(description)
+        mapping = getXmlSlurper(is)
+        assert mapping.class.@name == Post.class.name
+        assert mapping.class.@alias == "post"
+        properties = mapping.class.property
+        assert properties.size() == 1
+        assert properties[0].@name == "post"
+        assert properties[0].@'managed-id-converter' == "a_converter"
+        assert properties[0].'meta-data'.@'converter' == "a_converter"
     }
 
     private getXmlSlurper(is) {

@@ -97,7 +97,7 @@ public class SearchableGrailsDomainClassPropertyMappingFactory {
         CompassClassPropertyMapping propertyMapping = CompassClassPropertyMapping.getPropertyInstance(propertyName);
         Map attributes = propertyMapping.getAttributes();
         attributes.put("converter", StringMapConverter.CONVERTER_NAME);
-        attributes.put("managedId", Boolean.FALSE);
+        attributes.put("managedIdConverter", StringMapConverter.CONVERTER_NAME);
         return propertyMapping;
     }
 
