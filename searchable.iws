@@ -196,51 +196,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ClosureSearchableGrailsDomainClassCompassClassMapper.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapper.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="58" selection-start="2981" selection-end="2989" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExcludeFromAllTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/excludefromall/ExcludeFromAllTests.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="37" column="68" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IndexTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/IndexTests.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="0" selection-start="1013" selection-end="1013" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SearchableFunctionalTestCase.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="133" column="0" selection-start="5411" selection-end="5411" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Analyzed.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/Analyzed.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="22" selection-start="805" selection-end="805" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Custom.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/Custom.groovy">
           <provider selected="true" editor-type-id="text-editor">
@@ -259,28 +214,73 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SearchSortOptionsTests.groovy" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="SearchSortOptionsTests.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/sort/SearchSortOptionsTests.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="0" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.204">
+            <state line="50" column="0" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ClosureSearchableGrailsDomainClassCompassClassMapperTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapperTests.groovy">
+      <file leaf-file-name="Analyzer.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file:///Users/maurice/lucene-2.4.0/src/java/org/apache/lucene/analysis/Analyzer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="200" column="135" selection-start="8992" selection-end="8992" vertical-scroll-proportion="0.0">
+            <state line="0" column="34" selection-start="8" selection-end="34" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NotAnalyzed.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/NotAnalyzed.groovy">
+      <file leaf-file-name="Searchable.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/conf/Searchable.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="6" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0">
+            <state line="116" column="0" selection-start="4864" selection-end="5034" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="resources.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/resources.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="6" column="28" selection-start="342" selection-end="342" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ValueConverter.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/ValueConverter.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="6" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DefaultSearchableCompassFactoryBean.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/spring/DefaultSearchableCompassFactoryBean.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="84" column="68" selection-start="4228" selection-end="4228" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Converter.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="jar://$PROJECT_DIR$/lib/compass-2.1.0-src.jar!/org/compass/core/converter/Converter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="0.11111111">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="resources.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/springbean/resources.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="5" column="0" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -997,55 +997,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablecomponent/B.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="75" selection-start="858" selection-end="858" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablecomponent/A.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="84" selection-start="867" selection-end="867" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablecomponent/SearchableComponentTests.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="0" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/constant/ConstantTests.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="17" selection-start="931" selection-end="931" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/constant/A.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="6" selection-start="740" selection-end="740" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/excludefromall/NoAnalyzed.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="0" selection-start="794" selection-end="794" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="133" column="0" selection-start="5411" selection-end="5411" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/NotAnalyzed.groovy">
       <provider selected="true" editor-type-id="text-editor">
         <state line="20" column="6" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0">
@@ -1104,7 +1055,56 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/sort/SearchSortOptionsTests.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="0" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.204">
+        <state line="50" column="0" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Users/maurice/lucene-2.4.0/src/java/org/apache/lucene/analysis/Analyzer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="34" selection-start="8" selection-end="34" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/conf/Searchable.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="116" column="0" selection-start="4864" selection-end="5034" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/springbean/resources.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="0" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/resources.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="28" selection-start="342" selection-end="342" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/ValueConverter.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="6" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/spring/DefaultSearchableCompassFactoryBean.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="84" column="68" selection-start="4228" selection-end="4228" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/compass-2.1.0-src.jar!/org/compass/core/converter/Converter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="0.11111111">
           <folding />
         </state>
       </provider>

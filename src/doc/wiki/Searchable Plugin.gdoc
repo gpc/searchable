@@ -26,34 +26,40 @@ h2. Features
 h2. Table of Contents
 
 # [Quick start|Searchable Plugin - Quick start] \ 
-# [Mapping|Searchable Plugin - Mapping] \ 
-## [Class Mapping|Searchable Plugin - Mapping - Class Mapping] \ 
-## [Class Property Mapping|Searchable Plugin - Mapping - Class Property Mapping] \ 
-## [Compass annotations|Searchable Plugin - Mapping - Compass annotations] \ 
-## [Compass XML|Searchable Plugin - Mapping - Compass XML] \ 
-## [Compass concepts|Searchable Plugin - Mapping - Compass concepts] \ 
-## [Conventions|Searchable Plugin - Mapping - Conventions] \ 
-## [Mapping DSL|Searchable Plugin - Mapping - Mapping DSL] \ 
-## [Not All Properties|Searchable Plugin - Mapping - Not All Properties] \ 
-## [Searchable Property|Searchable Plugin - Mapping - Searchable Property] \ 
 # [SearchableController and view|Searchable Plugin - SearchableController and view] \ 
 # [Searching|Searchable Plugin - Searching] \ 
+## [Query strings|Searchable Plugin - Searching - String Queries] \ 
 ## [Query Builder|Searchable Plugin - Searching - Query Builder] \ 
 ## [Sorting|Searchable Plugin - Searching - Sorting] \ 
+# [Mapping|Searchable Plugin - Mapping] \ 
+## [Not All Properties|Searchable Plugin - Mapping - Not All Properties] \ 
+## [Conventions|Searchable Plugin - Mapping - Conventions] \ 
+## [Compass concepts|Searchable Plugin - Mapping - Compass concepts] \ 
+## [Mapping DSL|Searchable Plugin - Mapping - Mapping DSL] \ 
+## [Class Property Mapping|Searchable Plugin - Mapping - Class Property Mapping] \ 
+## [Searchable Id|Searchable Plugin - Mapping - Searchable Id] \ 
+## [Searchable Property|Searchable Plugin - Mapping - Searchable Property] \ 
+## [Searchable Reference|Searchable Plugin - Mapping - Searchable Reference] \ 
+## [Searchable Component|Searchable Plugin - Mapping - Searchable Component] \ 
+## [Class Mapping|Searchable Plugin - Mapping - Class Mapping] \ 
+## [Compass annotations|Searchable Plugin - Mapping - Compass annotations] \ 
+## [Compass XML|Searchable Plugin - Mapping - Compass XML] \ 
 # [Managing the index|Searchable Plugin - Managing the index] \ 
 # [Configuration|Searchable Plugin - Configuration] \ 
+# [Analyzers|Searchable Plugin - Analyzers] \ 
+# [Converters|Searchable Plugin - Converters] \ 
 # [Debugging|Searchable Plugin - Debugging] \ 
 # [FAQ|Searchable Plugin - FAQ] \ 
 # Methods \ 
+## [search|Searchable Plugin - Methods - search] \ 
+## [countHits|Searchable Plugin - Methods - countHits] \ 
 ## [moreLikeThis|Searchable Plugin - Methods - moreLikeThis] \ 
+## [suggestQuery|Searchable Plugin - Methods - suggestQuery] \ 
+## [termFreqs|Searchable Plugin - Methods - termFreqs]
 ## [index|Searchable Plugin - Methods - index] \ 
 ## [unindex|Searchable Plugin - Methods - unindex] \ 
 ## [reindex|Searchable Plugin - Methods - reindex] \ 
 ## [rebuildSpellingSuggestions|Searchable Plugin - Methods - rebuildSpellingSuggestions] \ 
 ## [startMirroring|Searchable Plugin - Methods - startMirroring] \ 
 ## [stopMirroring|Searchable Plugin - Methods - stopMirroring] \ 
-## [search|Searchable Plugin - Methods - search] \ 
-## [countHits|Searchable Plugin - Methods - countHits] \ 
-## [suggestQuery|Searchable Plugin - Methods - suggestQuery] \ 
-## [termFreqs|Searchable Plugin - Methods - termFreqs]
 # [Releases|Searchable Plugin - Releases]

@@ -222,7 +222,7 @@ class Get {
         start = resp.indexOf('>', start) + 1
         def end = resp.indexOf('</textarea>')
         def text = resp.substring(start, end)
-        text.replaceAll('&quot;', '"')
+        text.replaceAll('&quot;', '"').replaceAll('&amp;', '&')
     }
 
     def getHash(String text) {

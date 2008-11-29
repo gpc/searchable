@@ -71,18 +71,21 @@ class Put {
         if (exists) {
             def resp = getPageResponse(client, pageName)
             version = findMessageWithin(resp, '<input type="hidden" name="version" value="', '" />')
-            hash = getHash(getPageText(resp))
+            def pageText = getPageText(resp, pageName)
+            hash = getHash(pageText)
         }
 
         // is it different?
         def doUpload = true
         if (exists) {
-            doUpload = hash != getHash(text)
+            def newHash = getHash(text)
+            doUpload = hash != newHash
+//            println "${hash}\n${newHash}\n$doUpload"
         }
         if (!doUpload) {
             return
         }
-        println "Checking \"${pageName}\" (at ${server + "/save/" + URLEncoder.encode(pageName)})"
+//        println "Uploading \"${pageName}\" (at ${server + "/save/" + URLEncoder.encode(pageName)})"
         def post = classLoader.loadClass('org.apache.http.client.methods.HttpPost').newInstance(server + "/save/" + URLEncoder.encode(pageName))
         post.setEntity(classLoader.loadClass('org.apache.http.entity.StringEntity').newInstance("version=${version}&title=${URLEncoder.encode(pageName)}&body=${URLEncoder.encode(text)}" as String))
         post.setHeader('Content-Type', 'application/x-www-form-urlencoded')
@@ -100,7 +103,8 @@ class Put {
     def pageExists(client, pageName) {
         def get = classLoader.loadClass('org.apache.http.client.methods.HttpGet').newInstance(server + "/" + URLEncoder.encode(pageName))
         def resp = responseToText(client.execute(get))
-        !resp.contains("NOT_FOUND")
+        //println resp
+        !resp.contains("NOT_FOUND") && !resp.contains("HTTP Status 404")
     }
 
     def getPageResponse(client, pageName) {
@@ -141,11 +145,11 @@ class Put {
         os.toString()
     }
 
-    def getPageText(String resp) {
+    def getPageText(String resp, String pageName) {
         def start = resp.indexOf('<textarea ')
         if (start == -1) {
             println "No wiki content found on page ${pageName}"
-            return
+            return null
         }
         start = resp.indexOf('>', start) + 1
         def end = resp.indexOf('</textarea>')

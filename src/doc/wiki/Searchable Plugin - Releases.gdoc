@@ -1,5 +1,13 @@
 h1. Releases
 
+h2. 0.5.1
+
+This release fixes some bugs and includes new features. It is a recommended upgrade for all users.
+
+It has been tested with Grails 1.0.3, 1.0.4 and 1.1-beta1.
+
+JIRA release notes are [here|http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=11450&styleName=Html&version=14751]
+
 h2. 0.5
 
 This release includes several bug fixes, adds few new search

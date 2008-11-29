@@ -36,7 +36,7 @@ def searchResult = Song.search("summer winds", withHighlighter: songHighlighter)
 
 assert searchResult.highlights
 assert searchResult.highlights.size() == searchResult.results.size()
-assert (searchResult.highlights[0].indexOf("&lt;b&gt;summer&lt;/b&gt;") &gt; -1 &amp;&amp; 
+assert (searchResult.highlights[0].indexOf("&lt;b&gt;summer&lt;/b&gt;") &gt; -1 && 
         searchResult.highlights[0].indexOf("&lt;b&gt;winds&lt;/b&gt;") &gt; -1)
 {code}
 

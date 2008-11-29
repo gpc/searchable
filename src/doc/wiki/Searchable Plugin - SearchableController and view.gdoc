@@ -62,7 +62,7 @@ Here it is in action in the Searchable Plugin's own search results page, @grails
     &lt;/g:if&gt;
     &lt;g:else&gt;
         &lt;g:paginate controller="searchable" action="index" params="[q: params.q]" 
-                    total="${searchResult.total}" prev="&amp;lt; previous" next="next &amp;gt;"/&gt;
+                    total="${searchResult.total}" prev="&lt; previous" next="next &gt;"/&gt;
     &lt;/g:else&gt;
 &lt;/g:if&gt;
 {code}

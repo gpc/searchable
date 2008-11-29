@@ -29,6 +29,10 @@ With this file you can configure such things as
 
 See the docs in the [config file itself|https://svn.codehaus.org/grails-plugins/grails-searchable/trunk/src/conf/Searchable.groovy] for more.
 
+h2. Spring beans
+
+Since 0.5.1, custom [analyzers|Searchable Plugin - Analyzers] and [converters|Searchable Plugin - Converters] can be defoned as Spring beans.
+
 h2. Native Compass XML config
 
 Since 0.4 the plugin also looks for a native Compass XML configuration file at the root of the classpath called *@compass.cfg.xml@*. If this file is present, Compass is configured with the settings defined in it, in addition to any that may be defined by the plugin's own *@Searchable.groovy@*.
