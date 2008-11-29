@@ -318,10 +318,19 @@
       <grails dir="@{app.dir}" arg1="test-app" using-java-home="@{using.java.home}"/>
 
       <!-- Install web test plugin -->
-      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" arg3="0.4" using-java-home="@{using.java.home}"/>
+      <condition property="webtest.version" value="0.4">
+        <equals arg1="${target.vm}" arg2="1.4" />
+      </condition>
+      <property name="webtest.version" value=""/>
+      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" arg3="${webtest.version}" using-java-home="@{using.java.home}"/>
 
       <!-- Web test -->
+      <condition property="webtest.result.file" value="WebTestResults.xml">
+        <equals arg1="${webtest.version}" arg2="0.4"/>
+      </condition>
+      <property name="webtest.result.file" value="WebTestOverview.xml" /> <!-- 0.5.1 -->
       <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_port                = 8080" value="webtest_port=${grails.server.port}" />
+      <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_resultfile          = WebTestResults.xml" value="webtest_resultfile          = ${webtest.result.file}" />
       <grails dir="@{app.dir}" arg1="run-webtest" using-java-home="@{using.java.home}"/>
     </sequential>
   </macrodef>
