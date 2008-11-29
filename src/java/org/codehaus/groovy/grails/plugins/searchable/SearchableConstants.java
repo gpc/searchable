@@ -21,5 +21,5 @@ package org.codehaus.groovy.grails.plugins.searchable;
 public class SearchableConstants {
 
     /** The current searchable plugin version */
-    public static final String SEARCHABLE_PLUGIN_VERSION = "0.6-SNAPSHOT";
+    public static final String SEARCHABLE_PLUGIN_VERSION = "0.5.1";
 }
