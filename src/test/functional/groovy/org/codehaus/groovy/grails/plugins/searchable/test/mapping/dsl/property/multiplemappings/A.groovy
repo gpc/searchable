@@ -21,7 +21,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.
 class A {
     static searchable = {
         // the same searchable property is mappable with different named meta-datas
-        value name: "value_un_tokenized", index: 'un_tokenized'
+        value name: "value_not_analyzed", index: 'not_analyzed'
         value name: "value"
     }
     Long id, version

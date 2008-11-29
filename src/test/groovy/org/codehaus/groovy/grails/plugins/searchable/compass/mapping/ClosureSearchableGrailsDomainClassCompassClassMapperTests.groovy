@@ -186,19 +186,19 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
     void testGetCompassClassMappingForSearchableProperty() {
         // searchable property options
         def mapping = getClassMapping(Comment, [Comment, User, Post], {
-            comment(index: 'tokenized', termVector: 'yes', boost: 2.0f)
+            comment(index: 'analyzed', termVector: 'yes', boost: 2.0f)
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'tokenized', termVector: 'yes', boost: 2.0f] }
+        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'analyzed', termVector: 'yes', boost: 2.0f] }
 
         // same as above but with BigDecimal instead of float
         mapping = getClassMapping(Comment, [Comment, User, Post], {
-            comment(index: 'tokenized', termVector: 'yes', boost: 2.0) // <!-- BigDecimal
+            comment(index: 'analyzed', termVector: 'yes', boost: 2.0) // <!-- BigDecimal
         })
         assert mapping.mappedClass == Comment
         assert mapping.root == true
-        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'tokenized', termVector: 'yes', boost: 2.0] }
+        assert mapping.propertyMappings.find { it.propertyName == 'comment' }.every { it.property && it.attributes == [index: 'analyzed', termVector: 'yes', boost: 2.0] }
 
         // converter and propertyConverter are equivalent
         mapping = getClassMapping(Comment, [Comment, User, Post], {
@@ -369,7 +369,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         // constant
         cm = getClassMapping(User, [Comment, User, Post], {
             constant name: "drink", value: "beer"
-            constant name: "eat", values: ["pie", "chips"], index: 'un_tokenized', excludeFromAll: true
+            constant name: "eat", values: ["pie", "chips"], index: 'not_analyzed', excludeFromAll: true
         })
         assert cm.mappedClass == User
         assert cm.root == true
@@ -377,7 +377,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         def cmd = cm.constantMetaData.find {it.name == "drink"}
         assert cmd.values == ["beer"] && cmd.attributes == [:]
         cmd = cm.constantMetaData.find { it.name == "eat" }
-        assert cmd.values == ["pie", "chips"] && cmd.attributes == [index: 'un_tokenized', excludeFromAll: true]
+        assert cmd.values == ["pie", "chips"] && cmd.attributes == [index: 'not_analyzed', excludeFromAll: true]
 
         // analyzer
         cm = getClassMapping(User, [Comment, User, Post], {
@@ -689,11 +689,11 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
 
             // SearchableChildTwo inherits Parent's "commonProperty(boost: 1.5)"
             SearchableChildTwo.searchable = {
-                childTwoProperty(index: 'un_tokenized')
+                childTwoProperty(index: 'not_analyzed')
             }
             mapping = getClassMapping(SearchableChildTwo, [Parent, SearchableChildOne, SearchableChildTwo, SearchableGrandChild])
             assert mapping.getPropertyMappings().find { it.propertyName == 'commonProperty' }.every { it.property && it.attributes == [boost: 1.5] }
-            assert mapping.getPropertyMappings().find { it.propertyName == 'childTwoProperty' }.every { it.property && it.attributes == [index: 'un_tokenized'] }
+            assert mapping.getPropertyMappings().find { it.propertyName == 'childTwoProperty' }.every { it.property && it.attributes == [index: 'not_analyzed'] }
 
             // SearchbaleChildTwo overrides parent def, other properties are mapped with defaults
             SearchableChildTwo.searchable = {

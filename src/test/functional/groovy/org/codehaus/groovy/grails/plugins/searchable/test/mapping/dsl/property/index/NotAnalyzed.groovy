@@ -18,9 +18,9 @@ package org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.
 /**
  * @author Maurice Nicholson
  */
-class Tokenized {
+class NotAnalyzed {
     static searchable = {
-        value index: 'tokenized'
+        value index: 'not_analyzed'
     }
     Long id, version
     String value

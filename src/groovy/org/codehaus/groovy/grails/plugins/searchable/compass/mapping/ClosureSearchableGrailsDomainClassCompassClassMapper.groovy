@@ -34,6 +34,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     static final Log log = LogFactory.getLog(ClosureSearchableGrailsDomainClassCompassClassMapper);
     static final SEARCHABLE_ID_OPTIONS = ['accessor', 'converter', 'name']
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'name', 'nullValue', 'propertyConverter', 'reverse', 'store', 'spellCheck', 'termVector']
+    static final SEARCHABLE_CONSTANT_OPTIONS = ['analyzer', 'boost', 'excludeFromAll', 'index', 'spellCheck', 'store', 'termVector', 'converter']
     static final SEARCHABLE_REFERENCE_OPTIONS = ['accessor', 'cascade', 'converter', 'lazy', 'refAlias', 'refComponentAlias']
     static final SEARCHABLE_COMPONENT_OPTIONS = ['accessor', 'cascade', 'converter', 'maxDepth', 'override', 'prefix', 'refAlias']
     static final SEARCHABLE_REFERENCE_MAPPING_OPTIONS = SEARCHABLE_REFERENCE_OPTIONS + ["reference", "component"]
@@ -43,6 +44,10 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     static final SEARCHABLE_PROPERTY_OPTION_ALIASES = [propertyConverter: 'converter']
 
     static final CLASS_MAPPING_OPTIONS = ['all', 'allName', 'allAnalyzer', 'allTermVector', 'alias', 'analyzer', 'boost', 'converter', 'enableAll', 'managedId', 'root', 'spellCheck', 'subIndex', 'supportUnmarshall']
+
+    static final COMMON_DEPRECATED_OPTION_VALUES = [index: [
+        un_tokenized: 'not_analyzed', tokenized: 'analyzed'
+    ]]
 
     GrailsDomainClass grailsDomainClass;
     Class mappedClass;
@@ -144,8 +149,14 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                 throw new IllegalArgumentException("'${mappedClass.getName()}.${property.name}' declares an '${name}': there should be just one argument following '${name}', but the arguments were ${args}")
             }
             def cmd = args[0]
+            // TODO old code alert - can probably be removed for 0.6
             if (!cmd.name || !(cmd.value || cmd.values)) {
-                log.WARN("${mappedClass.name}#searchable defines a constant but this feature has been reimplented! You probably need to change the syntax from \"foo: 'bar'\" to \"name: 'foo', value: 'bar'\". Ignoring this constant for now since it doesn't provide 'name' + 'value(s)' attributes. See http://grails.org/Searchable+Plugin+-+Mapping#SearchablePlugin-Mapping-constant for details")
+                String message = "[${mappedClass.name}#searchable] defines a constant but this feature has been reimplented! "+
+                    "You probably need to change the syntax from \"foo: 'bar'\" to \"name: 'foo', value: 'bar'\". " +
+                    "Ignoring this constant for now since it doesn't provide 'name' + 'value(s)' attributes. " +
+                    "See http://grails.org/Searchable+Plugin+-+Mapping+-+constant for details"
+                System.out.println(message)
+                LOG.warn(message)
                 return
             }
             def values = cmd.value ? cmd.value : cmd.values
@@ -156,6 +167,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             attributes.remove("name")
             attributes.remove("values")
             attributes.remove("value")
+            validateOptions(name, "Searchable Constant", SEARCHABLE_CONSTANT_OPTIONS, attributes)
             constantMetadatas << [name: cmd.name, attributes: attributes, values: values]
             return
         }
@@ -181,10 +193,21 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         }
 
         def property = grailsDomainClass.getProperties().find { it.name == name }
-        if (!property) throw new IllegalArgumentException("Unable to find property '${name}' used in '${mappedClass.getName()}#searchable'. The names of method invocations in the closure must match class properties (like GORM's 'constraints' closure)")
+        if (!property) {
+            throw new IllegalArgumentException(
+                "Unable to find property [${name}] used in [${mappedClass.getName()}#searchable]. " +
+                "The names of method invocations in the closure must match class properties (like GORM's 'constraints' closure)"
+            )
+        }
 
         if (!mappableProperties.any { it == property }) {
-            throw new IllegalArgumentException("Unable to map '${mappedClass.getName()}.${property.name}'. It does not appear to a suitable 'searchable property' (normally simple types like Strings, Dates, Numbers, etc), 'searchable reference' (normally another domain class) or 'searchable component' (normally another domain class defined as a component, using the 'embedded' declaration). Is it a derived property (a getter method with no equivalent field) defined with 'def'? Try defining it with a more specific return type")
+            throw new IllegalArgumentException(
+                "Unable to map [${mappedClass.getName()}.${property.name}]. " +
+                "It does not appear to a suitable 'searchable property' (normally simple types like Strings, Dates, Numbers, etc), " +
+                "'searchable reference' (normally another domain class) or " +
+                "'searchable component' (normally another domain class defined as a component, using the 'embedded' declaration). " +
+                "Is it a derived property (a getter method with no equivalent field) defined with 'def'? Try defining it with a more specific return type"
+            )
         }
 
         // Get default mapping
@@ -194,12 +217,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         // validate args
         args = args ? args[0] : [:]
         if (defaultMapping.property) {
-            def invalidOptions = args.keySet() - SEARCHABLE_PROPERTY_OPTIONS 
-            if (invalidOptions) {
-                throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}#searchable' for property '${name}'. " +
-                    "'${mappedClass.getName()}.${name}' is assumed to be a 'searchable property', meaning you can only define the options allowed " +
-                    "for searchable properties. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for searchable properties are [${SEARCHABLE_PROPERTY_OPTIONS.join(', ')}]")
-            }
+            validateOptions(name, "Searchable Property", SEARCHABLE_PROPERTY_OPTIONS, args, false)
             SEARCHABLE_PROPERTY_OPTION_ALIASES.each { k, v ->
                 if (args.containsKey(k)) {
                     args[v] = args[k]
@@ -209,12 +227,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             mappedProperties << CompassClassPropertyMapping.getPropertyInstance(name, args)
             return
         } else if (defaultMapping.id) {
-            def invalidOptions = args.keySet() - SEARCHABLE_ID_OPTIONS
-            if (invalidOptions) {
-                throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}#searchable' for property '${name}'. " +
-                    "'${mappedClass.getName()}.${name}' is assumed to be a 'searchable id', meaning you can only define the options allowed " +
-                    "for searchable ids. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for searchable properties are [${SEARCHABLE_ID_OPTIONS.join(', ')}]")
-            }
+            validateOptions(name, "Searchable Id", SEARCHABLE_ID_OPTIONS, args, false)
             SEARCHABLE_ID_OPTION_ALIASES.each { k, v ->
                 if (args.containsKey(k)) {
                     args[v] = args[k]
@@ -317,22 +330,43 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         }
 
         if (component) {
-            invalidOptions = componentOptions.keySet() - SEARCHABLE_COMPONENT_OPTIONS
-            if (invalidOptions) {
-                throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}#searchable' for property '${name}'. " +
-                    "'${mappedClass.getName()}.${name}' is ${implicitComponent ? 'implicitly' : 'defined to be'} a 'searchable component', meaning you can only define the options allowed " +
-                    "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_COMPONENT_OPTIONS.join(', ')}]")
-            }
+            validateOptions(name, "Searchable Component", SEARCHABLE_COMPONENT_OPTIONS, componentOptions, implicitComponent)
             mappedProperties << CompassClassPropertyMapping.getComponentInstance(name, defaultMapping.propertyType, componentOptions)
         }
         if (reference) {
-            invalidOptions = referenceOptions.keySet() - SEARCHABLE_REFERENCE_OPTIONS
-            if (invalidOptions) {
-                throw new IllegalArgumentException("One or more invalid options were defined in '${mappedClass.getName()}#searchable' for property '${name}'. " +
-                    "'${mappedClass.getName()}.${name}' is ${implicitReference ? 'implicitly' : 'declared to be'} a 'searchable reference', meaning you can only define the options allowed " +
-                    "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. Supported options for 'searchable properties' are [${SEARCHABLE_REFERENCE_OPTIONS.join(', ')}]")
-            }
+            validateOptions(name, "Searchable Reference", SEARCHABLE_REFERENCE_OPTIONS, referenceOptions, implicitReference)
             mappedProperties << CompassClassPropertyMapping.getReferenceInstance(name, defaultMapping.propertyType, referenceOptions)
+        }
+    }
+
+    /**
+     * Validate the options for a searchable-xxx mapping type
+     */
+    def validateOptions(String propertyName, String type, Collection validOptionNames, Map options, boolean implicit = false) {
+        // check option names
+        def invalidOptions = options.keySet() - validOptionNames
+        if (invalidOptions) {
+            throw new IllegalArgumentException(
+                "One or more invalid options were defined in '${mappedClass.getName()}#searchable' for property '${propertyName}'. " +
+                "'${mappedClass.getName()}.${propertyName}' is ${implicit ? 'implicitly' : ''} a [${type}], meaning you can only define the options allowed " +
+                "for searchable references. The invalid options are: [${invalidOptions.join(', ')}]. " +
+                "Supported options for [${type}] are [${validOptionNames.join(', ')}]"
+            )
+        }
+
+        // warn about deprecated option values
+        for (optionName in COMMON_DEPRECATED_OPTION_VALUES.keySet()) {
+            if (options.containsKey(optionName)) {
+                def deprecation = COMMON_DEPRECATED_OPTION_VALUES[optionName]
+                Object optionValue = options[optionName]
+                if (deprecation.containsKey(optionValue)) {
+                    String message = "The Searchable Plugin Mapping option [${optionName}] used in " +
+                        "[${mappedClass.getName()}#searchable] for property [${propertyName}] has a deprecated value [${optionValue}]. " +
+                        "Please use [${deprecation[optionValue]}] instead."
+                    log.warn(message)
+                    System.out.println("WARN: " + message)
+                }
+            }
         }
     }
 

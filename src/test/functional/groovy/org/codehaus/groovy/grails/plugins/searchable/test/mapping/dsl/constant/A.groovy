@@ -21,7 +21,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.constant
 class A {
     static searchable = {
         constant name: "my_constant", value: "My Constant Value"
-        constant name: "other_constant", values: ["OTHER 1", "other 2"], index: 'un_tokenized', excludeFromAll: true
+        constant name: "other_constant", values: ["OTHER 1", "other 2"], index: 'not_analyzed', excludeFromAll: true
     }
     Long id, version
     String value

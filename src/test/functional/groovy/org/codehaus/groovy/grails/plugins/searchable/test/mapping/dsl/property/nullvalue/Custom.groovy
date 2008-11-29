@@ -20,7 +20,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.
  */
 class Custom {
     static searchable = {
-        value nullValue: "IS_NULL" // will be tokenized (see above) so do not rely on case
+        value nullValue: "IS_NULL" // will be analyzed (see above) so do not rely on case
     }
     Long id, version
     String value

@@ -13,7 +13,7 @@
       <meta-data boost='1.5'>name</meta-data>
     </property>
     <property name='genre'>
-      <meta-data index='un_tokenized'>genre</meta-data>
+      <meta-data index='not_analyzed'>genre</meta-data>
     </property>
     <!--<reference ref-alias='composer' name='artist' />-->
     <component ref-alias='composer' name='artist' />

@@ -34,8 +34,8 @@ class ExcludeFromAllTests extends SearchableFunctionalTestCase {
 
     void testExcludeFromAllNoAnalyzed() {
         new NoAnalyzed(id: 1l, value: "exclude from all").index()
-        assert NoAnalyzed.searchTop("exclude") // tokenized in all
-        assert NoAnalyzed.searchTop("value:exclude") == null // NOT tokenized for property
+        assert NoAnalyzed.searchTop("exclude") // analyzed in all
+        assert NoAnalyzed.searchTop("value:exclude") == null // NOT analyzed for property
         assert NoAnalyzed.searchTop {
             term("value", "exclude from all")
         }

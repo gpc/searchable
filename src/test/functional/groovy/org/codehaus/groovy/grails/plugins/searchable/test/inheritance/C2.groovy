@@ -21,7 +21,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test.inheritance;
 class C2 extends P {
     // Note defines custom searchable mapping
     static searchable = {
-        childTwoProperty(index: 'un_tokenized')
+        childTwoProperty(index: 'not_analyzed')
     }
 
     String childTwoProperty

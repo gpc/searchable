@@ -40,9 +40,9 @@ class NullValueTests extends SearchableFunctionalTestCase {
 
     void testCustom() {
         new Custom(id: 1l).index()
-        assert Custom.searchTop("is_null") // note null value is tokenized!
-        assert Custom.searchTop("IS_NULL") // uppercase search only works because query is tokenized too
-        assert null == Custom.searchTop { // searching for the un-tokenized term returns nothing!
+        assert Custom.searchTop("is_null") // note null value is analyzed!
+        assert Custom.searchTop("IS_NULL") // uppercase search only works because query is analyzed too
+        assert null == Custom.searchTop { // searching for the not-analyzed term returns nothing!
             term("value", "IS_NULL")
         }
     }

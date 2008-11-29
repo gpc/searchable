@@ -20,7 +20,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.
  */
 class NoAnalyzed {
     static searchable = {
-        value excludeFromAll: 'no_analyzed', index: 'un_tokenized'
+        value excludeFromAll: 'no_analyzed', index: 'not_analyzed'
     }
     Long id, version
     String value

@@ -119,7 +119,7 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         }
         if (GrailsDomainClassUtils.isWithinInhertitanceHierarchy(grailsDomainClass, searchableGrailsDomainClasses)) {
             classMapping.addConstantMetaData("$/poly/class", new HashMap() {{
-                put("index", "un_tokenized");
+                put("index", "not_analyzed");
                 put("excludeFromAll", Boolean.TRUE);
             }}, Arrays.asList(new String [] {grailsDomainClass.getClazz().getName()}));
         }

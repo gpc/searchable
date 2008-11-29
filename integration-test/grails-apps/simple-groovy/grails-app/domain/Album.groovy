@@ -6,7 +6,7 @@ class Album {
         version: index: 'no'
         artist component: true
         name boost: 1.5
-        genre index: 'un_tokenized'
+        genre index: 'not_analyzed'
     }
     static belongsTo = Artist
     Artist artist

@@ -24,7 +24,7 @@ class IndexTests extends SearchableFunctionalTestCase {
     def searchableService
 
     public getDomainClasses() {
-        return [No, Tokenized, UnTokenized]
+        return [No, Analyzed, NotAnalyzed]
     }
 
     void testNo() {
@@ -32,16 +32,16 @@ class IndexTests extends SearchableFunctionalTestCase {
         assert searchableService.searchTop("value") == null
     }
 
-    void testTokenized() {
-        new Tokenized(id: 1l, value: "this is the value").index()
+    void testAnalyzed() {
+        new Analyzed(id: 1l, value: "this is the value").index()
         assert searchableService.searchTop("value")
     }
 
-    void testUnTokenized() {
-        new UnTokenized(id: 1l, value: "this is the value").index()
+    void testNotAnalyzed() {
+        new NotAnalyzed(id: 1l, value: "this is the value").index()
         assert searchableService.searchTop("value") == null
         assert searchableService.searchTop {
-            term('value', "this is the value") // when index = un_tokenized, the value(s) are stored verbatim as a single term
+            term('value', "this is the value") // when index = not_analyzed, the value(s) are stored verbatim as a single term
         }
     }
 }

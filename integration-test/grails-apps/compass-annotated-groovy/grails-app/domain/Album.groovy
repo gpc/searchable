@@ -19,7 +19,7 @@ class Album {
     @SearchableProperty(boost = 1.5f)
     String name
 
-    @SearchableProperty(index = Index.UN_TOKENIZED)
+    @SearchableProperty(index = Index.NOT_ANALYZED)
     String genre
 
     /**

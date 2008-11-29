@@ -31,7 +31,7 @@ class MultipleMappingsTests extends SearchableFunctionalTestCase {
         new A(id: 1l, value: "The VALUE").index()
         assert A.search("value:value", result: 'top')
         assert A.search(result: 'top') {
-            term("value_un_tokenized", "The VALUE")
+            term("value_not_analyzed", "The VALUE")
         }
     }
 }

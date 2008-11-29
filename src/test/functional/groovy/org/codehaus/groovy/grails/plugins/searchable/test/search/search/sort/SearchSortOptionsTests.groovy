@@ -49,6 +49,8 @@ class SearchSortOptionsTests extends SearchableFunctionalTestCase {
 
         /*
         the following throws a Lucene error - why!?
+        answer - because you can't sort on analyzed fields or fields with more than one token
+        solution is to create an additional mapping for the property with the not-analyzed value
 
 java.lang.RuntimeException: there are more terms than documents in field "body", but it's impossible to sort on tokenized fields
 	at org.apache.lucene.search.FieldCacheImpl$10.createValue(FieldCacheImpl.java:379)

@@ -231,7 +231,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         description.addPropertyMapping(CompassClassPropertyMapping.getPropertyInstance("post")) // not essentially important here
         description.addConstantMetaData('singleval', [:], ['value'])
         description.addConstantMetaData('multivalue', [:], ['valueone', 'valuetwo'])
-        description.addConstantMetaData('withattrs', [index: 'un_tokenized', termVector: true], ['value'])
+        description.addConstantMetaData('withattrs', [index: 'not_analyzed', termVector: true], ['value'])
         is = mappingXmlBuilder.buildClassMappingXml(description)
         /*
 <?xml version="1.0"?>
@@ -251,7 +251,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
       <meta-data-value>valuetwo</meta-data-value>
     </constant>
     <constant>
-      <meta-data index='un_tokenized' term-vector='true'>withattrs</meta-data>
+      <meta-data index='not_analyzed' term-vector='true'>withattrs</meta-data>
       <meta-data-value>value</meta-data-value>
     </constant>
     <property name='post'>
@@ -274,7 +274,7 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
         assert constants[1].'meta-data' == 'multivalue'
         assert constants[1].'meta-data-value'[0] == 'valueone'
         assert constants[1].'meta-data-value'[1] == 'valuetwo'
-        assert constants[2].'meta-data'.@index == 'un_tokenized'
+        assert constants[2].'meta-data'.@index == 'not_analyzed'
         assert constants[2].'meta-data'.@'term-vector' == 'true'
         assert constants[2].'meta-data' == 'withattrs'
         assert constants[2].'meta-data-value' == 'value'
@@ -584,11 +584,11 @@ class DefaultSearchableCompassClassMappingXmlBuilderTests extends GroovyTestCase
 
         /* multiple property mappings
 
-            value name: "value_un_tokenized", index: 'un_tokenized'
+            value name: "value_not_analyzed", index: 'not_analyzed'
             value name: "value"
 
             <property name='value'>
-              <meta-data index='un_tokenized'>value_un_tokenized</meta-data>
+              <meta-data index='not_analyzed'>value_not_analyzed</meta-data>
               <meta-data>value</meta-data>
             </property>
         */

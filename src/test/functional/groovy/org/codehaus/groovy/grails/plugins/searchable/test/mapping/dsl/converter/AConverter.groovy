@@ -33,7 +33,7 @@ class AConverter extends ClassMappingConverter {
         boolean store = super.marshall(resource, root, mapping, context);
 
         resource.addProperty(
-            new LuceneProperty(new Field("converted_by", "a_converter", Store.YES, Index.UN_TOKENIZED))
+            new LuceneProperty(new Field("converted_by", "a_converter", Store.YES, Index.NOT_ANALYZED))
         )
         return store;
     }
