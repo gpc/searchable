@@ -1,7 +1,12 @@
-<plugin name='searchable' version='0.5.1'>
+<plugin name='searchable' version='0.5.1' grailsVersion='1.1-SNAPSHOT'>
   <author>Maurice Nicholson</author>
   <authorEmail>maurice@freeshell.org</authorEmail>
   <title>Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+</title>
+  <description>
+Adds rich search functionality to Grails domain models.
+Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apache.org/)
+This version is recommended for JDK 1.5+
+</description>
   <documentation>http://grails.org/Searchable+Plugin</documentation>
   <resources>
     <resource>SearchableUrlMappings</resource>
@@ -9,10 +14,10 @@
     <resource>SearchableService</resource>
   </resources>
   <dependencies>
-    <plugin name='dataSource' version='1.1-beta1' />
-    <plugin name='domainClass' version='1.1-beta1' />
-    <plugin name='i18n' version='1.1-beta1' />
-    <plugin name='core' version='1.1-beta1' />
-    <plugin name='hibernate' version='1.1-beta1' />
+    <plugin name='dataSource' version='1.0 &gt; *' />
+    <plugin name='domainClass' version='1.0 &gt; *' />
+    <plugin name='i18n' version='1.0 &gt; *' />
+    <plugin name='core' version='1.0 &gt; *' />
+    <plugin name='hibernate' version='1.0 &gt; *' />
   </dependencies>
 </plugin>

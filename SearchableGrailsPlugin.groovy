@@ -48,11 +48,11 @@ This version is recommended for JDK 1.5+
     def documentation = 'http://grails.org/Searchable+Plugin'
 
     def grailsVersion = GrailsPluginUtils.grailsVersion
-    def dependsOn = [dataSource: grailsVersion,
-                     domainClass: grailsVersion,
-                     i18n: grailsVersion,
-                     core:  grailsVersion,
-                     hibernate: grailsVersion]
+    def dependsOn = [dataSource: "1.0 > *",
+                     domainClass: "1.0 > *",
+                     i18n: "1.0 > *",
+                     core:  "1.0 > *",
+                     hibernate: "1.0 > *"]
 //	def watchedResources = "file:./grails-app/doai/*Codec.groovy"
     def config
 
