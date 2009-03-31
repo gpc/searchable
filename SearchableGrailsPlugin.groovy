@@ -47,7 +47,7 @@ This version is recommended for JDK 1.5+
 '''
     def documentation = 'http://grails.org/Searchable+Plugin'
 
-    def grailsVersion = GrailsPluginUtils.grailsVersion
+    def grailsVersion = "1.0 > *"
     def dependsOn = [dataSource: "1.0 > *",
                      domainClass: "1.0 > *",
                      i18n: "1.0 > *",
