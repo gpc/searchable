@@ -33,7 +33,7 @@ public class SearchableHitsOnlySearchResultFactory implements SearchableSearchRe
      * @param options
      * @return search result
      */
-    public Object buildSearchResult(CompassHits hits, Object collectedHits, Map options) {
+    public Object buildSearchResult(CompassHits hits, Object collectedHits, Object collectedCompassHits, Map options) {
         return collectedHits;
     }
 }

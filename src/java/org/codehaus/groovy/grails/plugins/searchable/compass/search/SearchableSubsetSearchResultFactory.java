@@ -29,11 +29,17 @@ import java.util.Map;
  *
  * NOT thread-safe
  * 
- * @author Maurice Nicholson
+ * @author Maurice Nicholson  PCR edit
+ * 
+ * added the collected compasshits
  */
 public class SearchableSubsetSearchResultFactory implements SearchableSearchResultFactory {
 
-    public Object buildSearchResult(final CompassHits hits, final Object collectedHits, Map options) {
+	/*
+	 * collectedHits are NOT objects of type compassHits, they are the businessobjects that are returned from compassHit.getValue()
+	 * The collectedCompassHits are the the compassHit equivalent of the collectedHits
+	 */
+    public Object buildSearchResult(final CompassHits hits, final Object collectedHits,final Object collectedCompassHits, Map options) {
         final int offset = MapUtils.getIntValue(options, "offset");
         final int max = MapUtils.getIntValue(options, "max");
         final List scores = new ArrayList(max);
@@ -44,8 +50,13 @@ public class SearchableSubsetSearchResultFactory implements SearchableSearchResu
             put("offset", new Integer(offset));
             put("max", new Integer(max));
             put("results", collectedHits);
+            
             put("scores", scores);
             put("total", new Integer(hits.length()));
+            //need to return the compass hits also!
+            put("hits", collectedCompassHits);
+            
+            
         }};
     }
 }

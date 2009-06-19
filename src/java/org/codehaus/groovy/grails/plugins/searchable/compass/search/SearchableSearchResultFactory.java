@@ -17,7 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import org.compass.core.CompassHits;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Maurice Nicholson
@@ -31,5 +31,6 @@ public interface SearchableSearchResultFactory {
      * @param options
      * @return search result
      */
-    Object buildSearchResult(CompassHits hits, Object collectedHits, Map options);
+    Object buildSearchResult(CompassHits hits, Object collectedHits,Object collectedCompassHits, Map options);
 }
+

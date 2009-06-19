@@ -27,9 +27,10 @@ import java.util.Map;
  */
 public abstract class AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
     private SearchableCompassQueryBuilderOptionsHelper[] optionHelpers = new SearchableCompassQueryBuilderOptionsHelper[] {
-        new SearchableCompassQueryBuilderClassOptionHelper(),
-        new SearchableCompassQueryBuilderSortOptionHelper()
-    };
+            new SearchableCompassQueryBuilderClassOptionHelper(),
+            new SearchableCompassQueryBuilderSortOptionHelper(),
+            new SearchableCompassQueryBuilderFilterOptionHelper()
+        };
     private Compass compass;
 
     public AbstractSearchableCompassQueryBuilder(Compass compass) {

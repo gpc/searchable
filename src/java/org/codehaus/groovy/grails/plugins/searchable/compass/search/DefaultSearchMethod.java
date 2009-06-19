@@ -16,6 +16,8 @@
 package org.codehaus.groovy.grails.plugins.searchable.compass.search;
 
 import groovy.lang.Closure;
+import org.compass.core.CompassDetachedHits;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
@@ -24,8 +26,11 @@ import org.codehaus.groovy.grails.plugins.searchable.SearchableMethodFactory;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.AbstractSearchableMethod;
 import org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtils;
 import org.compass.core.*;
+import java.util.*;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Collection;
 import java.util.HashMap;
@@ -122,8 +127,15 @@ public class DefaultSearchMethod extends AbstractSearchableMethod implements Sea
                     throw new IllegalArgumentException("Invalid 'result' option for search/query method [" + result + "]. Supported values are ['searchResult', 'every', 'top']");
                 }
             }
-            Object collectedHits = hitCollector.collect(hits, options);
-            Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, options);
+            int max = MapUtils.getIntValue(options, "max");           
+            int offset = MapUtils.getIntValue(options, "offset");
+            int low = offset;
+            int high = Math.min(low + max, hits.length());
+
+            
+            Object collectedHits =  hitCollector.collect(hits,options);
+            CompassDetachedHits compassDetachedHits = hits.detach(low,max);
+            Object searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, compassDetachedHits, options);
 
             doWithHighlighter(collectedHits, hits, searchResult, options);
 
