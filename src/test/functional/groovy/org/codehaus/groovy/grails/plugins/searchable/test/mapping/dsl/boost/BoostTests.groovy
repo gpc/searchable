@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 class BoostTests extends SearchableFunctionalTestCase {
     def searchableService
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [XxxBoosted, AaaUnBoosted]
     }
 

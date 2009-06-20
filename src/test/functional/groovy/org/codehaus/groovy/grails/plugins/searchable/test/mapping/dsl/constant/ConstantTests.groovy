@@ -22,7 +22,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
  */
 class ConstantTests extends SearchableFunctionalTestCase {
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [A]
     }
 

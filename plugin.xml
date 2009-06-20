@@ -1,4 +1,4 @@
-<plugin name='searchable' version='0.5.5' grailsVersion='1.0 &gt; *'>
+<plugin name='searchable' version='0.5.6-SNAPSHOT' grailsVersion='1.0 &gt; *'>
   <author>Maurice Nicholson</author>
   <authorEmail>maurice@freeshell.org</authorEmail>
   <title>Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+</title>

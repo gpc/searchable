@@ -88,7 +88,7 @@ class EnvironmentSearchableCompassConfiguratorTests extends GroovyTestCase {
     void testConfigureWithBeans() {
         Analyzer myAnalyzer = [tokenStream: { String, Reader -> }] as Analyzer
         Analyzer otherAnalyzer = [tokenStream: { String, Reader -> }] as Analyzer
-        Converter specialConverter = [:] as Converter
+        Converter specialConverter = [toString: { 'a converter' }] as Converter
         configurator.beans = [myAnalyzer: myAnalyzer, otherAnalyzer: otherAnalyzer, specialConveter: specialConverter]
 
         def config = new CompassConfiguration()

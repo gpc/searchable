@@ -25,7 +25,7 @@ class StoreTests extends SearchableFunctionalTestCase {
     def searchableService
     def compass
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [Yes, No, Compress]
     }
 

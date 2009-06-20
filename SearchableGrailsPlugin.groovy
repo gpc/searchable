@@ -36,7 +36,7 @@ import org.springframework.context.ApplicationContext
 class SearchableGrailsPlugin {
     static LOG = LogFactory.getLog("org.codehaus.groovy.grails.plugins.searchable.SearchableGrailsPlugin")
 
-    def version = SearchableConstants.SEARCHABLE_PLUGIN_VERSION
+    def version = "0.5.6-SNAPSHOT"
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
     def title = 'Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+'
@@ -186,7 +186,7 @@ This version is recommended for JDK 1.5+
         }
         // try to load it from class file and merge in to GrailsApplication#config
         try {
-            Class dataSourceClass = application.getClassLoader().loadClass("Searchable")
+            Class configClass = application.getClassLoader().loadClass("Searchable")
             ConfigSlurper configSlurper = new ConfigSlurper(GrailsUtil.getEnvironment())
             Map binding = new HashMap()
             binding.userHome = System.properties['user.home']
@@ -194,7 +194,7 @@ This version is recommended for JDK 1.5+
             binding.appName = application.metadata["app.name"]
             binding.appVersion = application.metadata["app.version"]
             configSlurper.binding = binding
-            config.merge(configSlurper.parse(dataSourceClass))
+            config.merge(configSlurper.parse(configClass))
             return config.searchable
         } catch (ClassNotFoundException e) {
             LOG.debug("Not found: ${e.message}")

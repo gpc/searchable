@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 class ReindexTests extends SearchableFunctionalTestCase {
     def searchableService
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [A, B]
     }
 
@@ -98,7 +98,7 @@ class ReindexTests extends SearchableFunctionalTestCase {
         def b1 = new B(id: 1l, value: "value").save()
         def b2 = new B(id: 2l, value: "value").save()
 
-        assert searchableService.countHits("value") == 0
+        assertEquals 0, searchableService.countHits("value")
 
         searchableService.reindex() // first, just index everything
 

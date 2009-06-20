@@ -22,7 +22,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
  */
 class ConverterTests extends SearchableFunctionalTestCase {
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         [A]
     }
 

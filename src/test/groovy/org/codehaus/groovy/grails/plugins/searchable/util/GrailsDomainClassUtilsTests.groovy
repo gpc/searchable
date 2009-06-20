@@ -22,6 +22,7 @@ import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler
 import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsDomainBinder
 import org.hibernate.cfg.Mappings
 import org.hibernate.cfg.Configuration
+import org.codehaus.groovy.grails.orm.hibernate.cfg.DefaultGrailsDomainConfiguration
 
 /**
 * @author Maurice Nicholson
@@ -185,8 +186,11 @@ class A {
             ga.initialise()
             def compositeDomainClass = ga.getArtefact(DomainClassArtefactHandler.TYPE, "A")
 
-            Configuration config = new Configuration()
-            GrailsDomainBinder.bindClass(compositeDomainClass, config.createMappings())
+            DefaultGrailsDomainConfiguration config = new DefaultGrailsDomainConfiguration()
+            config.grailsApplication = ga
+            config.buildMappings()
+
+//            GrailsDomainBinder.bindClass(compositeDomainClass, config.createMappings())
 
             assert GrailsDomainClassUtils.isIndentityProperty(compositeDomainClass.getPropertyByName("a"))
             assert GrailsDomainClassUtils.isIndentityProperty(compositeDomainClass.getPropertyByName("b"))

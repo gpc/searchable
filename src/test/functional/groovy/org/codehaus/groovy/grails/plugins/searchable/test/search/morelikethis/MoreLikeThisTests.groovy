@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 class MoreLikeThisTests extends SearchableFunctionalTestCase {
     def searchableService
 
-    def getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [A, B]
     }
 

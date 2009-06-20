@@ -25,7 +25,7 @@ class DefaultConfigurationFileTests extends SearchableFunctionalTestCase {
     def applicationContext
     def compass
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return []
     }
 

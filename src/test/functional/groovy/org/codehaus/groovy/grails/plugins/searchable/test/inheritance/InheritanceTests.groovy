@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 class InheritanceTests extends SearchableFunctionalTestCase {
     def searchableService
 
-    def getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [P, C1, C2, NSC, GC, A]
     }
 

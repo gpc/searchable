@@ -66,10 +66,18 @@
   <property file="${grails.home}/build.properties" />
   <propertyfile file="application.properties">
     <entry key="app.grails.version" value="${grails.version}"/>
+    <entry key="plugins.hibernate" value="${grails.version}"/>
   </propertyfile>
   <property name="grails.work.dir" value="${ENV.HOME}/.grails/${grails.version}"/> <!-- standard location, may be overriden by -D or previous property files -->
 
-  <!-- set java executable -->
+  <echo>Building with:
+
+    Java ${target.vm} (${using.java.home})
+    Grails: ${grails.version} (${grails.home})
+
+  </echo>
+
+  <!-- Set java executable -->
   <condition property="java.cmd" value="java.exe">
     <os family="windows"/>
   </condition>
@@ -93,6 +101,15 @@
     <fileset dir="${grails.home}/dist" includes="*.jar" />
     <path location="${classes}" />
   </path>
+  <path id="test.classpath">
+    <pathelement location="${classes.instrumented}"/>
+    <path refid="classpath" />
+    <pathelement location="${test.groovy.src}"/>
+    <pathelement location="${func.test.groovy.src}"/>
+    <pathelement location="${test.classes}"/>
+    <fileset dir="${lib.test}" includes="*.jar"/>
+    <path refid="cobertura.classpath" />
+  </path>
 <!--
   <path id="junit.classpath">
     <path refid="classpath" />
@@ -106,21 +123,18 @@
   <path id="findbugs.classpath">
       <fileset dir="${findbugs.home}/lib" includes="*.jar"/>
   </path>
-  <path id="test.classpath">
-    <pathelement location="${classes.instrumented}"/>
-    <path refid="classpath" />
-    <pathelement location="${test.groovy.src}"/>
-    <pathelement location="${func.test.groovy.src}"/>
-    <pathelement location="${test.classes}"/>
-    <fileset dir="${lib.test}" includes="*.jar"/>
-    <path refid="cobertura.classpath" />
-  </path>
 
   <!-- Taskdefs -->
   <taskdef name="groovyc" classname="org.codehaus.groovy.ant.Groovyc" classpathref="classpath" />
+  <taskdef name="groovy" classname="org.codehaus.groovy.ant.Groovy" classpathref="classpath" />
 <!--  <taskdef name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask" classpathref="junit.classpath" /> -->
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
   <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpathref="findbugs.classpath"/>
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <fileset dir="${lib.build}/ant-contrib/lib" includes="*.jar"/>
+    </classpath>
+  </taskdef>
 
   <!-- Targets -->
   <target name="all" depends="clean, compile, test, findbugs-report, package, integration-test" description="Clean, build, test, package"/>
@@ -163,7 +177,7 @@
     <attribute name="test-name"/>
     <sequential>
       <mkdir dir="${test.reports}" />
-      <junit fork="yes" jvm="@{using-java-home}/bin/${java.cmd}" showoutput="true" failureproperty="tests.failed" printsummary="yes">
+      <junit fork="yes" forkmode="once" jvm="@{using-java-home}/bin/${java.cmd}" showoutput="true" failureproperty="tests.failed" printsummary="yes">
         <formatter type="brief"/>
         <formatter type="xml"/>
         <classpath refid="test.classpath" />
@@ -175,12 +189,17 @@
         <jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${java.debug.port}" />
         <test name="groovy.util.AllTestSuite" todir="${test.reports}" outfile="TEST-@{test-name}"/>
       </junit>
-      <loadfile srcfile="${test.reports}/TEST-@{test-name}.txt" failonerror="yes" property="test.output" />
-      <fail if="tests.failed">
-        Tests failed
+      <if>
+       <isset property="tests.failed"/>
+       <then>
+         <loadfile srcfile="${test.reports}/TEST-@{test-name}.txt" failonerror="yes" property="test.output" />
+         <fail if="tests.failed">
+           Tests failed
 
-        ${test.output}
-      </fail>
+           ${test.output}
+         </fail>
+       </then>
+      </if>
     </sequential>
   </macrodef>
 
@@ -237,17 +256,19 @@
 
           Not a valid JAVA_HOME: @{using-java-home}
       </fail>
-      <echo>*** Running ${grails} -Dgrails.work.dir=${grails.work.dir} @{arg1} @{arg2} @{arg3} ***</echo>
+      <echo>*** Running ${grails} @{arg1} @{arg2} @{arg3} ***</echo>
+      <!--<echo>*** Running ${grails} -Dgrails.work.dir=${grails.work.dir} @{arg1} @{arg2} @{arg3} ***</echo>-->
       <property name="path" value="${grails.home}/bin${path.separator}@{using-java-home}/bin${path.separator}${ENV.PATH}" />
       <exec executable="${grails.home}/bin/${grails}" dir="@{dir}" failonerror="yes">
         <env key="GRAILS_HOME" value="${grails.home}" />
         <env key="JAVA_HOME" value="@{using-java-home}" />
         <env key="PATH" value="${path}" />
 
-        <arg value="-Dgrails.work.dir=${grails.work.dir}"/>
+        <!--<arg value="-Dgrails.work.dir=${grails.work.dir}"/>-->
         <arg value="@{arg1}"/>
         <arg value="@{arg2}"/>
         <arg value="@{arg3}"/>
+        <arg value="--non-interactive"/>
       </exec>
     </sequential>
   </macrodef>
@@ -258,11 +279,22 @@
     <attribute name="app.tests" />
     <attribute name="using.java.home" />
     <sequential>
+      <!-- grep the version from the plugin file itself, in case not already defined -->
+      <groovy>
+        def pluginFile = new File(project.getProperty("basedir"), "SearchableGrailsPlugin.groovy")
+        def pattern = ~/^\s*def version = "(.+)"\s*$/
+        def version
+        pluginFile.eachLine { line ->
+          def matcher = pattern.matcher(line)
+          if (matcher.matches()) {
+            version = matcher.group(1)
+          }
+        }
+        if (version) project.setProperty("version", version)
+      </groovy>
       <fail unless="version">
 
-      Please specify a version, eg
-
-          ant integration-test -Dversion=0.4-SNAPSHOT
+      Missing version property!
       </fail>
 
       <property name="plugin.dist" value="${basedir}/grails-${app.name}-${version}.zip" />
@@ -288,6 +320,7 @@
       <mkdir dir="@{app.dir}"/>
 
       <!-- create vanilla app -->
+      <delete dir="${user.home}/.grails/${grails.version}/projects/@{app.name}"/>
       <grails dir="${tmpdir}" arg1="create-app" arg2="@{app.name}" using-java-home="@{using.java.home}"/>
 
       <!--
@@ -317,21 +350,28 @@
       <!-- Test app -->
       <grails dir="@{app.dir}" arg1="test-app" using-java-home="@{using.java.home}"/>
 
-      <!-- Install web test plugin -->
-      <condition property="webtest.version" value="0.4">
-        <equals arg1="${target.vm}" arg2="1.4" />
-      </condition>
-      <property name="webtest.version" value=""/>
-      <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" arg3="${webtest.version}" using-java-home="@{using.java.home}"/>
+      <if>
+        <not>
+          <istrue value="${skip.webtest}"/>
+        </not>
+        <then>
+          <!-- Install web test plugin -->
+          <condition property="webtest.version" value="0.4">
+            <equals arg1="${target.vm}" arg2="1.4" />
+          </condition>
+          <property name="webtest.version" value=""/>
+          <grails dir="@{app.dir}" arg1="install-plugin" arg2="webtest" arg3="${webtest.version}" using-java-home="@{using.java.home}"/>
 
-      <!-- Web test -->
-      <condition property="webtest.result.file" value="WebTestResults.xml">
-        <equals arg1="${webtest.version}" arg2="0.4"/>
-      </condition>
-      <property name="webtest.result.file" value="WebTestOverview.xml" /> <!-- 0.5.1 -->
-      <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_port                = 8080" value="webtest_port=${grails.server.port}" />
-      <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_resultfile          = WebTestResults.xml" value="webtest_resultfile          = ${webtest.result.file}" />
-      <grails dir="@{app.dir}" arg1="run-webtest" using-java-home="@{using.java.home}"/>
+          <!-- Web test -->
+          <condition property="webtest.result.file" value="WebTestResults.xml">
+            <equals arg1="${webtest.version}" arg2="0.4"/>
+          </condition>
+          <property name="webtest.result.file" value="WebTestOverview.xml" /> <!-- 0.5.1 -->
+          <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_port                = 8080" value="webtest_port=${grails.server.port}" />
+          <replace file="@{app.dir}/webtest/conf/webtest.properties" token="webtest_resultfile          = WebTestResults.xml" value="webtest_resultfile          = ${webtest.result.file}" />
+          <grails dir="@{app.dir}" arg1="run-webtest" using-java-home="@{using.java.home}"/>
+        </then>
+      </if>
     </sequential>
   </macrodef>
 

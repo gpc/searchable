@@ -69,7 +69,7 @@ class ArtistTests extends GroovyTestCase {
         def count = Artist.countHits("elvis")
         assert count == 2, count
     }
-    
+
     void testTermFreqs() {
         // sanity test: try out some argument combos: more tests elsewhere
         def result = Artist.termFreqs('name')

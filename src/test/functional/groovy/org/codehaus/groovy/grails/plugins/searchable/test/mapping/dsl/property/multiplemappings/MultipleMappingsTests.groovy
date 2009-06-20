@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 // todo this isn't a feature of the DSL as the others in this parent package - re-house them
 class MultipleMappingsTests extends SearchableFunctionalTestCase {
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [A]
     }
 

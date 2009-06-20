@@ -64,7 +64,10 @@ class AlbumTests extends GroovyTestCase {
     void testClassStaticIndex() {
         compassGps.stop()
 
-        def deLa = Artist.findAll()[0]
+        def deLa = Artist.findByName('De la Soul')
+        assertEquals 6, deLa.albums.size()
+        def hits = Album.countHits("de la soul")
+        assertEquals 6, hits
 
         def album = new Album(name: 'Buhloone Mindstate', artist: deLa, genre: "rap/hip-hop")
         deLa.addToAlbums(album)
@@ -73,7 +76,8 @@ class AlbumTests extends GroovyTestCase {
 
         // index a single instance
         Album.index(album)
-        assert Album.countHits("de la soul") == 7, Album.countHits("de la soul")
+        hits = Album.countHits("de la soul")
+        assertEquals 7, hits
 
         def s = compass.openSession()
         def tx = s.beginTransaction()
@@ -95,7 +99,7 @@ class AlbumTests extends GroovyTestCase {
     void testClassInstanceIndex() {
         compassGps.stop()
 
-        def deLa = Artist.findAll()[0]
+        def deLa = Artist.findByName('De la Soul')
 
         assert Album.countHits("de la soul") == 6, Album.countHits("de la soul")
         def album = new Album(name: 'Buhloone Mindstate', artist: deLa, genre: "rap/hip-hop")
@@ -153,7 +157,7 @@ class AlbumTests extends GroovyTestCase {
         assert Album.countHits("de la soul") == 6, Album.countHits("de la soul")
 
         // unindex a single instance
-        Album.unindex(Album.findAll()[0])
+        Album.unindex(Album.findByName('3 Feet High and Rising'))
         assert Album.countHits("de la soul") == 5, Album.countHits("de la soul")
 
         // unindex all instances
@@ -169,7 +173,7 @@ class AlbumTests extends GroovyTestCase {
         assert Album.countHits("de la soul") == 6, Album.countHits("de la soul")
 
         // unindex a single instance
-        def album = Album.findAll()[0]
+        def album = Album.findByName('3 Feet High and Rising')
 
         album.unindex()
         assert Album.countHits("de la soul") == 5, Album.countHits("de la soul")

@@ -43,7 +43,7 @@ class SearchableSubsetSearchResultFactoryTests extends GroovyTestCase {
 
         // First page
         def collectedHits = theData[0..<10]
-        def searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, [offset: 0, max: 10])
+        def searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, null, [offset: 0, max: 10])
         assert searchResult.results == collectedHits
         assert searchResult.total == hits.length()
         assert searchResult.offset == 0
@@ -54,7 +54,7 @@ class SearchableSubsetSearchResultFactoryTests extends GroovyTestCase {
 
         // Another page
         collectedHits = theData[15..<30]
-        searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, [offset: 15, max: 15])
+        searchResult = searchResultFactory.buildSearchResult(hits, collectedHits, null, [offset: 15, max: 15])
         assert searchResult.results == collectedHits
         assert searchResult.total == hits.length()
         assert searchResult.offset == 15

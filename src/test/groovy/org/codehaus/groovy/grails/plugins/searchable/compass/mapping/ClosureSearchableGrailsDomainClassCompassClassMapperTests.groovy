@@ -709,10 +709,6 @@ class ClosureSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTe
         }
     }
 
-    def getClassMapping(clazz, searchableClasses, searchableValue) {
-        getClassMapping(clazz, searchableClasses, searchableValue, [])
-    }
-
     CompassClassMapping getClassMapping(clazz, searchableClazzes, searchableValue, excludedProperties = []) {
         def domainClasses = getDomainClasses(searchableClazzes)
         def gdc = domainClasses.find { it.clazz == clazz}

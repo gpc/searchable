@@ -66,15 +66,17 @@ class CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests exten
 
     private getResourceLoader(clazz) {
         def resourceName = getMappingResourceName(clazz)
-        [getResource: { name ->
-            if (clazz) {
-                assert name == "classpath:" + resourceName
+        [   getResource: { name ->
+                if (clazz) {
+                    assert name == "classpath:" + resourceName
+                }
+                [
+                    exists: { clazz ? true : false },
+                    getURL: { new URL("file:/path/to" + resourceName) },
+                    toString: { 'a resource' }
+                ] as Resource
             }
-            [
-                exists: { clazz ? true : false },
-                getURL: { new URL("file:/path/to" + resourceName) }
-            ] as Resource
-        }] as ResourceLoader
+        ] as ResourceLoader
     }
 
     private getMappingResourceName(clazz) {

@@ -23,7 +23,7 @@ import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTe
 class TermVectorTests extends SearchableFunctionalTestCase {
     def compass
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [Yes, No]
     }
 

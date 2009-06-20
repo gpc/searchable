@@ -17,6 +17,7 @@ package org.codehaus.groovy.grails.plugins.searchable.test
 
 import grails.spring.BeanBuilder
 import grails.util.GrailsUtil
+import java.lang.reflect.Constructor
 import javax.servlet.ServletContext
 import junit.framework.AssertionFailedError
 import junit.framework.TestCase
@@ -30,13 +31,28 @@ import org.codehaus.groovy.grails.plugins.DefaultGrailsPluginManager
 import org.codehaus.groovy.grails.plugins.DefaultPluginMetaManager
 import org.codehaus.groovy.grails.plugins.GrailsPluginManager
 import org.codehaus.groovy.grails.plugins.PluginManagerHolder
+import org.codehaus.groovy.grails.plugins.searchable.test.DataSource
+import org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTestCaseClassLoader
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.springframework.beans.BeanWrapperImpl
 import org.springframework.context.ApplicationContext
 import org.springframework.context.support.GenericApplicationContext
 import org.springframework.core.io.Resource
-import org.springframework.web.util.WebUtils
 import org.springframework.util.ClassUtils
+import org.springframework.web.util.WebUtils
+import grails.util.BuildSettings
+import grails.util.BuildSettingsHolder
+import grails.util.Metadata
+import org.codehaus.groovy.grails.web.binding.GrailsDataBinder
+import org.springframework.beans.BeanWrapper
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.springframework.beans.BeanUtils
+import java.beans.PropertyEditor
+import java.beans.PropertyEditorSupport
+import org.codehaus.groovy.runtime.GStringImpl
+import java.util.zip.ZipFile
+import org.apache.commons.io.IOUtils
+import org.apache.commons.io.FileUtils
 
 /**
  * @author Maurice Nicholson
@@ -46,6 +62,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
     private List injectedPropertiesNames = []
     private ApplicationContext applicationContext
     private GrailsApplication application
+    private GrailsPluginManager pluginManager
 
     /**
      * Runs the test case and collects the results in TestResult.
@@ -64,7 +81,12 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
 
             result.startTest(this)
             try {
-                isolatedTest.runBare()
+                try {
+                    isolatedTest.beforeTest()
+                    isolatedTest.runBare()
+                } finally {
+                    isolatedTest.afterTest()
+                }
             } catch (ThreadDeath e) { // don't catch ThreadDeath by accident
                 throw e
             } catch (AssertionFailedError e) {
@@ -81,26 +103,18 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         }
     }
 
-    void setUp() {
+    protected void beforeTest() {
         capturePreTestEnvironment()
         applyTestEnvironment()
 
         ClassLoader classClassLoader = this.getClass().getClassLoader()
-
-        def gclClass = classClassLoader.loadClass(GroovyClassLoader.getName())
-        def constructor = gclClass.getConstructor(ClassLoader)
-        def cl = constructor.newInstance(classClassLoader)
         preloadResourcesClass(classClassLoader)
 
-        def registry = GroovySystem.metaClassRegistry
-        if(!(registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle)) {
-            registry.setMetaClassCreationHandle(new ExpandoMetaClassCreationHandle());
-        }
-
+        GroovyClassLoader cl = new GroovyClassLoader(classClassLoader)
         def searchableConfigMap = getSearchableConfig(cl)
-        def pluginClasses = getPluginClasses(cl)
-        def pluginXmlResources = getPluginResources(cl)
-        def appClasses = getAppClasses(cl)
+        def pluginClasses = getPluginAndExternalPluginClasses(cl)
+        def serviceClasses = getServiceClasses(cl)
+        def domainClasses = getDomainClasses()
 
         def builder = new BeanBuilder()
         builder.beans {
@@ -108,47 +122,55 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
                 searchableConfig(LinkedHashMap, searchableConfigMap)
             }
 
-            grailsApplication(DefaultGrailsApplication, appClasses, cl)
+            grailsApplication(DefaultGrailsApplication, domainClasses + serviceClasses, cl)
 
             pluginManager(DefaultGrailsPluginManager, pluginClasses, grailsApplication)
 
-            pluginMetaManager(DefaultPluginMetaManager, pluginXmlResources)
+            pluginMetaManager(DefaultPluginMetaManager)
         }
         def ctx = builder.createApplicationContext()
 
-        def pluginManager = ctx.getBean("pluginManager")
-//        PluginManagerHolder.setPluginManager(pluginManager)
-
-//        pluginManager.applicationContext = webAppCtx
-
-        def servletContext = getTestServletContext()
-//        webAppCtx.servletContext = servletContext
-
-        application = (GrailsApplication) ctx.getBean(GrailsApplication.APPLICATION_ID, GrailsApplication.class)
+        application = (GrailsApplication) ctx.getBean(GrailsApplication.APPLICATION_ID)
+        ApplicationHolder.setApplication(application)
         applyGrailsConfiguration(application, cl)
 
-        def configurator = new GrailsRuntimeConfigurator(application, ctx)
+        pluginManager = ctx.getBean("pluginManager")
         PluginManagerHolder.setPluginManager(pluginManager)
-        configurator.pluginManager = pluginManager
 
-        applicationContext = configurator.configure(servletContext)
+        def configurator = new GrailsRuntimeConfigurator(application, ctx)
+        configurator.setPluginManager(pluginManager)
+        applicationContext = configurator.configure(createTestServletContext(cl))
 
-        injectBeanReferences(applicationContext)
-    }
+        // restore the standard Groovy Map arg constructor that allows setting id property, etc
+        for (domainClass in ctx.getBean("grailsApplication").domainClasses) {
+            GrailsDomainClass dc = domainClass
+            def mc = domainClass.metaClass
 
-    void tearDown() {
-        removeInjectedBeanReferences()
-
-        GroovyClassLoader classLoader = application.getClassLoader();
-        MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
-        Class[] loadedClasses = classLoader.getLoadedClasses();
-        for (int i = 0; i < loadedClasses.length; i++) {
-            Class loadedClass = loadedClasses[i];
-            metaClassRegistry.removeMetaClass(loadedClass);
+            mc.constructor = { Map map ->
+                def instance = ctx.containsBean(dc.fullName) ? ctx.getBean(dc.fullName) : BeanUtils.instantiateClass(dc.clazz)
+                BeanWrapper bean = new BeanWrapperImpl(instance)
+//                bean.registerCustomEditor(GStringImpl.class, new GStringPropertyEditor())
+                map.each { k, v ->
+                    if (v instanceof GString) {
+                        map[k] = v.toString()
+                    }
+                }
+                bean.setPropertyValues(map)
+                return instance
+            }
         }
 
-        GrailsPluginManager pluginManager = PluginManagerHolder.currentPluginManager();
-        pluginManager.shutdown();
+        injectSpringBeans(applicationContext)
+    }
+
+    protected void afterTest() {
+        removeInjectedBeans()
+        restorePreTestEnvironment()
+
+        if (pluginManager) {
+            pluginManager.shutdown()
+            pluginManager = null
+        }
 
         while (applicationContext) {
             def tmp = applicationContext.parent
@@ -156,22 +178,18 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
             applicationContext = tmp
         }
 
-//        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
-
-        ApplicationHolder.setApplication(null);
-        ServletContextHolder.setServletContext(null);
-        PluginManagerHolder.setPluginManager(null);
-        ConfigurationHolder.setConfig(null);
-        ExpandoMetaClass.disableGlobally();
+        ApplicationHolder.setApplication(null)
+        ServletContextHolder.setServletContext(null)
+        PluginManagerHolder.setPluginManager(null)
+        ConfigurationHolder.setConfig(null)
+        ExpandoMetaClass.disableGlobally()
 
         applicationContext = null
         injectedPropertiesNames = null
         application = null
-
-        restorePreTestEnvironment()
     }
 
-    private void injectBeanReferences(ApplicationContext ctx) {
+    private void injectSpringBeans(ApplicationContext ctx) {
         def wrapper = new BeanWrapperImpl(this)
         def propertyDescriptors = wrapper.getPropertyDescriptors()
         for (propertyDescriptor in propertyDescriptors) {
@@ -186,7 +204,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         }
     }
 
-    private void removeInjectedBeanReferences() {
+    private void removeInjectedBeans() {
         def wrapper = new BeanWrapperImpl(this)
         for (name in injectedPropertiesNames) {
             wrapper.setPropertyValue(name, null)
@@ -199,6 +217,12 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
 
     private void applyTestEnvironment() {
         System.properties[GrailsApplication.ENVIRONMENT] = GrailsApplication.ENV_TEST
+
+        def registry = GroovySystem.metaClassRegistry
+        if(!(registry.getMetaClassCreationHandler() instanceof ExpandoMetaClassCreationHandle)) {
+            registry.setMetaClassCreationHandle(new ExpandoMetaClassCreationHandle());
+        }
+
     }
 
     private void restorePreTestEnvironment() {
@@ -207,43 +231,36 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         } else {
             System.getProperties().remove(GrailsApplication.ENVIRONMENT)
         }
+
+        if (!application) return
+
+        GroovyClassLoader classLoader = application.getClassLoader();
+        MetaClassRegistry metaClassRegistry = GroovySystem.getMetaClassRegistry();
+        Class[] loadedClasses = classLoader.getLoadedClasses();
+        for (int i = 0; i < loadedClasses.length; i++) {
+            Class loadedClass = loadedClasses[i];
+            metaClassRegistry.removeMetaClass(loadedClass);
+        }
     }
 
     protected void applyGrailsConfiguration(GrailsApplication grailsApplication, cl) {
         def dataSourceClass = getDataSourceClass(cl)
         ConfigSlurper configSlurper = new ConfigSlurper(GrailsUtil.getEnvironment())
         def config = grailsApplication.config
-        config.merge(configSlurper.parse(dataSourceClass));
+        config.merge(configSlurper.parse(dataSourceClass))
     }
 
-    private Resource[] getPluginResources(cl) {
-        def resourceLoader = new GenericApplicationContext()
-        def standardResources = resourceLoader.getResources("classpath*:**/plugins/*/plugin.xml") as List
-
-        return (standardResources + resourceLoader.getResource(getPluginHomeFileResourcePrefix(cl) + "/plugin.xml")) as Resource[]
-    }
-
-    private String getPluginHomeFileResourcePrefix(cl) {
+    private Collection<Class> getServiceClasses(GroovyClassLoader cl) {
         def pluginHome = getPluginHome(cl)
-        return "file://" + pluginHome.absolutePath.replaceAll("\\\\", "/")
-    }
-
-    private Class[] getAppClasses(GroovyClassLoader cl) {
-        def pluginHome = getPluginHome(cl)
-        def serviceClass = cl.parseClass(new File(pluginHome, "grails-app/services/SearchableService.groovy"))
-        def domainClasses = getDomainClasses()
-        return [serviceClass] + domainClasses
+        return new File(pluginHome, "grails-app/services").listFiles().findAll { f -> f.name.endsWith("Service.groovy") }.collect { cl.parseClass(it) }
     }
 
     /**
      * Provide a List of user domain classes
      */
-    // todo rename to getDomainClazzes to be in keeping with Grails lingo
-    // todo make return type Collection since part of API
-    // todo make protected since part of API
-    abstract getDomainClasses();
+    protected abstract Collection<Class<?>> getDomainClasses()
 
-    private ServletContext getTestServletContext() {
+    private ServletContext createTestServletContext(ClassLoader cl) {
         def attributes = [:]
         def servletContext = [
             setAttribute: { String name, Object value ->
@@ -258,7 +275,8 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
             },
             getResourceAsStream: { String name ->
                 return null
-            }
+            },
+            toString: { 'dummy context' }
         ] as ServletContext
         servletContext.setAttribute(WebUtils.TEMP_DIR_CONTEXT_ATTRIBUTE, new File(System.properties['java.io.tmpdir']))
         servletContext
@@ -268,24 +286,36 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         return DataSource.class
     }
 
-    private Class[] getPluginClasses(cl) {
+    private Class[] getPluginAndExternalPluginClasses(GroovyClassLoader cl) {
+        // Find the plugin class for this plugin
         def pluginHome = getPluginHome(cl)
         Properties props = new Properties()
         File metadataFile = new File(pluginHome, "application.properties")
         assert metadataFile.exists(), "Missing metadata file ${metadataFile.absolutePath}"
         props.load(new FileInputStream(metadataFile))
         String pluginFileName = props['app.name']
-        pluginFileName = pluginFileName.substring(0, 1).toUpperCase() + pluginFileName.substring(1) + "GrailsPlugin.groovy"
+        pluginFileName = pluginFileName[0].toUpperCase() + pluginFileName.substring(1) + "GrailsPlugin.groovy"
         def pluginFile = new File(pluginHome, pluginFileName)
         assert pluginFile.exists(), "Plugin file not found: ${pluginFile.absolutePath}"
-        return [cl.parseClass(pluginFile)] as Class[]
+        def pluginClasses = [cl.parseClass(pluginFile)]
+
+        // Locate and load dependent plugins
+        def grailsVersion = props['app.grails.version']
+        def plugins = props.findAll { name, value -> name.startsWith("plugins.") }.collect { name, value -> [name: name[8..-1], version: value] }
+        plugins.each { plugin ->
+            def pluginZip = [System.properties['user.home'], ".grails", grailsVersion, "plugins", "grails-${plugin.name}-${plugin.version}.zip"].join(File.separator)
+            cl.addURL(new URL("file://" + pluginZip))
+            def pluginClassName = plugin.name[0].toUpperCase() + plugin.name[1..-1] + "GrailsPlugin"
+            pluginClasses << cl.loadClass(pluginClassName)
+        }
+        return pluginClasses as Class[]
     }
 
     protected File getPluginHome(cl) {
         String resourceBaseName = this.getClass().getName().replaceAll("\\.", "/")
         def url = cl.getResource(resourceBaseName + ".class")
         if (!url) {
-            url = cl.getResource(this.getClass().getName().replaceAll("\\.", "/") + ".groovy")
+            url = cl.getResource(resourceBaseName + ".groovy")
         }
         assert url != null, "Failed to locate this class as resource! ${this.getClass().getName()}"
         for (def dir = new File(URLDecoder.decode(url.getFile())); dir; dir = dir.getParentFile()) {
@@ -313,8 +343,7 @@ abstract class SearchableFunctionalTestCase extends GroovyTestCase {
         def packageName = ClassUtils.getPackageName(this.getClass())
         try {
             String resourceBaseName = packageName.replaceAll("\\.", "/")
-            Class configClass = cl.loadClass(resourceBaseName + "/" + "SearchableConfig.class")
-
+            Class configClass = cl.loadClass(resourceBaseName + "/" + "SearchableConfig.class") // just for tests!
             return slurper.parse(configClass)
         } catch (ClassNotFoundException e) {
         }

@@ -249,10 +249,6 @@ class SimpleSearchableGrailsDomainClassCompassClassMapperTests extends GroovyTes
         }
     }
 
-    CompassClassMapping getClassMapping(clazz, searchableClazzes, searchableValue) {
-        getClassMapping(clazz, searchableClazzes, searchableValue, [])
-    }
-
     CompassClassMapping getClassMapping(clazz, searchableClazzes, searchableValue, excludedProperties = []) {
         def domainClasses = getDomainClasses(searchableClazzes)
         def domainClass = domainClasses.find { it.clazz == clazz }

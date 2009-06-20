@@ -24,11 +24,11 @@ class SearchableHitsOnlySearchResultFactoryTests extends GroovyTestCase {
         def searchResultFactory = new SearchableHitsOnlySearchResultFactory()
 
         def collectedHits = [1, 2, 3, 4, 5]
-        def searchResult = searchResultFactory.buildSearchResult(null, collectedHits, [:])
+        def searchResult = searchResultFactory.buildSearchResult(null, collectedHits, null, [:])
         assert searchResult.is(collectedHits)
 
         collectedHits = "THIS IS A SEARCH RESULT HIT"
-        searchResult = searchResultFactory.buildSearchResult(null, collectedHits, [:])
+        searchResult = searchResultFactory.buildSearchResult(null, collectedHits, null, [:])
         assert searchResult.is(collectedHits)
     }
 

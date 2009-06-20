@@ -45,7 +45,7 @@ class SearchableServiceTests extends GroovyTestCase {
         assert result.results.find { it instanceof Artist }.name == 'The Beatles'
         assert result.results.findAll { it instanceof Album }.size() == 9,result.results.findAll { it instanceof Album }.size()
 
-        result = searchableService.search("album")
+        result = searchableService.search("beatles album")
         assert result.results.size() == 3
         assert result.results*.class.unique() == [Album]
         assert result.results*.name.containsAll(['Red Album', 'Blue Album', 'White Album'])
@@ -81,7 +81,7 @@ class SearchableServiceTests extends GroovyTestCase {
     }
 
     void testMoreLikeThis() {
-        def album = Album.findAll()[0]
+        def album = Album.findByName('Revolver')
         def more = searchableService.moreLikeThis(album, minResourceFreq: 1, minTermFreq: 1)
         assert more.results.size() > 0, more.results.size()
 

@@ -24,7 +24,7 @@ import org.compass.core.Resource
  */
 class FormatTests extends SearchableFunctionalTestCase {
 
-    public getDomainClasses() {
+    Collection<Class<?>> getDomainClasses() {
         return [A]
     }
 

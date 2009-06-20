@@ -15,7 +15,317 @@
     <option name="historyRevisionsNumber" value="4" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" name="Default" comment="" />
+    <list default="true" readonly="true" id="4de02bcf-627e-4d6d-88d5-173c2fbfb894" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antclipse/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-test/dom4j-1.6.1.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/Package.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/accessor/AccessorTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/accessor/AccessorTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/suggestquery/nospellcheckmapping/NoSpellCheckMappingTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/suggestquery/nospellcheckmapping/NoSpellCheckMappingTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/Throw.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/spellcheck/SpellCheckTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/spellcheck/SpellCheckTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/termfreqs/TermFreqsTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/termfreqs/TermFreqsTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactoryTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactoryTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/Response.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/shellscript.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/sortlist.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/Switch.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/OutOfDate.MyMapper.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablecomponent/SearchableComponentTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablecomponent/SearchableComponentTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/Depends.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/IndexTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/IndexTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/switch.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/client/Client.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/README.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/timestampselector.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/AntCallBack.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/packages.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/ReferenceContainer.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/overview-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/lib" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/PropertyContainer.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/AntPerformanceListener.StopWatch.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util/ThreadPool.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/converter/ConverterTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/converter/ConverterTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/For.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniProperty.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/foreach.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/Variable.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/compilewithwalls.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/Switch.Case.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/SearchEveryTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/SearchEveryTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/SearchTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/SearchTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/mixed/MixedMappingTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/mixed/MixedMappingTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/client/ClientTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/overview-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/SortList.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/Log.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/TryCatchTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/RunAntCommand.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/Package.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.properties" afterPath="$PROJECT_DIR$/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/boost/BoostTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/boost/BoostTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/client/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/config/mapping/CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/config/mapping/CompassMappingXmlSearchableGrailsDomainClassMappingConfiguratorTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/package-tree.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/id/name/NameTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/id/name/NameTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/AlbumTests.groovy" afterPath="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/AlbumTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/name/NameTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/name/NameTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/TimestampSelector.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/Server.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/package-list" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/stringmap/StringMapPropertyTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/stringmap/StringMapPropertyTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/store/StoreTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/store/StoreTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/osfamily.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/pathtofileset.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/excludefromall/ExcludeFromAllTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/excludefromall/ExcludeFromAllTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/client" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antclipse/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/index-all.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util/Reflector.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/AnalyzerTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/AnalyzerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/post_task.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/multiplemappings/MultipleMappingsTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/multiplemappings/MultipleMappingsTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform/OsFamily.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/suggestquery/SuggestQueryTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/suggestquery/SuggestQueryTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/throw.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/Util.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/StopWatch.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/MathTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/AbstractPropertySetterTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniFileTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/RegexTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/CompileWithWalls.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugin.iml" afterPath="$PROJECT_DIR$/plugin.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/InstructionVisitor.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/client/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process/Limit.TimeUnit.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antclipse/ClassPathParser.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/Numeric.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/searchablereference/lazy/LazyTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/searchablereference/lazy/LazyTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/morelikethis/MoreLikeThisTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/morelikethis/MoreLikeThisTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablereference/SearchableReferenceTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/domainclasses/searchablereference/SearchableReferenceTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/ForDelegate.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/Design.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/IsGreaterThan.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/input/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antclipse/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform/Platform.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/more_conditions.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/withhighlighter/SearchWithHighlighterOptionTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/withhighlighter/SearchWithHighlighterOptionTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/performance_monitor.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/OutOfDate.CollectionEnum.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/BooleanConditionTask.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/NullValueTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/NullValueTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniFileTask.Remove.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/SilentCopy.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/propertyselector.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/client/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/constant/ConstantTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/constant/ConstantTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/boost/BoostTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/boost/BoostTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/SearchableServiceTests.groovy" afterPath="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/SearchableServiceTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/math_task.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/SimpleSearchableGrailsDomainClassCompassClassMapperTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/SimpleSearchableGrailsDomainClassCompassClassMapperTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactoryTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactoryTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/TryCatchTask.CatchBlock.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/AbstractCommand.html" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/SearchableConstants.java" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/variable_task.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/BooleanConditionBase.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapperTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapperTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net/Prop.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/Walls.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/reindex/ReindexTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/reindex/ReindexTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SearchableGrailsPlugin.groovy" afterPath="$PROJECT_DIR$/SearchableGrailsPlugin.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/overview-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/toc.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util/ThreadPoolThread.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/ArtistTests.groovy" afterPath="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/ArtistTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/IfTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/supportunmarhall/SupportUnmarshallTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/supportunmarhall/SupportUnmarshallTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/LICENSE.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/propertycopy.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/lib/ant-contrib.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/AntFetch.Reference.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/constant-values.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/SpringBeanPropertyConverterTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/SpringBeanPropertyConverterTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/config/defaultfile/DefaultConfigurationFileTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/config/defaultfile/DefaultConfigurationFileTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/CountHitsTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/CountHitsTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/runtarget.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/searchable.iws" afterPath="$PROJECT_DIR$/searchable.iws" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/format/FormatTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/format/FormatTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/build.xml" afterPath="$PROJECT_DIR$/build.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/forget.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/verifydesign.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/allclasses-noframe.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/alias/AliasTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/alias/AliasTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/ShutdownCommand.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/urlencode.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/SendFileCommand.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/antcallback_task.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/VerifyDesign.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/config/EnvironmentSearchableCompassConfiguratorTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/config/EnvironmentSearchableCompassConfiguratorTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/unindex/UnindexTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/unindex/UnindexTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniFileTask.Set.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/analyzer/AnalyzerTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/analyzer/AnalyzerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/stopwatch_task.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/root/RootTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/root/RootTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/ServerTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniPart.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/sort/SearchSortOptionsTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/sort/SearchSortOptionsTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/serialized-form.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/IsPropertyTrue.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/input/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.properties" afterPath="$PROJECT_DIR$/project.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/springbean/SpringBeanAnalyzerTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/springbean/SpringBeanAnalyzerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/IsLessThan.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/Command.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/ConnectionHandler.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process/Limit.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/deprecated-list.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/ForEach.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/help-doc.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/for.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/termvector/TermVectorTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/termvector/TermVectorTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/RegexUtil.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/limit_task.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/input/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/DisconnectCommand.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/RunTargetTask.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/index/IndexTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/index/IndexTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/OutOfDate.DeleteTargets.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antclipse/ClassPathTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/antclipse_task.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/searchable.ipr" afterPath="$PROJECT_DIR$/searchable.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-test/hibernate3-3.3.1.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/PropertySelector.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/resources/inherit.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/AntPerformanceListener.StopWatchComparator.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/stylesheet.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/server_tasks.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/PathToFileSet.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/walls/SilentMove.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/searchablecomponent/prefix/PrefixTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/searchablecomponent/prefix/PrefixTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/util/GrailsDomainClassUtilsTests.groovy" afterPath="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/util/GrailsDomainClassUtilsTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antclipse" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/AntContribVersion.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/AntFetch.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/process/ForgetTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/package-frame.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/spellcheck/SpellCheckTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/spellcheck/SpellCheckTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/AntPerformanceListener.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/reverse/ReverseTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/reverse/ReverseTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/HelloWorldCommand.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/if.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/PropertyCopy.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/suggestquery/SearchSuggestQueryOptionTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/suggestquery/SearchSuggestQueryOptionTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/input/GUIInputHandler.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/allclasses-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/server/ConnectionBuildListener.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/input" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/antfetch_task.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/condition/IsPropertyFalse.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/property/URLEncodeTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/util/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/inheritance/InheritanceTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/inheritance/InheritanceTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/inifile.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/assert_task.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/Evaluateable.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniFile.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/package-summary.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/plugin.xml" afterPath="$PROJECT_DIR$/plugin.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net/PostTask.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/trycatch.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/Math.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/propertyregex.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/perf/StopWatchTask.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/PropertyConverterTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/PropertyConverterTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/OutOfDate.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform/package-tree.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-test/javassist-3.4.GA.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniFileTask.IniOperation.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/resources" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/Assert.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/inifile/IniSection.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/package-summary.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/math/Operation.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/AntCallBack.Reference.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/net/PostTask.Cookie.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/antserver/commands/RunTargetCommand.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/design/VerifyDesignDelegate.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/id/composite/CompositeIdTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/id/composite/CompositeIdTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/IfTask.ElseIf.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/tasks/outofdate.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/logic/package-frame.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib-build/ant-contrib/docs/api/net/sf/antcontrib/platform/ShellScriptTask.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/SearchTopTests.groovy" afterPath="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/SearchTopTests.groovy" />
+    </list>
     <ignored path="searchable.iws" />
     <ignored path=".idea/workspace.xml" />
   </component>
@@ -34,98 +344,7 @@
   </component>
   <component name="DebuggerManager">
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/mixed/MixedMappingTests.groovy" line="25" class="Class at MixedMappingTests.groovy:25" package="">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/test/java/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCaseClassLoader.java" line="46" class="org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTestCaseClassLoader" package="org.codehaus.groovy.grails.plugins.searchable.test">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/test/java/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCaseClassLoader.java" line="40" class="org.codehaus.groovy.grails.plugins.searchable.test.SearchableFunctionalTestCaseClassLoader" package="org.codehaus.groovy.grails.plugins.searchable.test">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="jar://$PROJECT_DIR$/lib/compass-2.1.0-src.jar!/org/compass/core/converter/basic/AbstractBasicConverter.java" line="42" class="org.compass.core.converter.basic.AbstractBasicConverter" package="org.compass.core.converter.basic">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapper.groovy" line="217" class="Class at ClosureSearchableGrailsDomainClassCompassClassMapper.groovy:217" package="">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapper.groovy" line="169" class="Class at ClosureSearchableGrailsDomainClassCompassClassMapper.groovy:169" package="">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapper.groovy" line="126" class="Class at ClosureSearchableGrailsDomainClassCompassClassMapper.groovy:126" package="">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapper.groovy" line="113" class="Class at ClosureSearchableGrailsDomainClassCompassClassMapper.groovy:113" package="">
+      <breakpoint url="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactoryTests.groovy" line="26" class="Class at SearchableSubsetSearchResultFactoryTests.groovy:26" package="">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -194,93 +413,94 @@
   <component name="FavoritesManager">
     <favorites_list name="searchable" />
   </component>
+  <component name="FileColors" enabled="false" enabledForTabs="false" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Custom.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/Custom.groovy">
+      <file leaf-file-name="SearchableGrailsPlugin.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SearchableGrailsPlugin.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="54" selection-start="839" selection-end="839" vertical-scroll-proportion="0.0">
+            <state line="38" column="24" selection-start="1574" selection-end="1574" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="NullValueTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/NullValueTests.groovy">
+      <file leaf-file-name="build.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/build.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="66" selection-start="1558" selection-end="1558" vertical-scroll-proportion="0.0">
+            <state line="68" column="33" selection-start="2406" selection-end="2406" vertical-scroll-proportion="0.02877698">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SearchSortOptionsTests.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/sort/SearchSortOptionsTests.groovy">
+      <file leaf-file-name="SearchableCompassQueryBuilderFilterOptionHelper.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableCompassQueryBuilderFilterOptionHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="50" column="0" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.0">
+            <state line="34" column="0" selection-start="1197" selection-end="1197" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Analyzer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file:///Users/maurice/lucene-2.4.0/src/java/org/apache/lucene/analysis/Analyzer.java">
+      <file leaf-file-name="SearchableSubsetSearchResultFactoryTests.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactoryTests.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="34" selection-start="8" selection-end="34" vertical-scroll-proportion="0.0">
+            <state line="56" column="88" selection-start="2067" selection-end="2067" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Searchable.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/conf/Searchable.groovy">
+      <file leaf-file-name="DefaultSearchMethod.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/DefaultSearchMethod.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="116" column="0" selection-start="4864" selection-end="5034" vertical-scroll-proportion="0.0">
+            <state line="137" column="54" selection-start="6825" selection-end="6825" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="resources.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/resources.groovy">
+      <file leaf-file-name="SearchableHitsOnlySearchResultFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="28" selection-start="342" selection-end="342" vertical-scroll-proportion="0.0">
+            <state line="35" column="18" selection-start="1140" selection-end="1140" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ValueConverter.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/ValueConverter.groovy">
+      <file leaf-file-name="SearchableSearchResultFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSearchResultFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="6" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0">
+            <state line="33" column="11" selection-start="1024" selection-end="1024" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DefaultSearchableCompassFactoryBean.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/spring/DefaultSearchableCompassFactoryBean.java">
+      <file leaf-file-name="SearchableSubsetSearchResultFactory.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactory.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="68" selection-start="4228" selection-end="4228" vertical-scroll-proportion="0.0">
+            <state line="41" column="18" selection-start="1436" selection-end="1436" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Converter.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="jar://$PROJECT_DIR$/lib/compass-2.1.0-src.jar!/org/compass/core/converter/Converter.java">
+      <file leaf-file-name="SearchableHitsOnlySearchResultFactoryTests.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactoryTests.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="0.11111111">
+            <state line="30" column="43" selection-start="1197" selection-end="1197" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="resources.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/springbean/resources.groovy">
+      <file leaf-file-name="SearchableFunctionalTestCase.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="0" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0">
+            <state line="311" column="5" selection-start="12733" selection-end="12733" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -298,9 +518,39 @@
     <option name="SORT_ALPHABETICALLY" value="false" />
     <option name="HIDE_CLASSES_WHERE_METHOD_NOT_IMPLEMENTED" value="false" />
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/suggestquery/SuggestQueryTests.groovy" />
+        <option value="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/suggestquery/nospellcheckmapping/NoSpellCheckMappingTests.groovy" />
+        <option value="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/morelikethis/MoreLikeThisTests.groovy" />
+        <option value="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/withhighlighter/SearchWithHighlighterOptionTests.groovy" />
+        <option value="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/AlbumTests.groovy" />
+        <option value="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/ArtistTests.groovy" />
+        <option value="$PROJECT_DIR$/integration-test/grails-apps/artist-and-album-tests/test/integration/SearchableServiceTests.groovy" />
+        <option value="$PROJECT_DIR$/project.properties" />
+        <option value="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/index/reindex/ReindexTests.groovy" />
+        <option value="$PROJECT_DIR$/src/conf/Searchable.groovy" />
+        <option value="$PROJECT_DIR$/scripts/_Install.groovy" />
+        <option value="$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy" />
+        <option value="$PROJECT_DIR$/SearchableGrailsPlugin.groovy" />
+        <option value="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactoryTests.groovy" />
+        <option value="$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactoryTests.groovy" />
+        <option value="$PROJECT_DIR$/build.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="1.5" />
+  </component>
   <component name="ModuleEditorState">
     <option name="LAST_EDITED_MODULE_NAME" />
     <option name="LAST_EDITED_TAB_NAME" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state />
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="true" id="Add" />
@@ -315,20 +565,30 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectPane">
-    <subPane />
+    <subPane>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="searchable" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="plugin" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+      </PATH>
+    </subPane>
   </component>
   <component name="ProjectReloadState">
     <option name="STATE" value="0" />
   </component>
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="0.11111111" version="1" splitterProportion="0.5">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
       <flattenPackages ProjectPane="true" />
       <showMembers />
       <showModules />
       <showLibraryContents />
-      <hideEmptyPackages ProjectPane="false" />
+      <hideEmptyPackages ProjectPane="true" />
       <abbreviatePackageNames />
-      <showStructure ProjectPane="false" />
       <autoscrollToSource />
       <autoscrollFromSource />
       <sortByType />
@@ -337,47 +597,172 @@
   <component name="PropertiesComponent">
     <property name="project.structure.proportion" value="0.15" />
     <property name="GoToClass.includeJavaFiles" value="false" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder0" value="0" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth2" value="132" />
-    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="MemberChooser.sorted" value="false" />
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth2" value="160" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder2" value="2" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth3" value="35" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder4" value="4" />
+    <property name="recentsLimit" value="5" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth0" value="140" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="dynamic.classpath" value="false" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth0" value="128" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth4" value="954" />
-    <property name="options.lastSelected" value="preferences.pluginManager" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder1" value="1" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder4" value="4" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="RunManagerConfig.showSettingsBeforeRunnig" value="false" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder2" value="2" />
-    <property name="project.structure.last.edited" value="Modules" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth1" value="185" />
-    <property name="MemberChooser.sorted" value="false" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder3" value="3" />
-    <property name="options.searchVisible" value="true" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder3" value="3" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth1" value="159" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth4" value="927" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder0" value="0" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder1" value="1" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth3" value="128" />
   </component>
-  <component name="RunManager" selected="JUnit.All in plugin">
+  <component name="RunManager" selected="JUnit.SearchableSubsetSearchResultFactoryTests.testBuildSearchResult">
+    <configuration default="false" name="ReindexTests.testServiceReindexWithInstanceArgs" type="JUnit" factoryName="JUnit" temporary="true" enabled="false" merge="false" runner="emma">
+      <pattern>
+        <option name="PATTERN" value="org.codehaus.groovy.grails.plugins.searchable.test.index.reindex.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <module name="plugin" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.index.reindex" />
+      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.index.reindex.ReindexTests" />
+      <option name="METHOD_NAME" value="testServiceReindexWithInstanceArgs" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="65446" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <ConfigurationWrapper RunnerId="Debug" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="false" name="ReindexTests" type="JUnit" factoryName="JUnit" temporary="true" enabled="false" merge="false" runner="emma">
+      <pattern>
+        <option name="PATTERN" value="org.codehaus.groovy.grails.plugins.searchable.test.index.reindex.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <module name="plugin" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.index.reindex" />
+      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.index.reindex.ReindexTests" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="65451" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="false" name="IndexTests" type="JUnit" factoryName="JUnit" temporary="true" enabled="false" merge="false" runner="emma">
+      <pattern>
+        <option name="PATTERN" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.index.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <module name="plugin" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.index" />
+      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.index.IndexTests" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="49861" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="false" name="SearchableSubsetSearchResultFactoryTests.testBuildSearchResult" type="JUnit" factoryName="JUnit" temporary="true" enabled="false" merge="false" runner="emma">
+      <pattern>
+        <option name="PATTERN" value="org.codehaus.groovy.grails.plugins.searchable.compass.search.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+      <module name="plugin" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.search" />
+      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.search.SearchableSubsetSearchResultFactoryTests" />
+      <option name="METHOD_NAME" value="testBuildSearchResult" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="ADDITIONAL_CLASS_PATH" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="wholeProject" />
+      </option>
+      <envs />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="52200" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="true" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Debug" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
@@ -390,13 +775,21 @@
       <option name="VM_PARAMETERS" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
     </configuration>
     <configuration default="true" type="GrailsTestsRunConfigurationType" factoryName="Grails Tests">
       <module name="" />
       <setting name="vmparams" value="" />
-      <setting name="grailsparams" value="" />
-      <setting name="names" value="" />
-      <setting name="type" value="0" />
+      <setting name="cmdLine" value="test-app" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
     </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit" enabled="false" merge="false" runner="emma">
       <module name="" />
@@ -417,7 +810,9 @@
       </option>
       <envs />
       <method>
-        <option name="Make" value="true" />
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application" enabled="false" merge="false" runner="emma">
@@ -432,6 +827,11 @@
       <option name="PASS_PARENT_ENVS" value="true" />
       <module name="" />
       <envs />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
     </configuration>
     <configuration default="false" name="All in plugin" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
       <module name="plugin" />
@@ -460,323 +860,9 @@
       <ConfigurationWrapper RunnerId="Debug" />
       <ConfigurationWrapper RunnerId="Run" />
       <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="PropertyConverterTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.propertyconverter" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.propertyconverter.PropertyConverterTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="56603" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="SearchableMethodUtilsTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.support" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.support.SearchableMethodUtilsTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="SpringBeanPropertyConverterTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.propertyconverter.springbean" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.propertyconverter.springbean.SpringBeanPropertyConverterTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="61792" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="EnvironmentSearchableCompassConfiguratorTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.config" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.config.EnvironmentSearchableCompassConfiguratorTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="57452" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="SpringBeanAnalyzerTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.analyzer.springbean" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.analyzer.springbean.SpringBeanAnalyzerTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="DefaultIndexMethodTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.index" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultIndexMethodTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="61772" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <ConfigurationWrapper RunnerId="Debug" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="DefaultReindexMethodTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.index" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultReindexMethodTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="DefaultUnindexMethodTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.index" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.compass.index.DefaultUnindexMethodTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="SearchableReferenceTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.domainclasses.searchablereference" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.domainclasses.searchablereference.SearchableReferenceTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="SearchableComponentTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.domainclasses.searchablecomponent" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.domainclasses.searchablecomponent.SearchableComponentTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="ConstantTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.constant" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.constant.ConstantTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="57731" />
-        <option name="TRANSPORT" value="0" />
-        <option name="LOCAL" value="true" />
-      </RunnerSettings>
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Debug" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
-    <configuration default="false" name="IndexTests" type="JUnit" factoryName="JUnit" enabled="false" merge="false" sample_coverage="true" runner="emma">
-      <module name="plugin" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" value="" />
-      <option name="PACKAGE_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.index" />
-      <option name="MAIN_CLASS_NAME" value="org.codehaus.groovy.grails.plugins.searchable.test.mapping.dsl.property.index.IndexTests" />
-      <option name="METHOD_NAME" value="" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <envs />
-      <RunnerSettings RunnerId="Run" />
-      <ConfigurationWrapper RunnerId="Run" />
-      <method>
-        <option name="Make" value="true" />
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
     <configuration default="false" name="localhost:5005" type="Remote" factoryName="Remote">
@@ -792,54 +878,19 @@
       </RunnerSettings>
       <ConfigurationWrapper RunnerId="Debug" />
       <method>
-        <option name="Make" value="true" />
+        <option name="AntTarget" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <list size="14">
-      <item index="0" class="java.lang.String" itemvalue="JUnit.All in plugin" />
-      <item index="1" class="java.lang.String" itemvalue="JUnit.PropertyConverterTests" />
-      <item index="2" class="java.lang.String" itemvalue="JUnit.SearchableMethodUtilsTests" />
-      <item index="3" class="java.lang.String" itemvalue="JUnit.SpringBeanPropertyConverterTests" />
-      <item index="4" class="java.lang.String" itemvalue="JUnit.EnvironmentSearchableCompassConfiguratorTests" />
-      <item index="5" class="java.lang.String" itemvalue="JUnit.SpringBeanAnalyzerTests" />
-      <item index="6" class="java.lang.String" itemvalue="JUnit.DefaultIndexMethodTests" />
-      <item index="7" class="java.lang.String" itemvalue="JUnit.DefaultReindexMethodTests" />
-      <item index="8" class="java.lang.String" itemvalue="JUnit.DefaultUnindexMethodTests" />
-      <item index="9" class="java.lang.String" itemvalue="JUnit.SearchableReferenceTests" />
-      <item index="10" class="java.lang.String" itemvalue="JUnit.SearchableComponentTests" />
-      <item index="11" class="java.lang.String" itemvalue="JUnit.ConstantTests" />
-      <item index="12" class="java.lang.String" itemvalue="JUnit.IndexTests" />
-      <item index="13" class="java.lang.String" itemvalue="Remote.localhost:5005" />
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="JUnit.ReindexTests.testServiceReindexWithInstanceArgs" />
+      <item index="1" class="java.lang.String" itemvalue="JUnit.ReindexTests" />
+      <item index="2" class="java.lang.String" itemvalue="JUnit.IndexTests" />
+      <item index="3" class="java.lang.String" itemvalue="JUnit.SearchableSubsetSearchResultFactoryTests.testBuildSearchResult" />
+      <item index="4" class="java.lang.String" itemvalue="JUnit.All in plugin" />
+      <item index="5" class="java.lang.String" itemvalue="Remote.localhost:5005" />
     </list>
-    <configuration default="true" type="TestNG" factoryName="TestNG" enabled="false" merge="false">
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="SUITE_NAME" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="GROUP_NAME" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="OUTPUT_DIRECTORY" />
-      <option name="ANNOTATION_TYPE" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="ADDITIONAL_CLASS_PATH" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="wholeProject" />
-      </option>
-      <option name="PROPERTIES_FILE" />
-      <envs />
-      <properties />
-      <listeners />
-      <method>
-        <option name="Make" value="true" />
-      </method>
-    </configuration>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
       <Port>5050</Port>
@@ -857,11 +908,6 @@
     <option name="LOCK_ON_CHECKOUT" value="false" />
     <option name="UNLOCK_ON_CHECKIN" value="false" />
   </component>
-  <component name="StructureViewFactory">
-    <option name="AUTOSCROLL_MODE" value="true" />
-    <option name="AUTOSCROLL_FROM_SOURCE" value="false" />
-    <option name="ACTIVE_ACTIONS" value="" />
-  </component>
   <component name="SvnConfiguration">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -870,8 +916,39 @@
     <option name="MERGE_DRY_RUN" value="false" />
     <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
     <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="DETECT_NESTED_COPIES" value="true" />
     <configuration useDefault="true">/Users/maurice/.subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+    <supportedVersion>125</supportedVersion>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <option name="tasks">
+      <list>
+        <task id="Default" summary="Default task">
+          <option name="active" value="true" />
+          <option name="updated" value="1245529210376" />
+        </task>
+      </list>
+    </option>
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -894,36 +971,36 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="5" y="29" width="1260" height="760" extended-state="0" />
+    <frame x="10" y="22" width="1260" height="760" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Web Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
-      <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.41584158" sideWeight="0.5824176" order="0" side_tool="false" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.46310833" sideWeight="0.5" order="1" side_tool="false" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32810047" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3261767" sideWeight="0.5541601" order="0" side_tool="false" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31139836" sideWeight="0.5" order="8" side_tool="false" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.46938777" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43485087" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43485087" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.48822606" sideWeight="0.5" order="4" side_tool="false" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5368917" sideWeight="0.5" order="4" side_tool="false" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32902467" sideWeight="0.5" order="8" side_tool="false" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32810047" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="SVN Repositories" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3295099" sideWeight="0.5" order="7" side_tool="false" />
+      <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" />
       <window_info id="Maven projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Grails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32967034" sideWeight="0.5" order="7" side_tool="false" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Duplicates" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
-      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="true" />
+      <window_info id="Find" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.5259027" sideWeight="0.5" order="1" side_tool="false" />
       <window_info id="EJB" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="6" side_tool="false" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38147566" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Module Dependencies" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="5" side_tool="false" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
@@ -933,13 +1010,14 @@
   <component name="VcsManagerConfiguration">
     <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="false" />
-    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="false" />
+    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed tests on Java 5" />
+    <option name="LAST_COMMIT_MESSAGE" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
@@ -950,10 +1028,6 @@
     <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Java 1.4 version of the Grails Searchable Plugin" />
-    <MESSAGE value="Revert to Java 1.4 compatible source" />
-    <MESSAGE value="IntelliJ project files" />
-    <MESSAGE value="fixed tests on Java 5" />
   </component>
   <component name="VssConfiguration">
     <option name="CLIENT_PATH" value="" />
@@ -997,114 +1071,170 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/NotAnalyzed.groovy">
+    <entry file="file:///Users/maurice/projects/grails/trunk/grails/scripts/InstallTemplates.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="6" selection-start="746" selection-end="746" vertical-scroll-proportion="0.0">
+        <state line="34" column="42" selection-start="1100" selection-end="1112" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1244756628000" expanded="true" signature="0:623" placeholder="/*...*/" />
+            <marker date="1244756628000" expanded="true" signature="625:744" placeholder="/**...*/" />
+            <marker date="1244756628000" expanded="true" signature="863:1959" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1074:1197" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1204:1236" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Users/maurice/projects/grails/trunk/grails/scripts/_GrailsInit.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="76" column="0" selection-start="2284" selection-end="2284" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1244756628000" expanded="true" signature="1:621" placeholder="/*...*/" />
+            <marker date="1244756628000" expanded="true" signature="623:745" placeholder="/**...*/" />
+            <marker date="1244756628000" expanded="false" signature="754:919" placeholder="..." />
+            <marker date="1244756628000" expanded="true" signature="1085:1326" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1223:1287" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1293:1324" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1563:1876" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1605:1863" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1673:1857" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="1730:1847" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2024:2282" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2069:2269" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2146:2263" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2299:2691" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2365:2551" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2764:3980" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="2785:3978" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="4058:4667" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="4091:4497" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="4140:4491" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="4503:4665" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="4740:5071" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="4859:4919" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="5233:6066" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="5683:6064" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="6101:6630" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="6643:6785" placeholder="{...}" />
+            <marker date="1244756628000" expanded="true" signature="6805:6876" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Users/maurice/projects/grails/trunk/grails/lib/groovy-all-1.6.0.jar!/groovy/lang/Closure.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="29" selection-start="1645" selection-end="1645" vertical-scroll-proportion="0.0">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/_Install.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="15" selection-start="1043" selection-end="1043" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1226684627000" expanded="true" signature="605:928" placeholder="{...}" />
+            <marker date="1226684627000" expanded="true" signature="1026:1894" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/IndexTests.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="0" selection-start="1013" selection-end="1013" vertical-scroll-proportion="0.0">
+        <state line="38" column="0" selection-start="1302" selection-end="1302" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1245224183000" expanded="true" signature="0:615" placeholder="/*...*/" />
+            <marker date="1245224183000" expanded="true" signature="791:827" placeholder="/**...*/" />
+            <marker date="1245224183000" expanded="true" signature="882:1649" placeholder="{...}" />
+            <marker date="1245224183000" expanded="true" signature="955:1005" placeholder="{...}" />
+            <marker date="1245224183000" expanded="true" signature="1025:1151" placeholder="{...}" />
+            <marker date="1245224183000" expanded="true" signature="1177:1301" placeholder="{...}" />
+            <marker date="1245224183000" expanded="true" signature="1330:1647" placeholder="{...}" />
+            <marker date="1245224183000" expanded="true" signature="1503:1641" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Users/maurice/projects/grails/trunk/grails/src/commons/org/codehaus/groovy/grails/plugins/PluginManagerHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="49" column="38" selection-start="1516" selection-end="1516" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1244756622000" expanded="false" signature="0:602" placeholder="/.../" />
+            <marker date="1244756622000" expanded="true" signature="648:750" placeholder="/**...*/" />
+            <marker date="1244756622000" expanded="true" signature="846:983" placeholder="/**...*/" />
+            <marker date="1244756622000" expanded="true" signature="1056:1083" placeholder="{...}" />
+            <marker date="1244756622000" expanded="true" signature="1086:1204" placeholder="/**...*/" />
+            <marker date="1244756622000" expanded="true" signature="1259:1277" placeholder="{...}" />
+            <marker date="1244756622000" expanded="true" signature="1280:1480" placeholder="/**...*/" />
+            <marker date="1244756622000" expanded="true" signature="1539:1695" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/SearchableFunctionalTestCase.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="311" column="5" selection-start="12733" selection-end="12733" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapper.groovy">
+    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableCompassQueryBuilderFilterOptionHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="58" selection-start="2981" selection-end="2989" vertical-scroll-proportion="0.0">
+        <state line="34" column="0" selection-start="1197" selection-end="1197" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/mapping/ClosureSearchableGrailsDomainClassCompassClassMapperTests.groovy">
+    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/DefaultSearchMethod.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="200" column="135" selection-start="8992" selection-end="8992" vertical-scroll-proportion="0.0">
+        <state line="137" column="54" selection-start="6825" selection-end="6825" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/excludefromall/ExcludeFromAllTests.groovy">
+    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="68" selection-start="1404" selection-end="1404" vertical-scroll-proportion="0.0">
+        <state line="35" column="18" selection-start="1140" selection-end="1140" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/index/Analyzed.groovy">
+    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSearchResultFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="22" selection-start="805" selection-end="805" vertical-scroll-proportion="0.0">
+        <state line="33" column="11" selection-start="1024" selection-end="1024" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/Custom.groovy">
+    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactory.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="54" selection-start="839" selection-end="839" vertical-scroll-proportion="0.0">
+        <state line="41" column="18" selection-start="1436" selection-end="1436" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/nullvalue/NullValueTests.groovy">
+    <entry file="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableHitsOnlySearchResultFactoryTests.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="66" selection-start="1558" selection-end="1558" vertical-scroll-proportion="0.0">
+        <state line="30" column="43" selection-start="1197" selection-end="1197" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/search/search/sort/SearchSortOptionsTests.groovy">
+    <entry file="file://$PROJECT_DIR$/src/test/groovy/org/codehaus/groovy/grails/plugins/searchable/compass/search/SearchableSubsetSearchResultFactoryTests.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="0" selection-start="2221" selection-end="2221" vertical-scroll-proportion="0.0">
+        <state line="56" column="88" selection-start="2067" selection-end="2067" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file:///Users/maurice/lucene-2.4.0/src/java/org/apache/lucene/analysis/Analyzer.java">
+    <entry file="file://$PROJECT_DIR$/SearchableGrailsPlugin.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="34" selection-start="8" selection-end="34" vertical-scroll-proportion="0.0">
+        <state line="38" column="24" selection-start="1574" selection-end="1574" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/conf/Searchable.groovy">
+    <entry file="file://$PROJECT_DIR$/build.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="116" column="0" selection-start="4864" selection-end="5034" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/analyzer/springbean/resources.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="172" selection-end="172" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/resources.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="28" selection-start="342" selection-end="342" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/functional/groovy/org/codehaus/groovy/grails/plugins/searchable/test/mapping/dsl/property/propertyconverter/springbean/ValueConverter.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="6" selection-start="941" selection-end="941" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/java/org/codehaus/groovy/grails/plugins/searchable/compass/spring/DefaultSearchableCompassFactoryBean.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="68" selection-start="4228" selection-end="4228" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/compass-2.1.0-src.jar!/org/compass/core/converter/Converter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="0" selection-start="625" selection-end="625" vertical-scroll-proportion="0.11111111">
+        <state line="68" column="33" selection-start="2406" selection-end="2406" vertical-scroll-proportion="0.02877698">
           <folding />
         </state>
       </provider>
@@ -1113,16 +1243,7 @@
   <component name="masterDetails">
     <option name="states">
       <map>
-        <entry key="Errors.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-        <entry key="ScopeChooserConfigurable.UI">
+        <entry key="ProjectJDKs.UI">
           <value>
             <UIState>
               <option name="proportions">
@@ -1133,6 +1254,16 @@
                     </list>
                   </option>
                 </SplitterProportionsDataImpl>
+              </option>
+              <option name="lastEditedConfigurable" value="1.5" />
+            </UIState>
+          </value>
+        </entry>
+        <entry key="ScopeChooserConfigurable.UI">
+          <value>
+            <UIState>
+              <option name="proportions">
+                <SplitterProportionsDataImpl />
               </option>
             </UIState>
           </value>
@@ -1141,16 +1272,7 @@
     </option>
     <option name="myStates">
       <map>
-        <entry key="Errors.UI">
-          <value>
-            <UIState>
-              <option name="proportions">
-                <SplitterProportionsDataImpl />
-              </option>
-            </UIState>
-          </value>
-        </entry>
-        <entry key="ScopeChooserConfigurable.UI">
+        <entry key="ProjectJDKs.UI">
           <value>
             <UIState>
               <option name="proportions">
@@ -1161,6 +1283,16 @@
                     </list>
                   </option>
                 </SplitterProportionsDataImpl>
+              </option>
+              <option name="lastEditedConfigurable" value="1.5" />
+            </UIState>
+          </value>
+        </entry>
+        <entry key="ScopeChooserConfigurable.UI">
+          <value>
+            <UIState>
+              <option name="proportions">
+                <SplitterProportionsDataImpl />
               </option>
             </UIState>
           </value>
