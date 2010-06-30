@@ -24,9 +24,9 @@ def ant = binding.variables['ant'] ?: binding.variables['Ant']
 ant.property(environment:"env")
 grailsHome = ant.antProject.properties."env.GRAILS_HOME"
 
-includeTargets << new File ( "${grailsHome}/scripts/Init.groovy" )
+includeTargets << new File ("${grailsHome}/scripts/Init.groovy")
 
-target('default': "Installs the Searchable Plugin configuration file: only required if you need to override default behavoir") {
+target(installSearchableConfig: "Installs the Searchable Plugin configuration file: only required if you need to override default behavoir") {
     depends(checkVersion)
 
     def dest = "${basedir}/grails-app/conf"
@@ -62,3 +62,5 @@ target('default': "Installs the Searchable Plugin configuration file: only requi
         
     """)
 }
+
+setDefaultTarget 'installSearchableConfig'

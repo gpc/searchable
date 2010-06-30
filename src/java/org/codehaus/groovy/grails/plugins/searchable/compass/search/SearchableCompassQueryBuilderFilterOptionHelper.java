@@ -38,7 +38,6 @@ public class SearchableCompassQueryBuilderFilterOptionHelper implements Searchab
     public static final String FILTER = "filter";
 
     public CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
-    	System.out.println("SearchableCompassQueryBuilderFilterOptionHelper applyOptions  ");
         return addFilter(compassQuery, options,compassSession);
     }
 
