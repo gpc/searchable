@@ -20,7 +20,7 @@ import org.compass.core.Compass;
 import org.compass.core.mapping.CompassMapping;
 import org.compass.core.mapping.AliasMapping;
 import org.compass.core.mapping.ResourceMapping;
-import org.compass.core.mapping.SpellCheckType;
+import org.compass.core.mapping.SpellCheck;
 import org.compass.core.mapping.osem.ClassMapping;
 import org.compass.core.mapping.osem.ClassPropertyMapping;
 import org.compass.core.mapping.osem.ClassPropertyMetaDataMapping;
@@ -202,7 +202,7 @@ public class CompassMappingUtils {
             ResourceMapping[] mappings = mapping.getRootMappings();
             for (int i = 0; i < mappings.length; i++) {
                 ResourceMapping resourceMapping = mappings[i];
-                if (resourceMapping.getSpellCheck().equals(SpellCheckType.INCLUDE)) {
+                if (resourceMapping.getSpellCheck().equals(SpellCheck.INCLUDE)) {
                     return true;
                 }
                 for (Iterator iter = resourceMapping.mappingsIt(); iter.hasNext(); ) {
@@ -211,7 +211,7 @@ public class CompassMappingUtils {
                         for (Iterator iter2 = ((ClassPropertyMapping) o).mappingsIt(); iter2.hasNext(); ) {
                             Object o2 = iter2.next();
                             if (o2 instanceof ClassPropertyMetaDataMapping) {
-                                if (((ClassPropertyMetaDataMapping) o2).getSpellCheck().equals(SpellCheckType.INCLUDE)) {
+                                if (((ClassPropertyMetaDataMapping) o2).getSpellCheck().equals(SpellCheck.INCLUDE)) {
                                     return true;
                                 }
                             }
