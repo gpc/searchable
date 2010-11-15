@@ -89,7 +89,7 @@ This version is recommended for JDK 1.5+
         compassGpsDevice(HibernateGpsDevice) { bean ->
             bean.destroyMethod = "stop"
             name = "hibernate"
-            sessionFactory = sessionFactory
+            sessionFactory = ref("sessionFactory")
             fetchCount = 5000
 //            lifecycleInjector = lifecycleInjector
         }

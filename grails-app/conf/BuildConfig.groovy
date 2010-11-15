@@ -14,6 +14,5 @@ grails.project.dependency.resolution = {
         mavenCentral()
     }
     dependencies {
-        compile 'org.compass-project:compass:2.2.0'
     }
 }
