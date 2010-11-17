@@ -155,7 +155,6 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                     "You probably need to change the syntax from \"foo: 'bar'\" to \"name: 'foo', value: 'bar'\". " +
                     "Ignoring this constant for now since it doesn't provide 'name' + 'value(s)' attributes. " +
                     "See http://grails.org/Searchable+Plugin+-+Mapping+-+constant for details"
-                System.out.println(message)
                 LOG.warn(message)
                 return
             }
@@ -364,7 +363,6 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                         "[${mappedClass.getName()}#searchable] for property [${propertyName}] has a deprecated value [${optionValue}]. " +
                         "Please use [${deprecation[optionValue]}] instead."
                     log.warn(message)
-                    System.out.println("WARN: " + message)
                 }
             }
         }

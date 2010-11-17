@@ -24,6 +24,9 @@ import org.compass.core.lucene.util.LuceneHelper;
 import java.util.Map;
 import java.util.List;
 import java.util.Arrays;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Filter;
 import org.compass.core.CompassQueryFilter;
 import org.apache.lucene.search.SortField;
@@ -36,6 +39,8 @@ import org.apache.lucene.search.SortField;
  */
 public class SearchableCompassQueryBuilderFilterOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
     public static final String FILTER = "filter";
+    
+    private static final Log LOG = LogFactory.getLog(SearchableCompassQueryBuilderFilterOptionHelper.class);
 
     public CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
         return addFilter(compassQuery, options,compassSession);
@@ -45,7 +50,7 @@ public class SearchableCompassQueryBuilderFilterOptionHelper implements Searchab
     	
     	if (compassSession == null) {
     		
-        	System.out.println("compassSession is null in SearchableCompassQueryBuilderFilterOptionHelper  ");
+        	LOG.warn("compassSession is null in SearchableCompassQueryBuilderFilterOptionHelper  ");
     	}
     	
     	try {

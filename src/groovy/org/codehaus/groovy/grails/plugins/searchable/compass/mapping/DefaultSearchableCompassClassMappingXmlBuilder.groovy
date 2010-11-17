@@ -192,7 +192,6 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
     "http://www.compass-project.org/dtd/compass-core-mapping-2.2.dtd">
 """ + writer.toString()
 
-//       System.out.println("${className} xml [${xml}]")
        LOG.debug("${className} xml [${xml}]")
        return new ByteArrayInputStream(xml.getBytes())
     }
