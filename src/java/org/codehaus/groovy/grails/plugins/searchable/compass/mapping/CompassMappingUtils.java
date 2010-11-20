@@ -168,7 +168,7 @@ public class CompassMappingUtils {
                             aliases.add(mapping.getAlias());
                         }
                     }
-                    propertyMapping.setAttrbute("refAlias", DefaultGroovyMethods.join(aliases, ", "));
+                    propertyMapping.setAttribute("refAlias", DefaultGroovyMethods.join(aliases, ", "));
                 }
             }
         }

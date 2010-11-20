@@ -218,7 +218,7 @@ public class CompassClassPropertyMapping {
         return attributes != null && attributes.containsKey(name);
     }
 
-    public void setAttrbute(String name, String value) {
+    public void setAttribute(String name, String value) {
         if (attributes == null) {
             attributes = new HashMap();
         }

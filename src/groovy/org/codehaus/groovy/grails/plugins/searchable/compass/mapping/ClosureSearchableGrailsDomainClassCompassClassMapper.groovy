@@ -280,7 +280,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             }
             if (args.component) {
                 // eg "comments(component: true)" - explicit component type or
-                // eg "comments(component: [cascase: 'all'])" - explicit component options
+                // eg "comments(component: [cascade: 'all'])" - explicit component options
                 componentOptions = new HashMap(defaultMapping.attributes)
                 if (args.component != true) {
                     componentOptions.putAll(args.component)
