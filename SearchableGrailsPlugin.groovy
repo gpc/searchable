@@ -21,8 +21,8 @@ import grails.util.GrailsUtil
 
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.compass.gps.impl.SingleCompassGps
 import org.compass.gps.device.hibernate.HibernateGpsDevice
+import org.compass.gps.impl.SingleCompassGps
 import org.springframework.context.ApplicationContext
 import org.springframework.core.JdkVersion
 
@@ -30,7 +30,7 @@ import org.springframework.core.JdkVersion
 * @author Maurice Nicholson
 */
 class SearchableGrailsPlugin {
-    static LOG = LogFactory.getLog("org.codehaus.groovy.grails.plugins.searchable.SearchableGrailsPlugin")
+    static LOG = LogFactory.getLog("grails.plugin.searchable.SearchableGrailsPlugin")
 
     def version = "0.6-SNAPSHOT"
     def author = 'Maurice Nicholson'
@@ -70,12 +70,13 @@ This version is recommended for JDK 1.5+
 
         // Compass
         LOG.debug("Defining Compass and Compass::GPS beans")
+        def defaultConnection = getDefaultCompassConnection(application)
         compass(DefaultSearchableCompassFactoryBean) { bean ->
             grailsApplication = application
-            compassConnection = config.compassConnection
+            compassConnection = config.compassConnection ?: defaultConnection
             compassSettings = config.compassSettings instanceof ConfigObject ? config.compassSettings.toProperties() : config.compassSettings
-            defaultExcludedProperties = config.defaultExcludedProperties
-            defaultFormats = config.defaultFormats
+            defaultExcludedProperties = config.defaultExcludedProperties ?: ["password"]
+            defaultFormats = config.defaultFormats instanceof ConfigObject ? config.defaultFormats.toProperties() : config.defaultFormats
             compassClassMappingXmlBuilder = new DefaultSearchableCompassClassMappingXmlBuilder()
         }
 
@@ -86,7 +87,7 @@ This version is recommended for JDK 1.5+
             bean.destroyMethod = "stop"
             name = "hibernate"
             sessionFactory = ref("sessionFactory")
-            fetchCount = 5000
+            fetchCount = config.fetchCount ?: 5000
 //            lifecycleInjector = lifecycleInjector
         }
         compassGps(SingleCompassGps) {
@@ -124,7 +125,7 @@ This version is recommended for JDK 1.5+
             return false
         }
 
-        // release locks?
+        // release locks? Defaults to true.
         if (compass.searchEngineIndexManager.isLocked()) {
             if (config.releaseLocksOnStartup != false) {
                 compass.searchEngineIndexManager.releaseLocks()
@@ -133,7 +134,7 @@ This version is recommended for JDK 1.5+
         }
 
         // start the gps, mirroring any changes made through Hibernate API
-        // to be mirrored to the search engine
+        // to be mirrored to the search engine - defaults to true.
         def mirrorChanges = config.mirrorChanges != false
         def compassGps = applicationContext.getBean("compassGps")
         if (mirrorChanges) {
@@ -141,8 +142,8 @@ This version is recommended for JDK 1.5+
             LOG.debug("Started Compass::GPS")
         }
 
-        // index the database?
-        def bulkIndex = config.bulkIndexOnStartup in [null, true]
+        // index the database on startup?
+        def bulkIndex = !(config.bulkIndexOnStartup in [false, "fork"])
         def forkBulkIndex = config.bulkIndexOnStartup in ["fork"]
         if (bulkIndex) {
             CompassGpsUtils.index(compassGps, null)
@@ -175,12 +176,9 @@ This version is recommended for JDK 1.5+
 
     // Get a configuration instance
     private getConfiguration(ApplicationContext applicationContext, GrailsApplication application) {
-        // try to get it from GrailsApplication#config
+        // Try to load Searchable.groovy from the current project and
+        // merge into the main config.
         def config = application.config
-        if (config.containsKey("searchable")) {
-            return config.searchable
-        }
-        // try to load it from class file and merge in to GrailsApplication#config
         try {
             Class configClass = application.getClassLoader().loadClass("Searchable")
             ConfigSlurper configSlurper = new ConfigSlurper(GrailsUtil.getEnvironment())
@@ -191,10 +189,15 @@ This version is recommended for JDK 1.5+
             binding.appVersion = application.metadata["app.version"]
             configSlurper.binding = binding
             config.merge(configSlurper.parse(configClass))
-            return config.searchable
         } catch (ClassNotFoundException e) {
-            LOG.debug("Not found: ${e.message}")
+          LOG.debug("Not found: ${e.message}")
         }
+
+        // If 'searchable' is in the config, return it.
+        if (config.searchable) {
+            return config.searchable
+        }
+
         // try to load from Spring context bean
         if (applicationContext.containsBean("searchableConfig")) {
             def searchableConfig = applicationContext.getBean("searchableConfig")
@@ -234,5 +237,12 @@ This version is recommended for JDK 1.5+
             LOG.debug("Not found: ${e.message}")
             return [:]
         }
+    }
+    
+    private getDefaultCompassConnection(application) {
+        def appName = application.metadata["app.name"]
+        def userHome = System.properties['user.home']
+        def grailsEnv = GrailsUtil.getEnvironment()
+        return new File("${userHome}/.grails/projects/${appName}/searchable-index/${grailsEnv}").absolutePath
     }
 }
