@@ -53,7 +53,7 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator ext
         if (getter == null) {
             return false;
         }
-        return ReflectionUtils.invokeMethod(getter, clazz, new Class[] { getSearchableAnnotationClass() }) != null;
+        return ReflectionUtils.invokeMethod(getter, clazz, getSearchableAnnotationClass()) != null;
     }
 
     /**
