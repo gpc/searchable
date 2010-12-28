@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.codehaus.groovy.grails.plugins.support.GrailsPluginUtils
-import org.codehaus.groovy.grails.plugins.searchable.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.mapping.*
-import org.codehaus.groovy.grails.plugins.searchable.compass.spring.*
+import grails.plugin.searchable.internal.compass.*
+import grails.plugin.searchable.internal.compass.domain.DynamicDomainMethodUtils
+import grails.plugin.searchable.internal.compass.mapping.*
+import grails.plugin.searchable.internal.compass.spring.*
+import grails.util.GrailsUtil
 
 import org.apache.commons.logging.LogFactory
-
-import org.compass.gps.impl.SingleCompassGps
-
-import org.compass.gps.device.hibernate.HibernateGpsDevice
-import org.codehaus.groovy.grails.plugins.searchable.compass.domain.DynamicDomainMethodUtils
-import org.springframework.core.JdkVersion
-import grails.util.GrailsUtil
 import org.codehaus.groovy.grails.commons.GrailsApplication
+import org.compass.gps.impl.SingleCompassGps
+import org.compass.gps.device.hibernate.HibernateGpsDevice
 import org.springframework.context.ApplicationContext
+import org.springframework.core.JdkVersion
 
 /**
 * @author Maurice Nicholson
