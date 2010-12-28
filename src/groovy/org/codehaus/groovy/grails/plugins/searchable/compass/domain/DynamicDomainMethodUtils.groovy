@@ -39,91 +39,91 @@ class DynamicDomainMethodUtils {
              * search: Returns a subset of the instances of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.search << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "search").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "search").invoke(*processStringArgs(args))
             }
 
             /**
              * moreLikeThis: Returns more hits of this class like this given instance
              */
             grailsDomainClass.metaClass.'static'.moreLikeThis << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "moreLikeThis").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "moreLikeThis").invoke(*processStringArgs(args))
             }
 
             /**
              * searchTop: Returns the top (most relevant) instance of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.searchTop << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "searchTop").invoke(*processStringArgs(args))
             }
 
             /**
              * searchEvery: Returns all instance of this class matching the given query
              */
             grailsDomainClass.metaClass.'static'.searchEvery << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "searchEvery").invoke(*processStringArgs(args))
             }
 
             /**
              * Returns the number of hits for the given query matching instances of this class
              */
             grailsDomainClass.metaClass.'static'.countHits << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "countHits").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "countHits").invoke(*processStringArgs(args))
             }
 
             /**
              * Get term frequencies for the given args
              */
             grailsDomainClass.metaClass.'static'.termFreqs << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "termFreqs").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "termFreqs").invoke(*processStringArgs(args))
             }
 
             /**
              * Suggest an alternative query (correcting possible spelling errors)
              */
             grailsDomainClass.metaClass.'static'.suggestQuery << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "suggestQuery").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "suggestQuery").invoke(*processStringArgs(args))
             }
             
             /**
              * index: Adds class instances to the search index
              */
             grailsDomainClass.metaClass.'static'.index << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "index").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "index").invoke(*processStringArgs(args))
             }
 
             /**
              * indexAll: Adds class instances to the search index
              */
             grailsDomainClass.metaClass.'static'.indexAll << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "indexAll").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "indexAll").invoke(*processStringArgs(args))
             }
 
             /**
              * unindex: Removes class instances from the search index
              */
             grailsDomainClass.metaClass.'static'.unindex << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "unindex").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "unindex").invoke(*processStringArgs(args))
             }
 
             /**
              * unindexAll: Removes class instances from the search index
              */
             grailsDomainClass.metaClass.'static'.unindexAll << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "unindexAll").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "unindexAll").invoke(*processStringArgs(args))
             }
 
             /**
              * reindexAll: Updates the search index
              */
             grailsDomainClass.metaClass.'static'.reindexAll << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "reindexAll").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "reindexAll").invoke(*processStringArgs(args))
             }
 
             /**
              * reindex: Updates the search index
              */
             grailsDomainClass.metaClass.'static'.reindex << { Object[] args ->
-                searchableMethodFactory.getMethod(delegate, "reindex").invoke(*args)
+                searchableMethodFactory.getMethod(delegate, "reindex").invoke(*processStringArgs(args))
             }
 
             // ------------------------------------------------------------
@@ -169,5 +169,21 @@ class DynamicDomainMethodUtils {
                 searchableMethodFactory.getMethod("reindex").invoke(delegate)
             }
         }
+    }
+
+    private static Object[] processStringArgs(Object[] args) {
+        boolean wrapped = false
+        if (args.length == 1 && args[0] instanceof Object[]) {
+            args = args[0]
+            wrapped = true
+        }
+
+        def newArgs = []
+        for (int i = 0; i < args.length; i++) {
+            newArgs << (args[i] instanceof CharSequence ? args[i].toString() : args[i])
+        }
+
+        newArgs = newArgs as Object[]
+        return wrapped ? [newArgs] as Object[] : newArgs
     }
 }
