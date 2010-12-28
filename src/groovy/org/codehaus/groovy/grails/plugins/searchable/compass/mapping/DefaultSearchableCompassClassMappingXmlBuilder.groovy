@@ -154,6 +154,12 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
                         validateAttributes("component", compAttrs, COMPONENT_ATTR_NAMES)
                         component(compAttrs)
                     }
+                    if (propertyMapping.cascade) {
+                        def attributes = propertyMapping.attributes
+                        LOG.debug("Mapping cascade-only relationship '${className}.${propertyName}' with attributes ${attributes}")
+                        def cascadeAttrs = attrs + self.transformAttrNames(attributes)
+                        cascade(cascadeAttrs)
+                    }
                     if (propertyMapping.property) {
                         def propertyMappings = description.propertyMappings.findAll { it.propertyName == propertyName }
                         donePropertyMappings.addAll(propertyMappings)

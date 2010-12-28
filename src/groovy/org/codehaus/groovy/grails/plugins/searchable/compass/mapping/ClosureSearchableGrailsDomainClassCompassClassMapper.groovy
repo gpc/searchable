@@ -263,14 +263,12 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         if (defaultTypeReference) {
             assert defaultMapping.reference
             if (!args.reference && !args.component) {
-                // eg "comments(cascade: true)" - assumed to be reference
-                referenceOptions = new HashMap(defaultMapping.attributes)
-                referenceOptions.putAll(args)
-                reference = true
+                // eg "comments(cascade: true)" - cascade only relationship
+                referenceOptions = [*:args]
             }
             if (args.reference) {
                 // eg "comments(reference: true)" - explicit reference type or
-                // eg "comments(reference: [cascase: 'all'])" - explicit reference options
+                // eg "comments(reference: [cascade: 'all'])" - explicit reference options
                 referenceOptions = new HashMap(defaultMapping.attributes)
                 if (args.reference != true) {
                     referenceOptions.putAll(args.reference)
@@ -319,10 +317,6 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             }
         }
 
-        if (!reference && !component) {
-            return
-        }
-
         // Check for invalid options
         if (component && reference) {
             throw new IllegalArgumentException("'${mappedClass.getName()}#searchable' declares property '${name}' as both reference and component but this is not supported; it must be one or the other")
@@ -332,9 +326,12 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
             validateOptions(name, "Searchable Component", SEARCHABLE_COMPONENT_OPTIONS, componentOptions, implicitComponent)
             mappedProperties << CompassClassPropertyMapping.getComponentInstance(name, defaultMapping.propertyType, componentOptions)
         }
-        if (reference) {
+        else if (reference) {
             validateOptions(name, "Searchable Reference", SEARCHABLE_REFERENCE_OPTIONS, referenceOptions, implicitReference)
             mappedProperties << CompassClassPropertyMapping.getReferenceInstance(name, defaultMapping.propertyType, referenceOptions)
+        }
+        else if (referenceOptions.cascade) {
+            mappedProperties << CompassClassPropertyMapping.getCascadeInstance(name, defaultMapping.propertyType, referenceOptions.cascade)
         }
     }
 

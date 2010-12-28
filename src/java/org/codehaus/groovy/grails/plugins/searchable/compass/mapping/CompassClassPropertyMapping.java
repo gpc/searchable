@@ -30,6 +30,7 @@ public class CompassClassPropertyMapping {
     public static final String PROPERTY = "property";
     public static final String REFERENCE = "reference";
     public static final String COMPONENT = "component";
+    public static final String CASCADE = "cascade";
 
     /**
      * The type of this mapping
@@ -166,6 +167,18 @@ public class CompassClassPropertyMapping {
         return new CompassClassPropertyMapping(COMPONENT, propertyName, propertyType, attributes);
     }
 
+    /**
+     * Factory-style constructor for type-safe cascade type
+     * @param propertyName the name of the mapped property
+     * @param propertyType the user class type
+     * @param cascadeType the cascade type: "all", "create", "save" or "delete"
+     */
+    public static CompassClassPropertyMapping getCascadeInstance(String propertyName, Class propertyType, String cascadeType) {
+        Map attrs = new HashMap();
+        attrs.put("cascade", cascadeType);
+        return new CompassClassPropertyMapping(CASCADE, propertyName, propertyType, attrs);
+    }
+
     public String getType() {
         return type;
     }
@@ -204,6 +217,13 @@ public class CompassClassPropertyMapping {
      */
     public boolean isComponent() {
         return type.equals(COMPONENT);
+    }
+
+    /**
+     * Is the strategy a cascade only relationship?
+     */
+    public boolean isCascade() {
+        return type.equals(CASCADE);
     }
 
     public Map getAttributes() {
