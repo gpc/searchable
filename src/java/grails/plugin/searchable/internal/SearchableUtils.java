@@ -18,6 +18,7 @@ package grails.plugin.searchable.internal;
 import grails.plugin.searchable.internal.util.PatternUtils;
 
 import org.codehaus.groovy.grails.commons.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
@@ -32,9 +33,12 @@ import org.compass.core.mapping.osem.ObjectMapping;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * General purpose utilities for the Grails Searchable Plugin
@@ -147,6 +151,33 @@ public class SearchableUtils {
         if (propertyType != null && classes.contains(propertyType)) {
             return propertyType;
         }
+        
+        // Handle generic collection types, e.g. Set<MyDomainClass>, for transient properties.
+        propertyType = property.getType();
+        
+        if (Collection.class.isAssignableFrom(propertyType)) {
+            Class elementClass = getElementClass(property);
+            if (classes.contains(elementClass)) return elementClass;
+        }
+        return null;
+    }
+
+    /**
+     * If the given domain class property is a generic collection, this method
+     * returns the element type of that collection. Otherwise, it returns
+     * <code>null</code>.
+     */
+    public static Class getElementClass(GrailsDomainClassProperty property) {
+        PropertyDescriptor descriptor = BeanUtils.getPropertyDescriptor(
+                property.getDomainClass().getClazz(),
+                property.getName());
+        Type type = descriptor.getReadMethod().getGenericReturnType();
+        if (type instanceof ParameterizedType) {
+            for (Type argType : ((ParameterizedType) type).getActualTypeArguments()) {
+                return (Class) argType;
+            }
+        }
+        
         return null;
     }
 

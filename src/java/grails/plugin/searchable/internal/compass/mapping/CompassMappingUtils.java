@@ -15,6 +15,7 @@
  */
 package grails.plugin.searchable.internal.compass.mapping;
 
+import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.util.GrailsDomainClassUtils;
 
 import org.springframework.util.Assert;
@@ -31,6 +32,7 @@ import org.compass.core.config.CompassMappingBinding;
 import org.compass.core.util.ClassUtils;
 import org.compass.core.util.FieldInvoker;
 import org.compass.core.spi.InternalCompass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.apache.commons.logging.Log;
@@ -162,7 +164,19 @@ public class CompassMappingUtils {
                     Class clazz = propertyMapping.getPropertyType();
                     aliases.add(((CompassClassMapping) mappingByClass.get(clazz)).getAlias());
                     GrailsDomainClassProperty domainClassProperty = GrailsDomainClassUtils.getGrailsDomainClassProperty(grailsDomainClasses, mappedClass, propertyMapping.getPropertyName());
-                    Collection clazzes = GrailsDomainClassUtils.getClazzes(domainClassProperty.getReferencedDomainClass().getSubClasses());
+                    
+                    GrailsDomainClass dc = domainClassProperty.getReferencedDomainClass();
+                    if (dc == null) {
+                        Class elementClass = SearchableUtils.getElementClass(domainClassProperty);
+                        dc = GrailsDomainClassUtils.getGrailsDomainClass(elementClass, grailsDomainClasses);
+                        
+                        if (dc == null) {
+                            LOG.warn("Cannot find domain class for property '" + domainClassProperty.getName() +
+                                    "' of class '" + domainClassProperty.getDomainClass().getFullName());
+                            continue;
+                        }
+                    }
+                    Collection clazzes = GrailsDomainClassUtils.getClazzes(dc.getSubClasses());
                     for (Iterator citer = clazzes.iterator(); citer.hasNext(); ) {
                         CompassClassMapping mapping = (CompassClassMapping) mappingByClass.get(citer.next());
                         if (mapping != null) {
