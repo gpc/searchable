@@ -1,3 +1,5 @@
 .settings/
+plugin.xml
+stacktrace.log
 target/
 web-app/WEB-INF/classes/
