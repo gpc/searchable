@@ -16,7 +16,12 @@
 package grails.plugin.searchable.internal.compass.config;
 
 import grails.plugin.searchable.internal.SearchableUtils;
+import grails.plugin.searchable.internal.compass.config.mapping.AppConfigMappingConfigurator;
 import grails.plugin.searchable.internal.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator;
+import grails.plugin.searchable.internal.compass.mapping.AppConfigClassMapper;
+import grails.plugin.searchable.internal.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
+import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
+import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassClassMapperFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,6 +47,10 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
     private GrailsApplication grailsApplication;
     private SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators;
 
+    private Map defaultFormats;
+    private List defaultExcludes;
+    private SearchableCompassClassMappingXmlBuilder classMappingXmlBuilder;
+
     /**
      * Configure Compass ready for it to be built
      *
@@ -55,7 +64,7 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         // determine which classes are mapped by which strategy
         Map classesByStrategy = new HashMap();
         Collection grailsDomainClasses = SearchableUtils.getGrailsDomainClasses(grailsApplication);
-        Collection mappableClasses = new HashSet();
+        Set mappableClasses = new HashSet();
         Set notMapped = new HashSet(grailsDomainClasses);
         for (int i = 0; i < classMappingConfigurators.length; i++) {
             SearchableGrailsDomainClassMappingConfigurator configurator = classMappingConfigurators[i];
@@ -72,6 +81,27 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
                 mappableClasses.addAll(classes);
             }
         }
+        
+        // Deal with any domain classes configured through the application's runtime
+        // config. This is treated differently to the other configuration options
+        // because it can override existing mapping information. Also, it requires
+        // access to the application config object.
+        CompositeSearchableGrailsDomainClassCompassClassMapper classMapper = SearchableGrailsDomainClassCompassClassMapperFactory.initClassMapper(
+                new AppConfigClassMapper(grailsApplication.getConfig()),
+                defaultExcludes,
+                defaultFormats);
+        
+        AppConfigMappingConfigurator appConfigConfigurator = new AppConfigMappingConfigurator(grailsApplication.getConfig());
+        appConfigConfigurator.setMappingDescriptionProviderManager(classMapper);
+        appConfigConfigurator.setCompassClassMappingXmlBuilder(classMappingXmlBuilder);
+        
+        Collection appConfigMapped = appConfigConfigurator.getMappedBy(grailsDomainClasses);
+        mappableClasses.addAll(appConfigMapped);
+        
+        // Check whether search has been explicitly removed from any domain classes.
+        Collection unmapped = appConfigConfigurator.getUnmapped(grailsDomainClasses);
+        mappableClasses.removeAll(unmapped);
+        notMapped.addAll(unmapped);
 
         if (LOG.isDebugEnabled() && !notMapped.isEmpty()) {
             for (Iterator iter = notMapped.iterator(); iter.hasNext(); ) {
@@ -88,6 +118,12 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
                 classMappingConfigurator.configureMappings(compassConfiguration, configurationContext, classes, mappableClasses);
             }
         }
+        
+        // Finally, execute the config-based configurator so that it can add and
+        // override mappings.
+        if (appConfigMapped != null && !appConfigMapped.isEmpty()) {
+            appConfigConfigurator.configureMappings(compassConfiguration, configurationContext, appConfigMapped, mappableClasses);
+        }
     }
 
     public GrailsApplication getGrailsApplication() {
@@ -102,4 +138,17 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         Arrays.sort(classMappingConfigurators, new OrderComparator());
         this.classMappingConfigurators = classMappingConfigurators;
     }
+
+    public void setDefaultFormats(Map defaultFormats) {
+        this.defaultFormats = defaultFormats == null ? new LinkedHashMap() : new LinkedHashMap(defaultFormats);
+    }
+
+    public void setDefaultExcludes(List defaultExcludedProperties) {
+        this.defaultExcludes = defaultExcludedProperties == null ? new ArrayList() : new ArrayList(defaultExcludedProperties);
+    }
+
+    public void setClassMappingXmlBuilder(SearchableCompassClassMappingXmlBuilder classMappingXmlBuilder) {
+        this.classMappingXmlBuilder = classMappingXmlBuilder;
+    }
 }
+

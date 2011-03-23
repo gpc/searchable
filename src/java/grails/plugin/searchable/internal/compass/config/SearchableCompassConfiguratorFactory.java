@@ -51,13 +51,26 @@ public abstract class SearchableCompassConfiguratorFactory {
     public static DefaultGrailsDomainClassMappingSearchableCompassConfigurator getDomainClassMappingConfigurator(GrailsApplication grailsApplication, ResourceLoader resourceLoader, Map defaultFormats, List defaultExcludedProperties, SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder) {
         SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators = SearchableGrailsDomainClassMappingConfiguratorFactory.getSearchableGrailsDomainClassMappingConfigurators(resourceLoader, defaultFormats, defaultExcludedProperties, compassClassMappingXmlBuilder);
 
-        return getDomainClassMappingConfigurator(grailsApplication, classMappingConfigurators);
+        return getDomainClassMappingConfigurator(
+                grailsApplication,
+                classMappingConfigurators,
+                defaultFormats,
+                defaultExcludedProperties,
+                compassClassMappingXmlBuilder);
     }
 
-    private static DefaultGrailsDomainClassMappingSearchableCompassConfigurator getDomainClassMappingConfigurator(GrailsApplication grailsApplication, SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators) {
+    private static DefaultGrailsDomainClassMappingSearchableCompassConfigurator getDomainClassMappingConfigurator(
+            GrailsApplication grailsApplication,
+            SearchableGrailsDomainClassMappingConfigurator[] classMappingConfigurators,
+            Map defaultFormats,
+            List defaultExcludedProperties,
+            SearchableCompassClassMappingXmlBuilder classMappingXmlBuilder) {
         DefaultGrailsDomainClassMappingSearchableCompassConfigurator mappings = new DefaultGrailsDomainClassMappingSearchableCompassConfigurator();
         mappings.setGrailsApplication(grailsApplication);
         mappings.setClassMappingStrategies(classMappingConfigurators);
+        mappings.setClassMappingXmlBuilder(classMappingXmlBuilder);
+        mappings.setDefaultFormats(defaultFormats);
+        mappings.setDefaultExcludes(defaultExcludedProperties);
         return mappings;
     }
 

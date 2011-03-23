@@ -32,6 +32,13 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
     private static final Log LOG = LogFactory.getLog(SearchableGrailsDomainClassCompassClassMapperFactory.class);
 
     public static CompositeSearchableGrailsDomainClassCompassClassMapper getDefaultSearchableGrailsDomainClassCompassClassMapper(List defaultExcludedProperties, Map defaultFormats) {
+        return initClassMapper(new CompositeSearchableGrailsDomainClassCompassClassMapper(), defaultExcludedProperties, defaultFormats);
+    }
+    
+    public static CompositeSearchableGrailsDomainClassCompassClassMapper initClassMapper(
+            CompositeSearchableGrailsDomainClassCompassClassMapper classMapper,
+            List defaultExcludedProperties,
+            Map defaultFormats) {
         DefaultCompassConverterLookupHelper converterLookupHelper = new DefaultCompassConverterLookupHelper();
         converterLookupHelper.setConverterLookup(((InternalCompass) CompassConfigurationFactory.newConfiguration().setConnection("ram://dummy").buildCompass()).getConverterLookup());
 
@@ -39,10 +46,10 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
         domainClassPropertyMappingFactory.setDefaultFormats(defaultFormats);
         domainClassPropertyMappingFactory.setConverterLookupHelper(converterLookupHelper);
 
-        CompositeSearchableGrailsDomainClassCompassClassMapper classMapper = new CompositeSearchableGrailsDomainClassCompassClassMapper();
         classMapper.setDefaultExcludedProperties(defaultExcludedProperties);
         SearchableGrailsDomainClassCompassClassMapper[] classMappers = getActualSearchableGrailsDomainClassCompassClassMappers(domainClassPropertyMappingFactory, classMapper);
         classMapper.setSearchableGrailsDomainClassCompassMappingDescriptionProviders(classMappers);
+        
         return classMapper;
     }
 

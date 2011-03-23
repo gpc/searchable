@@ -15,8 +15,9 @@
  */
 package grails.plugin.searchable.internal.compass.config.mapping;
 
-import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
 import grails.plugin.searchable.internal.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
+import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
+import grails.plugin.searchable.internal.compass.mapping.AppConfigClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassClassMapperFactory;
 
 import org.apache.commons.logging.Log;
