@@ -33,19 +33,24 @@ import java.util.*;
 public class SearchableCompassQueryBuilderClassOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
 
     public CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
-        Class clazz = (Class) options.get("class");
-        if (clazz == null) {
+        if (!options.containsKey("class") && !options.containsKey("classes")) {
             return compassQuery;
         }
 
         // TODO add poly=false option?
 
-        setAliases(compass, clazz, compassQuery, grailsApplication);
-
-        List grailsDomainClasses = Arrays.asList(grailsApplication.getArtefacts(DomainClassArtefactHandler.TYPE));
-        GrailsDomainClass grailsDomainClass = GrailsDomainClassUtils.getGrailsDomainClass(clazz, grailsDomainClasses);
-        Set subClasses = grailsDomainClass.getSubClasses();
-        setPolyClassFilter(this, compassSession, compassQuery, clazz, subClasses);
+        if (options.containsKey("classes")) {
+            setAliases(compass, (Collection<Class>) options.get("classes"), compassQuery, grailsApplication);
+        }
+        else {
+            Class clazz = (Class) options.get("class");
+            setAliases(compass, clazz, compassQuery, grailsApplication);
+            
+            List grailsDomainClasses = Arrays.asList(grailsApplication.getArtefacts(DomainClassArtefactHandler.TYPE));
+            GrailsDomainClass grailsDomainClass = GrailsDomainClassUtils.getGrailsDomainClass(clazz, grailsDomainClasses);
+            Set subClasses = grailsDomainClass.getSubClasses();
+            setPolyClassFilter(this, compassSession, compassQuery, clazz, subClasses);
+        }
 
         return compassQuery;
     }
@@ -54,8 +59,16 @@ public class SearchableCompassQueryBuilderClassOptionHelper implements Searchabl
      * Set aliases on the query for the given clazz, respecting inheritance in mapping
      */
     private static CompassQuery setAliases(Compass compass, Class clazz, CompassQuery compassQuery, GrailsApplication application) {
-        String[] aliasesArr = SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, clazz, application);
-        compassQuery.setAliases(aliasesArr);
+        return setAliases(compass, Arrays.asList(clazz), compassQuery, application);
+    }
+
+    private static CompassQuery setAliases(Compass compass, Collection<Class> clazzes, CompassQuery compassQuery, GrailsApplication application) {
+        Set<String> aliases = new HashSet<String>();
+        for (Class clazz : clazzes) {
+            String[] aliasesArr = SearchableGrailsDomainClassCompassMappingUtils.getPolyMappingAliases(compass, clazz, application);
+            aliases.addAll(Arrays.asList(aliasesArr));
+        }
+        compassQuery.setAliases(aliases.toArray(new String[0]));
         return compassQuery;
     }
 
