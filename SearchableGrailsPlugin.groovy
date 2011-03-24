@@ -50,6 +50,7 @@ This version is recommended for JDK 1.5+
                      core:  "1.0 > *",
                      hibernate: "1.0 > *"]
 //	def watchedResources = "file:./grails-app/doai/*Codec.groovy"
+    def loadAfter = ["autobase", "liquibase", "databaseMigration"]
     def config
 
     def doWithDynamicMethods = { applicationContext ->
