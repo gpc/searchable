@@ -49,7 +49,12 @@ This version is recommended for JDK 1.5+
                      i18n: "1.0 > *",
                      core:  "1.0 > *",
                      hibernate: "1.0 > *"]
-//	def watchedResources = "file:./grails-app/doai/*Codec.groovy"
+
+    def license = "APACHE"
+    def developers = [ [ name: "Peter Ledbrook", email: "p.ledbrook@cacoethes.co.uk" ] ]
+    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPSEARCHABLE" ]
+    def scm = [ url: "https://github.com/gpc/grails-searchable" ]
+
     def loadAfter = ["autobase", "liquibase", "databaseMigration"]
     def config
 
