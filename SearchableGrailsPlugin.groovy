@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import grails.plugin.searchable.internal.compass.*
+import grails.plugin.searchable.internal.compass.config.*
 import grails.plugin.searchable.internal.compass.domain.DynamicDomainMethodUtils
 import grails.plugin.searchable.internal.compass.mapping.*
 import grails.plugin.searchable.internal.compass.spring.*
@@ -92,7 +93,9 @@ This version is recommended for JDK 1.5+
         compassGpsDevice(HibernateGpsDevice) { bean ->
             bean.destroyMethod = "stop"
             name = "hibernate"
-            sessionFactory = ref("sessionFactory")
+            sessionFactory = { SessionFactoryLookup sfl ->
+				sessionFactory = ref("sessionFactory")
+			}
             fetchCount = config.fetchCount ?: 5000
 //            lifecycleInjector = lifecycleInjector
         }
