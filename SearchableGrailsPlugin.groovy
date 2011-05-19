@@ -33,7 +33,7 @@ import org.springframework.core.JdkVersion
 class SearchableGrailsPlugin {
     static LOG = LogFactory.getLog("grails.plugin.searchable.SearchableGrailsPlugin")
 
-    def version = "0.6-SNAPSHOT"
+    def version = "0.6"
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
     def title = 'Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+'
