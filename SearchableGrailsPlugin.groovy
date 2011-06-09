@@ -36,7 +36,7 @@ class SearchableGrailsPlugin {
     def version = "0.6"
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
-    def title = 'Adds rich search functionality to Grails domain models. This version is recommended for JDK 1.5+'
+    def title = 'Searchable Plugin'
     def description = '''
 Adds rich search functionality to Grails domain models.
 Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apache.org/)
