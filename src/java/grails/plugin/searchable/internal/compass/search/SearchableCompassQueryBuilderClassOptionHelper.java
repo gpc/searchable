@@ -33,7 +33,7 @@ import java.util.*;
 public class SearchableCompassQueryBuilderClassOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
 
     public CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
-        if (!options.containsKey("class") && !options.containsKey("classes")) {
+        if (options.get("class") == null && options.get("classes") == null) {
             return compassQuery;
         }
 

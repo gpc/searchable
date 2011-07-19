@@ -69,6 +69,9 @@ public class MoreLikeThisCompassQueryBuilder extends AbstractSearchableCompassQu
             Class clazz = instance.getClass();
             alias = CompassMappingUtils.getMappingAlias(getCompass(), clazz);
             id = SearchableUtils.getIdent(getCompass(), alias, instance);
+            if (id == null) {
+                throw new IllegalArgumentException("Domain instance for MoreLikeThis query builder must have an ID");
+            }
         } else {
             Class clazz = (Class) options.get("class");
             if (clazz == null && options.containsKey("match")) {

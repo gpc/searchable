@@ -1,4 +1,9 @@
-class SearchSpec extends spock.lang.Specification {
+import grails.plugin.spock.IntegrationSpec
+import morelikethisnpe.FindMe
+
+class SearchSpec extends IntegrationSpec {
+    def searchableService
+
     def "GString in search() method"() {
         given: "a simple query"
         def q = "Bin1"
@@ -33,5 +38,33 @@ class SearchSpec extends spock.lang.Specification {
 
         then: "I get 3 books back"
         result.total == 3
+    }
+
+    /**
+     * Test case for <a href="http://jira.grails.org/browse/GPSEARCHABLE-207">GPSEARCHABLE-207</a>.
+     */
+    def "moreLikeThis() should work"() {
+        given: "A new domain instance"
+        def fm	= new FindMe(title: "t2").save(failOnError: true)
+
+        when: "moreLikeThis() is called with that domain instance"
+        def results = searchableService.moreLikeThis( fm )
+        
+        then: "we should get no results back"
+        results.total == 0
+    }
+
+    /**
+     * Test case for <a href="http://jira.grails.org/browse/GPSEARCHABLE-207">GPSEARCHABLE-207</a>.
+     */
+    def "moreLikeThis() should work with a transient domain instance"() {
+        given: "A new, unsaved domain instance"
+        def fm	= new FindMe(title: "t2")
+
+        when: "moreLikeThis() is called with that domain instance"
+        searchableService.moreLikeThis( fm )
+        
+        then: "An IllegalArgumentException should be thrown because it has no ID"
+        thrown(IllegalArgumentException)
     }
 }
