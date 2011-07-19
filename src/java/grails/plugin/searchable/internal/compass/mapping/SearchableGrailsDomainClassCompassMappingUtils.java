@@ -90,6 +90,7 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
             }
 
             if (domainClassPropertyMappingFactory.getGrailsDomainClassPropertyMapping(property, searchableGrailsDomainClasses) == null) {
+                LOG.debug("Can't map [" + ClassUtils.getShortName(mappedClass) + "." + propertyName + "]");
                 continue;
             }
             LOG.debug("Mapping [" + ClassUtils.getShortName(mappedClass) + "." + propertyName + "]");

@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.compass.core.Compass;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassConfigurationFactory;
+import org.compass.core.converter.Converter;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.BeansException;
@@ -30,6 +31,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A pluggable Spring factory bean for Compass
@@ -73,7 +75,13 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
 
         // TODO find a better place for this
         // register custom converters
-        configuration.registerConverter(StringMapConverter.CONVERTER_NAME, new StringMapConverter());
+        Map converters = new HashMap();
+        Map context = new HashMap();
+        context.put("customConverters", converters);
+
+        Converter converter = new StringMapConverter();
+        configuration.registerConverter(StringMapConverter.CONVERTER_NAME, converter);
+        converters.put(StringMapConverter.CONVERTER_NAME, converter);
 
         // register analyzers used internally
         configuration.getSettings().setSetting("compass.engine.analyzer.searchableplugin_whitespace.type", "whitespace");
@@ -82,7 +90,7 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
         // add reference to Spring in Compass
         configuration.getSettings().setObjectSetting(ApplicationContext.class.getName() + ".INSTANCE", applicationContext);
 
-        searchableCompassConfigurator.configure(configuration, new HashMap());
+        searchableCompassConfigurator.configure(configuration, context);
 
         Compass compass = configuration.buildCompass();
 

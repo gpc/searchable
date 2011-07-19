@@ -16,11 +16,13 @@
 package grails.plugin.searchable.internal.compass.mapping;
 
 import grails.plugin.searchable.internal.compass.converter.DefaultCompassConverterLookupHelper;
-import org.compass.core.config.CompassConfigurationFactory;
-import org.compass.core.spi.InternalCompass;
-import org.springframework.util.ClassUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.compass.core.config.CompassConfigurationFactory;
+import org.compass.core.spi.InternalCompass;
+import org.compass.core.converter.ConverterLookup;
+import org.compass.core.converter.DefaultConverterLookup;
 
 import java.util.List;
 import java.util.Map;
@@ -32,46 +34,6 @@ public class SearchableGrailsDomainClassCompassClassMapperFactory {
     private static final Log LOG = LogFactory.getLog(SearchableGrailsDomainClassCompassClassMapperFactory.class);
 
     public static CompositeSearchableGrailsDomainClassCompassClassMapper getDefaultSearchableGrailsDomainClassCompassClassMapper(List defaultExcludedProperties, Map defaultFormats) {
-        return initClassMapper(new CompositeSearchableGrailsDomainClassCompassClassMapper(), defaultExcludedProperties, defaultFormats);
-    }
-    
-    public static CompositeSearchableGrailsDomainClassCompassClassMapper initClassMapper(
-            CompositeSearchableGrailsDomainClassCompassClassMapper classMapper,
-            List defaultExcludedProperties,
-            Map defaultFormats) {
-        DefaultCompassConverterLookupHelper converterLookupHelper = new DefaultCompassConverterLookupHelper();
-        converterLookupHelper.setConverterLookup(((InternalCompass) CompassConfigurationFactory.newConfiguration().setConnection("ram://dummy").buildCompass()).getConverterLookup());
-
-        SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory = new SearchableGrailsDomainClassPropertyMappingFactory();
-        domainClassPropertyMappingFactory.setDefaultFormats(defaultFormats);
-        domainClassPropertyMappingFactory.setConverterLookupHelper(converterLookupHelper);
-
-        classMapper.setDefaultExcludedProperties(defaultExcludedProperties);
-        SearchableGrailsDomainClassCompassClassMapper[] classMappers = getActualSearchableGrailsDomainClassCompassClassMappers(domainClassPropertyMappingFactory, classMapper);
-        classMapper.setSearchableGrailsDomainClassCompassMappingDescriptionProviders(classMappers);
-        
-        return classMapper;
-    }
-
-    private static SearchableGrailsDomainClassCompassClassMapper[] getActualSearchableGrailsDomainClassCompassClassMappers(SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory, CompositeSearchableGrailsDomainClassCompassClassMapper parent) {
-        SearchableGrailsDomainClassCompassClassMapper[] classMappers;
-        try {
-            SimpleSearchableGrailsDomainClassCompassClassMapper simpleClassMapper = new SimpleSearchableGrailsDomainClassCompassClassMapper();
-            simpleClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
-            simpleClassMapper.setParent(parent);
-
-            AbstractSearchableGrailsDomainClassCompassClassMapper closureClassMapper = (AbstractSearchableGrailsDomainClassCompassClassMapper) ClassUtils.forName("grails.plugin.searchable.internal.compass.mapping.ClosureSearchableGrailsDomainClassCompassClassMapper").newInstance();
-            closureClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
-            closureClassMapper.setParent(parent);
-
-            classMappers = new SearchableGrailsDomainClassCompassClassMapper[] {
-                simpleClassMapper, closureClassMapper
-            };
-        } catch (Exception ex) {
-            // Log and throw runtime exception
-            LOG.error("Failed to find or create closure mapping provider class instance", ex);
-            throw new IllegalStateException("Failed to find or create closure mapping provider class instance: " + ex);
-        }
-        return classMappers;
+        return new CompositeSearchableGrailsDomainClassCompassClassMapper();
     }
 }

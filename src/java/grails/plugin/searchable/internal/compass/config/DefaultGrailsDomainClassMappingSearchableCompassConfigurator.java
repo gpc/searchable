@@ -17,11 +17,10 @@ package grails.plugin.searchable.internal.compass.config;
 
 import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.compass.config.mapping.AppConfigMappingConfigurator;
+import grails.plugin.searchable.internal.compass.config.mapping.SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator;
 import grails.plugin.searchable.internal.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator;
-import grails.plugin.searchable.internal.compass.mapping.AppConfigClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
-import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassClassMapperFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,6 +60,8 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         Assert.notNull(grailsApplication, "grailsApplication cannot be null");
         Assert.notNull(classMappingConfigurators, "classMappingConfigurators cannot be null");
 
+        CompositeSearchableGrailsDomainClassCompassClassMapper classMapper = null; 
+
         // determine which classes are mapped by which strategy
         Map classesByStrategy = new HashMap();
         Collection grailsDomainClasses = SearchableUtils.getGrailsDomainClasses(grailsApplication);
@@ -68,6 +69,19 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         Set notMapped = new HashSet(grailsDomainClasses);
         for (int i = 0; i < classMappingConfigurators.length; i++) {
             SearchableGrailsDomainClassMappingConfigurator configurator = classMappingConfigurators[i];
+
+            // Total hack. This seems to be the easiest way to initialise this
+            // particular property mapping configurator.
+            if (configurator instanceof SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator) {
+                classMapper = ((SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator) configurator).
+                        getMappingDescriptionProviderManager();
+                classMapper.init(
+                        compassConfiguration,
+                        (Map) configurationContext.get("customConverters"),
+                        defaultExcludes,
+                        defaultFormats);
+            }
+
             Collection classes = configurator.getMappedBy(notMapped);
             if (classes != null) {
                 notMapped.removeAll(classes);
@@ -86,11 +100,6 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         // config. This is treated differently to the other configuration options
         // because it can override existing mapping information. Also, it requires
         // access to the application config object.
-        CompositeSearchableGrailsDomainClassCompassClassMapper classMapper = SearchableGrailsDomainClassCompassClassMapperFactory.initClassMapper(
-                new AppConfigClassMapper(grailsApplication.getConfig()),
-                defaultExcludes,
-                defaultFormats);
-        
         AppConfigMappingConfigurator appConfigConfigurator = new AppConfigMappingConfigurator(grailsApplication.getConfig());
         appConfigConfigurator.setMappingDescriptionProviderManager(classMapper);
         appConfigConfigurator.setCompassClassMappingXmlBuilder(classMappingXmlBuilder);

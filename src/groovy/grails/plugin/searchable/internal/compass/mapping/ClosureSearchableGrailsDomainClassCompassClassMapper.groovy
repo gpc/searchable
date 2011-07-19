@@ -15,8 +15,13 @@
  */
 package grails.plugin.searchable.internal.compass.mapping
 
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
+import org.compass.core.config.CompassConfiguration;
+import org.compass.core.converter.Converter;
 import org.compass.core.engine.subindex.SubIndexHash
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.apache.commons.logging.Log
@@ -58,6 +63,16 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     List constantMetadatas;
     boolean hasMappingOption
     Map subIndexHash
+    
+    /**
+     * No special initialisation required.
+     */
+    public SearchableGrailsDomainClassCompassClassMapper init(
+            CompassConfiguration configuration,
+            Map<String, Converter> customConverters,
+            List defaultExcludedProperties, Map defaultFormats) {
+        return this;
+    }
 
     /**
      * Get the property mappings for the given GrailsDomainClass

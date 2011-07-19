@@ -16,9 +16,12 @@
 package grails.plugin.searchable.internal.compass.mapping;
 
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.compass.core.config.CompassConfiguration;
+import org.compass.core.converter.Converter;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Maps a searchable GrailsDomainClass to Compass
@@ -26,6 +29,11 @@ import java.util.List;
  * @author Maurice Nicholson
  */
 public interface SearchableGrailsDomainClassCompassClassMapper {
+    SearchableGrailsDomainClassCompassClassMapper init(
+            CompassConfiguration configuration,
+            Map<String, Converter> customConverters,
+            List defaultExcludedProperties,
+            Map defaultFormats);
 
     /**
      * Get the property mappings for the given GrailsDomainClass

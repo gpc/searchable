@@ -70,6 +70,7 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
         }
 
         if (beans != null) {
+            Map converters = (Map) configurationContext.get("customConverters");
             for (Iterator iter = beans.entrySet().iterator(); iter.hasNext(); ) {
                 Map.Entry entry = (Map.Entry) iter.next();
                 String name = (String) entry.getKey();
@@ -77,6 +78,7 @@ public class EnvironmentSearchableCompassConfigurator implements SearchableCompa
                 if (value instanceof Converter) {
                     LOG.debug("Registering Converter bean [" + name + "] with value [" + value + "]");
                     compassConfiguration.registerConverter(name, (Converter) value);
+                    converters.put(name, value);
                     //compassConfiguration.setSetting("compass.engine.converter." + name + ".type", value);
                 } else if (value instanceof Analyzer) {
                     LOG.debug("Registering Analyzer bean [" + name + "] with value [" + value + "]");

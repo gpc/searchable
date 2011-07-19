@@ -36,7 +36,7 @@ import java.util.*;
 public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, Ordered {
     private static final Log LOG = LogFactory.getLog(SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator.class);
 
-    private SearchableGrailsDomainClassCompassClassMapper classMapper;
+    private CompositeSearchableGrailsDomainClassCompassClassMapper classMapper;
     private SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder;
 
     /**
@@ -100,6 +100,10 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurat
      */
     public String getName() {
         return "searchable class property";
+    }
+
+    public CompositeSearchableGrailsDomainClassCompassClassMapper getMappingDescriptionProviderManager() {
+        return this.classMapper;
     }
 
     public void setMappingDescriptionProviderManager(CompositeSearchableGrailsDomainClassCompassClassMapper classMapper) {

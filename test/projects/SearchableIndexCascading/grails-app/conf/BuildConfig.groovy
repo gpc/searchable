@@ -23,5 +23,7 @@ grails.project.dependency.resolution = {
         test 'org.codehaus.groovy.modules.http-builder:http-builder:0.5.0', {
             excludes "xml-apis", "groovy"
         }
+
+        runtime "hsqldb:hsqldb:1.8.0.5"
     }
 }
