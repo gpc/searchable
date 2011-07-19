@@ -16,12 +16,12 @@ grails.project.dependency.resolution = {
     dependencies {
     }
 
-	plugins {
-		build( ":svn:1.0.0.M1") {
-			export = false
-		}
-		build( ":release:1.0.0.M2" ) {
-			export = false
-		}
-	}
+    plugins {
+        build( ":svn:1.0.0.M1") {
+            export = false
+        }
+        build( ":release:1.0.0.M2" ) {
+            export = false
+        }
+    }
 }
