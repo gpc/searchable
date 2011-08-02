@@ -1,4 +1,5 @@
 .settings/
+grails-searchable-*.zip
 plugin.xml
 stacktrace.log
 target/

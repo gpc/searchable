@@ -13,14 +13,16 @@ grails.project.dependency.resolution = {
         grailsCentral()
         mavenCentral()
     }
+
     dependencies {
     }
 
     plugins {
-        build( ":svn:1.0.0.M1") {
+        build ":release:1.0.0.RC3", {
             export = false
         }
-        build( ":release:1.0.0.M2" ) {
+
+        compile ":hibernate:$grailsVersion", {
             export = false
         }
     }
