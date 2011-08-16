@@ -33,7 +33,7 @@ import org.springframework.core.JdkVersion
 class SearchableGrailsPlugin {
     static LOG = LogFactory.getLog("grails.plugin.searchable.SearchableGrailsPlugin")
 
-    def version = "0.6.2"
+    def version = "0.6.3"
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
     def title = 'Searchable Plugin'
