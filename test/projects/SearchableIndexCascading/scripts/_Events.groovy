@@ -1,4 +1,4 @@
 eventAllTestsStart = {
-    def specTestTypeClass = loadSpecTestTypeClass()
+    def specTestTypeClass = loadSpecTestTypeClass.call()
     functionalTests << specTestTypeClass.newInstance('spock', "functional")
 }

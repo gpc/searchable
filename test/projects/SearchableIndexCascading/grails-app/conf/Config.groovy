@@ -61,6 +61,8 @@ globalDirs.tempDirectory = globalDirs.catalinaBase ? "${globalDirs.catalinaBase}
 globalDirs.searchableIndexDirectory = "${globalDirs.workDirectory}SearchableIndex${fs}${appName}${fs}"
 globalDirs.tempInventoryItemPicturesDirectory = "${globalDirs.tempDirectory}InventoryItemPictures${fs}"
 
+searchable.domain.book = [except: "author"]
+
 // set per-environment serverURL stem for creating absolute links
 environments {
     production {

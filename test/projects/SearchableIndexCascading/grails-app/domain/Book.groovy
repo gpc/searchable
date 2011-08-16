@@ -9,4 +9,8 @@ class Book {
         title blank: false, unique: true
         author blank: false
     }
+
+    String toString() {
+        return "Book[$title, $author, $numOfPages]"
+    }
 }

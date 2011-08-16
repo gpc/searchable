@@ -15,8 +15,11 @@ grails.project.dependency.resolution = {
         grailsPlugins()
         grailsHome()
         grailsCentral()
-
+        mavenLocal()
         mavenCentral()
+    }
+    plugins {
+        test 'org.spockframework:spock:0.5-groovy-1.7'
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
@@ -24,6 +27,6 @@ grails.project.dependency.resolution = {
             excludes "xml-apis", "groovy"
         }
 
-        runtime "hsqldb:hsqldb:1.8.0.5"
+        runtime "hsqldb:hsqldb:1.8.0.10"
     }
 }

@@ -102,6 +102,7 @@ class AppConfigMappingConfigurator implements SearchableGrailsDomainClassMapping
             CompassClassMapping classMapping = (CompassClassMapping) iter.next();
             InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(classMapping);
             LOG.debug("Adding [" + classMapping.getMappedClass().getName() + "] mapping to CompassConfiguration");
+            compassConfiguration.removeMappingByClass(classMapping.getMappedClass());
             compassConfiguration.addInputStream(inputStream, classMapping.getMappedClass().getName().replaceAll("\\.", "/") + ".cpm.xml");
         }
     }

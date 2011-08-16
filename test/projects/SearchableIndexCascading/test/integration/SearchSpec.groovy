@@ -4,6 +4,10 @@ import morelikethisnpe.FindMe
 class SearchSpec extends IntegrationSpec {
     def searchableService
 
+    def cleanup() {
+        searchableService.unindex()
+    }
+
     def "GString in search() method"() {
         given: "a simple query"
         def q = "Bin1"
@@ -38,6 +42,21 @@ class SearchSpec extends IntegrationSpec {
 
         then: "I get 3 books back"
         result.total == 3
+    }
+
+    def "Simple test for config overrides"() {
+        given: "A bunch of books"
+        new Book(title: "The Shining", author: "Stephen King", numOfPages: 300).save()
+        new Book(title: "Misery", author: "Stephen King", numOfPages: 200).save()
+        new Book(title: "Colossus", author: "Niall Ferguson", numOfPages: 450).save()
+        new Book(title: "The Liar", author: "Stephen Fry", numOfPages: 320).save()
+        new Book(title: "Carrie", author: "Stephen King", numOfPages: 189).save()
+
+        when: "I search for all books with a reference to 'King'"
+        def result = Book.search("King")
+
+        then: "I get 0 books back because 'author' is excluded from indexing in Config.groovy"
+        result.total == 0
     }
 
     /**

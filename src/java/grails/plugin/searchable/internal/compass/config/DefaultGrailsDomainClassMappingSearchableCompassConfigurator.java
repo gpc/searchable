@@ -19,6 +19,7 @@ import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.compass.config.mapping.AppConfigMappingConfigurator;
 import grails.plugin.searchable.internal.compass.config.mapping.SearchableClassPropertySearchableGrailsDomainClassMappingConfigurator;
 import grails.plugin.searchable.internal.compass.config.mapping.SearchableGrailsDomainClassMappingConfigurator;
+import grails.plugin.searchable.internal.compass.mapping.AppConfigClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
 
@@ -100,8 +101,11 @@ public class DefaultGrailsDomainClassMappingSearchableCompassConfigurator implem
         // config. This is treated differently to the other configuration options
         // because it can override existing mapping information. Also, it requires
         // access to the application config object.
+        AppConfigClassMapper overrideClassMapper = new AppConfigClassMapper(grailsApplication.getConfig());
+        overrideClassMapper.init(compassConfiguration, (Map) configurationContext.get("customConverters"), defaultExcludes, defaultFormats);
+
         AppConfigMappingConfigurator appConfigConfigurator = new AppConfigMappingConfigurator(grailsApplication.getConfig());
-        appConfigConfigurator.setMappingDescriptionProviderManager(classMapper);
+        appConfigConfigurator.setMappingDescriptionProviderManager(overrideClassMapper);
         appConfigConfigurator.setCompassClassMappingXmlBuilder(classMappingXmlBuilder);
         
         Collection appConfigMapped = appConfigConfigurator.getMappedBy(grailsDomainClasses);
