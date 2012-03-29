@@ -89,7 +89,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     }
 
     private List searchableGetCompassClassPropertyMappings(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Closure closure, List excludedProperties, List inheritedPropertyMappings) {
-        init(grailsDomainClass, searchableGrailsDomainClasses)
+        internalInit(grailsDomainClass, searchableGrailsDomainClasses)
 
         // Build user-defined specific mappings
         closure = (Closure) closure.clone()
@@ -424,7 +424,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
     /**
      * Init
      */
-    private init(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
+    private internalInit(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
         this.grailsDomainClass = grailsDomainClass
         this.mappedClass = grailsDomainClass.clazz
         this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
