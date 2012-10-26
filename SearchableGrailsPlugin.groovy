@@ -33,7 +33,7 @@ import org.springframework.core.JdkVersion
 class SearchableGrailsPlugin {
     static LOG = LogFactory.getLog("grails.plugin.searchable.SearchableGrailsPlugin")
 
-    def version = "0.6.3"
+    def version = "0.6.4"
     def author = 'Maurice Nicholson'
     def authorEmail = 'maurice@freeshell.org'
     def title = 'Searchable Plugin'
@@ -42,7 +42,7 @@ Adds rich search functionality to Grails domain models.
 Built on Compass (http://www.compass-project.org/) and Lucene (http://lucene.apache.org/)
 This version is recommended for JDK 1.5+
 '''
-    def documentation = 'http://grails.org/Searchable+Plugin'
+    def documentation = "http://grails.org/plugin/searchable"
 
     def grailsVersion = "1.0 > *"
     def dependsOn = [dataSource: "1.0 > *",
