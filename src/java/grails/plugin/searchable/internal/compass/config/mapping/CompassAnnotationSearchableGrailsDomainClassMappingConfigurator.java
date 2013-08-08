@@ -17,24 +17,26 @@ package grails.plugin.searchable.internal.compass.config.mapping;
 
 import grails.plugin.searchable.internal.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
 
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.compass.core.config.CompassConfiguration;
+import org.springframework.core.Ordered;
+import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.util.Assert;
-import org.springframework.core.Ordered;
-
-import java.util.*;
-import java.lang.reflect.Method;
 
 /**
  * Configures Compass with searchable domain classes that are annotated with Compass's native @Searchable annotations.
  *
  * @author Maurice Nicholson
  */
-public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, Ordered {
+public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements Ordered {
     private static final String SEARCHABLE_ANNOTATION_CLASS_NAME = "org.compass.annotations.Searchable";
     private static final Log LOG = LogFactory.getLog(CompassAnnotationSearchableGrailsDomainClassMappingConfigurator.class);
     private static boolean annotationsAvailable = getSearchableAnnotationClass() != null;
@@ -45,6 +47,7 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator ext
      * @param grailsDomainClass the Grails domain class
      * @return true if the mapping of the class can be handled by this strategy
      */
+    @Override
     public boolean isMappedBy(GrailsDomainClass grailsDomainClass) {
         if (!annotationsAvailable) {
             return false;

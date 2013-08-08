@@ -18,27 +18,27 @@ package grails.plugin.searchable.internal.compass.spring;
 import grails.plugin.searchable.internal.compass.config.SearchableCompassConfigurator;
 import grails.plugin.searchable.internal.compass.converter.StringMapConverter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.compass.core.Compass;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassConfigurationFactory;
 import org.compass.core.converter.Converter;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A pluggable Spring factory bean for Compass
  *
  * @author Maurice Nicholson
  */
-public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean, ApplicationContextAware {
+public class SearchableCompassFactoryBean implements FactoryBean<Compass>, DisposableBean, ApplicationContextAware {
     private static final Log LOG = LogFactory.getLog(SearchableCompassFactoryBean.class);
 
     private ApplicationContext applicationContext;
@@ -53,14 +53,14 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
         return applicationContext;
     }
 
-    public Object getObject() throws Exception {
+    public Compass getObject() throws Exception {
         if (compass == null) {
-            compass = buildCompass();
+            buildCompass();
         }
         return compass;
     }
 
-    public Class getObjectType() {
+    public Class<Compass> getObjectType() {
         return Compass.class;
     }
 
@@ -68,7 +68,7 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
         return true;
     }
 
-    private Compass buildCompass() {
+    private void buildCompass() {
         LOG.debug("Building new Compass");
 
         CompassConfiguration configuration = CompassConfigurationFactory.newConfiguration();
@@ -92,10 +92,9 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
 
         searchableCompassConfigurator.configure(configuration, context);
 
-        Compass compass = configuration.buildCompass();
+        compass = configuration.buildCompass();
 
         LOG.debug("Done building Compass");
-        return compass;
     }
 
     public SearchableCompassConfigurator getSearchableCompassConfigurator() {
@@ -110,7 +109,7 @@ public class SearchableCompassFactoryBean implements FactoryBean, DisposableBean
      * Destroy the Compass instance (if created), typically called when shutting down the Spring
      * application context.
      *
-     * Just calls {@link org.compass.core.Compass#close()} 
+     * Just calls {@link org.compass.core.Compass#close()}
      *
      * @throws Exception
      */

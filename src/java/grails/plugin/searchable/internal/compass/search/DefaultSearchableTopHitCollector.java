@@ -15,17 +15,18 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.compass.core.CompassHits;
-
 import java.util.Map;
+
+import org.compass.core.CompassHits;
 
 /**
  * A hit collector returning only the top (first) hit
- * 
+ *
  * @author Maurice Nicholson
  */
 public class DefaultSearchableTopHitCollector extends AbstractSearchableHitCollector {
 
+    @Override
     public Object collect(CompassHits hits, boolean reload, Map options) {
         if (hits.length() == 0) return null;
         return getObject(hits.data(0), reload);

@@ -15,28 +15,29 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.apache.commons.collections.MapUtils;
-import org.compass.core.CompassHits;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.MapUtils;
+import org.compass.core.CompassHits;
 
 /**
  * Collects hits within a range denoted by offset and max
  *
  * @author Maurice Nicholson
  */
-public class DefaultSearchableSubsetHitCollector extends AbstractSearchableHitCollector implements SearchableHitCollector {
+public class DefaultSearchableSubsetHitCollector extends AbstractSearchableHitCollector {
 
     /**
      * Collect and return the subset of hits with the range offset..offset + max
-     * 
+     *
      * @param hits
      * @param options
      * @return
      */
+    @Override
     public Object collect(CompassHits hits, boolean reload, Map options) {
         if (hits.length() == 0) {
             return Collections.EMPTY_LIST;

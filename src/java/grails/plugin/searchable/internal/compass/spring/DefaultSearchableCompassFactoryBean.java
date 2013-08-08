@@ -15,22 +15,28 @@
 */
 package grails.plugin.searchable.internal.compass.spring;
 
-import grails.plugin.searchable.internal.compass.config.*;
-import grails.plugin.searchable.internal.compass.mapping.*;
+import grails.plugin.searchable.internal.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
+import grails.plugin.searchable.internal.compass.config.CompositeSearchableCompassConfigurator;
+import grails.plugin.searchable.internal.compass.config.DefaultGrailsDomainClassMappingSearchableCompassConfigurator;
+import grails.plugin.searchable.internal.compass.config.EnvironmentSearchableCompassConfigurator;
+import grails.plugin.searchable.internal.compass.config.InferredCompassSettingCompassConfigurator;
+import grails.plugin.searchable.internal.compass.config.SearchableCompassConfigurator;
+import grails.plugin.searchable.internal.compass.config.SearchableCompassConfiguratorFactory;
+import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.compass.core.converter.Converter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
-import org.compass.core.converter.Converter;
-
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * A default Compass configuration strategy

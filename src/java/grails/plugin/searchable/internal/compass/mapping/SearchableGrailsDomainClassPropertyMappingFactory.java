@@ -20,8 +20,10 @@ import grails.plugin.searchable.internal.compass.converter.CompassConverterLooku
 import grails.plugin.searchable.internal.compass.converter.StringMapConverter;
 import grails.plugin.searchable.internal.util.GrailsDomainClassUtils;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
-import java.util.*;
 
 /**
  * Builds Compass mapping for searchable class properties

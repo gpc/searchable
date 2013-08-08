@@ -17,6 +17,10 @@ package grails.plugin.searchable.internal.compass.mapping;
 
 import grails.plugin.searchable.internal.compass.converter.DefaultCompassConverterLookupHelper;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
@@ -27,14 +31,12 @@ import org.compass.core.converter.DefaultConverterLookup;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import java.util.*;
-
 /**
  * A searchable GrailsDomainClass class mapper for Compass
  *
  * @author Maurice Nicholson
  */
-public class CompositeSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
+public class CompositeSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper {
     private static final Log LOG = LogFactory.getLog(CompositeSearchableGrailsDomainClassCompassClassMapper.class);
 
     private SearchableGrailsDomainClassCompassClassMapper[] classMappers;
@@ -59,9 +61,9 @@ public class CompositeSearchableGrailsDomainClassCompassClassMapper extends Abst
         domainClassPropertyMappingFactory.setDefaultFormats(defaultFormats);
         domainClassPropertyMappingFactory.setConverterLookupHelper(converterLookupHelper);
 
-        this.setDefaultExcludedProperties(defaultExcludedProperties);
-        this.classMappers = getActualSearchableGrailsDomainClassCompassClassMappers(domainClassPropertyMappingFactory);
-        
+        setDefaultExcludedProperties(defaultExcludedProperties);
+        classMappers = getActualSearchableGrailsDomainClassCompassClassMappers(domainClassPropertyMappingFactory);
+
         return this;
     }
 
@@ -118,7 +120,6 @@ public class CompositeSearchableGrailsDomainClassCompassClassMapper extends Abst
     public void setSearchableGrailsDomainClassCompassMappingDescriptionProviders(SearchableGrailsDomainClassCompassClassMapper[] classMappers) {
         this.classMappers = classMappers;
     }
-
 
     private SearchableGrailsDomainClassCompassClassMapper[] getActualSearchableGrailsDomainClassCompassClassMappers(SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory) {
         SearchableGrailsDomainClassCompassClassMapper[] classMappers;

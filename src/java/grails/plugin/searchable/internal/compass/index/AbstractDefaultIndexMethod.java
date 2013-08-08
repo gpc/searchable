@@ -16,9 +16,14 @@
 package grails.plugin.searchable.internal.compass.index;
 
 import grails.plugin.searchable.internal.compass.support.AbstractSearchableMethod;
-import org.compass.core.Compass;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.compass.core.Compass;
 
 /**
  * @author Maurice Nicholson

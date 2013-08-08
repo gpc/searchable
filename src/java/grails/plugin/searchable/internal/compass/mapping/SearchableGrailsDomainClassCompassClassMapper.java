@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * Maps a searchable GrailsDomainClass to Compass
- * 
+ *
  * @author Maurice Nicholson
  */
 public interface SearchableGrailsDomainClassCompassClassMapper {
@@ -47,7 +47,7 @@ public interface SearchableGrailsDomainClassCompassClassMapper {
 
     /**
      * Get the CompassClassMapping for the given GrailsDomainClass
-     * 
+     *
      * @param grailsDomainClass the Grails domain class
      * @param searchableGrailsDomainClasses a collection of searchable GrailsDomainClass instances
      * @return the CompassClassMapping

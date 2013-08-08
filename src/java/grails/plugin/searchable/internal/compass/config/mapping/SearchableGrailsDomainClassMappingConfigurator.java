@@ -15,10 +15,10 @@
  */
 package grails.plugin.searchable.internal.compass.config.mapping;
 
-import org.compass.core.config.CompassConfiguration;
-
 import java.util.Collection;
 import java.util.Map;
+
+import org.compass.core.config.CompassConfiguration;
 
 /**
  * Configures Compass with a searchable domain class mapping

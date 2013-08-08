@@ -17,6 +17,17 @@ package grails.plugin.searchable.internal.compass.search;
 
 import groovy.lang.Closure;
 import groovy.lang.GroovyObjectSupport;
+
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,19 +38,15 @@ import org.compass.core.CompassQueryBuilder;
 import org.compass.core.util.Assert;
 import org.compass.core.util.ClassUtils;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.*;
-
 /**
-* A Groovy CompassQuery builder, taking nested closures and dynamic method
-* invocation in the Groovy-builder style
-*
-* Note: Instances of this class are NOT thread-safe: you should create one
-* for the duration of your CompassSession then discard it
-*
-* @author Maurice Nicholson
-*/
+ * A Groovy CompassQuery builder, taking nested closures and dynamic method
+ * invocation in the Groovy-builder style
+ *
+ * Note: Instances of this class are NOT thread-safe: you should create one
+ * for the duration of your CompassSession then discard it
+ *
+ * @author Maurice Nicholson
+ */
 public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
     private CompassQueryBuilder queryBuilder;
 
@@ -73,12 +80,12 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
     /**
      * Directly invoke a builder method
      */
+    @Override
     public Object invokeMethod(String name, Object args) {
         CompassQueryBuildingClosureDelegate invoker = new CompassQueryBuildingClosureDelegate(queryBuilder);
         InvokerHelper.invokeMethod(invoker, name, args);
         return invoker.getQuery();
     }
-
 
     /**
      * This class acts as the query-builder closure delegate, identifying
@@ -124,6 +131,7 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
             this.queryBuilder = queryBuilder;
         }
 
+        @Override
         public Object invokeMethod(String name, Object args) {
             if (isTraceEnabled()) {
                 trace("invokeMethod(" + name + ", " + args + ")");
@@ -138,7 +146,7 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
             Map options = (Map) remove(invokeArgs, Map.class);
 
             // Escape String queries?
-            if (name.equals("queryString") && options != null && Boolean.TRUE.equals(MapUtils.getBoolean(options, "escape"))) {
+            if (name.equals("queryString") && options != null && MapUtils.getBoolean(options, "escape")) {
                 Assert.isInstanceOf(String.class, invokeArgs.get(0));
                 invokeArgs.set(0, QueryParser.escape((String) invokeArgs.get(0)));
                 options.remove("escape");
@@ -340,7 +348,7 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
                 }
                 if (optionName.equals("defaultOperator")) {
                     Assert.notNull(optionValue, "'defaultOperator' option value is null: it must be one of 'or' or 'and'");
-                    Assert.isInstanceOf(String.class, optionValue, "'defaultOperator' option value is must be a String but is: [" + optionValue.getClass().toString() + "]");
+                    Assert.isInstanceOf(String.class, optionValue, "'defaultOperator' option value is must be a String but is: [" + optionValue.getClass().getName() + "]");
                     if (((String)optionValue).equalsIgnoreCase("or")) {
                         InvokerHelper.invokeMethod(result, "useOrDefaultOperator", null);
                     } else if (((String)optionValue).equalsIgnoreCase("and")) {
@@ -488,18 +496,16 @@ public class GroovyCompassQueryBuilder extends GroovyObjectSupport {
         }
 
         private boolean isTraceEnabled() {
-//        true
             return LOG.isTraceEnabled();
         }
 
         private void trace(String message) {
-            StringBuffer buf = new StringBuffer(message.length() + depth * 2);
+            StringBuilder buf = new StringBuilder(message.length() + depth * 2);
             for (int i = 0; i < depth; i++) {
                 buf.append("  ");
             }
             buf.append(message);
             LOG.trace(buf);
-//        println(buf)
         }
     }
 }

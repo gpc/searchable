@@ -15,14 +15,19 @@
  */
 package grails.plugin.searchable.internal.compass.index;
 
-import grails.plugin.searchable.internal.SearchableMethod;
 import grails.plugin.searchable.internal.compass.support.SearchableMethodUtils;
-import org.compass.core.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.compass.core.Compass;
+import org.compass.core.CompassCallback;
+import org.compass.core.CompassException;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassQueryBuilder;
+import org.compass.core.CompassSession;
 
 /*
     unindexAll()
@@ -52,11 +57,10 @@ import java.util.Map;
 
     */
 
-
 /**
  * @author Maurice Nicholson
  */
-public class DefaultUnindexMethod extends AbstractDefaultIndexMethod implements SearchableMethod  {
+public class DefaultUnindexMethod extends AbstractDefaultIndexMethod {
 
     public DefaultUnindexMethod(String methodName, Compass compass, Map defaultOptions) {
         super(methodName, compass, defaultOptions);

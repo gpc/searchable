@@ -16,6 +16,11 @@
 package grails.plugin.searchable.internal.compass.converter;
 
 import groovy.util.Eval;
+
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
 import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.compass.core.CompassException;
 import org.compass.core.Property;
@@ -31,10 +36,6 @@ import org.compass.core.mapping.ResourcePropertyMapping;
 import org.compass.core.marshall.MarshallingContext;
 import org.compass.core.spi.InternalCompass;
 import org.compass.core.spi.InternalCompassSession;
-
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Based on the example from Compass's unit tests

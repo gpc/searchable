@@ -15,11 +15,11 @@
 */
 package grails.plugin.searchable.internal.compass.mapping;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.math.BigDecimal;
 
 /**
  * Describes a Compass searchable class mapping
@@ -264,6 +264,7 @@ public class CompassClassMapping {
      * Provide a useful String
      * @return String
      */
+    @Override
     public String toString() {
         return "CompassClassMapping: mappedClass=[" + mappedClass + "],  mappedClassSuperClass=[" + mappedClassSuperClass + "], alias=[" + alias + "], spellCheck=[" + spellCheck + "], subIndex=[" + subIndex + "], root=[" + root + "], poly=[" + poly + "], extend=[" + extend + "], propertyMappings=[" + propertyMappings + "]";
     }

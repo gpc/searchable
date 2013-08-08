@@ -42,7 +42,7 @@ public class TimeUtils {
      * @return a formatted time period
      */
     public static String formatMillisAsShortHumanReadablePeriod(long millis, boolean full) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         // days
         long days = (millis / MILLIS_PER_DAY);
         if (days > 0) {
@@ -74,7 +74,7 @@ public class TimeUtils {
         return buf.toString();
     }
 
-    private static StringBuffer appendWithLeadingCommaIfNescessary(StringBuffer buf, long arg) {
+    private static StringBuilder appendWithLeadingCommaIfNescessary(StringBuilder buf, long arg) {
         if (buf.length() > 0) {
             buf.append(", ");
         }

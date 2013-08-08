@@ -16,17 +16,26 @@
 package grails.plugin.searchable.internal.compass.config.mapping;
 
 import grails.plugin.searchable.internal.SearchableUtils;
-import grails.plugin.searchable.internal.compass.mapping.*;
+import grails.plugin.searchable.internal.compass.mapping.CompassClassMapping;
+import grails.plugin.searchable.internal.compass.mapping.CompassMappingUtils;
+import grails.plugin.searchable.internal.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
+import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.compass.core.config.CompassConfiguration;
-import org.springframework.util.Assert;
 import org.springframework.core.Ordered;
-
-import java.io.InputStream;
-import java.util.*;
+import org.springframework.util.Assert;
 
 /**
  * Configures Compass with searchable domain classes according to a "searchable" class property value
@@ -50,7 +59,7 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurat
             GrailsDomainClass grailsDomainClass = (GrailsDomainClass) iter.next();
             Object value = SearchableUtils.getSearchablePropertyValue(grailsDomainClass);
             if (value != null) {
-                if (!((value instanceof Boolean) && value.equals(Boolean.FALSE))) {
+                if (!((value instanceof Boolean) && !(Boolean)value)) {
                     mappedBy.add(grailsDomainClass);
                 }
                 continue;
@@ -103,7 +112,7 @@ public class SearchableClassPropertySearchableGrailsDomainClassMappingConfigurat
     }
 
     public CompositeSearchableGrailsDomainClassCompassClassMapper getMappingDescriptionProviderManager() {
-        return this.classMapper;
+        return classMapper;
     }
 
     public void setMappingDescriptionProviderManager(CompositeSearchableGrailsDomainClassCompassClassMapper classMapper) {

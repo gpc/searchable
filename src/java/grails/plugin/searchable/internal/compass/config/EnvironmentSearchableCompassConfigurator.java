@@ -17,6 +17,9 @@ package grails.plugin.searchable.internal.compass.config;
 
 import grails.plugin.searchable.internal.compass.SearchableCompassUtils;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -24,9 +27,6 @@ import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.config.CompassEnvironment;
 import org.compass.core.converter.Converter;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Responsible for setting the Compass environment, most importantly the "connection" (ie, Lucene index dir),

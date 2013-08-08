@@ -17,13 +17,13 @@ package grails.plugin.searchable.internal.util;
 
 import grails.plugin.searchable.internal.lucene.LuceneUtils;
 
-import org.apache.lucene.index.Term;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
+import java.text.MessageFormat;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.text.MessageFormat;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
 
 /**
  * @author Maurice Nicholson
@@ -78,7 +78,7 @@ public class StringQueryUtils {
         }
 
         MessageFormat format = new MessageFormat(highlightPattern);
-        StringBuffer diff = new StringBuffer(second);
+        StringBuilder diff = new StringBuilder(second);
         int offset = 0;
         for (int i = 0; i < secondTerms.length; i++) {
             Term firstTerm = firstTerms[i];

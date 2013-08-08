@@ -15,7 +15,8 @@
  */
 package grails.plugin.searchable.internal.compass.domain
 
-import grails.plugin.searchable.internal.compass.*
+import grails.plugin.searchable.internal.compass.SearchableCompassUtils
+
 import org.apache.commons.logging.LogFactory
 import org.compass.core.Compass
 
@@ -83,7 +84,7 @@ class DynamicDomainMethodUtils {
             grailsDomainClass.metaClass.'static'.suggestQuery << { Object[] args ->
                 searchableMethodFactory.getMethod(delegate, "suggestQuery").invoke(*processStringArgs(args))
             }
-            
+
             /**
              * index: Adds class instances to the search index
              */

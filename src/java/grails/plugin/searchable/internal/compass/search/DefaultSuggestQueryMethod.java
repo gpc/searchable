@@ -15,32 +15,35 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import grails.plugin.searchable.internal.SearchableMethod;
+import grails.plugin.searchable.internal.compass.mapping.CompassMappingUtils;
 import grails.plugin.searchable.internal.compass.support.AbstractSearchableMethod;
 import grails.plugin.searchable.internal.compass.support.SearchableMethodUtils;
-import grails.plugin.searchable.internal.compass.mapping.CompassMappingUtils;
 import grails.plugin.searchable.internal.lucene.LuceneUtils;
+import groovy.lang.Closure;
 
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.compass.core.*;
-import org.compass.core.engine.SearchEngineQueryParseException;
-import org.springframework.util.Assert;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
-import org.apache.lucene.index.Term;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
-import groovy.lang.Closure;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.compass.core.Compass;
+import org.compass.core.CompassCallback;
+import org.compass.core.CompassException;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassSession;
+import org.compass.core.engine.SearchEngineQueryParseException;
+import org.springframework.util.Assert;
 
 /**
  * @author Maurice Nicholson
  */
-public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implements SearchableMethod {
+public class DefaultSuggestQueryMethod extends AbstractSearchableMethod {
 
     private SearchableCompassQueryBuilder compassQueryBuilder;
     private GrailsApplication grailsApplication;
@@ -158,10 +161,10 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
             if (options == null) {
                 return;
             }
-            this.userFriendly = SearchableMethodUtils.getBool(options, "userFriendly", true);
-            this.emulateCapitalisation = SearchableMethodUtils.getBool(options, "emulateCapitalisation", true);
-            this.escape = SearchableMethodUtils.getBool(options, "escape", false);
-            this.allowSame = SearchableMethodUtils.getBool(options, "allowSame", true);
+            userFriendly = SearchableMethodUtils.getBool(options, "userFriendly", true);
+            emulateCapitalisation = SearchableMethodUtils.getBool(options, "emulateCapitalisation", true);
+            escape = SearchableMethodUtils.getBool(options, "escape", false);
+            allowSame = SearchableMethodUtils.getBool(options, "allowSame", true);
         }
     }
 
@@ -244,7 +247,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
                 return suggested;
             }
 
-            StringBuffer userFriendly = new StringBuffer(original);
+            StringBuilder userFriendly = new StringBuilder(original);
             int offset = 0;
             for (int i = 0; i < originalTerms.length; i++) {
                 Term originalTerm = originalTerms[i];
@@ -257,7 +260,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
                 offset = pos;
             }
             String suggestion = userFriendly.toString();
-            if (!this.allowSame && suggestion.equals(original)) {
+            if (!allowSame && suggestion.equals(original)) {
                 return null;
             }
             return suggestion;
@@ -270,7 +273,7 @@ public class DefaultSuggestQueryMethod extends AbstractSearchableMethod implemen
 
         private String getReplacement(Term originalTerm, boolean noField, Term suggestedTerm) {
             String replacement = noField ? suggestedTerm.text() : originalTerm.field() + ":" + suggestedTerm.text();
-            if (this.emulateCapitalisation) {
+            if (emulateCapitalisation) {
                 boolean upperCase = true;
                 boolean firstUpperCase = false;
                 final String original = originalTerm.text();

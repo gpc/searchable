@@ -18,27 +18,34 @@ package grails.plugin.searchable.internal.compass.mapping;
 import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.util.GrailsDomainClassUtils;
 
-import org.springframework.util.Assert;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
 import org.compass.core.Compass;
-import org.compass.core.mapping.CompassMapping;
+import org.compass.core.config.CompassConfiguration;
+import org.compass.core.config.CompassMappingBinding;
 import org.compass.core.mapping.AliasMapping;
+import org.compass.core.mapping.CompassMapping;
 import org.compass.core.mapping.ResourceMapping;
 import org.compass.core.mapping.SpellCheck;
 import org.compass.core.mapping.osem.ClassMapping;
 import org.compass.core.mapping.osem.ClassPropertyMapping;
 import org.compass.core.mapping.osem.ClassPropertyMetaDataMapping;
-import org.compass.core.config.CompassConfiguration;
-import org.compass.core.config.CompassMappingBinding;
+import org.compass.core.spi.InternalCompass;
 import org.compass.core.util.ClassUtils;
 import org.compass.core.util.FieldInvoker;
-import org.compass.core.spi.InternalCompass;
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
+import org.springframework.util.Assert;
 
 /**
  * @author Maurice Nicholson
@@ -164,12 +171,12 @@ public class CompassMappingUtils {
                     Class clazz = propertyMapping.getPropertyType();
                     aliases.add(((CompassClassMapping) mappingByClass.get(clazz)).getAlias());
                     GrailsDomainClassProperty domainClassProperty = GrailsDomainClassUtils.getGrailsDomainClassProperty(grailsDomainClasses, mappedClass, propertyMapping.getPropertyName());
-                    
+
                     GrailsDomainClass dc = domainClassProperty.getReferencedDomainClass();
                     if (dc == null) {
                         Class elementClass = SearchableUtils.getElementClass(domainClassProperty);
                         dc = GrailsDomainClassUtils.getGrailsDomainClass(elementClass, grailsDomainClasses);
-                        
+
                         if (dc == null) {
                             LOG.warn("Cannot find domain class for property '" + domainClassProperty.getName() +
                                     "' of class '" + domainClassProperty.getDomainClass().getFullName());

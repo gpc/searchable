@@ -15,12 +15,14 @@
  */
 package grails.plugin.searchable.internal.compass.index;
 
-import grails.plugin.searchable.internal.SearchableMethod;
 import grails.plugin.searchable.internal.compass.CompassGpsUtils;
 import grails.plugin.searchable.internal.compass.support.SearchableMethodUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
@@ -28,11 +30,6 @@ import org.compass.core.CompassException;
 import org.compass.core.CompassSession;
 import org.compass.gps.CompassGps;
 import org.springframework.util.Assert;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /*
    indexAll()
@@ -68,8 +65,7 @@ import java.util.Map;
 /**
  * @author Maurice Nicholson
  */
-public class DefaultIndexMethod extends AbstractDefaultIndexMethod implements SearchableMethod {
-    private static Log LOG = LogFactory.getLog(DefaultIndexMethod.class);
+public class DefaultIndexMethod extends AbstractDefaultIndexMethod {
 
     private CompassGps compassGps;
 

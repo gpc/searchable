@@ -15,25 +15,25 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.lucene.queryParser.CompassQueryParser;
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.codehaus.groovy.runtime.InvokerHelper;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.compass.core.CompassQuery;
-import org.compass.core.CompassQueryBuilder;
-import org.compass.core.CompassSession;
-import org.compass.core.Compass;
-import org.springframework.util.Assert;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.lucene.queryParser.CompassQueryParser;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.codehaus.groovy.runtime.InvokerHelper;
+import org.compass.core.Compass;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassQueryBuilder;
+import org.compass.core.CompassSession;
+import org.springframework.util.Assert;
+
 /**
  * @author Maurice Nicholson
  */
-public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
+public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder {
     private static final String[] ANALYZER_NAMES = new String[] {"analyzer"};
     private static final String[] PARSER_NAMES = new String[] {"parser", "queryParser"};
     private static final String[] DEFAULT_PROPERTY_NAMES = new String[] {"defaultProperty", "defaultSearchProperty"};
@@ -55,13 +55,13 @@ public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSea
         Collection properties = (Collection) getOption(PROPERTIES_NAMES, options);
         Boolean useAndDefaultOperator = (Boolean) getOption(USE_AND_DEFAULT_OPERATOR_NAMES, options);
         String defaultOperator = (String) getOption(DEFAULT_OPERATOR_NAMES, options);
-        Boolean escape = MapUtils.getBoolean(options, "escape", Boolean.FALSE);
+        Boolean escape = MapUtils.getBoolean(options, "escape", false);
 
         Assert.isTrue(!(properties != null && defaultSearchProperty != null), "The " + DefaultGroovyMethods.join(DEFAULT_PROPERTY_NAMES, "/") + " and " + DefaultGroovyMethods.join(PROPERTIES_NAMES, "/") + " options cannot be combined");
         Assert.isTrue(!(defaultOperator != null && useAndDefaultOperator != null), "The [" + DefaultGroovyMethods.join(USE_AND_DEFAULT_OPERATOR_NAMES, ", ") + "] and [" + DEFAULT_PROPERTY_NAMES[0] + "] options indicate the same thing so cannot be used together: [" + DEFAULT_PROPERTY_NAMES + "] is better");
 
         String queryString = (String) query;
-        if (escape.booleanValue()) {
+        if (escape) {
             queryString = CompassQueryParser.escape(queryString);
         }
 
@@ -87,7 +87,7 @@ public class DefaultStringQuerySearchableCompassQueryBuilder extends AbstractSea
         }
         // todo deprecate "useAndDefaultOperator" - "defaultOperator" is better
         if (useAndDefaultOperator != null) {
-            if (useAndDefaultOperator.booleanValue()) {
+            if (useAndDefaultOperator) {
                 InvokerHelper.invokeMethod(stringBuilder, "useAndDefaultOperator", null);
             } else {
                 InvokerHelper.invokeMethod(stringBuilder, "useOrDefaultOperator", null);

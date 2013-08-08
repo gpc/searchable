@@ -18,12 +18,12 @@ package grails.plugin.searchable.internal.compass.support;
 import grails.plugin.searchable.internal.SearchableMethod;
 import grails.plugin.searchable.internal.SearchableMethodFactory;
 
-import org.springframework.util.Assert;
+import java.util.Map;
+
 import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
 import org.compass.core.CompassTemplate;
-
-import java.util.Map;
+import org.springframework.util.Assert;
 
 /**
  * @author Maurice Nicholson
@@ -53,8 +53,7 @@ public abstract class AbstractSearchableMethod implements SearchableMethod {
     }
 
     protected Object doInCompass(CompassCallback compassCallback) {
-        CompassTemplate template = new CompassTemplate(compass);
-        return template.execute(compassCallback);
+        return new CompassTemplate(compass).execute(compassCallback);
     }
 
     public Map getDefaultOptions() {

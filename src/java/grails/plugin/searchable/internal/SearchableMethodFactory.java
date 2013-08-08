@@ -17,7 +17,7 @@ package grails.plugin.searchable.internal;
 
 /**
  * Creates SearchableMethod instances
- * 
+ *
  * @author Maurice Nicholson
  */
 public interface SearchableMethodFactory {

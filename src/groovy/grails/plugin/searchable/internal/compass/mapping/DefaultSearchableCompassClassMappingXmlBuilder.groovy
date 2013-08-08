@@ -15,6 +15,8 @@
 */
 package grails.plugin.searchable.internal.compass.mapping
 
+import groovy.xml.MarkupBuilder
+
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 
@@ -24,7 +26,7 @@ import org.apache.commons.logging.LogFactory
  * @author Maurice Nicholson
  */
 class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompassClassMappingXmlBuilder {
-    private static final Log LOG = LogFactory.getLog(DefaultSearchableCompassClassMappingXmlBuilder.class)
+    private static final Log LOG = LogFactory.getLog(DefaultSearchableCompassClassMappingXmlBuilder)
 
     /** Legal attribute names for known XML elements */
     static final ID_ATTR_NAMES = ['accessor', 'name']
@@ -55,7 +57,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
      */
     InputStream buildClassMappingXml(CompassClassMapping description) {
         def writer = new StringWriter()
-        def mkp = new groovy.xml.MarkupBuilder(writer)
+        def mkp = new MarkupBuilder(writer)
 
         def className = description.mappedClass.name
         LOG.debug("Building Compass mapping XML for [${className}] from description [${description}]")
@@ -92,7 +94,7 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
 
                 def idPropertyMappings = description.propertyMappings.findAll { it.id }
                 if (!idPropertyMappings) {
-                    throw new IllegalArgumentException("No searchable id mapping(s) found - there must be (at least) one");
+                    throw new IllegalArgumentException("No searchable id mapping(s) found - there must be (at least) one")
                 }
                 for (idPropertyMapping in idPropertyMappings) {
                     def idAttrs = [:]
@@ -192,11 +194,11 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
            }
        }
 
-       def xml = """<?xml version="1.0"?>
-<!DOCTYPE compass-core-mapping PUBLIC 
+       String xml = """<?xml version="1.0"?>
+<!DOCTYPE compass-core-mapping PUBLIC
     "-//Compass/Compass Core Mapping DTD 2.0//EN"
     "http://www.compass-project.org/dtd/compass-core-mapping-2.2.dtd">
-""" + writer.toString()
+""" + writer
 
        LOG.debug("${className} xml [${xml}]")
        return new ByteArrayInputStream(xml.getBytes())
@@ -227,8 +229,8 @@ class DefaultSearchableCompassClassMappingXmlBuilder implements SearchableCompas
     }
 
     // TODO extract to utils class if needed elsewhere
-    public convertCamelCaseToLowerCaseDashed(String string) {
-        def buf = new StringBuffer()
+    String convertCamelCaseToLowerCaseDashed(String string) {
+        def buf = new StringBuilder()
         for (i in 0..<string.size()) {
             def ch = string[i]
             if (Character.isUpperCase(ch as char)) {

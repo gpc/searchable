@@ -33,8 +33,8 @@ public class PatternUtils {
     }
 
     public static String makePatternStringFromWildcardString(String string) {
-        StringBuffer buf = new StringBuffer();
-        for (int i = 0; i < string.length(); i++) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0, count = string.length(); i < count; i++) {
             char c = string.charAt(i);
             switch (c) {
                 case '?':

@@ -22,7 +22,6 @@ package grails.plugin.searchable.internal;
  */
 public interface SearchableMethod {
 
-
     /**
      * Execute the method and return the result
      * @param args the method args

@@ -15,11 +15,11 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
+import java.util.Map;
+
 import org.apache.commons.collections.MapUtils;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.CompassHits;
-
-import java.util.Map;
 
 /**
  * @author Maurice Nicholson
@@ -37,7 +37,7 @@ public abstract class AbstractSearchableHitCollector implements SearchableHitCol
         return collect(hits, reload, options);
     }
 
-    abstract Object collect(CompassHits hits, boolean reload, Map options);
+    protected abstract Object collect(CompassHits hits, boolean reload, Map options);
 
     protected Object getObject(Object data, boolean reload) {
         if (!reload) return data;

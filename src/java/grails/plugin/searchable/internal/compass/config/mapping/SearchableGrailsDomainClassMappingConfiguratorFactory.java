@@ -17,17 +17,16 @@ package grails.plugin.searchable.internal.compass.config.mapping;
 
 import grails.plugin.searchable.internal.compass.mapping.CompositeSearchableGrailsDomainClassCompassClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
-import grails.plugin.searchable.internal.compass.mapping.AppConfigClassMapper;
 import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassClassMapperFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.ClassUtils;
-
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
 
 /**
  * @author Maurice Nicholson

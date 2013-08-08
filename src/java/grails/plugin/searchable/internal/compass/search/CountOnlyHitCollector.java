@@ -15,18 +15,18 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.compass.core.CompassHits;
-
 import java.util.Map;
+
+import org.compass.core.CompassHits;
 
 /**
  * Counts the hits and returns that count
- * 
+ *
  * @author Maurice Nicholson
  */
 public class CountOnlyHitCollector implements SearchableHitCollector {
 
     public Object collect(CompassHits hits, Map options) {
-        return new Integer(hits.length());
+        return hits.length();
     }
 }

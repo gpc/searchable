@@ -17,11 +17,11 @@ package grails.plugin.searchable.internal.compass.config;
 
 import grails.plugin.searchable.internal.compass.mapping.CompassMappingUtils;
 
-import org.compass.core.config.CompassConfiguration;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.compass.core.config.CompassConfiguration;
 
 /**
  * Sets Compas settings depending on mappings, eg, enables global spell check setting

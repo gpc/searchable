@@ -18,24 +18,24 @@ package grails.plugin.searchable.internal.compass.search;
 import grails.plugin.searchable.internal.compass.support.SearchableMethodUtils;
 import groovy.lang.Closure;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.groovy.runtime.InvokerHelper;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.runtime.InvokerHelper;
 import org.compass.core.Compass;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassSession;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 
-import java.util.Map;
-
 /**
  * The default query builder strategy
  *
  * @author Maurice Nicholson
  */
-public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
+public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder {
     private static final Log LOG = LogFactory.getLog(DefaultSearchableCompassQueryBuilder.class);
 
     private SearchableCompassQueryBuilder stringQueryBuilder;

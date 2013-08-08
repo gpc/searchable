@@ -15,14 +15,14 @@
  */
 package grails.plugin.searchable.internal.support;
 
-import org.codehaus.groovy.runtime.DefaultGroovyMethods;
-import org.springframework.beans.BeanUtils;
-
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.codehaus.groovy.runtime.DefaultGroovyMethods;
+import org.springframework.beans.BeanUtils;
 
 /**
  * @author Maurice Nicholson

@@ -27,5 +27,5 @@ public interface CompassConverterLookupHelper {
      * @param type a Class
      * @return true if a converter is available
      */
-    public boolean hasConverter(Class type);
+    boolean hasConverter(Class type);
 }

@@ -17,19 +17,30 @@ package grails.plugin.searchable.internal.compass;
 
 import grails.plugin.searchable.internal.SearchableMethod;
 import grails.plugin.searchable.internal.SearchableMethodFactory;
-import grails.plugin.searchable.internal.compass.index.DefaultUnindexMethod;
 import grails.plugin.searchable.internal.compass.index.DefaultIndexMethod;
 import grails.plugin.searchable.internal.compass.index.DefaultReindexMethod;
-import grails.plugin.searchable.internal.compass.search.*;
+import grails.plugin.searchable.internal.compass.index.DefaultUnindexMethod;
+import grails.plugin.searchable.internal.compass.search.CountOnlyHitCollector;
+import grails.plugin.searchable.internal.compass.search.DefaultSearchMethod;
+import grails.plugin.searchable.internal.compass.search.DefaultSearchableCompassQueryBuilder;
+import grails.plugin.searchable.internal.compass.search.DefaultSearchableEveryHitCollector;
+import grails.plugin.searchable.internal.compass.search.DefaultSearchableTopHitCollector;
+import grails.plugin.searchable.internal.compass.search.DefaultSuggestQueryMethod;
+import grails.plugin.searchable.internal.compass.search.DefaultTermFreqsMethod;
+import grails.plugin.searchable.internal.compass.search.MoreLikeThisCompassQueryBuilder;
+import grails.plugin.searchable.internal.compass.search.SearchableHitsOnlySearchResultFactory;
 import grails.plugin.searchable.internal.compass.support.AbstractSearchableMethod;
 
-import org.compass.core.Compass;
-import org.compass.gps.CompassGps;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
-
-import java.util.*;
+import org.compass.core.Compass;
+import org.compass.gps.CompassGps;
 
 /**
  * Default implementation of creating SearchableMethod instances
@@ -38,21 +49,10 @@ import java.util.*;
  */
 public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
     private static final Log LOG = LogFactory.getLog(DefaultSearchableMethodFactory.class);
-    private static final Map DEFAULT_METHOD_OPTIONS = new HashMap() {{
-        put("search", new HashMap() {{
-            put("escape", Boolean.FALSE);
-            put("offset", new Integer(0));
-            put("max", new Integer(10));
-            put("reload", Boolean.FALSE);
-        }});
-        put("termFreqs", new HashMap() {{
-            put("properties", new String[] {"zzz-all"}); // todo make it respect the configured name
-        }});
-        put("suggestQuery", new HashMap() {{
-            put("userFriendly", Boolean.TRUE);
-            put("emulateCapitalisation", Boolean.TRUE);
-        }});
-    }};
+    private static final Map DEFAULT_METHOD_OPTIONS = newMap(
+          "search", newMap("escape", false, "offset", 0, "max", 10, "reload", false),
+          "termFreqs", newMap("properties", new String[] {"zzz-all"}), // todo make it respect the configured name
+          "suggestQuery", newMap("userFriendly", true, "emulateCapitalisation", true));
 
     private Map defaultMethodOptions = DEFAULT_METHOD_OPTIONS;
     private Compass compass;
@@ -61,9 +61,9 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
 
     public SearchableMethod getMethod(final Class clazz, String methodName) {
         AbstractSearchableMethod method = (AbstractSearchableMethod) getMethod(methodName);
-        method.setDefaultOptions(new HashMap(method.getDefaultOptions()) {{ // clone to avoid corrupting original
-            put("match", clazz);
-        }});
+        Map options = new HashMap(method.getDefaultOptions()); // clone to avoid corrupting original
+        options.put("match", clazz);
+        method.setDefaultOptions(options);
         return method;
     }
 
@@ -140,7 +140,7 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
         if (defaultMethodOptions.containsKey(methodName)) {
             return (Map) defaultMethodOptions.get(methodName);
         }
-        final Collection searchMethodsNames = Arrays.asList(new String[] {"search", "searchTop", "searchEvery", "moreLikeThis", "countHits"});
+        final Collection searchMethodsNames = Arrays.asList("search", "searchTop", "searchEvery", "moreLikeThis", "countHits");
         if (searchMethodsNames.contains(methodName)) {
             return (Map) defaultMethodOptions.get("search");
         }
@@ -180,5 +180,13 @@ public class DefaultSearchableMethodFactory implements SearchableMethodFactory {
 
     public void setGrailsApplication(GrailsApplication grailsApplication) {
         this.grailsApplication = grailsApplication;
+    }
+
+    private static <K, V> Map newMap(Object... keysAndValues) {
+        Map<K, V> map = new HashMap<K, V>();
+        for (int i = 0; i < keysAndValues.length; i += 2) {
+            map.put((K)keysAndValues[i], (V)keysAndValues[i + 1]);
+        }
+        return map;
     }
 }

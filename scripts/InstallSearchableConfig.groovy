@@ -15,16 +15,12 @@
  */
 
 /**
- * A Grails Gant script to install the Searchable Plugin configuration file for a user
- * to customise: only required if you need to override default behavoir
+ * Installs the Searchable Plugin configuration file for a user
+ * to customise: only required if you need to override default behavior.
  *
  * @author Maurice Nicholson
  */
-def ant = binding.variables['ant'] ?: binding.variables['Ant']
-ant.property(environment:"env")
-grailsHome = ant.antProject.properties."env.GRAILS_HOME"
-
-includeTargets << new File ("${grailsHome}/scripts/Init.groovy")
+includeTargets << grailsScript("_GrailsInit")
 
 target(installSearchableConfig: "Installs the Searchable Plugin configuration file: only required if you need to override default behavoir") {
     depends(checkVersion)
@@ -46,8 +42,8 @@ target(installSearchableConfig: "Installs the Searchable Plugin configuration fi
 
         Are you sure you want to continue?
             """,
-			validargs:"y,n",
-			addproperty:"grails.install.searchable.config.warning")
+            validargs:"y,n",
+            addproperty:"grails.install.searchable.config.warning")
 
        def answer = ant.antProject.properties."grails.install.searchable.config.warning"
 
@@ -59,7 +55,7 @@ target(installSearchableConfig: "Installs the Searchable Plugin configuration fi
         Searchable configuration file ${exists ? 're-' : ''}created:
 
             ${destFile}
-        
+
     """)
 }
 

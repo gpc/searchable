@@ -15,17 +15,20 @@
  */
 package grails.plugin.searchable.internal.compass.mapping;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.compass.core.config.CompassConfiguration;
 import org.compass.core.converter.Converter;
 
-import java.util.*;
-
 /**
  * @author Maurice Nicholson
  */
-public class SimpleSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
+public class SimpleSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper {
 
     /**
      * No special initialisation required.
@@ -36,7 +39,7 @@ public class SimpleSearchableGrailsDomainClassCompassClassMapper extends Abstrac
             List defaultExcludedProperties, Map defaultFormats) {
         return this;
     }
-    
+
     /**
      * Get the property mappings for the given GrailsDomainClass
      * @param grailsDomainClass the Grails domain class

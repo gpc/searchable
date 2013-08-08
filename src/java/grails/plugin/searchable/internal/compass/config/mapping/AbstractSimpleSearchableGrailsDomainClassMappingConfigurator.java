@@ -15,12 +15,12 @@
  */
 package grails.plugin.searchable.internal.compass.config.mapping;
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-
 import java.util.Collection;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 
 /**
  * @author Maurice Nicholson

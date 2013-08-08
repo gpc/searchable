@@ -18,23 +18,28 @@ package grails.plugin.searchable.internal.compass.search;
 import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.compass.mapping.CompassMappingUtils;
 
-import org.compass.core.CompassQuery;
-import org.compass.core.CompassSession;
-import org.compass.core.Compass;
-import org.compass.core.CompassQueryBuilder;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.util.*;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.compass.core.Compass;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassQueryBuilder;
+import org.compass.core.CompassSession;
 
 /**
  * @author Maurice Nicholson
  */
-public class MoreLikeThisCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder implements SearchableCompassQueryBuilder {
+public class MoreLikeThisCompassQueryBuilder extends AbstractSearchableCompassQueryBuilder {
     private static final Log LOG = LogFactory.getLog(MoreLikeThisCompassQueryBuilder.class);
 
     public MoreLikeThisCompassQueryBuilder(Compass compass) {
@@ -137,7 +142,7 @@ public class MoreLikeThisCompassQueryBuilder extends AbstractSearchableCompassQu
         options.remove("class"); // discard class option so it's not added as match alias in CompassQuery by option helper; todo change "class" option to "match: instead
         options.put("class", options.get("match"));
         query = applyOptions(grailsApplication, getCompass(), compassSession, query, options);
-//        System.out.println("Query [" + query.toString() + "]");
+//        System.out.println("Query [" + query + "]");
         return query;
     }
 }

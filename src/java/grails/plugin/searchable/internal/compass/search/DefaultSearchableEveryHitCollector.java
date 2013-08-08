@@ -15,19 +15,20 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.compass.core.CompassHits;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import org.compass.core.CompassHits;
 
 /**
  * Collects every hit in the given hits
- * 
+ *
  * @author Maurice Nicholson
  */
-public class DefaultSearchableEveryHitCollector extends AbstractSearchableHitCollector implements SearchableHitCollector {
+public class DefaultSearchableEveryHitCollector extends AbstractSearchableHitCollector {
 
+    @Override
     public Object collect(CompassHits hits, boolean reload, Map options) {
         List collectedHits = new ArrayList();
         for (int i = 0, max = hits.length(); i < max; i++) {

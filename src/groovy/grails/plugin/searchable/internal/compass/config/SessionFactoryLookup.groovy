@@ -15,30 +15,30 @@
  */
 package grails.plugin.searchable.internal.compass.config
 
-import org.springframework.beans.factory.*
 import org.hibernate.SessionFactory
+import org.springframework.beans.factory.FactoryBean
+import org.springframework.beans.factory.InitializingBean
 
 /**
- * Handles Grails 1.4's SessionFactoryProxy class returning the underlying proxied session factory if needed
+ * Handles Grails 2.0's SessionFactoryProxy class returning the underlying proxied session factory if needed
  *
  * @author Graeme Rocher
  */
 class SessionFactoryLookup implements InitializingBean, FactoryBean{
 
-	SessionFactory sessionFactory
-	SessionFactory resolvedSessionFactory
-	
-	def getObject() { resolvedSessionFactory }
-	boolean isSingleton() { true }
-	Class getObjectType() { SessionFactory }
-	
-	void afterPropertiesSet() {
-		if("SessionFactoryProxy".equals(sessionFactory.getClass().simpleName)) {
-			resolvedSessionFactory = sessionFactory.getCurrentSessionFactory()
-		}
-		else {
-			resolvedSessionFactory = sessionFactory
-		}
-	}
+    SessionFactory sessionFactory
+    SessionFactory resolvedSessionFactory
 
+    def getObject() { resolvedSessionFactory }
+    boolean isSingleton() { true }
+    Class getObjectType() { SessionFactory }
+
+    void afterPropertiesSet() {
+        if("SessionFactoryProxy".equals(sessionFactory.getClass().simpleName)) {
+            resolvedSessionFactory = sessionFactory.getCurrentSessionFactory()
+        }
+        else {
+            resolvedSessionFactory = sessionFactory
+        }
+    }
 }

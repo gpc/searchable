@@ -15,15 +15,6 @@
  */
 package grails.plugin.searchable.internal.compass.mapping;
 
-import grails.plugin.searchable.internal.compass.converter.DefaultCompassConverterLookupHelper;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.compass.core.config.CompassConfigurationFactory;
-import org.compass.core.spi.InternalCompass;
-import org.compass.core.converter.ConverterLookup;
-import org.compass.core.converter.DefaultConverterLookup;
-
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +22,6 @@ import java.util.Map;
  * @author Maurice Nicholson
  */
 public class SearchableGrailsDomainClassCompassClassMapperFactory {
-    private static final Log LOG = LogFactory.getLog(SearchableGrailsDomainClassCompassClassMapperFactory.class);
-
     public static CompositeSearchableGrailsDomainClassCompassClassMapper getDefaultSearchableGrailsDomainClassCompassClassMapper(List defaultExcludedProperties, Map defaultFormats) {
         return new CompositeSearchableGrailsDomainClassCompassClassMapper();
     }

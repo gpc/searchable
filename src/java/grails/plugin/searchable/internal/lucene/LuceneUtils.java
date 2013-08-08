@@ -15,21 +15,23 @@
  */
 package grails.plugin.searchable.internal.lucene;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Query;
 import org.compass.core.util.Assert;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
 
 /**
  * Lucene utils
@@ -201,12 +203,12 @@ public class LuceneUtils {
 
     // A Set that allows dupes and maintains insertion order, so not really a set :-)
     private static class ListNotSet extends ArrayList implements Set {
+        private static final long serialVersionUID = 1;
     }
 
     /**
-     * Escape special characters in the given string that would otherwise
-     * cause a parse exception
-     * 
+     * Escape special characters in the given string that would otherwise cause a parse exception
+     *
      * @param query the query to escape
      * @return the escaped query
      */
@@ -219,13 +221,13 @@ public class LuceneUtils {
 
     /**
      * Returns the query string with special characters removed
-     * 
+     *
      * @param query the query to clean
      * @return the cleaned query
      */
     public static String cleanQuery(String query) {
-        StringBuffer sb = new StringBuffer();
-        for (int i = 0; i < query.length(); i++) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0, count = query.length(); i < count; i++) {
             char c = query.charAt(i);
             // These characters are part of the query syntax and must be escaped
             if (isSpecialQueryCharacter(c)) continue;
@@ -241,7 +243,7 @@ public class LuceneUtils {
      * @return true if it contains special characters
      */
     public static boolean queryHasSpecialCharacters(String query) {
-        for (int i = 0; i < query.length(); i++) {
+        for (int i = 0, count = query.length(); i < count; i++) {
             char c = query.charAt(i);
             // These characters are part of the query syntax and must be escaped
             if (isSpecialQueryCharacter(c)) return true;

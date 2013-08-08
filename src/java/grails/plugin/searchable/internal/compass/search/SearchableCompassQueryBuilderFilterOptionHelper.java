@@ -15,18 +15,17 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.compass.core.CompassQuery;
-import org.compass.core.Compass;
-import org.compass.core.CompassSession;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.compass.core.lucene.util.LuceneHelper;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.Filter;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.compass.core.Compass;
+import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryFilter;
-
+import org.compass.core.CompassSession;
+import org.compass.core.lucene.util.LuceneHelper;
 
 /**
  * Post-processes a query to add a filter
@@ -35,7 +34,7 @@ import org.compass.core.CompassQueryFilter;
  */
 public class SearchableCompassQueryBuilderFilterOptionHelper implements SearchableCompassQueryBuilderOptionsHelper {
     public static final String FILTER = "filter";
-    
+
     private static final Log LOG = LogFactory.getLog(SearchableCompassQueryBuilderFilterOptionHelper.class);
 
     public CompassQuery applyOptions(GrailsApplication grailsApplication, Compass compass, CompassSession compassSession, CompassQuery compassQuery, Map options) {
@@ -43,29 +42,25 @@ public class SearchableCompassQueryBuilderFilterOptionHelper implements Searchab
     }
 
     public CompassQuery addFilter(CompassQuery compassQuery, Map options,CompassSession compassSession) {
-    	
-    	if (compassSession == null) {
-    		
-        	LOG.warn("compassSession is null in SearchableCompassQueryBuilderFilterOptionHelper  ");
-    	}
-    	
-    	try {
-        Filter filter = (Filter) options.get("filter");
-        if (filter == null) {
+
+        if (compassSession == null) {
+            LOG.warn("compassSession is null in SearchableCompassQueryBuilderFilterOptionHelper  ");
+        }
+
+        try {
+            Filter filter = (Filter) options.get("filter");
+            if (filter == null) {
+                return compassQuery;
+            }
+            CompassQueryFilter compassQueryFilter = LuceneHelper.createCompassQueryFilter(compassSession , filter);
+
+            compassQuery.setFilter(compassQueryFilter);
+
             return compassQuery;
         }
-        CompassQueryFilter compassQueryFilter = LuceneHelper.createCompassQueryFilter(compassSession , filter);
-
-        compassQuery.setFilter(compassQueryFilter);
-
-
-        
-        return compassQuery;
-    	}catch(Exception e) {
-    		e.printStackTrace();
-    		return compassQuery;
-    	}
+        catch(Exception e) {
+            LOG.error(e.getMessage(), e);
+            return compassQuery;
+        }
     }
-
-    
 }

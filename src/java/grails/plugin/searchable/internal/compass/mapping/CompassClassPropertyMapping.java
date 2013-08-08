@@ -15,14 +15,14 @@
  */
 package grails.plugin.searchable.internal.compass.mapping;
 
-import org.springframework.util.Assert;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.util.Assert;
+
 /**
  * Describes a searchable class property mapping in Compass
- * 
+ *
  * @author Maurice Nicholson
  */
 public class CompassClassPropertyMapping {
@@ -265,6 +265,7 @@ public class CompassClassPropertyMapping {
      * Provide a useful String
      * @return String
      */
+    @Override
     public String toString() {
         return "CompassClassPropertyMapping: type=[" + type + "], propertyName=[" + propertyName + "], attributes=[" + attributes + "]";
     }

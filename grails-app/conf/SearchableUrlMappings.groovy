@@ -20,7 +20,7 @@
  * @author Maurice Nicholson
  */
 class SearchableUrlMappings {
-	static mappings = {
+    static mappings = {
         "/searchable" {
             controller = "searchable"
             action = "index"
@@ -28,5 +28,5 @@ class SearchableUrlMappings {
         "/searchable/$action?" {
             controller = "searchable"
         }
-	}	
+    }
 }

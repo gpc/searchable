@@ -15,9 +15,9 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import org.compass.core.CompassHits;
+import java.util.Map;
 
-import java.util.*;
+import org.compass.core.CompassHits;
 
 /**
  * @author Maurice Nicholson

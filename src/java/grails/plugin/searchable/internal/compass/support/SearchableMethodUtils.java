@@ -15,12 +15,12 @@
  */
 package grails.plugin.searchable.internal.compass.support;
 
-import org.springframework.util.Assert;
-
-import java.util.Map;
-import java.util.HashMap;
-
 import groovy.lang.Closure;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.util.Assert;
 
 /**
  * @author Maurice Nicholson
@@ -107,10 +107,10 @@ public abstract class SearchableMethodUtils {
             return defaultValue;
         }
         if (value instanceof Boolean) {
-            return ((Boolean) value).booleanValue();
+            return (Boolean) value;
         }
         if (value instanceof String) {
-            return Boolean.valueOf((String) value).booleanValue();
+            return Boolean.valueOf((String) value);
         }
         throw new IllegalArgumentException("The value of option [" + name + "] should be a boolean (or string equivalent) but is [" + value.getClass() + "]");
     }

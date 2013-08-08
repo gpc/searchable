@@ -19,19 +19,16 @@ import grails.plugin.searchable.internal.compass.config.mapping.SearchableGrails
 import grails.plugin.searchable.internal.compass.config.mapping.SearchableGrailsDomainClassMappingConfiguratorFactory;
 import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.springframework.core.io.ResourceLoader;
-
 import java.util.List;
 import java.util.Map;
+
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.springframework.core.io.ResourceLoader;
 
 /**
  * @author Maurice Nicholson
  */
 public abstract class SearchableCompassConfiguratorFactory {
-    private static final Log LOG = LogFactory.getLog(SearchableCompassConfiguratorFactory.class);
 
     public static EnvironmentSearchableCompassConfigurator getEnvironmentConfigurator(String compassConnection, Map compassSettings, GrailsApplication grailsApplication, Map beans) {
         EnvironmentSearchableCompassConfigurator environment = new EnvironmentSearchableCompassConfigurator();
@@ -73,5 +70,4 @@ public abstract class SearchableCompassConfiguratorFactory {
         mappings.setDefaultExcludes(defaultExcludedProperties);
         return mappings;
     }
-
 }

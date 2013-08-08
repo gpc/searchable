@@ -15,11 +15,11 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
+import java.util.Map;
+
+import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassSession;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-
-import java.util.Map;
 
 /**
  * A thread-safe Compass query builder

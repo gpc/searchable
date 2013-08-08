@@ -15,28 +15,31 @@
  */
 package grails.plugin.searchable.internal.compass.search;
 
-import grails.plugin.searchable.internal.SearchableMethod;
 import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassMappingUtils;
 import grails.plugin.searchable.internal.compass.support.AbstractSearchableMethod;
-
 import groovy.lang.IntRange;
 
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.codehaus.groovy.grails.commons.GrailsApplication;
-import org.compass.core.*;
-import org.springframework.util.Assert;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import org.apache.commons.collections.MapUtils;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.compass.core.Compass;
+import org.compass.core.CompassCallback;
+import org.compass.core.CompassException;
+import org.compass.core.CompassSession;
+import org.compass.core.CompassTermFreqsBuilder;
+import org.springframework.util.Assert;
 
 /**
  * Implements the SearchableService and domain class termFreqs() method
  *
  * @author Maurice Nicholson
  */
-public class DefaultTermFreqsMethod extends AbstractSearchableMethod implements SearchableMethod {
-    private static Log LOG = LogFactory.getLog(DefaultTermFreqsMethod.class);
+public class DefaultTermFreqsMethod extends AbstractSearchableMethod {
     private GrailsApplication grailsApplication;
 
     public DefaultTermFreqsMethod(String methodName, Compass compass, GrailsApplication grailsApplication, Map defaultOptions) {
@@ -202,7 +205,7 @@ public class DefaultTermFreqsMethod extends AbstractSearchableMethod implements 
 
     /**
      * A builder that builds the term freqs based on the properties set
-     * 
+     *
      * Note instances of this class are not thread-safe
      */
     public static class TermFreqsCompassCallback implements CompassCallback {

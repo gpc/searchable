@@ -15,26 +15,20 @@
  */
 package grails.plugin.searchable.internal.compass.mapping
 
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
-
-import org.compass.core.config.CompassConfiguration;
-import org.compass.core.converter.Converter;
-import org.compass.core.engine.subindex.SubIndexHash
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty
+import org.compass.core.config.CompassConfiguration
+import org.compass.core.converter.Converter
+import org.compass.core.engine.subindex.SubIndexHash
 import org.springframework.beans.BeanWrapperImpl
 
 /**
-*
-*
-* @author Maurice Nicholson
-*/
-class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
-    static final Log log = LogFactory.getLog(ClosureSearchableGrailsDomainClassCompassClassMapper);
+ * @author Maurice Nicholson
+ */
+class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearchableGrailsDomainClassCompassClassMapper {
+    static final Log log = LogFactory.getLog(ClosureSearchableGrailsDomainClassCompassClassMapper)
     static final SEARCHABLE_ID_OPTIONS = ['accessor', 'converter', 'name']
     static final SEARCHABLE_PROPERTY_OPTIONS = ['accessor', 'analyzer', 'boost', 'converter', 'excludeFromAll', 'format', 'index', 'managedId', 'managedIdIndex', 'name', 'nullValue', 'propertyConverter', 'reverse', 'store', 'spellCheck', 'termVector']
     static final SEARCHABLE_CONSTANT_OPTIONS = ['analyzer', 'boost', 'excludeFromAll', 'index', 'spellCheck', 'store', 'termVector', 'converter']
@@ -52,26 +46,26 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         un_tokenized: 'not_analyzed', tokenized: 'analyzed'
     ]]
 
-    GrailsDomainClass grailsDomainClass;
-    Class mappedClass;
-    GrailsDomainClassProperty[] mappableProperties;
+    GrailsDomainClass grailsDomainClass
+    Class mappedClass
+    GrailsDomainClassProperty[] mappableProperties
     Collection searchableGrailsDomainClasses
-    Object only;
-    Object except;
-    List mappedProperties;
+    Object only
+    Object except
+    List mappedProperties
     Map classMappingOptions
-    List constantMetadatas;
+    List constantMetadatas
     boolean hasMappingOption
     Map subIndexHash
-    
+
     /**
      * No special initialisation required.
      */
-    public SearchableGrailsDomainClassCompassClassMapper init(
+    SearchableGrailsDomainClassCompassClassMapper init(
             CompassConfiguration configuration,
             Map<String, Converter> customConverters,
             List defaultExcludedProperties, Map defaultFormats) {
-        return this;
+        return this
     }
 
     /**
@@ -92,8 +86,8 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         internalInit(grailsDomainClass, searchableGrailsDomainClasses)
 
         // Build user-defined specific mappings
-        closure = (Closure) closure.clone()
-        closure.setDelegate(this)
+        closure = closure.clone()
+        closure.delegate = this
         closure.call()
 
         // Merge inherited parent mappings?
@@ -104,7 +98,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         // Default any remaining mappable properties
         if (only && except) throw new IllegalArgumentException("Both 'only' and 'except' were used in '${mappedClass.getName()}#searchable': provide one or neither but not both")
         def mapValue = only ? [only: only] : except ? [except: except] : true
-        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, mapValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
+        mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, mapValue, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
 
         for (property in mappableProperties) {
             if (!mappedProperties.any { it.propertyName == property.name }) {
@@ -124,7 +118,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
      */
     CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses, Object closure, List excludedProperties) {
         // Get inherited parent mappings
-        List parentMappedProperties = getInheritedPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, excludedProperties);
+        List parentMappedProperties = getInheritedPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, excludedProperties)
         // Get property mapping for this class
         mappedProperties = searchableGetCompassClassPropertyMappings(grailsDomainClass, searchableGrailsDomainClasses, (Closure) closure, excludedProperties, parentMappedProperties)
         def classMapping = SearchableGrailsDomainClassCompassMappingUtils.buildCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, mappedProperties)
@@ -266,7 +260,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
                 "The invalid options are: [${invalidOptions.join(', ')}]."
             )
         }
-    
+
         def referenceOptions
         def componentOptions
         boolean implicitReference = defaultTypeReference
@@ -382,7 +376,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
         def subIndexHash = [:]
         def options = args instanceof Map ? args : args.find { it instanceof Map }
         def type = options?.type ? options.type : args.find { it instanceof Class }
-        if (!SubIndexHash.class.isAssignableFrom(type)) {
+        if (!SubIndexHash.isAssignableFrom(type)) {
             throw new IllegalArgumentException("Missing or invalid SubIndexHash class supplied for 'subIndexHash' in '${mappedClass.getName()}#searchable'. It should implement org.compass.core.engine.subindex.SubIndexHash")
         }
         subIndexHash.type = type
@@ -417,7 +411,7 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
      * @param searchableValue a searchable value
      * @return true for Closure for this class
      */
-    public boolean handlesSearchableValue(Object searchableValue) {
+    boolean handlesSearchableValue(Object searchableValue) {
         searchableValue instanceof Closure
     }
 
@@ -426,15 +420,15 @@ class ClosureSearchableGrailsDomainClassCompassClassMapper extends AbstractSearc
      */
     private internalInit(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
         this.grailsDomainClass = grailsDomainClass
-        this.mappedClass = grailsDomainClass.clazz
-        this.mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
+        mappedClass = grailsDomainClass.clazz
+        mappableProperties = SearchableGrailsDomainClassCompassMappingUtils.getMappableProperties(grailsDomainClass, true, searchableGrailsDomainClasses, excludedProperties, getDomainClassPropertyMappingStrategyFactory())
         this.searchableGrailsDomainClasses = searchableGrailsDomainClasses
-        this.only = null
-        this.except = null
-        this.mappedProperties = []
-        this.subIndexHash
-        this.classMappingOptions = [:]
-        this.constantMetadatas = []
-        this.hasMappingOption = false
+        only = null
+        except = null
+        mappedProperties = []
+        subIndexHash
+        classMappingOptions = [:]
+        constantMetadatas = []
+        hasMappingOption = false
     }
 }

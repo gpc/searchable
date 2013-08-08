@@ -15,17 +15,16 @@
  */
 package grails.plugin.searchable.internal.compass.config.mapping
 
-import java.util.Collection;
-
-import grails.plugin.searchable.internal.SearchableUtils
-import grails.plugin.searchable.internal.compass.mapping.*
+import grails.plugin.searchable.internal.compass.mapping.CompassClassMapping
+import grails.plugin.searchable.internal.compass.mapping.CompassMappingUtils
+import grails.plugin.searchable.internal.compass.mapping.SearchableCompassClassMappingXmlBuilder
+import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassClassMapper
 
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
-import org.codehaus.groovy.grails.commons.GrailsDomainClass
 import org.compass.core.config.CompassConfiguration
-import org.springframework.util.Assert
 import org.springframework.core.Ordered
+import org.springframework.util.Assert
 
 /**
  * Configures Compass with searchable domain classes according to
@@ -39,9 +38,9 @@ class AppConfigMappingConfigurator implements SearchableGrailsDomainClassMapping
     private SearchableGrailsDomainClassCompassClassMapper classMapper
     private SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder
     private config
-    
-    public AppConfigMappingConfigurator(config) {
-        this.config = config;
+
+    AppConfigMappingConfigurator(config) {
+        this.config = config
     }
 
     /**
@@ -52,27 +51,27 @@ class AppConfigMappingConfigurator implements SearchableGrailsDomainClassMapping
     Collection getMappedBy(Collection grailsDomainClasses) {
         Set mappedBy = []
         def searchableDomainConfig = config.searchable.domain
-        
+
         if (!searchableDomainConfig) return mappedBy
-        
+
         for (gdc in grailsDomainClasses) {
             if (searchableDomainConfig."${gdc.logicalPropertyName}") mappedBy << gdc
         }
-        
+
         return mappedBy
     }
-    
+
     Collection getUnmapped(Collection grailsDomainClasses) {
         Set unmapped = []
         def searchableDomainConfig = config.searchable.domain
-        
+
         if (!searchableDomainConfig) return unmapped
-        
+
         for (gdc in grailsDomainClasses) {
             def dcConfig = searchableDomainConfig."${gdc.logicalPropertyName}"
             if (dcConfig instanceof Boolean && !dcConfig) unmapped << gdc
         }
-        
+
         return unmapped
     }
 
@@ -83,27 +82,26 @@ class AppConfigMappingConfigurator implements SearchableGrailsDomainClassMapping
      * @param configurationContext          a configuration context, for flexible parameter passing
      * @param searchableGrailsDomainClasses all searchable domain classes, whether configured here or elsewhere
      */
-    public void configureMappings(
+    void configureMappings(
             CompassConfiguration compassConfiguration,
             Map configurationContext,
             Collection searchableClasses,
             Collection allSearchableClasses) {
-        Assert.notNull(classMapper, "classMapper cannot be null");
-        Assert.notNull(compassClassMappingXmlBuilder, "compassClassMappingXmlBuilder cannot be null");
+        Assert.notNull(classMapper, "classMapper cannot be null")
+        Assert.notNull(compassClassMappingXmlBuilder, "compassClassMappingXmlBuilder cannot be null")
 
         // map all classes
         def classMappings = searchableClasses.collect { gdc -> classMapper.getCompassClassMapping(gdc, allSearchableClasses) }
 
         // resolve aliases
-        CompassMappingUtils.resolveAliases(classMappings, allSearchableClasses, compassConfiguration);
+        CompassMappingUtils.resolveAliases(classMappings, allSearchableClasses, compassConfiguration)
 
         // add completed mappings to compass
-        for (Iterator iter = classMappings.iterator(); iter.hasNext(); ) {
-            CompassClassMapping classMapping = (CompassClassMapping) iter.next();
-            InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(classMapping);
-            LOG.debug("Adding [" + classMapping.getMappedClass().getName() + "] mapping to CompassConfiguration");
-            compassConfiguration.removeMappingByClass(classMapping.getMappedClass());
-            compassConfiguration.addInputStream(inputStream, classMapping.getMappedClass().getName().replaceAll("\\.", "/") + ".cpm.xml");
+        for (CompassClassMapping classMapping in classMappings) {
+            InputStream inputStream = compassClassMappingXmlBuilder.buildClassMappingXml(classMapping)
+            LOG.debug("Adding [" + classMapping.getMappedClass().getName() + "] mapping to CompassConfiguration")
+            compassConfiguration.removeMappingByClass(classMapping.getMappedClass())
+            compassConfiguration.addInputStream(inputStream, classMapping.getMappedClass().getName().replaceAll("\\.", "/") + ".cpm.xml")
         }
     }
 
@@ -112,23 +110,23 @@ class AppConfigMappingConfigurator implements SearchableGrailsDomainClassMapping
      *
      * @return name
      */
-    public String getName() {
-        return "searchable class property";
+    String getName() {
+        "searchable class property"
     }
 
-    public void setMappingDescriptionProviderManager(SearchableGrailsDomainClassCompassClassMapper classMapper) {
-        this.classMapper = classMapper;
+    void setMappingDescriptionProviderManager(SearchableGrailsDomainClassCompassClassMapper classMapper) {
+        this.classMapper = classMapper
     }
 
-    public void setCompassClassMappingXmlBuilder(SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder) {
-        this.compassClassMappingXmlBuilder = compassClassMappingXmlBuilder;
+    void setCompassClassMappingXmlBuilder(SearchableCompassClassMappingXmlBuilder compassClassMappingXmlBuilder) {
+        this.compassClassMappingXmlBuilder = compassClassMappingXmlBuilder
     }
 
     /**
      * Determines the order of this mapping configurator in relation to others
      * @return the order
      */
-    public int getOrder() {
-        return 3;
+    int getOrder() {
+        return 3
     }
 }

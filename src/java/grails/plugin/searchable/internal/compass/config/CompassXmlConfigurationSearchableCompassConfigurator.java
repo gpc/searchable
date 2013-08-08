@@ -15,21 +15,21 @@
  */
 package grails.plugin.searchable.internal.compass.config;
 
-import org.compass.core.config.CompassConfiguration;
-import org.springframework.util.Assert;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.context.ResourceLoaderAware;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.compass.core.config.CompassConfiguration;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.Assert;
 
 /**
  * A SearchableCompassConfigurator that configures Compass with a native compass.cfg.xml at the
  * root of the classpath, if available
- * 
+ *
  * @author Maurice Nicholson
  */
 public class CompassXmlConfigurationSearchableCompassConfigurator implements SearchableCompassConfigurator, ResourceLoaderAware {
@@ -52,13 +52,13 @@ public class CompassXmlConfigurationSearchableCompassConfigurator implements Sea
         if (resource.exists()) {
             Assert.notNull(configurationContext, "configurationContext cannot be null");
             try {
-                LOG.debug("Configuring Compass with compass config file [" + resource.getURL().toString() + "]");
+                LOG.debug("Configuring Compass with compass config file [" + resource.getURL() + "]");
                 compassConfiguration.configure(resource.getURL());
             } catch (IOException ex) {
                 LOG.error("Failed to configure Compass with classpath resource, even though it apparently exists: " + ex, ex);
                 throw new IllegalStateException("Failed to configure Compass with classpath resource, even though it apparently exists: " + ex);
             }
-            configurationContext.put(CONFIGURED, Boolean.TRUE);
+            configurationContext.put(CONFIGURED, true);
         }
     }
 

@@ -17,28 +17,37 @@ package grails.plugin.searchable.internal;
 
 import grails.plugin.searchable.internal.util.PatternUtils;
 
-import org.codehaus.groovy.grails.commons.*;
-import org.springframework.beans.BeanUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.util.Assert;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.compass.core.Compass;
-import org.compass.core.spi.InternalCompass;
-import org.compass.core.mapping.Mapping;
-import org.compass.core.mapping.ResourceMapping;
-import org.compass.core.mapping.osem.ObjectMapping;
-
-import java.util.*;
-import java.util.regex.Pattern;
 import java.beans.PropertyDescriptor;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
+import org.codehaus.groovy.grails.commons.GrailsApplication;
+import org.codehaus.groovy.grails.commons.GrailsClassUtils;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+import org.compass.core.Compass;
+import org.compass.core.mapping.Mapping;
+import org.compass.core.mapping.ResourceMapping;
+import org.compass.core.mapping.osem.ObjectMapping;
+import org.compass.core.spi.InternalCompass;
+import org.springframework.beans.BeanUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
 /**
  * General purpose utilities for the Grails Searchable Plugin
@@ -151,10 +160,10 @@ public class SearchableUtils {
         if (propertyType != null && classes.contains(propertyType)) {
             return propertyType;
         }
-        
+
         // Handle generic collection types, e.g. Set<MyDomainClass>, for transient properties.
         propertyType = property.getType();
-        
+
         if (Collection.class.isAssignableFrom(propertyType)) {
             Class elementClass = getElementClass(property);
             if (classes.contains(elementClass)) return elementClass;
@@ -177,7 +186,7 @@ public class SearchableUtils {
                 return (Class) argType;
             }
         }
-        
+
         return null;
     }
 
@@ -202,7 +211,7 @@ public class SearchableUtils {
      * @return true if included
      */
     public static boolean isIncludedProperty(String propertyName, Object searchable) {
-        if (searchable == null || (searchable instanceof Boolean && searchable.equals(Boolean.TRUE))) {
+        if (searchable == null || (searchable instanceof Boolean && ((Boolean)searchable))) {
             return true;
         }
         if (!(searchable instanceof Map)) {
@@ -220,9 +229,8 @@ public class SearchableUtils {
         if (value instanceof Collection) {
             values = (Collection) value;
         } else {
-            values = new HashSet() {{
-                add(value);
-            }};
+            values = new HashSet();
+            ((Set)values).add(value);
         }
         for (Iterator iter = values.iterator(); iter.hasNext(); ) {
             String v = (String) iter.next();
@@ -286,5 +294,4 @@ public class SearchableUtils {
         }
         return null;
     }
-
 }

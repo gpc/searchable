@@ -18,6 +18,15 @@ package grails.plugin.searchable.internal.compass.mapping;
 import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.util.GrailsDomainClassUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
@@ -27,8 +36,6 @@ import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
 import org.compass.core.Compass;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
-
-import java.util.*;
 
 /**
  * @author Maurice Nicholson
@@ -46,7 +53,7 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
         // TODO log warning when used as both component and non-component
         Object value = SearchableUtils.getSearchablePropertyValue(grailsDomainClass);
         if (value instanceof Boolean) {
-            return value.equals(Boolean.TRUE);
+            return (Boolean)value;
         }
         if (value == null) {
             return !SearchableUtils.isEmbeddedPropertyOfOtherDomainClass(grailsDomainClass, searchableGrailsDomainClasses);
@@ -66,12 +73,11 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
     public static GrailsDomainClassProperty[] getMappableProperties(GrailsDomainClass grailsDomainClass, Object searchableValue, Collection searchableGrailsDomainClasses, final List excludedProperties, SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory) {
         boolean defaultExcludes = false;
         if (searchableValue instanceof Boolean) {
-            if (searchableValue.equals(Boolean.FALSE)) {
+            if (!(Boolean)searchableValue) {
                 return null;
             }
-            searchableValue = new HashMap() {{
-                put("except", excludedProperties);
-            }};
+            searchableValue = new HashMap();
+            ((Map)searchableValue).put("except", excludedProperties);
             defaultExcludes = true;
         }
 
@@ -119,10 +125,10 @@ public class SearchableGrailsDomainClassCompassMappingUtils {
             classMapping.setMappedClassSuperClass(parent.getClazz());
         }
         if (GrailsDomainClassUtils.isWithinInhertitanceHierarchy(grailsDomainClass, searchableGrailsDomainClasses)) {
-            classMapping.addConstantMetaData("$/poly/class", new HashMap() {{
-                put("index", "not_analyzed");
-                put("excludeFromAll", Boolean.TRUE);
-            }}, Arrays.asList(new String [] {grailsDomainClass.getClazz().getName()}));
+            Map data = new HashMap();
+            data.put("index", "not_analyzed");
+            data.put("excludeFromAll", true);
+            classMapping.addConstantMetaData("$/poly/class", data, Arrays.asList(grailsDomainClass.getClazz().getName()));
         }
         classMapping.setPoly(!grailsDomainClass.getSubClasses().isEmpty() || classMapping.getMappedClassSuperClass() != null);
         return classMapping;

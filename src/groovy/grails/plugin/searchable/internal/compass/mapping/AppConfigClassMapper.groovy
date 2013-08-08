@@ -13,30 +13,24 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package grails.plugin.searchable.internal.compass.mapping;
+package grails.plugin.searchable.internal.compass.mapping
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.springframework.util.Assert;
-
-import grails.plugin.searchable.internal.SearchableUtils;
-
-import java.util.*;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass
 
 /**
  * A searchable GrailsDomainClass class mapper for Compass
  *
  * @author Maurice Nicholson
  */
-class AppConfigClassMapper extends CompositeSearchableGrailsDomainClassCompassClassMapper
-                           implements SearchableGrailsDomainClassCompassClassMapper {
+class AppConfigClassMapper extends CompositeSearchableGrailsDomainClassCompassClassMapper {
     private config
-    
+
     AppConfigClassMapper(config) {
         this.config = config
     }
-    
+
     CompassClassMapping getCompassClassMapping(GrailsDomainClass grailsDomainClass, Collection searchableGrailsDomainClasses) {
         def searchableValue = config.searchable.domain."${grailsDomainClass.logicalPropertyName}"
-        return getCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, searchableValue, getExcludedProperties());
+        return getCompassClassMapping(grailsDomainClass, searchableGrailsDomainClasses, searchableValue, getExcludedProperties())
     }
 }

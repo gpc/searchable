@@ -15,9 +15,9 @@
 */
 package grails.plugin.searchable.internal.compass.config;
 
-import org.compass.core.config.CompassConfiguration;
-
 import java.util.Map;
+
+import org.compass.core.config.CompassConfiguration;
 
 /**
  * A composite implememtation of SearchableCompassConfigurator that simply applies all

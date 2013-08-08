@@ -18,24 +18,19 @@ package grails.plugin.searchable.internal.compass.mapping;
 import grails.plugin.searchable.internal.SearchableUtils;
 import grails.plugin.searchable.internal.util.GrailsDomainClassUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.codehaus.groovy.grails.commons.GrailsDomainClassProperty;
+
 /**
  * @author Maurice Nicholson
  */
 public abstract class AbstractSearchableGrailsDomainClassCompassClassMapper implements SearchableGrailsDomainClassCompassClassMapper {
-    private static final Log LOG = LogFactory.getLog(AbstractSearchableGrailsDomainClassCompassClassMapper.class);
-    private static final String[] DEFAULT_EXCLUDED_PROPERTIES = {
-        "password"
-    };
+    private static final List<String> DEFAULT_EXCLUDED_PROPERTIES = Arrays.asList("password");
 
     private SearchableGrailsDomainClassPropertyMappingFactory domainClassPropertyMappingFactory;
     private List defaultExcludedProperties;
@@ -71,7 +66,7 @@ public abstract class AbstractSearchableGrailsDomainClassCompassClassMapper impl
         if (defaultExcludedProperties != null) {
             return defaultExcludedProperties;
         }
-        return Arrays.asList(DEFAULT_EXCLUDED_PROPERTIES);
+        return DEFAULT_EXCLUDED_PROPERTIES;
     }
 
     public void setDefaultExcludedProperties(List defaultExcludedProperties) {

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import grails.plugin.searchable.internal.compass.*
-import grails.plugin.searchable.internal.compass.config.*
+import grails.plugin.searchable.internal.compass.CompassGpsUtils
+import grails.plugin.searchable.internal.compass.DefaultSearchableMethodFactory
+import grails.plugin.searchable.internal.compass.SearchableCompassUtils
+import grails.plugin.searchable.internal.compass.config.SessionFactoryLookup
 import grails.plugin.searchable.internal.compass.domain.DynamicDomainMethodUtils
-import grails.plugin.searchable.internal.compass.mapping.*
-import grails.plugin.searchable.internal.compass.spring.*
-import grails.util.GrailsUtil
+import grails.plugin.searchable.internal.compass.mapping.DefaultSearchableCompassClassMappingXmlBuilder
+import grails.plugin.searchable.internal.compass.spring.DefaultSearchableCompassFactoryBean
+import grails.util.Environment
 
 import org.apache.commons.logging.LogFactory
 import org.codehaus.groovy.grails.commons.GrailsApplication
@@ -44,12 +46,7 @@ This version is recommended for JDK 1.5+
 '''
     def documentation = "http://grails.org/plugin/searchable"
 
-    def grailsVersion = "1.0 > *"
-    def dependsOn = [dataSource: "1.0 > *",
-                     domainClass: "1.0 > *",
-                     i18n: "1.0 > *",
-                     core:  "1.0 > *",
-                     hibernate: "1.0 > *"]
+    def grailsVersion = "1.3 > *"
 
     def license = "APACHE"
     def developers = [ [ name: "Peter Ledbrook", email: "p.ledbrook@cacoethes.co.uk" ] ]
@@ -94,8 +91,8 @@ This version is recommended for JDK 1.5+
             bean.destroyMethod = "stop"
             name = "hibernate"
             sessionFactory = { SessionFactoryLookup sfl ->
-				sessionFactory = ref("sessionFactory")
-			}
+                sessionFactory = ref("sessionFactory")
+            }
             fetchCount = config.fetchCount ?: 5000
 //            lifecycleInjector = lifecycleInjector
         }
@@ -165,41 +162,21 @@ This version is recommended for JDK 1.5+
         }
     }
 
-/*    def doWithWebDescriptor = {
-        // TODO Implement additions to web.xml (optional)
-    }*/
-
-/*    def onChange = { event ->
-         LOG.debug("onChange called")
-        // TODO Implement code that is executed when this class plugin class is changed
-        // the event contains: event.application and event.applicationContext objects
-    }*/
-
-/*    def onApplicationChange = { event ->
-        LOG.debug("onApplicationChange called")
-        // TODO Implement code that is executed when any class in a GrailsApplication changes
-        // the event contain: event.source, event.application and event.applicationContext objects
-
-        // TODO destroy and rebuild Compass and Compass::GPS
-    }*/
-
     // Get a configuration instance
     private getConfiguration(ApplicationContext applicationContext, GrailsApplication application) {
-        // Try to load Searchable.groovy from the current project and
-        // merge into the main config.
+        // Try to load Searchable.groovy from the current project and merge into the main config.
         def config = application.config
         try {
             Class configClass = application.getClassLoader().loadClass("Searchable")
-            ConfigSlurper configSlurper = new ConfigSlurper(GrailsUtil.getEnvironment())
-            Map binding = new HashMap()
-            binding.userHome = System.properties['user.home']
-            binding.grailsEnv = application.metadata["grails.env"]
-            binding.appName = application.metadata["app.name"]
-            binding.appVersion = application.metadata["app.version"]
-            configSlurper.binding = binding
+            ConfigSlurper configSlurper = new ConfigSlurper(Environment.current.name)
+            configSlurper.binding = [
+                userHome: System.properties['user.home'],
+                grailsEnv: application.metadata["grails.env"],
+                appName: application.metadata["app.name"],
+                appVersion: application.metadata["app.version"]]
             config.merge(configSlurper.parse(configClass))
         } catch (ClassNotFoundException e) {
-          LOG.debug("Not found: ${e.message}")
+            LOG.debug("Not found: ${e.message}")
         }
 
         // If 'searchable' is in the config, return it.
@@ -247,11 +224,11 @@ This version is recommended for JDK 1.5+
             return [:]
         }
     }
-    
+
     private getDefaultCompassConnection(application) {
         def appName = application.metadata["app.name"]
         def userHome = System.properties['user.home']
-        def grailsEnv = GrailsUtil.getEnvironment()
+        def grailsEnv = Environment.current.name
         return new File("${userHome}/.grails/projects/${appName}/searchable-index/${grailsEnv}").absolutePath
     }
 }

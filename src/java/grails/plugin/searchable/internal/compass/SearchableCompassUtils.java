@@ -16,14 +16,14 @@
 package grails.plugin.searchable.internal.compass;
 
 import grails.plugin.searchable.internal.SearchableUtils;
-import grails.util.GrailsUtil;
+import grails.util.Environment;
+
+import java.io.File;
 
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
 import org.compass.core.Compass;
 import org.compass.core.spi.InternalCompass;
-
-import java.io.File;
 
 /**
  * Utilities for Compass and Grails Searchable Plugin
@@ -40,7 +40,7 @@ public class SearchableCompassUtils {
      */
     public static String getDefaultConnection(GrailsApplication grailsApplication) {
         String appName = SearchableUtils.getAppName(grailsApplication);
-        return new StringBuffer(System.getProperty("user.home")).
+        return new StringBuilder(System.getProperty("user.home")).
             append(File.separator).
             append(".grails").
             append(File.separator).
@@ -50,7 +50,7 @@ public class SearchableCompassUtils {
             append(File.separator).
             append("searchable-index").
             append(File.separator).
-            append(GrailsUtil.getEnvironment()).
+            append(Environment.getCurrent().getName()).
             toString();
     }
 

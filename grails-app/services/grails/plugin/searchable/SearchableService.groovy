@@ -21,7 +21,9 @@ package grails.plugin.searchable
  * @author Maurice Nicholson
  */
 class SearchableService {
-    boolean transactional = false
+
+    static transactional = false
+
     def compass
     def compassGps
     def searchableMethodFactory

@@ -15,14 +15,14 @@
  */
 package grails.plugin.searchable.internal.compass.index;
 
-import grails.plugin.searchable.internal.SearchableMethod;
 import grails.plugin.searchable.internal.compass.DefaultSearchableMethodFactory;
 import grails.plugin.searchable.internal.compass.support.AbstractSearchableMethod;
-import org.compass.core.Compass;
-import org.compass.gps.CompassGps;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.compass.core.Compass;
+import org.compass.gps.CompassGps;
 
 /*
    reindexAll()
@@ -56,7 +56,7 @@ import java.util.Map;
 /**
  * @author Maurice Nicholson
  */
-public class DefaultReindexMethod extends DefaultIndexMethod implements SearchableMethod {
+public class DefaultReindexMethod extends DefaultIndexMethod {
     private AbstractSearchableMethod unindexMethod;
 
     public DefaultReindexMethod(String methodName, Compass compass, CompassGps compassGps, DefaultSearchableMethodFactory methodFactory, Map defaultOptions) {
@@ -69,11 +69,13 @@ public class DefaultReindexMethod extends DefaultIndexMethod implements Searchab
         this(methodName, compass, compassGps, methodFactory, new HashMap());
     }
 
+    @Override
     public Object invoke(Object[] args) {
         unindexMethod.invoke(args);
         return super.invoke(args);
     }
 
+    @Override
     public void setDefaultOptions(Map defaultOptions) {
         super.setDefaultOptions(defaultOptions);
         unindexMethod.getDefaultOptions().putAll(getDefaultOptions());

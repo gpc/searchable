@@ -18,12 +18,22 @@ package grails.plugin.searchable.internal.compass.search;
 import grails.plugin.searchable.internal.compass.mapping.SearchableGrailsDomainClassCompassMappingUtils;
 import grails.plugin.searchable.internal.util.GrailsDomainClassUtils;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.codehaus.groovy.grails.commons.DomainClassArtefactHandler;
 import org.codehaus.groovy.grails.commons.GrailsApplication;
 import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.compass.core.*;
-
-import java.util.*;
+import org.compass.core.Compass;
+import org.compass.core.CompassQuery;
+import org.compass.core.CompassQueryBuilder;
+import org.compass.core.CompassQueryFilter;
+import org.compass.core.CompassSession;
 
 /**
  * Helper dealing with a "class" query builder query option
@@ -45,7 +55,7 @@ public class SearchableCompassQueryBuilderClassOptionHelper implements Searchabl
         else {
             Class clazz = (Class) options.get("class");
             setAliases(compass, clazz, compassQuery, grailsApplication);
-            
+
             List grailsDomainClasses = Arrays.asList(grailsApplication.getArtefacts(DomainClassArtefactHandler.TYPE));
             GrailsDomainClass grailsDomainClass = GrailsDomainClassUtils.getGrailsDomainClass(clazz, grailsDomainClasses);
             Set subClasses = grailsDomainClass.getSubClasses();

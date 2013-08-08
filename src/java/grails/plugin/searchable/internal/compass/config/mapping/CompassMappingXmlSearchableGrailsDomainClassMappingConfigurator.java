@@ -17,27 +17,27 @@ package grails.plugin.searchable.internal.compass.config.mapping;
 
 import grails.plugin.searchable.internal.compass.config.CompassXmlConfigurationSearchableCompassConfigurator;
 
-import org.codehaus.groovy.grails.commons.GrailsDomainClass;
-import org.compass.core.config.CompassConfiguration;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.Ordered;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.util.Assert;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Iterator;
-import java.io.IOException;
+import org.codehaus.groovy.grails.commons.GrailsDomainClass;
+import org.compass.core.config.CompassConfiguration;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.Ordered;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.util.Assert;
 
 /**
  * Configures Compass with searchable domain classes that have a corresponding Compass mapping XML classpath resource.
  *
  * @author Maurice Nicholson
  */
-public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements SearchableGrailsDomainClassMappingConfigurator, ResourceLoaderAware, Ordered {
+public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator extends AbstractSimpleSearchableGrailsDomainClassMappingConfigurator implements ResourceLoaderAware, Ordered {
     private static final Log LOG = LogFactory.getLog(CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator.class);
 
     private ResourceLoader resourceLoader;
@@ -48,6 +48,7 @@ public class CompassMappingXmlSearchableGrailsDomainClassMappingConfigurator ext
      * @param grailsDomainClass the Grails domain class
      * @return true if the mapping of the class can be handled by this strategy
      */
+    @Override
     public boolean isMappedBy(GrailsDomainClass grailsDomainClass) {
         Assert.notNull(resourceLoader, "resourceLoader cannot be null");
         Resource resource = getMappingResource(grailsDomainClass);
