@@ -36,8 +36,6 @@ class SearchableGrailsPlugin {
     static LOG = LogFactory.getLog("grails.plugin.searchable.SearchableGrailsPlugin")
 
     def version = "0.6.4"
-    def author = 'Maurice Nicholson'
-    def authorEmail = 'maurice@freeshell.org'
     def title = 'Searchable Plugin'
     def description = '''
 Adds rich search functionality to Grails domain models.
@@ -49,7 +47,11 @@ This version is recommended for JDK 1.5+
     def grailsVersion = "1.3 > *"
 
     def license = "APACHE"
-    def developers = [ [ name: "Peter Ledbrook", email: "p.ledbrook@cacoethes.co.uk" ] ]
+    def developers = [ 
+        [ name: "Maurice Nicholson", email: "maurice@freeshell.org" ],
+        [ name: "Peter Ledbrook", email: "p.ledbrook@cacoethes.co.uk" ] 
+    ]
+    def organization = [ name: "Grails Plugin Collective", url: "http://github.com/gpc" ]
     def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPSEARCHABLE" ]
     def scm = [ url: "https://github.com/gpc/grails-searchable" ]
 
