@@ -8,7 +8,12 @@ grails.project.dependency.resolution = {
 
     repositories {
         grailsCentral()
+        mavenRepo "http://repo.grails.org/grails/core"
         mavenCentral()
+    }
+
+    dependencies {
+        compile "org.compass-project:compass:2.2.1"
     }
 
     plugins {
