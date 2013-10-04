@@ -44,7 +44,7 @@ This version is recommended for JDK 1.5+
 '''
     def documentation = "http://grails.org/plugin/searchable"
 
-    def grailsVersion = "2.3 > *"
+    def grailsVersion = "2.0 > *"
 
     def license = "APACHE"
     def developers = [ 
