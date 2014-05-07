@@ -46,7 +46,7 @@ public class DefaultSearchableCompassQueryBuilder extends AbstractSearchableComp
         stringQueryBuilder = new DefaultStringQuerySearchableCompassQueryBuilder(getCompass());
         String name = "grails.plugin.searchable.internal.compass.search.GroovyCompassQueryBuilder";
         try {
-            closureQueryBuilderClass = ClassUtils.forName(name);
+            closureQueryBuilderClass = ClassUtils.forName(name, ClassUtils.getDefaultClassLoader());
         } catch (Exception ex) {
             LOG.error("Class not found [" + name + "]", ex);
             throw new IllegalStateException("Class not found [" + name + "]");

@@ -128,7 +128,7 @@ public class CompositeSearchableGrailsDomainClassCompassClassMapper extends Abst
             simpleClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
             simpleClassMapper.setParent(this);
 
-            AbstractSearchableGrailsDomainClassCompassClassMapper closureClassMapper = (AbstractSearchableGrailsDomainClassCompassClassMapper) ClassUtils.forName("grails.plugin.searchable.internal.compass.mapping.ClosureSearchableGrailsDomainClassCompassClassMapper").newInstance();
+            AbstractSearchableGrailsDomainClassCompassClassMapper closureClassMapper = (AbstractSearchableGrailsDomainClassCompassClassMapper) ClassUtils.forName("grails.plugin.searchable.internal.compass.mapping.ClosureSearchableGrailsDomainClassCompassClassMapper", ClassUtils.getDefaultClassLoader()).newInstance();
             closureClassMapper.setDomainClassPropertyMappingStrategyFactory(domainClassPropertyMappingFactory);
             closureClassMapper.setParent(this);
 

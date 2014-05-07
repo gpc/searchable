@@ -48,7 +48,7 @@ public abstract class SearchableGrailsDomainClassMappingConfiguratorFactory {
 
     public static SearchableGrailsDomainClassMappingConfigurator getAnnotationsMappingConfigurator() {
         try {
-            return (SearchableGrailsDomainClassMappingConfigurator) ClassUtils.forName("grails.plugin.searchable.internal.compass.config.mapping.CompassAnnotationSearchableGrailsDomainClassMappingConfigurator").newInstance();
+            return (SearchableGrailsDomainClassMappingConfigurator) ClassUtils.forName("grails.plugin.searchable.internal.compass.config.mapping.CompassAnnotationSearchableGrailsDomainClassMappingConfigurator", ClassUtils.getDefaultClassLoader()).newInstance();
         } catch (Exception ex) {
             LOG.warn("CompassAnnotationSearchableGrailsDomainClassMappingConfigurator is unavailable");
         }

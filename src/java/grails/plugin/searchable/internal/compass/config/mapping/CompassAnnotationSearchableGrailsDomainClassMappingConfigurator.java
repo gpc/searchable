@@ -106,7 +106,7 @@ public class CompassAnnotationSearchableGrailsDomainClassMappingConfigurator ext
 
     private static Class getSearchableAnnotationClass() {
         try {
-            return ClassUtils.forName(SEARCHABLE_ANNOTATION_CLASS_NAME);
+            return ClassUtils.forName(SEARCHABLE_ANNOTATION_CLASS_NAME, ClassUtils.getDefaultClassLoader());
         } catch (Throwable ex) {
             LOG.debug("Annotations unavailable");
         }
