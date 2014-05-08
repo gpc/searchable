@@ -14,6 +14,11 @@ grails.project.dependency.resolution = {
 
     dependencies {
         compile "org.compass-project:compass:2.2.1"
+        compile('org.apache.lucene:lucene-highlighter:2.4.1',
+                'org.apache.lucene:lucene-analyzers:2.4.1',
+                'org.apache.lucene:lucene-queries:2.4.1',
+                'org.apache.lucene:lucene-snowball:2.4.1',
+                'org.apache.lucene:lucene-spellchecker:2.4.1')
     }
 
     plugins {
