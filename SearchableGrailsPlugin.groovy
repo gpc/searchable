@@ -27,7 +27,6 @@ import org.codehaus.groovy.grails.commons.GrailsApplication
 import org.compass.gps.device.hibernate.HibernateGpsDevice
 import org.compass.gps.impl.SingleCompassGps
 import org.springframework.context.ApplicationContext
-import org.springframework.core.JdkVersion
 
 /**
 * @author Maurice Nicholson
@@ -66,11 +65,6 @@ This version is recommended for JDK 1.5+
 
     // Build Compass and Compass::GPS
     def doWithSpring = {
-        if (!JdkVersion.isAtLeastJava15()) {
-            LOG.error("This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
-            System.out.println("ERROR: This version of the Searchable Plugin is only compatible with JDK 1.5+. See the documentation at ${documentation} for the JDK 1.4 alternative")
-        }
-
         // Configuration
         config = getConfiguration(parentCtx, application)
 
