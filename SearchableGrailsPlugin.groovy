@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContext
 class SearchableGrailsPlugin {
     static LOG = LogFactory.getLog("grails.plugin.searchable.SearchableGrailsPlugin")
 
-    def version = "0.6.8"
+    def version = "0.6.9"
     def title = 'Searchable Plugin'
     def description = '''
 Adds rich search functionality to Grails domain models.
