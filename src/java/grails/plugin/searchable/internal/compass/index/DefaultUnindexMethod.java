@@ -25,6 +25,7 @@ import java.util.Map;
 import org.compass.core.Compass;
 import org.compass.core.CompassCallback;
 import org.compass.core.CompassException;
+import org.compass.core.CompassOperations;
 import org.compass.core.CompassQuery;
 import org.compass.core.CompassQueryBuilder;
 import org.compass.core.CompassSession;
@@ -80,9 +81,10 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod {
 
         return doInCompass(new CompassCallback() {
             public Object doInCompass(CompassSession session) throws CompassException {
+                CompassOperations compassOperations = session;
                 if (!objects.isEmpty()) {
                     for (Iterator iter = objects.iterator(); iter.hasNext(); ) {
-                        session.delete(iter.next());
+                        compassOperations.delete(iter.next());
                     }
                     return null;
                 }
@@ -95,11 +97,11 @@ public class DefaultUnindexMethod extends AbstractDefaultIndexMethod {
                     query = queryBuilder.matchAll().setTypes(new Class[] {clazz});
                 }
                 if (query != null) {
-                    session.delete(query);
+                    compassOperations.delete(query);
                     return null;
                 }
                 for (Iterator iter = ids.iterator(); iter.hasNext(); ) {
-                    session.delete(clazz, iter.next());
+                    compassOperations.delete(clazz, iter.next());
                 }
                 return null;
             }
