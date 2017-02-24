@@ -487,40 +487,54 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 <h3 id="_options" class="discrete">Options</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><strong><code>all</code></strong> - Controls the behaviour of the automatically created "all" field in the index for instances of this class. If not defined uses built-in defaults. <a href="index.html#_mapping">More</a></p>
-</li>
-<li>
-<p><strong><code>analyzer</code></strong> - The name of a configured Analyzer used to analyze the searchable data of instances. Overridable on a per property basis. Default is <code>"default"</code>, a built-in Analyzer.</p>
-</li>
-<li>
-<p><strong><code>alias</code></strong> - A name for documents of this class type in the index. Default is the simple class name, eg, the class <code>org.boom.User</code> would have an alias of <code>"User"</code> by default. It&#8217;s essentially a piece of constant text added for every object of this class type, and allows you to query by class, eg, <code>"alias:User maurice"</code></p>
-</li>
-<li>
-<p><strong><code>boost</code></strong> - A decimal value which increases or decreases the ranking of hits for this class if positive or negative respectively. Default is <code>1.0</code></p>
-</li>
-<li>
-<p><strong><code>constant</code></strong> - Allows you to define constant searchable data for every instance of the class. Requires a <code>Map</code> value, which defines the <code>constant&#8217;s `name</code> and <code>value</code> or <code>values</code> and other options. [More|Searchable Plugin - Mapping - constant]</p>
-</li>
-<li>
-<p><strong><code>converter</code></strong> - The name of configured Converter used to convert this class to/from searchable text. A Compass default is used if not defined.</p>
-</li>
-<li>
-<p><strong><code>root</code></strong> - Defines whether class instances are kept in their own index. When <code>false</code> instances should be <a href="index.html#_mapping_compass_concepts">searchable components</a> of another class, otherwise they are not saved in any index and cannot be searched for. Default is <code>true</code>.</p>
-</li>
-<li>
-<p><strong><code>spellCheck</code></strong> - Whether to include the instance searchable data is added to the spell check index. Either "`include"` or <code>"exclude"</code> to include or exclude from the spell-check index respectively. Default is <code>"exclude"</code>.</p>
-</li>
-<li>
-<p><strong><code>subIndex</code></strong> - The name of the Lucene index for this class. By default, each searchable class (or hierarchy) gets its own complete Lucene index, with the same name as <code>alias</code>. (Compass calls these "sub-indexes".) This name is then used as the index&#8217;s on-disk directory name or as the table-table name, for example, depending on your index storage strategy. This option allows you to override the default behaviour. For example you could use the same sub-index for multiple different classes.</p>
-</li>
-<li>
-<p><strong><code>supportUnmarshall</code></strong> - Whether you need to get the data in the index back out again as domain classes. If <code>false</code> class instances are "marshalled" to the index, but they cannot be "unmarshalled" back into classes (ie the reverse). May be useful if you want to easily index your data but are accessing the index directly with Compass/Lucene yourself. Default is <code>true</code>.</p>
-</li>
-</ul>
-</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>all</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Controls the behaviour of the automatically created "all" field in the index for instances of this class. If not defined uses built-in defaults. <a href="index.html#_mapping">More</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>analyzer</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a configured Analyzer used to analyze the searchable data of instances. Overridable on a per property basis. Default is <code>"default"</code>, a built-in Analyzer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>alias</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A name for documents of this class type in the index. Default is the simple class name, eg, the class <code>org.boom.User</code> would have an alias of <code>"User"</code> by default. It&#8217;s essentially a piece of constant text added for every object of this class type, and allows you to query by class, eg, <code>"alias:User maurice"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>boost</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A decimal value which increases or decreases the ranking of hits for this class if positive or negative respectively. Default is <code>1.0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>constant</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows you to define constant searchable data for every instance of the class. Requires a <code>Map</code> value, which defines the <code>constant&#8217;s `name</code> and <code>value</code> or <code>values</code> and other options.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>converter</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of configured Converter used to convert this class to/from searchable text. A Compass default is used if not defined.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>root</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines whether class instances are kept in their own index. When <code>false</code> instances should be <a href="index.html#_mapping_compass_concepts">searchable components</a> of another class, otherwise they are not saved in any index and cannot be searched for. Default is <code>true</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>spellCheck</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to include the instance searchable data is added to the spell check index. Either "`include"` or <code>"exclude"</code> to include or exclude from the spell-check index respectively. Default is <code>"exclude"</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>subIndex</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Lucene index for this class. By default, each searchable class (or hierarchy) gets its own complete Lucene index, with the same name as <code>alias</code>. (Compass calls these "sub-indexes".) This name is then used as the index&#8217;s on-disk directory name or as the table-table name, for example, depending on your index storage strategy. This option allows you to override the default behaviour. For example you could use the same sub-index for multiple different classes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>supportUnmarshall</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether you need to get the data in the index back out again as domain classes. If <code>false</code> class instances are "marshalled" to the index, but they cannot be "unmarshalled" back into classes (ie the reverse). May be useful if you want to easily index your data but are accessing the index directly with Compass/Lucene yourself. Default is <code>true</code>.</p></td>
+</tr>
+</tbody>
+</table>
 <h2 id="_examples" class="discrete">Examples</h2>
 <div class="listingblock">
 <div class="content">
@@ -560,7 +574,7 @@ static searchable = {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 12:15:04 +01:00
+Last updated 2017-02-24 13:14:43 +01:00
 </div>
 </div>
 </body>

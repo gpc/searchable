@@ -427,26 +427,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>Used to map [searchable references|Searchable Plugin - Mapping - Compass concepts#Searchable Reference].</p>
 </div>
 <h2 id="_syntax" class="discrete">Syntax</h2>
-<div class="paragraph">
-<p>{code}
-static searchable = {
+<div class="listingblock">
+<div class="content">
+<pre>static searchable = {
     propertyName options
-}
-{code}</p>
+}</pre>
 </div>
-<div class="paragraph">
-<p>{code}
-static searchable = {
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>static searchable = {
     propertyName reference: true
-}
-{code}</p>
+}</pre>
 </div>
-<div class="paragraph">
-<p>{code}
-static searchable = {
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>static searchable = {
     propertyName reference: options
-}
-{code}</p>
+}</pre>
+</div>
 </div>
 <h2 id="_description" class="discrete">Description</h2>
 <div class="paragraph">
@@ -484,25 +484,29 @@ static searchable = {
 </ul>
 </div>
 <h2 id="_examples" class="discrete">Examples</h2>
-<div class="paragraph">
-<p>{code}
-metadata converter: "metadata\_converter"
-{code}</p>
+<div class="listingblock">
+<div class="content">
+<pre>// Provide a custom converter
+metadata converter: "metadata\_converter"</pre>
 </div>
-<div class="paragraph">
-<p>{code}
-metadata reference: true
-{code}</p>
 </div>
-<div class="paragraph">
-<p>{code}
-metadata reference: [converter: "metadata\_converter"]
-{code}</p>
+<div class="listingblock">
+<div class="content">
+<pre>// Map metadata as a reference, overriding any conventional mapping
+metadata reference: true</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>// Map metadata as a reference, overriding any conventional mapping
+// and define some options
+metadata reference: [converter: "metadata\_converter"]</pre>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 12:38:44 +01:00
+Last updated 2017-02-24 13:12:37 +01:00
 </div>
 </div>
 </body>

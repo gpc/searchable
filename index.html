@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<title>Searchable Grails Plugin</title>
+<title>Searchable Grails 2.x Plugin</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -420,10 +420,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Searchable Grails Plugin</h1>
+<h1>Searchable Grails 2.x Plugin</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#_summary">Summary</a></li>
+<li><a href="#_installation">Installation</a></li>
+<li><a href="#_description">Description</a></li>
+<li><a href="#_features">Features</a></li>
 <li><a href="#_quick_start">Quick start</a></li>
 <li><a href="#_searchablecontroller_and_view">SearchableController and view</a></li>
 <li><a href="#_searching">Searching</a>
@@ -447,6 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_compass_annotations">Compass annotations</a></li>
 </ul>
 </li>
+<li><a href="#_searchable_plugin_managing_the_index">Searchable Plugin - Managing the index</a></li>
 <li><a href="#_configuration">Configuration</a></li>
 <li><a href="#_analyzers">Analyzers</a></li>
 <li><a href="#_converters">Converters</a></li>
@@ -467,11 +472,116 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_stopmirroring">stopMirroring</a></li>
 </ul>
 </li>
-<li><a href="#_releases">Releases</a></li>
+<li><a href="#_releases">Releases</a>
+<ul class="sectlevel2">
+<li><a href="#_0_5_5">0.5.5</a></li>
+<li><a href="#_0_5_1">0.5.1</a></li>
+<li><a href="#_0_5">0.5</a></li>
+<li><a href="#_0_4_1">0.4.1</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Adds rich search functionality to Grails domain models. Built on Compass (<a href="http://www.compass-project.org/" class="bare">http://www.compass-project.org/</a>) and Lucene (<a href="http://lucene.apache.org/" class="bare">http://lucene.apache.org/</a>) This version is recommended for JDK 1.5+</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Use the above dependency declaration in your BuildConfig.groovy file and then add</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>mavenRepo "http://repo.grails.org/grails/core"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to the repositories section of that file.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description">Description</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Searchable Plugin brings rich search features to Grails applications with minimum effort, and gives you power and flexibility when you need it.</p>
+</div>
+<div class="paragraph">
+<p>It is built on the fantastic Compass Search Engine Framework and Lucene and has the same license as Grails (Apache 2).</p>
+</div>
+<div class="paragraph">
+<p>The roadmap and issues are tracked in JIRA.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Only versions 0.6.5+ work with Grails 2.3+.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Only versions 0.6.4+ work with Grails 2.2+.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Initially the plugin will focus on exposing Groovy domain models.</p>
+</div>
+<div class="paragraph">
+<p>Support for Java domain classes is on the roadmap but until then, if your Grails application uses Java domain classes, using Compass&#8217;s native annotations or XML mapping config and setting up Compass yourself may be a better fit at this stage.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features">Features</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Maps searchable domain classes to the underlying search index</p>
+</li>
+<li>
+<p>Performs a bulk index of all searchable class instances in the database</p>
+</li>
+<li>
+<p>Automatically synchronises any changes made through GORM/hibernate with the index</p>
+</li>
+<li>
+<p>Provides a SearchableService for easy cross-domain-class searching and index management</p>
+</li>
+<li>
+<p>Adds domain class methods for easy per-domain-class searching and index management</p>
+</li>
+<li>
+<p>Provides a SearchableController and view for testing queries and demonstrating the Searchable Plugin API</p>
+</li>
+<li>
+<p>Follows a Convention over Configuration approach with overridable behaviour where necessary</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_quick_start">Quick start</h2>
 <div class="sectionbody">
@@ -990,44 +1100,44 @@ def leastRelevant = searchableService.search({
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"SCORE"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"auto"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SCORE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auto</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered most-relevant (highest scoring) first. This is the default</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"SCORE"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"reverse"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SCORE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reverse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered least-relevant (lowest scoring) first.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"SCORE"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"asc"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SCORE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"asc</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered least-relevant (lowest scoring) first.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"SCORE"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"desc"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>SCORE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"desc</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered most-relevant (highest scoring) first. This is the same as <code>SCORE</code> + <code>auto</code>, which is the default</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"someProperty"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"asc"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered in natural order for the <code>"someProperty"</code> field value, eg, String ascending, Number ascending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>someProperty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>asc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered in natural order for the <code>someProperty</code> field value, eg, String ascending, Number ascending</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"someProperty"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"desc"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The results are order in revserse natural order for the <code>"someProperty"</code> field value, eg, String descending, Number descending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>someProperty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>desc</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The results are order in revserse natural order for the <code>someProperty</code> field value, eg, String descending, Number descending</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"someProperty"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"auto"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered in natural order for the <code>"someProperty"</code> field value, eg, String ascending, Number ascending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>someProperty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>auto</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The results are ordered in natural order for the <code>someProperty</code> field value, eg, String ascending, Number ascending</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"someProperty"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"reverse"</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The results are order in revserse natural order for the <code>"someProperty"</code> field value, eg, String descending, Number descending</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>someProperty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reverse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The results are order in revserse natural order for the <code>someProperty</code> field value, eg, String descending, Number descending</p></td>
 </tr>
 </tbody>
 </table>
@@ -1204,8 +1314,17 @@ static searchable = [except: ['screen?', 'version']]</pre>
 </div>
 <div class="sect2">
 <h3 id="_mapping_conventions">Mapping conventions</h3>
-<div class="paragraph">
-<p>:WARNING First please familiarise yourself with some essential <a href="index.html#_mapping_compass_concepts">Compass mapping concepts</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+First please familiarise yourself with some essential <a href="index.html#_mapping_compass_concepts">Compass mapping concepts</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The easiest way to map a class to the search index is by declaring</p>
@@ -1707,7 +1826,7 @@ and the other as searchable-component.</p>
 </div>
 <div class="sect2">
 <h3 id="_searchable_id">Searchable Id</h3>
-<h4 id="_summary" class="discrete">Summary</h4>
+<h4 id="_summary_2" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Used to map the searchable class&#8217;s identifier.</p>
 </div>
@@ -1719,7 +1838,7 @@ and the other as searchable-component.</p>
 }</pre>
 </div>
 </div>
-<h4 id="_description" class="discrete">Description</h4>
+<h4 id="_description_2" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Maps the searchable id with the given [options|#Options].</p>
 </div>
@@ -1735,7 +1854,7 @@ and the other as searchable-component.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>name</code></strong> - The name of the searchable id field in the index. Default is <code>id</code>. This allows you to target the id field in a query, eg, if you decided to name your id <code>"_\_the\_id\__"@ you could query it with @"\__the\_id\_\_:10"</code>.</p>
+<p><strong><code>name</code></strong> - The name of the searchable id field in the index. Default is <code>id</code>. This allows you to target the id field in a query, eg, if you decided to name your id <code>"_\_the\_id\__"</code> you could query it with <code>"\__the\_id\_\_:10"</code>.</p>
 </li>
 <li>
 <p><strong><code>accessor</code></strong> - How the property is accessed. One of <code>"field"</code> or <code>"property"</code>. Default is <code>"property"</code></p>
@@ -1755,7 +1874,7 @@ id name: "\_\_the\_id\_\_"</pre>
 </div>
 <div class="sect2">
 <h3 id="_searchable_property_2">Searchable Property</h3>
-<h4 id="_summary_2" class="discrete">Summary</h4>
+<h4 id="_summary_3" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Used to map [searchable properties|Searchable Plugin - Mapping - Compass concepts#Searchable Property].</p>
 </div>
@@ -1767,7 +1886,7 @@ id name: "\_\_the\_id\_\_"</pre>
 }</pre>
 </div>
 </div>
-<h4 id="_description_2" class="discrete">Description</h4>
+<h4 id="_description_3" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Maps the class&#8217;s <code>propertyName</code> property with the given [options|#Options].</p>
 </div>
@@ -1795,7 +1914,7 @@ id name: "\_\_the\_id\_\_"</pre>
 <p><strong><code>analyzer</code></strong> - The name of a configured analyzer used to analyze this property. Default is <code>"default"</code> which is a built-in analyzer (Lucene&#8217;s StandardAnalyzer)</p>
 </li>
 <li>
-<p><strong><code>boost</code></strong> - A decimal boost value. With a positive value, promotes search results for hits in this property; with a negative value, demotes search results that hit this property. Default is @1.0@</p>
+<p><strong><code>boost</code></strong> - A decimal boost value. With a positive value, promotes search results for hits in this property; with a negative value, demotes search results that hit this property. Default is <code>1.0</code></p>
 </li>
 <li>
 <p><strong><code>excludeFromAll</code></strong> - Whether the property should be excluded from the generated <code>"all"</code> searchable text field in the index. One of <code>"yes"</code>, <code>"no"</code> or <code>"no_analyzed"</code></p>
@@ -1807,7 +1926,7 @@ id name: "\_\_the\_id\_\_"</pre>
 <p><strong><code>index</code></strong> - How or if the property is made into searchable text. One of <code>"'no"</code>, <code>"not_analyzed"</code> or <code>"analyzed"</code>.</p>
 </li>
 <li>
-<p><strong><code>name</code></strong> - The name of the field in the search index. Can be used with multiple mappings for the same property, each with their own name. Default is <code>propertyName</code>. This becomes the name of the field in the index, so if @name@ is @"title"@, you can target that field with a query like @"title:grails"@</p>
+<p><strong><code>name</code></strong> - The name of the field in the search index. Can be used with multiple mappings for the same property, each with their own name. Default is <code>propertyName</code>. This becomes the name of the field in the index, so if <code>name</code> is <code>"title"</code>, you can target that field with a query like <code>"title:grails"</code></p>
 </li>
 <li>
 <p><strong><code>nullValue</code></strong> - The value to use if the property is <code>null</code> when indexed.</p>
@@ -1819,10 +1938,10 @@ id name: "\_\_the\_id\_\_"</pre>
 <p><strong><code>reverse</code></strong> - Whether the property should be reversed when made searchable. One of <code>"no"</code>, <code>"reader"</code> or <code>"string`". Default is `"no"</code></p>
 </li>
 <li>
-<p><strong><code>spellCheck</code></strong> - Should the values of the property be included in the spell-check index? Either <code>"include"</code> or `"exclude"@. If not defined then inherits the class&#8217;s own spell-check mapping.</p>
+<p><strong><code>spellCheck</code></strong> - Should the values of the property be included in the spell-check index? Either <code>"include"</code> or <code>"exclude"</code>. If not defined then inherits the class&#8217;s own spell-check mapping.</p>
 </li>
 <li>
-<p><strong><code>store</code></strong> - Should the value be stored in the index? One of <code>"yes"</code>, <code>"no"</code> or <code>"compress"</code>. If <code>"no"</code> then the property may still be searchable (depending on the @index@ option), but when re-creating the object for search results this property will always be null. <code>"compress"</code> is useful for large or binary property values. Default is @"yes"@</p>
+<p><strong><code>store</code></strong> - Should the value be stored in the index? One of <code>"yes"</code>, <code>"no"</code> or <code>"compress"</code>. If <code>"no"</code> then the property may still be searchable (depending on the <code>index</code> option), but when re-creating the object for search results this property will always be null. <code>"compress"</code> is useful for large or binary property values. Default is <code>"yes"</code></p>
 </li>
 <li>
 <p><strong><code>termVector</code></strong> - Should the term-vector data be collected for the property in the index? One of <code>"yes"</code>, <code>"no"</code>, `"with\_positions`", `"with\_offsets`", `"with\_positions\_offsets`". If not defined inherits the class&#8217;s term-vector mapping. This is required for [more-like-this|Searchable Plugin - Methods - moreLikeThis] searches.</p>
@@ -1863,33 +1982,33 @@ tags index: 'analyzed'</pre>
 </div>
 <div class="sect2">
 <h3 id="_searchable_reference_2">Searchable Reference</h3>
-<h4 id="_summary_3" class="discrete">Summary</h4>
+<h4 id="_summary_4" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Used to map [searchable references|Searchable Plugin - Mapping - Compass concepts#Searchable Reference].</p>
 </div>
 <h4 id="_syntax_3" class="discrete">Syntax</h4>
-<div class="paragraph">
-<p>{code}
-static searchable = {
+<div class="listingblock">
+<div class="content">
+<pre>static searchable = {
     propertyName options
-}
-{code}</p>
+}</pre>
 </div>
-<div class="paragraph">
-<p>{code}
-static searchable = {
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>static searchable = {
     propertyName reference: true
-}
-{code}</p>
+}</pre>
 </div>
-<div class="paragraph">
-<p>{code}
-static searchable = {
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>static searchable = {
     propertyName reference: options
-}
-{code}</p>
+}</pre>
 </div>
-<h4 id="_description_3" class="discrete">Description</h4>
+</div>
+<h4 id="_description_4" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Maps the class&#8217;s <code>propertyName</code> property with the given [options|#Options].</p>
 </div>
@@ -1925,25 +2044,29 @@ static searchable = {
 </ul>
 </div>
 <h4 id="_examples_4" class="discrete">Examples</h4>
-<div class="paragraph">
-<p>{code}
-metadata converter: "metadata\_converter"
-{code}</p>
+<div class="listingblock">
+<div class="content">
+<pre>// Provide a custom converter
+metadata converter: "metadata\_converter"</pre>
 </div>
-<div class="paragraph">
-<p>{code}
-metadata reference: true
-{code}</p>
 </div>
-<div class="paragraph">
-<p>{code}
-metadata reference: [converter: "metadata\_converter"]
-{code}</p>
+<div class="listingblock">
+<div class="content">
+<pre>// Map metadata as a reference, overriding any conventional mapping
+metadata reference: true</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>// Map metadata as a reference, overriding any conventional mapping
+// and define some options
+metadata reference: [converter: "metadata\_converter"]</pre>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_searchable_component_2">Searchable Component</h3>
-<h4 id="_summary_4" class="discrete">Summary</h4>
+<h4 id="_summary_5" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Used to map [searchable components|Searchable Plugin - Mapping - Compass concepts#Searchable Component].</p>
 </div>
@@ -1969,7 +2092,7 @@ metadata reference: [converter: "metadata\_converter"]
 }</pre>
 </div>
 </div>
-<h4 id="_description_4" class="discrete">Description</h4>
+<h4 id="_description_5" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Maps the class&#8217;s <code>propertyName</code> property with the given [options|#Options].</p>
 </div>
@@ -2030,7 +2153,7 @@ metadata component: [converter: "metadata\_converter"]</pre>
 </div>
 <div class="sect2">
 <h3 id="_class_mapping">Class Mapping</h3>
-<h4 id="_summary_5" class="discrete">Summary</h4>
+<h4 id="_summary_6" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Defines the class mapping</p>
 </div>
@@ -2070,7 +2193,7 @@ metadata component: [converter: "metadata\_converter"]</pre>
 }</pre>
 </div>
 </div>
-<h4 id="_description_5" class="discrete">Description</h4>
+<h4 id="_description_6" class="discrete">Description</h4>
 <div class="paragraph">
 <p>A number of mapping options affect the class itself or provide defaults for property mappings.</p>
 </div>
@@ -2095,40 +2218,54 @@ metadata component: [converter: "metadata\_converter"]</pre>
 </ul>
 </div>
 <h5 id="_options_5" class="discrete">Options</h5>
-<div class="ulist">
-<ul>
-<li>
-<p><strong><code>all</code></strong> - Controls the behaviour of the automatically created "all" field in the index for instances of this class. If not defined uses built-in defaults. <a href="index.html#_mapping">More</a></p>
-</li>
-<li>
-<p><strong><code>analyzer</code></strong> - The name of a configured Analyzer used to analyze the searchable data of instances. Overridable on a per property basis. Default is <code>"default"</code>, a built-in Analyzer.</p>
-</li>
-<li>
-<p><strong><code>alias</code></strong> - A name for documents of this class type in the index. Default is the simple class name, eg, the class <code>org.boom.User</code> would have an alias of <code>"User"</code> by default. It&#8217;s essentially a piece of constant text added for every object of this class type, and allows you to query by class, eg, <code>"alias:User maurice"</code></p>
-</li>
-<li>
-<p><strong><code>boost</code></strong> - A decimal value which increases or decreases the ranking of hits for this class if positive or negative respectively. Default is <code>1.0</code></p>
-</li>
-<li>
-<p><strong><code>constant</code></strong> - Allows you to define constant searchable data for every instance of the class. Requires a <code>Map</code> value, which defines the <code>constant&#8217;s `name</code> and <code>value</code> or <code>values</code> and other options. [More|Searchable Plugin - Mapping - constant]</p>
-</li>
-<li>
-<p><strong><code>converter</code></strong> - The name of configured Converter used to convert this class to/from searchable text. A Compass default is used if not defined.</p>
-</li>
-<li>
-<p><strong><code>root</code></strong> - Defines whether class instances are kept in their own index. When <code>false</code> instances should be <a href="index.html#_mapping_compass_concepts">searchable components</a> of another class, otherwise they are not saved in any index and cannot be searched for. Default is <code>true</code>.</p>
-</li>
-<li>
-<p><strong><code>spellCheck</code></strong> - Whether to include the instance searchable data is added to the spell check index. Either "`include"` or <code>"exclude"</code> to include or exclude from the spell-check index respectively. Default is <code>"exclude"</code>.</p>
-</li>
-<li>
-<p><strong><code>subIndex</code></strong> - The name of the Lucene index for this class. By default, each searchable class (or hierarchy) gets its own complete Lucene index, with the same name as <code>alias</code>. (Compass calls these "sub-indexes".) This name is then used as the index&#8217;s on-disk directory name or as the table-table name, for example, depending on your index storage strategy. This option allows you to override the default behaviour. For example you could use the same sub-index for multiple different classes.</p>
-</li>
-<li>
-<p><strong><code>supportUnmarshall</code></strong> - Whether you need to get the data in the index back out again as domain classes. If <code>false</code> class instances are "marshalled" to the index, but they cannot be "unmarshalled" back into classes (ie the reverse). May be useful if you want to easily index your data but are accessing the index directly with Compass/Lucene yourself. Default is <code>true</code>.</p>
-</li>
-</ul>
-</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>all</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Controls the behaviour of the automatically created "all" field in the index for instances of this class. If not defined uses built-in defaults. <a href="index.html#_mapping">More</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>analyzer</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a configured Analyzer used to analyze the searchable data of instances. Overridable on a per property basis. Default is <code>"default"</code>, a built-in Analyzer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>alias</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A name for documents of this class type in the index. Default is the simple class name, eg, the class <code>org.boom.User</code> would have an alias of <code>"User"</code> by default. It&#8217;s essentially a piece of constant text added for every object of this class type, and allows you to query by class, eg, <code>"alias:User maurice"</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>boost</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A decimal value which increases or decreases the ranking of hits for this class if positive or negative respectively. Default is <code>1.0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>constant</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows you to define constant searchable data for every instance of the class. Requires a <code>Map</code> value, which defines the <code>constant&#8217;s `name</code> and <code>value</code> or <code>values</code> and other options.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>converter</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of configured Converter used to convert this class to/from searchable text. A Compass default is used if not defined.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>root</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines whether class instances are kept in their own index. When <code>false</code> instances should be <a href="index.html#_mapping_compass_concepts">searchable components</a> of another class, otherwise they are not saved in any index and cannot be searched for. Default is <code>true</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>spellCheck</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to include the instance searchable data is added to the spell check index. Either "`include"` or <code>"exclude"</code> to include or exclude from the spell-check index respectively. Default is <code>"exclude"</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>subIndex</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the Lucene index for this class. By default, each searchable class (or hierarchy) gets its own complete Lucene index, with the same name as <code>alias</code>. (Compass calls these "sub-indexes".) This name is then used as the index&#8217;s on-disk directory name or as the table-table name, for example, depending on your index storage strategy. This option allows you to override the default behaviour. For example you could use the same sub-index for multiple different classes.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>supportUnmarshall</code></strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether you need to get the data in the index back out again as domain classes. If <code>false</code> class instances are "marshalled" to the index, but they cannot be "unmarshalled" back into classes (ie the reverse). May be useful if you want to easily index your data but are accessing the index directly with Compass/Lucene yourself. Default is <code>true</code>.</p></td>
+</tr>
+</tbody>
+</table>
 <h4 id="_examples_6" class="discrete">Examples</h4>
 <div class="listingblock">
 <div class="content">
@@ -2212,8 +2349,75 @@ Long id</pre>
 <p>Refer to the Compass docs [from here|http://www.compass-project.org] for more.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in index.adoc - include::Managing the index.adoc[]</p>
+<p>=n Compass Mapping XML</p>
 </div>
+<div class="paragraph">
+<p>To use Compass Mapping XML, add a <code>DomainClassName.cpm.xml</code> file to your classpath.</p>
+</div>
+<div class="paragraph">
+<p>Normally with Compass you need a master XML config file - typically  <code>compass.cfg.xml</code> - in which you declare these mapped classes. With the Searchable Plugin you can choose whether you want a <code>compass.cfg.xml</code>; if it is not found, it detects your mapping XML files automatically.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the Compass docs <a href="http://www.compass-project.org">from here</a> for more.</p>
+</div>
+<div class="paragraph">
+<p>INFO: The plugin currently configures the Compass mappings by generating this XML at runtime, so if you would like to see it, enable [debug logging|Searchable Plugin - Debugging].</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_searchable_plugin_managing_the_index">Searchable Plugin - Managing the index</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Thanks to Compass::GPS the Searchable Plugin mirrors changes made through Hibernate/GORM to the index, and this means
+that you normally don&#8217;t have to think about maintaining the index yourself.</p>
+</div>
+<div class="paragraph">
+<p>But perhaps when an object is created/saved/updated/deleted with GORM/Hibernate is not when you want it to be indexed.
+Perhaps your application updates the DB with raw SQL or JDBC, which Compass::GPS isn&#8217;t aware of, or there are other
+applications updating the DB. Maybe you don&#8217;t like the mirroring feature and have disabled it
+(see <a href="index.html#_configuration">Configuration</a>).</p>
+</div>
+<div class="paragraph">
+<p>In these cases you will need to maintain the index yourself, and Searchable Plugin provides a few methods to
+help with this.</p>
+</div>
+<div class="paragraph">
+<p>Like the search methods, they come in <code>SearchableService</code> and <em>searchable domain class</em> varieties. The domain class
+methods restrict the operation to instances of that class (or hierarchy).</p>
+</div>
+<div class="paragraph">
+<p>The methods are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code><a href="index.html#_methods">index</a></code></strong> - Indexes searchable class instances (adds them to the search index</p>
+</li>
+<li>
+<p><strong><code><a href="index.html#_methods_unindex">unindex</a></code></strong> - Un-indexes searchable class instances (removes them from the search index)</p>
+</li>
+<li>
+<p><strong><code><a href="index.html#_methods_reindex">reindex</a></code></strong> - Re-indexes searchable class instances (refreshes them in the search index)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are also a few <code>SearchableService</code>-only methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><code><a href="index.html#_methods_rebuildspellingsuggestions">rebuildSpellingSuggestions</a></code></strong> - Which re-builds spelling suggestions indexes on demand</p>
+</li>
+<li>
+<p><strong><code><a href="index.html#_methods_startmirroring">startMirroring</a></code></strong> - To start the mirror-changes service</p>
+</li>
+<li>
+<p><strong><code><a href="index.html#_methods_stopmirroring">stopMirroring</a></code></strong> - To stop the mirror-changes service</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -2332,7 +2536,7 @@ a [#Spring bean].</p>
 </div>
 <h4 id="_compass_settings" class="discrete">Compass settings</h4>
 <div class="paragraph">
-<p>The "Compass settings":http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers
+<p>The <a href="http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers">Compass settings</a>
 can either be defined in the plugin&#8217;s <a href="index.html#_configuration">configuration</a> or in a <a href="index.html#_configuration">native Compass configuration file</a>.</p>
 </div>
 <div class="paragraph">
@@ -2359,7 +2563,9 @@ can either be defined in the plugin&#8217;s <a href="index.html#_configuration">
 </div>
 </div>
 <div class="paragraph">
-<p>See the "Compass settings reference":http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers and "general discussion with XML examples":http://www.compass-project.org/docs/2.1.0/reference/html/core-searchengine.html#core-searchengine-analyzers for the complete range of options.</p>
+<p>See the <a href="http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers">Compass settings reference</a>
+and "general discussion with XML examples"
+<a href="http://www.compass-project.org/docs/2.1.0/reference/html/core-searchengine.html#core-searchengine-analyzers"> for the complete range of options</a>.</p>
 </div>
 <h4 id="_spring_bean" class="discrete">Spring bean</h4>
 <div class="paragraph">
@@ -2601,14 +2807,7 @@ log4j = {
 <h2 id="_faq">FAQ</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>{info:title=Contribute!}</p>
-</div>
-<div class="paragraph">
-<p>This FAQ is a work in progress!</p>
-</div>
-<div class="paragraph">
-<p>Please add stuff that you think others may find helpful.
-{info}</p>
+<p>INFO: Contribute! This FAQ is a work in progress! Please add stuff that you think others may find helpful.</p>
 </div>
 <h3 id="_negative_numbers_are_indexed_as_positive" class="discrete">Negative numbers are indexed as positive</h3>
 <div class="paragraph">
@@ -2810,7 +3009,7 @@ compassGps(SingleCompassGps) {
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_search">search</h3>
-<h4 id="_summary_6" class="discrete">Summary</h4>
+<h4 id="_summary_7" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Finds domain object hits for a query.</p>
 </div>
@@ -2835,7 +3034,7 @@ DomainClass.search(Closure builder, Map options)
 DomainClass.search(Map options, Closure builder) // same as previous</pre>
 </div>
 </div>
-<h4 id="_description_6" class="discrete">Description</h4>
+<h4 id="_description_7" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Issues a query to the search engine and returns the result.</p>
 </div>
@@ -2875,8 +3074,7 @@ DomainClass.search(Map options, Closure builder) // same as previous</pre>
 </li>
 </ul>
 </div>
-<div class="sect5">
-<h6 id="_options_for_string_queries">Options for String queries</h6>
+<h6 id="_options_for_string_queries" class="discrete">Options for String queries</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -3083,10 +3281,9 @@ println "did you mean ${searchResult.suggestedQuery}?"</pre>
 </div>
 </div>
 </div>
-</div>
 <div class="sect2">
 <h3 id="_counthits">countHits</h3>
-<h4 id="_summary_7" class="discrete">Summary</h4>
+<h4 id="_summary_8" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Get the number of hits for a query.</p>
 </div>
@@ -3111,12 +3308,12 @@ DomainClass.countHits(Closure builder, Map options)
 DomainClass.countHits(Map options, Closure builder) // same as previous</pre>
 </div>
 </div>
-<h4 id="_description_7" class="discrete">Description</h4>
+<h4 id="_description_8" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Issues a query to the search engine and returns the number of hits.</p>
 </div>
 <div class="paragraph">
-<p>This method is just like @[search|Searchable Plugin - Methods - search]@, except that it always return the hit count rather than relevant class instances. In fact you can use @search(&#8230;&#8203;, result: 'count')@ and @countHits(&#8230;&#8203;)@ interchangably.</p>
+<p>This method is just like [search|Searchable Plugin - Methods - search], except that it always return the hit count rather than relevant class instances. In fact you can use <code>search(&#8230;&#8203;, result: 'count')</code> and <code>countHits(&#8230;&#8203;)</code> interchangably.</p>
 </div>
 <div class="paragraph">
 <p>[Options|Searchable Plugin - Methods - countHits#Options] can be provided to modify the query.</p>
@@ -3140,10 +3337,10 @@ DomainClass.countHits(Map options, Closure builder) // same as previous</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>escape</code></strong> - Should special characters be escaped? Default is @false@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
+<p><strong><code>escape</code></strong> - Should special characters be escaped? Default is <code>false</code>. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
 </li>
 <li>
-<p><strong><code>defaultProperty</code></strong> or <strong><code>defaultSearchProperty</code></strong> - The searchable property for un-prefixed terms. Default is @"all"@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
+<p><strong><code>defaultProperty</code></strong> or <strong><code>defaultSearchProperty</code></strong> - The searchable property for un-prefixed terms. Default is <code>all</code>. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
 </li>
 <li>
 <p><strong><code>properties</code></strong> - The names of the class properties in which to search. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
@@ -3210,7 +3407,7 @@ def count = Show.countHits {
 </div>
 <div class="sect2">
 <h3 id="_morelikethis">moreLikeThis</h3>
-<h4 id="_summary_8" class="discrete">Summary</h4>
+<h4 id="_summary_9" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Finds similar objects to the indicated searchable domain class instance.</p>
 </div>
@@ -3239,7 +3436,7 @@ searchableService.moreLikeThis(DomainClass domainObject)
 searchableService.moreLikeThis(DomainClass domainObject, Map options)</pre>
 </div>
 </div>
-<h4 id="_description_8" class="discrete">Description</h4>
+<h4 id="_description_9" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Issues a "more-like-this" query to the search engine and returns the result.</p>
 </div>
@@ -3247,10 +3444,10 @@ searchableService.moreLikeThis(DomainClass domainObject, Map options)</pre>
 <p>Note that you do not create the more-like-this query, it is created by the search engine for a given searchable class instance. You <em>do</em> need to provide or identify the class instance though.</p>
 </div>
 <div class="paragraph">
-<p>Conceptually (apart from the difference in the query) this method is like @[search|Searchable Plugin - Methods - search]@, and you could think of it like a specialised "search" for more-like-some-object.</p>
+<p>Conceptually (apart from the difference in the query) this method is like [search|Searchable Plugin - Methods - search], and you could think of it like a specialised "search" for more-like-some-object.</p>
 </div>
 <div class="paragraph">
-<p>Unsurprisingly then they share code and this method has many options in common with @[search|Searchable Plugin - Methods - search]@ itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].</p>
+<p>Unsurprisingly then they share code and this method has many options in common with [search|Searchable Plugin - Methods - search] itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3336,7 +3533,7 @@ To use <code>moreLikeThis</code> you need to add <code>termVector</code> to the 
 <p><strong><code>minWordLen</code></strong> - The minimum word length below which words will be ignored. Set this to <code>0</code> for no minimum word length. Default is <code>0</code>.</p>
 </li>
 <li>
-<p><strong><code>properties</code></strong> - Limits the search to these class properties. A @List@ of property names, eg <code>\['post', 'title'\]</code>.</p>
+<p><strong><code>properties</code></strong> - Limits the search to these class properties. A <code>List</code> of property names, eg <code>\['post', 'title'\]</code>.</p>
 </li>
 <li>
 <p><strong><code>stopWords</code></strong> - A <code>List</code> of words that are not considered when comparing items for similarity. This is used in addition to any stop-words your analyzer has</p>
@@ -3463,7 +3660,7 @@ def books = Book.moreLikeThis(
 </div>
 <div class="sect2">
 <h3 id="_suggestquery">suggestQuery</h3>
-<h4 id="_summary_9" class="discrete">Summary</h4>
+<h4 id="_summary_10" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Suggest a new search query based on spelling</p>
 </div>
@@ -3482,7 +3679,7 @@ DomainClass.suggestQuery(String query, Map options)
 DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 </div>
 </div>
-<h4 id="_description_9" class="discrete">Description</h4>
+<h4 id="_description_10" class="discrete">Description</h4>
 <div class="paragraph">
 <p>Uses the spelling index to suggest an alternative query.</p>
 </div>
@@ -3493,11 +3690,7 @@ DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 <p>You can programmatically [re-build the spelling index|Searchable Plugin - Methods - rebuildSpellingSuggestions] if you like. This might be useful for testing, but otherwise don&#8217;t worry, it is periodically refreshed automatically by Compass.</p>
 </div>
 <div class="paragraph">
-<p>{info}</p>
-</div>
-<div class="paragraph">
-<p>You can also call @[search|Searchable Plugin - Methods - search]@ with a <code>suggestQuery</code> @[option|Searchable Plugin - Methods - search#Options]@, which returns search results for the original query, along with a suggested query.
-{info}</p>
+<p>INFO: You can also call [search|Searchable Plugin - Methods - search] with a <code>suggestQuery</code> [option|Searchable Plugin - Methods - search#Options], which returns search results for the original query, along with a suggested query.</p>
 </div>
 <div class="paragraph">
 <p>The plugin provides a helper class to highlight the different terms in the suggested vs original query, <em>a la</em> Google, etc. [More|Searchable Plugin - SearchableController and view#Suggested queries]</p>
@@ -3518,7 +3711,7 @@ DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>escape</code></strong> - Should special characters be escaped? Default is @false@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
+<p><strong><code>escape</code></strong> - Should special characters be escaped? Default is <code>false</code>. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
 </li>
 </ul>
 </div>
@@ -3526,7 +3719,7 @@ DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>userFriendly</code></strong> - Should the suggested query look like a user-query? When @false@ returns queries as they are re-written and suggested by the search engine. Default is <code>true</code>.</p>
+<p><strong><code>userFriendly</code></strong> - Should the suggested query look like a user-query? When <code>false</code> returns queries as they are re-written and suggested by the search engine. Default is <code>true</code>.</p>
 </li>
 <li>
 <p><strong><code>emulateCapitalisation</code></strong> - When <code>false</code> returns a query as re-written and suggested by the search engine, which is usually all lowercase, when <code>true</code> tries to emulate the upper-casing of the original query. Default is <code>true</code></p>
@@ -3564,7 +3757,7 @@ println "Did you mean ${suggestedQuery}"</pre>
 </div>
 <div class="sect2">
 <h3 id="_termfreqs">termFreqs</h3>
-<h4 id="_summary_10" class="discrete">Summary</h4>
+<h4 id="_summary_11" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Get <em>term frequencies</em> for the terms in the search index.</p>
 </div>
@@ -3585,7 +3778,7 @@ DomainClass.termFreqs(Map options, String propertyNames...)
 DomainClass.termFreqs(Map options)</pre>
 </div>
 </div>
-<h4 id="_description_10" class="discrete">Description</h4>
+<h4 id="_description_11" class="discrete">Description</h4>
 <div class="paragraph">
 <p>{info:title=What&#8217;s a term frequency?}</p>
 </div>
@@ -3615,7 +3808,7 @@ DomainClass.termFreqs(Map options)</pre>
 <p><strong><code>propertyNames</code></strong> - An arbitrary number of  domain class property names. If defined, only terms for these properties are returned</p>
 </li>
 <li>
-<p><strong><code>options</code></strong> - A @Map@ of [options|Searchable Plugin - Methods - termFreqs#options]</p>
+<p><strong><code>options</code></strong> - A <code>Map</code> of [options|Searchable Plugin - Methods - termFreqs#options]</p>
 </li>
 </ul>
 </div>
@@ -3699,7 +3892,7 @@ def termFreqs = searchableService.search(
 </div>
 <div class="sect2">
 <h3 id="_index">index</h3>
-<h4 id="_summary_11" class="discrete">Summary</h4>
+<h4 id="_summary_12" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Indexes searchable class instances (adds them to the search index)</p>
 </div>
@@ -3725,7 +3918,7 @@ searchableService.index(Serializable ids..)
 searchableService.index(Map options, Serializable ids...)</pre>
 </div>
 </div>
-<h4 id="_description_11" class="discrete">Description</h4>
+<h4 id="_description_12" class="discrete">Description</h4>
 <div class="paragraph">
 <p>When called as a domain class instance method, indexes the instance.</p>
 </div>
@@ -3756,7 +3949,7 @@ searchableService.index(Map options, Serializable ids...)</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>class</code></strong> - a searchable class; use this option with the @SearchableService@ method and @ids@ parameter or as an alternative to the domain-class method</p>
+<p><strong><code>class</code></strong> - a searchable class; use this option with the <code>SearchableService</code> method and <code>ids</code> parameter or as an alternative to the domain-class method</p>
 </li>
 </ul>
 </div>
@@ -3804,7 +3997,7 @@ searchableService.index(tool)</pre>
 </div>
 <div class="sect2">
 <h3 id="_unindex">unindex</h3>
-<h4 id="_summary_12" class="discrete">Summary</h4>
+<h4 id="_summary_13" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Un-indexes searchable class instances (removes them from the search index)</p>
 </div>
@@ -3830,7 +4023,7 @@ searchableService.unindex(Serializable ids..)
 searchableService.unindex(Map options, Serializable ids...)</pre>
 </div>
 </div>
-<h4 id="_description_12" class="discrete">Description</h4>
+<h4 id="_description_13" class="discrete">Description</h4>
 <div class="paragraph">
 <p>When called as a domain class instance method, un-indexes the instance.</p>
 </div>
@@ -3909,7 +4102,7 @@ searchableService.unindex(tool)</pre>
 </div>
 <div class="sect2">
 <h3 id="_reindex">reindex</h3>
-<h4 id="_summary_13" class="discrete">Summary</h4>
+<h4 id="_summary_14" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Re-indexes searchable class instances (refreshes them in the search index)</p>
 </div>
@@ -3935,7 +4128,7 @@ searchableService.reindex(Serializable ids..)
 searchableService.reindex(Map options, Serializable ids...)</pre>
 </div>
 </div>
-<h4 id="_description_13" class="discrete">Description</h4>
+<h4 id="_description_14" class="discrete">Description</h4>
 <div class="paragraph">
 <p>When called as a domain class instance method, re-indexes the instance.</p>
 </div>
@@ -4014,7 +4207,7 @@ searchableService.reindex(tool)</pre>
 </div>
 <div class="sect2">
 <h3 id="_rebuildspellingsuggestions">rebuildSpellingSuggestions</h3>
-<h4 id="_summary_14" class="discrete">Summary</h4>
+<h4 id="_summary_15" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Re-builds the spelling suggestions index</p>
 </div>
@@ -4025,7 +4218,7 @@ searchableService.reindex(tool)</pre>
 searchableService.rebuildSpellingSuggestions(options)</pre>
 </div>
 </div>
-<h4 id="_description_14" class="discrete">Description</h4>
+<h4 id="_description_15" class="discrete">Description</h4>
 <div class="paragraph">
 <p>A spelling suggestions index is required to use [query suggestions|Searchable Plugin - Methods - suggestQuery].</p>
 </div>
@@ -4073,7 +4266,7 @@ searchableService.rebuildSpellingSuggestions(subIndex: "House")</pre>
 </div>
 <div class="sect2">
 <h3 id="_startmirroring">startMirroring</h3>
-<h4 id="_summary_15" class="discrete">Summary</h4>
+<h4 id="_summary_16" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Starts the mirror-changes service</p>
 </div>
@@ -4083,7 +4276,7 @@ searchableService.rebuildSpellingSuggestions(subIndex: "House")</pre>
 <pre>searchableService.startMirroring()</pre>
 </div>
 </div>
-<h4 id="_description_15" class="discrete">Description</h4>
+<h4 id="_description_16" class="discrete">Description</h4>
 <div class="paragraph">
 <p>By default changes made through GORM/Hibernate are mirrored to the search index.</p>
 </div>
@@ -4099,7 +4292,7 @@ searchableService.rebuildSpellingSuggestions(subIndex: "House")</pre>
 </div>
 <div class="sect2">
 <h3 id="_stopmirroring">stopMirroring</h3>
-<h4 id="_summary_16" class="discrete">Summary</h4>
+<h4 id="_summary_17" class="discrete">Summary</h4>
 <div class="paragraph">
 <p>Stops the mirror-changes service</p>
 </div>
@@ -4109,7 +4302,7 @@ searchableService.rebuildSpellingSuggestions(subIndex: "House")</pre>
 <pre>searchableService.stopMirroring()</pre>
 </div>
 </div>
-<h4 id="_description_16" class="discrete">Description</h4>
+<h4 id="_description_17" class="discrete">Description</h4>
 <div class="paragraph">
 <p>By default changes made through GORM/Hibernate are mirrored to the search index.</p>
 </div>
@@ -4131,13 +4324,151 @@ searchableService.rebuildSpellingSuggestions(subIndex: "House")</pre>
 <div class="sect1">
 <h2 id="_releases">Releases</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_0_5_5">0.5.5</h3>
+<div class="paragraph">
+<p>Lastest version, recommended if you are using Grails 1.1.1.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_0_5_1">0.5.1</h3>
+<div class="paragraph">
+<p>This release fixes some bugs and includes new features. It is a recommended upgrade for all users.</p>
+</div>
+<div class="paragraph">
+<p>It has been tested with Grails 1.0.3, 1.0.4 and 1.1-beta1.</p>
+</div>
+<div class="paragraph">
+<p>JIRA release notes are "here":http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=11450&amp;styleName=Html&amp;version=14751</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_0_5">0.5</h3>
+<div class="paragraph">
+<p>This release includes several bug fixes, adds few new search
+methods, exposes more Compass mapping options in the mapping DSL, uses
+the standard Grails config notation, and is now better tested :-)</p>
+</div>
+<div class="paragraph">
+<p>This release has been tested and confirmed working on Grails
+1.0.4 and 1.0.3. It may or may not work on earlier versions.</p>
+</div>
+<div class="paragraph">
+<p>If you are upgrading from an older version of the plugin, please read the [#Deprecated] and [#Bundles libs] sections below.</p>
+</div>
+<div class="sect3">
+<h4 id="_new_domain_class_searchableservice_methods_and_options">New domain class/SearchableService methods and options</h4>
+<div class="sect4">
+<h5 id="_morelikethis_2">moreLikeThis</h5>
+<div class="paragraph">
+<p>Finds similar objects to the indicated searchable domain class instance. [Docs|Searchable Plugin - Methods - moreLikeThis]</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_suggestquery_2">suggestQuery</h5>
+<div class="paragraph">
+<p>Suggest a new search query based on spelling. [Docs|Searchable Plugin - Methods - suggestQuery]</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_search_2">search</h5>
+<div class="paragraph">
+<p>As an alternative to the <code>search</code>, <code>searchTop</code>, <code>searchEvery</code> and <code>countHits</code> methods you can pass a new <code>result</code> option to the <code>[search|Searchable Plugin - Methods - search]</code> method to indicate what to return.</p>
+</div>
+<div class="paragraph">
+<p>Additionally the search method now supports a <code>suggestQuery</code> option, which returns a suggested query along with search results for the original query. [Docs|Searchable Plugin - Methods - search]</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_mapping_dsl_2">Mapping DSL</h4>
+<div class="paragraph">
+<p>The [mapping DSL|Searchable Plugin - Mapping - Mapping DSL] has better support for Compass [Searchable Property|Searchable Plugin - Mapping - Searchable Property], [Reference|Searchable Plugin - Mapping - Searchable Reference] and [Component|Searchable Plugin - Mapping - Searchable Component].</p>
+</div>
+<div class="paragraph">
+<p>Improved [Searchable Id|Searchable Plugin - Mapping - Searchable Id] support.</p>
+</div>
+<div class="paragraph">
+<p>Support for [class mapping|Searchable Plugin - Mapping - Class Mapping] including [constant|Searchable Plugin - Mapping - constant] meta data and the [all|Searchable Plugin - Mapping - all] field.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_config_improvements">Config improvements</h4>
+<div class="paragraph">
+<p>The plugin&#8217;s configuration file now uses the same tech as your <code>Config.groovy</code>, so it now supports per-environment settings.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bugs_fixed">Bugs fixed</h4>
+<div class="paragraph">
+<p>GRAILSPLUGINS-254 - Trying to marshall null id \[id\]</p>
+</div>
+<div class="paragraph">
+<p>GRAILSPLUGINS-353 - org.hibernate.AssertionFailure collection was not processed by flush after calling Domain.properties = params</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_other_new_and_noteworthy">Other New and Noteworthy</h4>
+<div class="paragraph">
+<p>GRAILSPLUGINS-464 - Automatically unlocks locked indexes on startup</p>
+</div>
+<div class="paragraph">
+<p>GRAILSPLUGINS-299 - The <code>[index|Searchable Plugin - Methods - index]</code> method can be used for all instances of a class</p>
+</div>
+<div class="paragraph">
+<p>This release splits the plugin into two versions, one called "searchable" for JDK 1.5+, and another called "searchable14" for JDK 1.4 users. They are almost identical except for a few files and will
+be maintained and released in tandem as long as Grails itself supports JDK 1.4.</p>
+</div>
+<div class="paragraph">
+<p>The plugin itself now has its own functional test suite, which better reflects the multitude of Grails domain class possibilities for mapping, searching etc.</p>
+</div>
+<div class="paragraph">
+<p>And it is now built on a (private) Continuous Integration server against the current production and development branches of Grails.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_deprecated">Deprecated</h4>
+<div class="paragraph">
+<p>This release deprecates a few features which will be removed in the next point release (0.6).</p>
+</div>
+<div class="paragraph">
+<p>The index management methods <code>indexAll</code>, <code>unindexAll</code> and <code>reindexAll</code> are deprecated; please use <code>index</code>, <code>unindex</code>, <code>reindex</code> instead, which provide the same functionality.</p>
+</div>
+<div class="paragraph">
+<p>The <code>SearchableConfiguration.groovy</code> file is deprecated. If you currently have a <code>SearchableConfiguration.groovy</code>, run <code>grails install-searchable-config</code> to add a copy of the new config file to your project, place your settings in the new file and delete the old.</p>
+</div>
+<div class="paragraph">
+<p>The <code>defaultSearchOptions</code> confg setting allowed you to define default options for your domain class/SearchableService <code>search</code> method. This idea has been expanded to accomodate the other Searchable methods, and you now define these defaults on a per-method basis in the <code>defaultMethodOptions</code> config setting. (See the new config file for details.)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bundles_libs">Bundles libs</h4>
+<div class="paragraph">
+<p>This release includes Compass 2.1.0 and Lucene 2.4.</p>
+</div>
+<div class="paragraph">
+<p>Indexes based on an older version of the plugin/Compass/Lucene should be rebuilt.</p>
+</div>
+<div class="paragraph">
+<p>If you have your own Lucene/Compass extensions, you wish to consult their release notes here [Compass|http://svn.compass-project.org/svn/compass/branches/2\_1/upgrade.txt] and here [Lucene|http://svn.apache.org/repos/asf/lucene/java/tags/lucene\_2\_4\_0/CHANGES.txt].</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_0_4_1">0.4.1</h3>
+<div class="paragraph">
+<p>This is a maintenance release that fixes a few bugs - see JIRA for details: <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=11450&amp;styleName=Html&amp;version=14142" class="bare">http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=11450&amp;styleName=Html&amp;version=14142</a></p>
+</div>
+<div class="paragraph">
+<p>It bundles a patched version of Compass 1.2.2 specifically for GRAILSPLUGINS-254. I (Maurice) will give the code to the Compass project and hope they will include it in future versions of Compass.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 11:13:55 +01:00
+Last updated 2017-02-24 13:01:14 +01:00
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.9.1/styles/github.min.css">

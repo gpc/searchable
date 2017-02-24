@@ -462,7 +462,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><strong><code>analyzer</code></strong> - The name of a configured analyzer used to analyze this property. Default is <code>"default"</code> which is a built-in analyzer (Lucene&#8217;s StandardAnalyzer)</p>
 </li>
 <li>
-<p><strong><code>boost</code></strong> - A decimal boost value. With a positive value, promotes search results for hits in this property; with a negative value, demotes search results that hit this property. Default is @1.0@</p>
+<p><strong><code>boost</code></strong> - A decimal boost value. With a positive value, promotes search results for hits in this property; with a negative value, demotes search results that hit this property. Default is <code>1.0</code></p>
 </li>
 <li>
 <p><strong><code>excludeFromAll</code></strong> - Whether the property should be excluded from the generated <code>"all"</code> searchable text field in the index. One of <code>"yes"</code>, <code>"no"</code> or <code>"no_analyzed"</code></p>
@@ -474,7 +474,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><strong><code>index</code></strong> - How or if the property is made into searchable text. One of <code>"'no"</code>, <code>"not_analyzed"</code> or <code>"analyzed"</code>.</p>
 </li>
 <li>
-<p><strong><code>name</code></strong> - The name of the field in the search index. Can be used with multiple mappings for the same property, each with their own name. Default is <code>propertyName</code>. This becomes the name of the field in the index, so if @name@ is @"title"@, you can target that field with a query like @"title:grails"@</p>
+<p><strong><code>name</code></strong> - The name of the field in the search index. Can be used with multiple mappings for the same property, each with their own name. Default is <code>propertyName</code>. This becomes the name of the field in the index, so if <code>name</code> is <code>"title"</code>, you can target that field with a query like <code>"title:grails"</code></p>
 </li>
 <li>
 <p><strong><code>nullValue</code></strong> - The value to use if the property is <code>null</code> when indexed.</p>
@@ -486,10 +486,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p><strong><code>reverse</code></strong> - Whether the property should be reversed when made searchable. One of <code>"no"</code>, <code>"reader"</code> or <code>"string`". Default is `"no"</code></p>
 </li>
 <li>
-<p><strong><code>spellCheck</code></strong> - Should the values of the property be included in the spell-check index? Either <code>"include"</code> or `"exclude"@. If not defined then inherits the class&#8217;s own spell-check mapping.</p>
+<p><strong><code>spellCheck</code></strong> - Should the values of the property be included in the spell-check index? Either <code>"include"</code> or <code>"exclude"</code>. If not defined then inherits the class&#8217;s own spell-check mapping.</p>
 </li>
 <li>
-<p><strong><code>store</code></strong> - Should the value be stored in the index? One of <code>"yes"</code>, <code>"no"</code> or <code>"compress"</code>. If <code>"no"</code> then the property may still be searchable (depending on the @index@ option), but when re-creating the object for search results this property will always be null. <code>"compress"</code> is useful for large or binary property values. Default is @"yes"@</p>
+<p><strong><code>store</code></strong> - Should the value be stored in the index? One of <code>"yes"</code>, <code>"no"</code> or <code>"compress"</code>. If <code>"no"</code> then the property may still be searchable (depending on the <code>index</code> option), but when re-creating the object for search results this property will always be null. <code>"compress"</code> is useful for large or binary property values. Default is <code>"yes"</code></p>
 </li>
 <li>
 <p><strong><code>termVector</code></strong> - Should the term-vector data be collected for the property in the index? One of <code>"yes"</code>, <code>"no"</code>, `"with\_positions`", `"with\_offsets`", `"with\_positions\_offsets`". If not defined inherits the class&#8217;s term-vector mapping. This is required for [more-like-this|Searchable Plugin - Methods - moreLikeThis] searches.</p>
@@ -530,7 +530,7 @@ tags index: 'analyzed'</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 12:37:42 +01:00
+Last updated 2017-02-24 13:19:36 +01:00
 </div>
 </div>
 </body>

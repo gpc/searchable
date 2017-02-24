@@ -7,3 +7,4 @@ web-app/WEB-INF/classes/
 /build
 /.DS_Store
 /.gradle
+/.idea

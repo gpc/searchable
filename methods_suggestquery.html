@@ -452,11 +452,7 @@ DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 <p>You can programmatically [re-build the spelling index|Searchable Plugin - Methods - rebuildSpellingSuggestions] if you like. This might be useful for testing, but otherwise don&#8217;t worry, it is periodically refreshed automatically by Compass.</p>
 </div>
 <div class="paragraph">
-<p>{info}</p>
-</div>
-<div class="paragraph">
-<p>You can also call @[search|Searchable Plugin - Methods - search]@ with a <code>suggestQuery</code> @[option|Searchable Plugin - Methods - search#Options]@, which returns search results for the original query, along with a suggested query.
-{info}</p>
+<p>INFO: You can also call [search|Searchable Plugin - Methods - search] with a <code>suggestQuery</code> [option|Searchable Plugin - Methods - search#Options], which returns search results for the original query, along with a suggested query.</p>
 </div>
 <div class="paragraph">
 <p>The plugin provides a helper class to highlight the different terms in the suggested vs original query, <em>a la</em> Google, etc. [More|Searchable Plugin - SearchableController and view#Suggested queries]</p>
@@ -477,7 +473,7 @@ DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>escape</code></strong> - Should special characters be escaped? Default is @false@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
+<p><strong><code>escape</code></strong> - Should special characters be escaped? Default is <code>false</code>. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]</p>
 </li>
 </ul>
 </div>
@@ -485,7 +481,7 @@ DomainClass.suggestQuery(Map options, String query) // same as previous</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><code>userFriendly</code></strong> - Should the suggested query look like a user-query? When @false@ returns queries as they are re-written and suggested by the search engine. Default is <code>true</code>.</p>
+<p><strong><code>userFriendly</code></strong> - Should the suggested query look like a user-query? When <code>false</code> returns queries as they are re-written and suggested by the search engine. Default is <code>true</code>.</p>
 </li>
 <li>
 <p><strong><code>emulateCapitalisation</code></strong> - When <code>false</code> returns a query as re-written and suggested by the search engine, which is usually all lowercase, when <code>true</code> tries to emulate the upper-casing of the original query. Default is <code>true</code></p>
@@ -523,7 +519,7 @@ println "Did you mean ${suggestedQuery}"</pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 12:39:36 +01:00
+Last updated 2017-02-24 13:22:35 +01:00
 </div>
 </div>
 </body>

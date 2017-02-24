@@ -457,8 +457,9 @@ Product.search("wireless projector *", escape: true)</pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_advanced_string_query_options">Advanced String Query Options</h3>
+<div class="sect1">
+<h2 id="_advanced_string_query_options">Advanced String Query Options</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>As well as the advertised options, search methods additionally accept the following options when using String queries:</p>
 </div>
@@ -518,14 +519,22 @@ otherwise set by you.</p>
 //     without the option it would be like "mango AND chutney"</pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>analyzer</strong> - The name of a query analyzer. With Compass settings, you can define a new default with the name
-<strong>search</strong> and/or additional analyzers with new names. Default is "search"</p>
-</li>
-</ul>
-</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>analyzer</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of a query analyzer. With Compass settings, you can define a new default with the name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>search</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">and/or additional analyzers with new names. Default is "search"</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre>search("cowboy john", analyzer: "special")
@@ -548,9 +557,10 @@ the name <strong>default</strong> and/or additional parsers with new names. Defa
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 12:17:37 +01:00
+Last updated 2017-02-24 13:21:13 +01:00
 </div>
 </div>
 </body>

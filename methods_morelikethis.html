@@ -459,10 +459,10 @@ searchableService.moreLikeThis(DomainClass domainObject, Map options)</pre>
 <p>Note that you do not create the more-like-this query, it is created by the search engine for a given searchable class instance. You <em>do</em> need to provide or identify the class instance though.</p>
 </div>
 <div class="paragraph">
-<p>Conceptually (apart from the difference in the query) this method is like @[search|Searchable Plugin - Methods - search]@, and you could think of it like a specialised "search" for more-like-some-object.</p>
+<p>Conceptually (apart from the difference in the query) this method is like [search|Searchable Plugin - Methods - search], and you could think of it like a specialised "search" for more-like-some-object.</p>
 </div>
 <div class="paragraph">
-<p>Unsurprisingly then they share code and this method has many options in common with @[search|Searchable Plugin - Methods - search]@ itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].</p>
+<p>Unsurprisingly then they share code and this method has many options in common with [search|Searchable Plugin - Methods - search] itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -548,7 +548,7 @@ To use <code>moreLikeThis</code> you need to add <code>termVector</code> to the 
 <p><strong><code>minWordLen</code></strong> - The minimum word length below which words will be ignored. Set this to <code>0</code> for no minimum word length. Default is <code>0</code>.</p>
 </li>
 <li>
-<p><strong><code>properties</code></strong> - Limits the search to these class properties. A @List@ of property names, eg <code>\['post', 'title'\]</code>.</p>
+<p><strong><code>properties</code></strong> - Limits the search to these class properties. A <code>List</code> of property names, eg <code>\['post', 'title'\]</code>.</p>
 </li>
 <li>
 <p><strong><code>stopWords</code></strong> - A <code>List</code> of words that are not considered when comparing items for similarity. This is used in addition to any stop-words your analyzer has</p>
@@ -675,7 +675,7 @@ def books = Book.moreLikeThis(
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-02-24 12:27:44 +01:00
+Last updated 2017-02-24 13:20:14 +01:00
 </div>
 </div>
 </body>
