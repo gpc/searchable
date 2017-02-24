@@ -37,7 +37,7 @@ a [#Spring bean].
 [discrete]
 === Compass settings
 
-The "Compass settings":http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers
+The link:http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers[Compass settings]
 can either be defined in the plugin's link:index.html#_configuration[configuration] or in a link:index.html#_configuration[native Compass configuration file].
 
 Compass actually provides shortcut names for some of the standard Lucene analyzers, and this is a simple way to define them, eg:
@@ -58,7 +58,9 @@ Map compassSettings = [
 ]
 ----
 
-See the "Compass settings reference":http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers and "general discussion with XML examples":http://www.compass-project.org/docs/2.1.0/reference/html/core-searchengine.html#core-searchengine-analyzers for the complete range of options.
+See the link:http://www.compass-project.org/docs/2.1.0/reference/html/core-settings.html#core-configuration-searchengineanalyzers[Compass settings reference]
+and "general discussion with XML examples"
+link:http://www.compass-project.org/docs/2.1.0/reference/html/core-searchengine.html#core-searchengine-analyzers[ for the complete range of options].
 
 [discrete]
 === Spring bean

@@ -44,7 +44,7 @@ _TODO show/link to tag cloud example_
 == Parameters
 
 * *`propertyNames`* - An arbitrary number of  domain class property names. If defined, only terms for these properties are returned
-* *`options`* - A @Map@ of [options|Searchable Plugin - Methods - termFreqs#options]
+* *`options`* - A `Map` of [options|Searchable Plugin - Methods - termFreqs#options]
 
 [discrete]
 === options

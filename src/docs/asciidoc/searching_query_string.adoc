@@ -19,7 +19,7 @@ Product.search("wireless projector *", escape: true)
 
 By default escape is false but you can change the default to true globally with link:index.html#_configuration[default method options].
 
-### Advanced String Query Options
+== Advanced String Query Options
 
 As well as the advertised options, search methods additionally accept the following options when using String queries:
 
@@ -55,8 +55,10 @@ search("mango chutney", defaultOperator: "or")
 //     without the option it would be like "mango AND chutney"
 ----
 
-* *analyzer* - The name of a query analyzer. With Compass settings, you can define a new default with the name
-*search* and/or additional analyzers with new names. Default is "search"
+|===
+| `analyzer` | The name of a query analyzer. With Compass settings, you can define a new default with the name
+| `search` | and/or additional analyzers with new names. Default is "search"
+|===
 
 ----
 search("cowboy john", analyzer: "special")

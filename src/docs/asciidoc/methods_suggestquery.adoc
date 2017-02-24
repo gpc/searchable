@@ -29,10 +29,7 @@ You need to add some sort of `spellCheck` mapping for domain classes/properties 
 
 You can programmatically [re-build the spelling index|Searchable Plugin - Methods - rebuildSpellingSuggestions] if you like. This might be useful for testing, but otherwise don't worry, it is periodically refreshed automatically by Compass.
 
-{info}
-
-You can also call @[search|Searchable Plugin - Methods - search]@ with a `suggestQuery` @[option|Searchable Plugin - Methods - search#Options]@, which returns search results for the original query, along with a suggested query.
-{info}
+INFO: You can also call [search|Searchable Plugin - Methods - search] with a `suggestQuery` [option|Searchable Plugin - Methods - search#Options], which returns search results for the original query, along with a suggested query.
 
 The plugin provides a helper class to highlight the different terms in the suggested vs original query, _a la_ Google, etc. [More|Searchable Plugin - SearchableController and view#Suggested queries]
 
@@ -48,12 +45,12 @@ The plugin provides a helper class to highlight the different terms in the sugge
 [discrete]
 ==== Options affecting the search query
 
-* *`escape`* - Should special characters be escaped? Default is @false@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
+* *`escape`* - Should special characters be escaped? Default is `false`. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
 
 [discrete]
 ==== Options affecting the return value
 
-* *`userFriendly`* - Should the suggested query look like a user-query? When @false@ returns queries as they are re-written and suggested by the search engine. Default is `true`.
+* *`userFriendly`* - Should the suggested query look like a user-query? When `false` returns queries as they are re-written and suggested by the search engine. Default is `true`.
 * *`emulateCapitalisation`* - When `false` returns a query as re-written and suggested by the search engine, which is usually all lowercase, when `true` tries to emulate the upper-casing of the original query. Default is `true`
 * *`allowSame`* - Can the method return the same query as the given `query`? This is possible if no better suggestions are found. If `false`, the method returns `null` instead of allowing the same query. Default is `true`
 

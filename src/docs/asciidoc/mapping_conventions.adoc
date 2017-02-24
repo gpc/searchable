@@ -1,6 +1,6 @@
 = Mapping conventions
 
-:WARNING First please familiarise yourself with some essential link:index.html#_mapping_compass_concepts[Compass mapping concepts].
+WARNING: First please familiarise yourself with some essential link:index.html#_mapping_compass_concepts[Compass mapping concepts].
 
 The easiest way to map a class to the search index is by declaring
 

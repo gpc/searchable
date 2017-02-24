@@ -54,6 +54,7 @@ The query can be specified as either a [String|Searchable Plugin - Searching - S
 * *sort* - The field to sort results by (default is 'SCORE'). [More|Searchable Plugin - Searching - Sorting]
 * *order* or *direction* - The sort order, only used with sort (default is 'auto'). [More|Searchable Plugin - Searching - Sorting]
 
+[discrete]
 ==== Options for String queries
 
 * *escape* - Should special characters be escaped? Default is false. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]

@@ -36,9 +36,9 @@ Issues a "more-like-this" query to the search engine and returns the result.
 
 Note that you do not create the more-like-this query, it is created by the search engine for a given searchable class instance. You _do_ need to provide or identify the class instance though.
 
-Conceptually (apart from the difference in the query) this method is like @[search|Searchable Plugin - Methods - search]@, and you could think of it like a specialised "search" for more-like-some-object.
+Conceptually (apart from the difference in the query) this method is like [search|Searchable Plugin - Methods - search], and you could think of it like a specialised "search" for more-like-some-object.
 
-Unsurprisingly then they share code and this method has many options in common with @[search|Searchable Plugin - Methods - search]@ itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].
+Unsurprisingly then they share code and this method has many options in common with [search|Searchable Plugin - Methods - search] itself, and also adds [more of its own|Searchable Plugin - Methods - moreLikeThis#Options].
 
 NOTE: To use `moreLikeThis` you need to add `termVector` to the searchable domain class's ["all" property mapping|Searchable Plugin - Mapping - all] and rebuild the index. See the [example here|Searchable Plugin - Mapping - all#Examples].
 
@@ -74,7 +74,7 @@ These options tweak the more-like-this query:
 * *`minResourceFreq`* - The frequency at which words will be ignored which do not occur in at least this many resources. Defaults to `5`
 * *`minTermFreq`* - The frequency below which terms will be ignored in the source doc. Defaults to `2`.
 * *`minWordLen`* - The minimum word length below which words will be ignored. Set this to `0` for no minimum word length. Default is `0`.
-* *`properties`* - Limits the search to these class properties. A @List@ of property names, eg `\['post', 'title'\]`.
+* *`properties`* - Limits the search to these class properties. A `List` of property names, eg `\['post', 'title'\]`.
 * *`stopWords`* - A `List` of words that are not considered when comparing items for similarity. This is used in addition to any stop-words your analyzer has
 * *`subIndexes`* - A `List` of sub-indexes to search in, eg, `\['bookmark'\]`
 

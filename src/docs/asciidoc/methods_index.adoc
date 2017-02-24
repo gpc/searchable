@@ -47,7 +47,7 @@ In other invocations, indexes the searchable class instances you provide or iden
 [discrete]
 === options
 
-* *`class`* - a searchable class; use this option with the @SearchableService@ method and @ids@ parameter or as an alternative to the domain-class method
+* *`class`* - a searchable class; use this option with the `SearchableService` method and `ids` parameter or as an alternative to the domain-class method
 
 [discrete]
 == Returns

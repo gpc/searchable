@@ -8,23 +8,23 @@ Used to map [searchable references|Searchable Plugin - Mapping - Compass concept
 [discrete]
 == Syntax
 
-{code}
+----
 static searchable = {
     propertyName options
 }
-{code}
+----
 
-{code}
+----
 static searchable = {
     propertyName reference: true
 }
-{code}
+----
 
-{code}
+----
 static searchable = {
     propertyName reference: options
 }
-{code}
+----
 
 [discrete]
 == Description
@@ -51,18 +51,18 @@ When you want to change a [conventional searchable component mapping|Searchable 
 [discrete]
 == Examples
 
-{code}
+----
 // Provide a custom converter
 metadata converter: "metadata\_converter"
-{code}
+----
 
-{code}
+----
 // Map metadata as a reference, overriding any conventional mapping
 metadata reference: true
-{code}
+----
 
-{code}
+----
 // Map metadata as a reference, overriding any conventional mapping
 // and define some options
 metadata reference: [converter: "metadata\_converter"]
-{code}
+----

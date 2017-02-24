@@ -31,7 +31,7 @@ DomainClass.countHits(Map options, Closure builder) // same as previous
 
 Issues a query to the search engine and returns the number of hits.
 
-This method is just like @[search|Searchable Plugin - Methods - search]@, except that it always return the hit count rather than relevant class instances. In fact you can use @search(..., result: 'count')@ and @countHits(...)@ interchangably.
+This method is just like [search|Searchable Plugin - Methods - search], except that it always return the hit count rather than relevant class instances. In fact you can use `search(..., result: 'count')` and `countHits(...)` interchangably.
 
 [Options|Searchable Plugin - Methods - countHits#Options] can be provided to modify the query.
 
@@ -48,8 +48,8 @@ This method is just like @[search|Searchable Plugin - Methods - search]@, except
 [discrete]
 ==== Options for String queries
 
-* *`escape`* - Should special characters be escaped? Default is @false@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
-* *`defaultProperty`* or *`defaultSearchProperty`* - The searchable property for un-prefixed terms. Default is @"all"@. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
+* *`escape`* - Should special characters be escaped? Default is `false`. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
+* *`defaultProperty`* or *`defaultSearchProperty`* - The searchable property for un-prefixed terms. Default is `all`. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
 * *`properties`* - The names of the class properties in which to search. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
 * *`defaultOperator`* - Either `"and"` or `"or"`. Default is `"and"` unless set otherwise elsewhere. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]
 * *`analyzer`* - The name of a query analyzer. [More|Searchable Plugin - Searching - String Queries#Advanced String Query Options]

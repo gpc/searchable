@@ -39,23 +39,23 @@ The following summaries the behaviour of these option combinations. Remember tha
 
 
 |===
-sort | order _or_ direction | Sorting behavoir
+| sort | order _or_ direction | Sorting behavoir
 
-| `"SCORE"` | `"auto"` | The results are ordered most-relevant (highest scoring) first. This is the default
+| `SCORE` | `auto` | The results are ordered most-relevant (highest scoring) first. This is the default
 
-| `"SCORE"` | `"reverse"` | The results are ordered least-relevant (lowest scoring) first.
+| `SCORE` | `reverse` | The results are ordered least-relevant (lowest scoring) first.
 
-| `"SCORE"` | `"asc"` | The results are ordered least-relevant (lowest scoring) first.
+| `SCORE` | `"asc` | The results are ordered least-relevant (lowest scoring) first.
 
-| `"SCORE"` | `"desc"` | The results are ordered most-relevant (highest scoring) first. This is the same as `SCORE` + `auto`, which is the default
+| `SCORE` | `"desc` | The results are ordered most-relevant (highest scoring) first. This is the same as `SCORE` + `auto`, which is the default
 
-| `"someProperty"` | `"asc"` | The results are ordered in natural order for the `"someProperty"` field value, eg, String ascending, Number ascending
+| `someProperty` | `asc` | The results are ordered in natural order for the `someProperty` field value, eg, String ascending, Number ascending
 
-| `"someProperty"` | `"desc"` | The results are order in revserse natural order for the `"someProperty"` field value, eg, String descending, Number descending
+| `someProperty` | `desc` | The results are order in revserse natural order for the `someProperty` field value, eg, String descending, Number descending
 
-| `"someProperty"` | `"auto"` | The results are ordered in natural order for the `"someProperty"` field value, eg, String ascending, Number ascending
+| `someProperty` | `auto` | The results are ordered in natural order for the `someProperty` field value, eg, String ascending, Number ascending
 
-| `"someProperty"` | `"reverse"` | The results are order in revserse natural order for the `"someProperty"` field value, eg, String descending, Number descending
+| `someProperty` | `reverse` | The results are order in revserse natural order for the `someProperty` field value, eg, String descending, Number descending
 
 |===
 

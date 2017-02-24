@@ -1,11 +1,6 @@
 = FAQ
 
-{info:title=Contribute!}
-
-This FAQ is a work in progress!
-
-Please add stuff that you think others may find helpful.
-{info}
+INFO: Contribute! This FAQ is a work in progress! Please add stuff that you think others may find helpful.
 
 [discrete]
 == Negative numbers are indexed as positive
