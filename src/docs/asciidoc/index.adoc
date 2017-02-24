@@ -1,0 +1,99 @@
+# Searchable Grails Plugin
+:toc: left
+:language: asciidoc
+:theme: html5
+:source-highlighter: highlight.js
+:icons: font
+
+:leveloffset: 1
+
+include::quick_start.adoc[]
+
+include::searchablecontroller_and_view.adoc[]
+
+include::searching.adoc[]
+
+:leveloffset: 2
+
+include::searching_query_strings.adoc[]
+
+include::searching_query_builder.adoc[]
+
+include::searching_sorting.adoc[]
+
+:leveloffset: 1
+
+include::mapping.adoc[]
+
+:leveloffset: 2
+
+include::mapping_not_all_properties.adoc[]
+
+include::mapping_conventions.adoc[]
+
+include::mapping_compass_concepts.adoc[]
+
+include::mapping_mapping_dsl.adoc[]
+
+include::mapping_class_property_mapping.adoc[]
+
+include::mapping_searchable_id.adoc[]
+
+include::mapping_searchable_property.adoc[]
+
+include::mapping_searchable_reference.adoc[]
+
+include::mapping_searchable_component.adoc[]
+
+include::mapping_class_mapping.adoc[]
+
+include::mapping_compass_annotations.adoc[]
+
+include::mapping_compass_xml.adoc[]
+
+:leveloffset: 1
+
+include::Managing the index.adoc[]
+
+include::configuration.adoc[]
+
+include::analyzers.adoc[]
+
+include::converters.adoc[]
+
+include::debugging.adoc[]
+
+include::faq.adoc[]
+
+include::methods.adoc[]
+
+:leveloffset: 2
+
+include::methods_search.adoc[]
+
+include::methods_counthits.adoc[]
+
+include::methods_morelikethis.adoc[]
+
+include::methods_suggestquery.adoc[]
+
+include::methods_termfreqs.adoc[]
+
+include::methods_index.adoc[]
+
+include::methods_unindex.adoc[]
+
+include::methods_reindex.adoc[]
+
+include::methods_rebuildspellingsuggestions.adoc[]
+
+include::methods_startmirroring.adoc[]
+
+include::methods_stopmirroring.adoc[]
+
+:leveloffset: 1
+
+include::releases.adoc[]
+
+:leveloffset: 0
+

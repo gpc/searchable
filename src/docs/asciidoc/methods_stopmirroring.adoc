@@ -1,0 +1,29 @@
+= stopMirroring
+
+[discrete]
+== Summary
+
+Stops the mirror-changes service
+
+[discrete]
+== Syntax
+
+----
+searchableService.stopMirroring()
+----
+
+[discrete]
+== Description
+
+By default changes made through GORM/Hibernate are mirrored to the search index.
+
+This feature can be controlled by link:index.html#_configuration[configuration], but this method allows you to stop mirroring changes.
+
+You can start mirroring changes again with the [startMirroring|Searchable Plugin - Methods - startMirroring] method.
+
+[discrete]
+== Examples
+
+----
+searchableService.stopMirroring()
+----

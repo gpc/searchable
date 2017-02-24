@@ -1,0 +1,74 @@
+= String Queries
+
+Query strings can be simple or complex:
+
+* *"hello world"* - matches searchable content containing both "hello" and "world"
+* *"+type:fruit \+(vitamins:c OR vitamins:b1) -color:green calories:\[150 TO \*\]"* - matches must have a "fruit" value
+for type, must have either "c" or "b1" values for vitamins, must not have "green" as a value for color and have a value
+of at least 150 for calories.
+
+See link:http://lucene.apache.org/java/2_4_0/queryparsersyntax.html[Lucene's string query syntax] for more examples.
+
+Some characters are reserved by the query syntax, and can cause query parse exceptions if used incorrectly. To fix this
+you can provide the *escape* option:
+
+----
+// without "escape: true" would throw ParseException due to trailing " *"
+Product.search("wireless projector *", escape: true)
+----
+
+By default escape is false but you can change the default to true globally with link:index.html#_configuration[default method options].
+
+### Advanced String Query Options
+
+As well as the advertised options, search methods additionally accept the following options when using String queries:
+
+* *escape* - If true escapes special query characters. Default is false
+
+----
+search("[this is a bad query]", escape: true)
+// ==> same as "\[this is a bad query\]"
+----
+
+* *defaultProperty* or *defaultSearchProperty* - The searchable property for un-prefixed terms. _Cannot be used with
+the *properties* option._ Default is "all"
+
+----
+search("tomato soup tags:recipie", defaultProperty: "name")
+// ==> as if the query was "name:tomato name:soup tags:recipie"
+----
+
+* *properties* - The names of the class properties in which to search. _Cannot be used with the *defaultProperty* or
+*defaultSearchProperty* option._ Default is all properties
+
+----
+search("Hawaii Five-O", properties: ["title", "desc"])
+// ==> as if the query was "(desc:hawaii titles:hawaii) (desc:"five o" titles:"five o")"
+----
+
+* *defaultOperator* - Either "and" or "or". Default is to defer to the global Compass setting, which is "and" if not
+otherwise set by you.
+
+----
+search("mango chutney", defaultOperator: "or")
+// ==> as if the query was "mango OR chutney"
+//     without the option it would be like "mango AND chutney"
+----
+
+* *analyzer* - The name of a query analyzer. With Compass settings, you can define a new default with the name
+*search* and/or additional analyzers with new names. Default is "search"
+
+----
+search("cowboy john", analyzer: "special")
+// ==> uses the analyzer configured for name "special"
+----
+
+* *parser* or *queryParser* - The name of a query parser. With Compass settings, you can define a new default with
+the name *default* and/or additional parsers with new names. Default is "default"
+
+----
+search("european bob", parser: "custom_parser")
+// ==> uses the query parser configured for name "custom_parser"
+----
+
+

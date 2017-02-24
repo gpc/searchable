@@ -1,0 +1,25 @@
+= Debugging
+
+[discrete]
+== Logging
+
+Enable Searchable Plugin debug logging by adding the following to Config.groovy's log4j section:
+
+----
+// log4j configuration
+log4j = {
+    ....
+
+    debug 'org.codehaus.groovy.grails.plugins.searchable'
+
+    // more detailed debug logging
+    // trace 'org.compass'
+}
+----
+
+[discrete]
+== Luke - for inspecting the index
+
+[Luke|http://code.google.com/p/luke/] is a Swing GUI for Lucene indexes.
+
+Use Luke to inspect the index and test queries.

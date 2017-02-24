@@ -1,0 +1,40 @@
+= Searchable Id
+
+[discrete]
+== Summary
+
+Used to map the searchable class's identifier.
+
+[discrete]
+== Syntax
+
+----
+static searchable = {
+    id options
+}
+----
+
+[discrete]
+== Description
+
+Maps the searchable id with the given [options|#Options].
+
+[discrete]
+== Parameters
+
+* *`options`* - A `Map` of [options|#Options]
+
+[discrete]
+=== Options
+
+* *`name`* - The name of the searchable id field in the index. Default is `id`. This allows you to target the id field in a query, eg, if you decided to name your id `"\_\_the\_id\_\_"@ you could query it with @"\_\_the\_id\_\_:10"`.
+* *`accessor`* - How the property is accessed. One of `"field"` or `"property"`. Default is `"property"`
+* *`converter`* - The name of a configured converter to use to convert the property value to/from text
+
+[discrete]
+== Examples
+
+----
+// Obscure the name of the id property
+id name: "\_\_the\_id\_\_"
+----
